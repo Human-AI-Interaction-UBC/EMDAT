@@ -1,0 +1,237 @@
+System Properties:
+Operating System:	 Microsoft Windows NT 5.1.2600 Service Pack 2
+System User Name:	 skardan
+Machine Name:	 PISA
+
+Data properties:
+
+Recording name:	 Rec 60
+Recording date:	 27/09/2011
+Recording time:	 12:16:45 PM
+Recording resolution:	 1280 x 1024
+
+Export date:	 18/10/2011
+Export time:	 5:05:02 PM
+
+Participant:	 P104
+Participant properties:
+
+Glasses:	 glasses
+Previous Experience with the CSP Applet:	 None
+322:	 Not Taken
+Hand:	 right
+221:	 Complete
+Previous Experience with AISpace:	 None
+Sex:	 m
+
+Timestamp	Event	EventKey	Data1	Data2	Descriptor	
+0	ScreenRecStarted	8192	0	0		
+8671	LeftMouseClick	1	607	443		
+9764	LeftMouseClick	1	610	643		
+10623	LogData	0	Load 1st Problem			
+17237	LeftMouseClick	1	140	85		
+38946	LeftMouseClick	1	345	473		
+40514	LeftMouseClick	1	584	500		
+41784	LeftMouseClick	1	612	498		
+46012	LeftMouseClick	1	595	569		
+48654	LeftMouseClick	1	141	74		
+62469	LeftMouseClick	1	304	65		
+64816	LeftMouseClick	1	117	74		
+73236	LeftMouseClick	1	334	481		
+74406	LeftMouseClick	1	611	503		
+75139	LeftMouseClick	1	607	570		
+78177	LeftMouseClick	1	168	71		
+88953	LeftMouseClick	1	307	64		
+90329	LeftMouseClick	1	143	78		
+103214	LeftMouseClick	1	351	79		
+106688	LeftMouseClick	1	331	484		
+108803	LeftMouseClick	1	581	494		
+109292	LeftMouseClick	1	611	500		
+110191	LeftMouseClick	1	588	572		
+112424	LeftMouseClick	1	131	81		
+123704	LeftMouseClick	1	330	480		
+125427	LeftMouseClick	1	610	499		
+126168	LeftMouseClick	1	603	574		
+127953	LeftMouseClick	1	143	50		
+139273	LeftMouseClick	1	288	79		
+140699	LeftMouseClick	1	126	71		
+152201	LogData	0	Writing Start	 		
+154412	LogData	0	Writing End	 		
+165910	LeftMouseClick	1	290	67		
+171509	LeftMouseClick	1	1269	957		
+172357	LeftMouseClick	1	1269	872		
+172723	LeftMouseClick	1	1266	865		
+173257	LeftMouseClick	1	1267	882		
+173547	LeftMouseClick	1	1267	875		
+173823	LeftMouseClick	1	1267	874		
+174856	LeftMouseClick	1	1270	980		
+181618	LogData	0	Distracted Start	 		
+182539	LeftMouseClick	1	40	26		
+186465	LeftMouseClick	1	34	75		
+188125	LeftMouseClick	1	584	481		
+190055	LeftMouseClick	1	607	636		
+190462	LogData	0	Distracted End	 		
+190663	LogData	0	Load 2nd Problem			
+193663	LeftMouseClick	1	149	77		
+199408	LeftMouseClick	1	227	75		
+206402	LogData	0	Distracted Start	 		
+214643	LogData	0	Distracted End	 		
+238562	LogData	0	Distracted Start	 		
+241376	LogData	0	Distracted End	 		
+253259	LeftMouseClick	1	145	81		
+276824	LeftMouseClick	1	324	451		
+278544	LeftMouseClick	1	592	500		
+279674	LeftMouseClick	1	636	497		
+281631	LeftMouseClick	1	633	492		
+283941	LeftMouseClick	1	595	575		
+285718	LeftMouseClick	1	132	65		
+311619	LeftMouseClick	1	284	69		
+312737	LeftMouseClick	1	154	70		
+320794	LeftMouseClick	1	344	466		
+322799	LeftMouseClick	1	612	494		
+323408	LeftMouseClick	1	608	568		
+324845	LeftMouseClick	1	151	66		
+337856	LogData	0	Writing Start	 		
+352221	LogData	0	Writing End	 		
+353884	LeftMouseClick	1	302	61		
+354960	LeftMouseClick	1	164	74		
+368502	LogData	0	Writing Start	 		
+380964	LogData	0	Writing End	 		
+391898	LeftMouseClick	1	366	79		
+394475	LeftMouseClick	1	127	24		
+403838	LeftMouseClick	1	299	55		
+405576	LeftMouseClick	1	140	66		
+408992	LeftMouseClick	1	421	788		
+410112	LeftMouseClick	1	602	493		
+410849	LeftMouseClick	1	599	574		
+412146	LeftMouseClick	1	142	65		
+414305	LeftMouseClick	1	290	78		
+415062	LeftMouseClick	1	409	812		
+415288	LeftMouseClick	1	412	800		
+416246	LeftMouseClick	1	619	494		
+416860	LeftMouseClick	1	606	572		
+417921	LeftMouseClick	1	158	84		
+420552	LeftMouseClick	1	280	90		
+421975	LeftMouseClick	1	155	74		
+436247	LeftMouseClick	1	354	75		
+437350	LeftMouseClick	1	135	73		
+445246	LeftMouseClick	1	607	301		
+446234	LeftMouseClick	1	657	495		
+446943	LeftMouseClick	1	618	568		
+447928	LeftMouseClick	1	179	74		
+451103	LeftMouseClick	1	338	67		
+452146	LeftMouseClick	1	168	70		
+454754	LeftMouseClick	1	924	477		
+458229	LeftMouseClick	1	648	493		
+458858	LeftMouseClick	1	601	571		
+459759	LeftMouseClick	1	172	75		
+461826	LeftMouseClick	1	337	69		
+462803	LeftMouseClick	1	148	67		
+464613	LeftMouseClick	1	815	789		
+465693	LeftMouseClick	1	613	495		
+466850	LeftMouseClick	1	613	495		
+468534	LeftMouseClick	1	649	501		
+469158	LeftMouseClick	1	610	570		
+470810	LeftMouseClick	1	172	68		
+493298	LeftMouseClick	1	616	296		
+494196	LeftMouseClick	1	613	494		
+495032	LeftMouseClick	1	608	578		
+496459	LeftMouseClick	1	152	74		
+498320	LeftMouseClick	1	282	71		
+499683	LeftMouseClick	1	153	70		
+501245	LeftMouseClick	1	303	69		
+506348	LeftMouseClick	1	349	77		
+508332	LeftMouseClick	1	117	70		
+510211	LeftMouseClick	1	811	784		
+511207	LeftMouseClick	1	644	498		
+515312	LeftMouseClick	1	608	574		
+516788	LeftMouseClick	1	140	46		
+519263	LeftMouseClick	1	612	280		
+520680	LeftMouseClick	1	748	441		
+526440	LeftMouseClick	1	347	447		
+527419	LeftMouseClick	1	657	497		
+528234	LeftMouseClick	1	611	571		
+530452	LeftMouseClick	1	142	73		
+531860	LeftMouseClick	1	310	72		
+532344	LeftMouseClick	1	167	74		
+534432	LeftMouseClick	1	284	67		
+536857	LeftMouseClick	1	369	68		
+537676	LeftMouseClick	1	137	69		
+538815	LeftMouseClick	1	819	788		
+539547	LeftMouseClick	1	812	775		
+540608	LeftMouseClick	1	645	500		
+543235	LeftMouseClick	1	600	572		
+544191	LeftMouseClick	1	166	88		
+549140	LeftMouseClick	1	946	482		
+550060	LeftMouseClick	1	606	497		
+550616	LeftMouseClick	1	609	573		
+552319	LeftMouseClick	1	145	70		
+553757	LeftMouseClick	1	285	71		
+554235	LeftMouseClick	1	163	76		
+555523	LeftMouseClick	1	285	69		
+556185	LeftMouseClick	1	358	73		
+556971	LeftMouseClick	1	799	777		
+559073	LeftMouseClick	1	687	505		
+559639	LeftMouseClick	1	613	563		
+560771	LeftMouseClick	1	151	66		
+563366	LeftMouseClick	1	429	765		
+564398	LeftMouseClick	1	419	794		
+566288	LeftMouseClick	1	615	500		
+566808	LeftMouseClick	1	614	573		
+568012	LeftMouseClick	1	144	82		
+569559	LeftMouseClick	1	304	61		
+570400	LeftMouseClick	1	137	73		
+571941	LeftMouseClick	1	348	87		
+588015	LogData	0	Distracted Start	 		
+588780	LeftMouseClick	1	36	106		
+605584	LeftMouseClick	1	76	106		
+606931	LeftMouseClick	1	125	26		
+607677	LeftMouseClick	1	125	26		
+609845	LeftMouseClick	1	62	71		
+614480	LeftMouseClick	1	62	71		
+616237	LeftMouseClick	1	62	71		
+617339	LeftMouseClick	1	62	71		
+620127	LeftMouseClick	1	62	71		
+627408	LeftMouseClick	1	62	71		
+628702	LeftMouseClick	1	62	71		
+634668	LeftMouseClick	1	62	71		
+638868	LogData	0	Distracted End	 		
+640194	LeftMouseClick	1	62	71		
+646595	LeftMouseClick	1	62	71		
+653584	LeftMouseClick	1	62	71		
+657931	LeftMouseClick	1	62	71		
+662933	LeftMouseClick	1	62	71		
+665162	LeftMouseClick	1	62	71		
+666567	LeftMouseClick	1	62	71		
+670074	LeftMouseClick	1	62	71		
+672002	LeftMouseClick	1	62	71		
+681005	LeftMouseClick	1	62	71		
+683654	LeftMouseClick	1	62	71		
+685186	LeftMouseClick	1	62	71		
+687087	LeftMouseClick	1	62	71		
+688524	LeftMouseClick	1	62	71		
+688842	LeftMouseClick	1	62	71		
+689256	LeftMouseClick	1	62	71		
+691260	LeftMouseClick	1	62	71		
+691655	LeftMouseClick	1	62	71		
+691948	LeftMouseClick	1	62	71		
+693785	LeftMouseClick	1	62	71		
+698372	LeftMouseClick	1	62	71		
+702810	LeftMouseClick	1	62	71		
+704411	LeftMouseClick	1	62	71		
+705133	LeftMouseClick	1	62	71		
+705806	LeftMouseClick	1	62	71		
+709130	LeftMouseClick	1	62	71		
+709684	LeftMouseClick	1	62	71		
+714263	LeftMouseClick	1	62	71		
+716008	LeftMouseClick	1	62	71		
+716610	LeftMouseClick	1	62	71		
+717619	LeftMouseClick	1	62	71		
+718061	LeftMouseClick	1	62	71		
+719158	LeftMouseClick	1	62	71		
+719868	LeftMouseClick	1	62	71		
+720437	LeftMouseClick	1	62	71		
+724065	LeftMouseClick	1	349	71		
+724206	LogData	0	End			
+731987	LeftMouseClick	1	1262	9		
+732338	ScreenRecStopped	16384	0	0		

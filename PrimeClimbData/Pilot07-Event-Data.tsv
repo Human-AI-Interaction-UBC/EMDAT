@@ -1,0 +1,704 @@
+System Properties:
+Operating System:	 Microsoft Windows NT 6.1.7601 Service Pack 1
+System User Name:	 admin
+Machine Name:	 VENEZIA
+
+Data properties:
+
+Recording name:	 Pilot07
+Recording date:	 3/21/2011
+Recording time:	 1:32:49 PM
+Recording resolution:	 1280 x 1024
+
+Export date:	 10/28/2011
+Export time:	 2:04:24 PM
+
+Participant:	 P08
+Timestamp	Event	EventKey	Data1	Data2	Descriptor	
+0	ScreenRecStarted	8192	0	0		
+2197	URLStart	512	0	0	http://roma.cs.ubc.ca:6030/client/PrimeClimbClientTestpage.aspx	
+6750	LeftMouseClick	1	653	506		
+9585	KeyPress	4	80	0	P	
+9793	KeyPress	4	73	0	I	
+10010	KeyPress	4	76	0	L	
+10323	KeyPress	4	79	0	O	
+10750	KeyPress	4	84	0	T	
+13629	KeyPress	4	55	0	D7	
+15589	LeftMouseClick	1	651	545		
+17261	KeyPress	4	84	0	T	
+17393	KeyPress	4	69	0	E	
+17560	KeyPress	4	82	0	R	
+17839	KeyPress	4	69	0	E	
+18391	KeyPress	4	83	0	S	
+18562	KeyPress	4	65	0	A	
+20330	LeftMouseClick	1	639	564		
+21555	KeyPress	4	67	0	C	
+22078	KeyPress	4	72	0	H	
+22299	KeyPress	4	65	0	A	
+22679	KeyPress	4	78	0	N	
+22958	KeyPress	4	71	0	G	
+24818	LeftMouseClick	1	757	590		
+26030	LeftMouseClick	1	751	640		
+28284	LeftMouseClick	1	714	653		
+32665	LeftMouseClick	1	458	550		
+41196	LeftMouseClick	1	534	490		
+44047	LeftMouseClick	1	358	404		
+46134	LeftMouseClick	1	466	419		
+184637	LeftMouseClick	1	530	461		
+205572	LeftMouseClick	1	468	430		
+209643	LogData	0	GameStart	 		
+209738	LogData	0	Mountain	1		
+214868	LeftMouseClick	1	449	616		
+230770	LeftMouseClick	1	492	560		
+240746	LeftMouseClick	1	413	667		
+252010	LeftMouseClick	1	348	659		
+262090	LeftMouseClick	1	297	610		
+265983	LeftMouseClick	1	346	554		
+274737	LeftMouseClick	1	406	549		
+280733	LeftMouseClick	1	382	495		
+286585	LeftMouseClick	1	405	460		
+288632	LogData	0	Mountain	2		
+298657	LeftMouseClick	1	294	702		
+299244	LogData	0	HintStart	F1		
+302062	LeftMouseClick	1	221	490		
+302259	LogData	0	HintEnd	F1		
+316131	LeftMouseClick	1	402	646		
+324553	LeftMouseClick	1	430	582		
+325419	LogData	0	HintStart	D1		
+334788	LeftMouseClick	1	247	490		
+334821	LogData	0	HintEnd	D1		
+338346	LeftMouseClick	1	405	556		
+347646	LeftMouseClick	1	368	483		
+348489	LogData	0	HintStart	D2		
+350885	LeftMouseClick	1	253	491		
+351303	LogData	0	HintEnd	D2		
+354412	LeftMouseClick	1	506	693		
+356188	LeftMouseClick	1	423	690		
+363987	LeftMouseClick	1	468	646		
+374024	LeftMouseClick	1	509	591		
+383158	LeftMouseClick	1	481	549		
+384066	LogData	0	HintStart	M1		
+387769	LeftMouseClick	1	263	492		
+387885	LogData	0	HintEnd	M1		
+396876	LeftMouseClick	1	403	528		
+397935	LogData	0	HintStart	D3		
+405488	LeftMouseClick	1	245	491		
+405774	LogData	0	HintEnd	D3		
+411864	LeftMouseClick	1	383	484		
+419271	LeftMouseClick	1	410	423		
+421587	LogData	0	Mountain	3		
+434720	LeftMouseClick	1	489	671		
+435522	LogData	0	HintStart	D4		
+436489	LeftMouseClick	1	262	486		
+437532	LogData	0	HintEnd	D4		
+443130	LeftMouseClick	1	480	684		
+444366	LogData	0	HintStart	B1		
+445320	LeftMouseClick	1	257	496		
+445773	LogData	0	HintEnd	B1		
+451119	LeftMouseClick	1	410	683		
+465361	LeftMouseClick	1	465	619		
+466476	LogData	0	HintStart	M2		
+468360	LeftMouseClick	1	242	494		
+468687	LogData	0	HintEnd	M2		
+471039	LeftMouseClick	1	785	429		
+476101	LeftMouseClick	1	457	721		
+476526	LogData	0	Used Mag	97		
+480523	LeftMouseClick	1	351	682		
+487909	LeftMouseClick	1	803	438		
+490425	LeftMouseClick	1	395	741		
+490797	LogData	0	Used Mag	27		
+499784	LeftMouseClick	1	397	626		
+507981	LeftMouseClick	1	462	614		
+509088	LogData	0	HintStart	D5		
+512510	LeftMouseClick	1	261	488		
+512706	LogData	0	HintEnd	D5		
+530323	LeftMouseClick	1	554	668		
+531600	LogData	0	HintStart	D6		
+541788	LeftMouseClick	1	235	499		
+542052	LogData	0	HintEnd	D6		
+546263	LeftMouseClick	1	498	670		
+547278	LogData	0	HintStart	B2		
+550796	LeftMouseClick	1	270	494		
+551097	LogData	0	HintEnd	B2		
+554314	LeftMouseClick	1	461	621		
+555720	LogData	0	HintStart	M3		
+557252	LeftMouseClick	1	242	488		
+557730	LogData	0	HintEnd	M3		
+562223	LeftMouseClick	1	493	570		
+570580	LeftMouseClick	1	789	426		
+571964	LeftMouseClick	1	540	625		
+572403	LogData	0	Used Mag	99		
+581682	LeftMouseClick	1	459	517		
+591109	LeftMouseClick	1	790	432		
+592733	LeftMouseClick	1	573	581		
+593106	LogData	0	Used Mag	69		
+595966	LeftMouseClick	1	498	465		
+617885	LeftMouseClick	1	447	512		
+633196	LeftMouseClick	1	789	433		
+634117	LeftMouseClick	1	554	620		
+634512	LogData	0	Used Mag	99		
+637766	LeftMouseClick	1	412	570		
+653104	LeftMouseClick	1	794	434		
+654264	LeftMouseClick	1	456	516		
+654613	LogData	0	Used Mag	76		
+663171	LeftMouseClick	1	392	527		
+664461	LogData	0	HintStart	D7		
+669118	LeftMouseClick	1	250	487		
+669486	LogData	0	HintEnd	D7		
+670641	LeftMouseClick	1	534	626		
+675537	LeftMouseClick	1	569	572		
+686510	LeftMouseClick	1	791	426		
+687690	LeftMouseClick	1	419	576		
+687979	LogData	0	Used Mag	17		
+690916	LeftMouseClick	1	534	516		
+696317	LeftMouseClick	1	791	424		
+697644	LeftMouseClick	1	532	521		
+698029	LogData	0	Used Mag	84		
+716659	LeftMouseClick	1	498	461		
+749448	LeftMouseClick	1	443	508		
+784501	LeftMouseClick	1	384	518		
+785866	LogData	0	HintStart	D8		
+790972	LeftMouseClick	1	267	494		
+791293	LogData	0	HintEnd	D8		
+822221	LeftMouseClick	1	801	440		
+823640	LeftMouseClick	1	442	568		
+824056	LogData	0	Used Mag	17		
+825595	LeftMouseClick	1	420	462		
+835960	LeftMouseClick	1	450	416		
+839402	LogData	0	Mountain	4		
+850151	LeftMouseClick	1	234	743		
+858790	LeftMouseClick	1	278	699		
+864415	LeftMouseClick	1	290	649		
+865663	LogData	0	HintStart	B3		
+871037	LeftMouseClick	1	247	489		
+871492	LogData	0	HintEnd	B3		
+873113	LeftMouseClick	1	395	791		
+874486	LeftMouseClick	1	342	813		
+885461	LeftMouseClick	1	367	741		
+895720	LeftMouseClick	1	447	752		
+911019	LeftMouseClick	1	370	741		
+912898	LogData	0	HintStart	M4		
+915951	LeftMouseClick	1	247	487		
+916516	LogData	0	HintEnd	M4		
+924895	LeftMouseClick	1	417	701		
+924933	LeftMouseClick	1	417	701		
+949296	LeftMouseClick	1	337	694		
+950887	LogData	0	HintStart	D9		
+957897	LeftMouseClick	1	228	497		
+958525	LogData	0	HintEnd	D9		
+978565	LeftMouseClick	1	380	647		
+996913	LeftMouseClick	1	398	587		
+998323	LogData	0	HintStart	D10		
+1002046	LeftMouseClick	1	252	490		
+1002745	LogData	0	HintEnd	D10		
+1009805	LeftMouseClick	1	449	528		
+1009854	LeftMouseClick	1	448	528		
+1025223	LeftMouseClick	1	476	475		
+1043426	LeftMouseClick	1	435	537		
+1057668	LeftMouseClick	1	410	481		
+1077456	LeftMouseClick	1	447	444		
+1080832	LogData	0	Mountain	5		
+1094510	LeftMouseClick	1	267	694		
+1101083	LeftMouseClick	1	315	664		
+1101117	LeftMouseClick	1	315	664		
+1121132	LeftMouseClick	1	324	587		
+1132247	LeftMouseClick	1	474	695		
+1142357	LeftMouseClick	1	427	654		
+1155701	LeftMouseClick	1	516	655		
+1179803	LeftMouseClick	1	468	612		
+1197164	LeftMouseClick	1	515	560		
+1224102	LeftMouseClick	1	487	508		
+1226257	LogData	0	HintStart	B4		
+1228467	LeftMouseClick	1	248	489		
+1229071	LogData	0	HintEnd	B4		
+1230219	LeftMouseClick	1	578	637		
+1231555	LeftMouseClick	1	522	652		
+1240875	LeftMouseClick	1	490	598		
+1252138	LeftMouseClick	1	496	544		
+1266901	LeftMouseClick	1	483	487		
+1268869	LogData	0	HintStart	M5		
+1270399	LeftMouseClick	1	288	496		
+1271080	LogData	0	HintEnd	M5		
+1271739	LeftMouseClick	1	525	596		
+1274426	LeftMouseClick	1	787	429		
+1275276	LeftMouseClick	1	527	508		
+1275703	LogData	0	Used Mag	19		
+1276940	LeftMouseClick	1	806	368		
+1286628	LeftMouseClick	1	572	549		
+1291504	LeftMouseClick	1	533	492		
+1301816	LeftMouseClick	1	799	438		
+1303202	LeftMouseClick	1	389	490		
+1303642	LogData	0	Used Mag	69		
+1320456	LeftMouseClick	1	513	438		
+1338591	LeftMouseClick	1	458	396		
+1341701	LeftMouseClick	1	459	344		
+1345596	LogData	0	Mountain	6		
+1354209	LeftMouseClick	1	549	751		
+1355701	LogData	0	HintStart	D11		
+1356793	LeftMouseClick	1	237	491		
+1358113	LogData	0	HintEnd	D11		
+1367815	LeftMouseClick	1	465	743		
+1370173	LogData	0	HintStart	D12		
+1371168	LeftMouseClick	1	255	490		
+1372183	LogData	0	HintEnd	D12		
+1401009	LeftMouseClick	1	218	789		
+1419651	LeftMouseClick	1	306	804		
+1429182	LeftMouseClick	1	338	748		
+1452400	LeftMouseClick	1	286	686		
+1471349	LeftMouseClick	1	351	631		
+1484697	LeftMouseClick	1	375	592		
+1503644	LeftMouseClick	1	410	544		
+1517104	LeftMouseClick	1	438	505		
+1545755	LeftMouseClick	1	400	419		
+1548058	LogData	0	HintStart	B5		
+1550389	LeftMouseClick	1	261	496		
+1550872	LogData	0	HintEnd	B5		
+1551832	LeftMouseClick	1	491	547		
+1554134	LeftMouseClick	1	535	526		
+1561032	LeftMouseClick	1	569	473		
+1596953	LeftMouseClick	1	545	545		
+1599514	LogData	0	HintStart	M6		
+1602114	LeftMouseClick	1	259	494		
+1602931	LogData	0	HintEnd	M6		
+1621493	LeftMouseClick	1	497	475		
+1633247	LeftMouseClick	1	478	434		
+1644975	LeftMouseClick	1	488	388		
+1664691	LeftMouseClick	1	449	373		
+1671659	LeftMouseClick	1	484	334		
+1676239	LogData	0	Mountain	7		
+1687442	LeftMouseClick	1	260	459		
+1690206	LeftMouseClick	1	258	480		
+1690600	LeftMouseClick	1	259	490		
+1696924	LeftMouseClick	1	487	447		
+1702721	LeftMouseClick	1	299	582		
+1710870	LeftMouseClick	1	300	590		
+1721450	LeftMouseClick	1	341	534		
+1739495	LeftMouseClick	1	785	430		
+1743178	LeftMouseClick	1	495	614		
+1743832	LogData	0	Used Mag	11		
+1749011	LeftMouseClick	1	438	592		
+1763773	LeftMouseClick	1	298	583		
+1766545	LogData	0	HintStart	D13		
+1768735	LeftMouseClick	1	248	497		
+1769560	LogData	0	HintEnd	D13		
+1774203	LeftMouseClick	1	254	529		
+1776521	LogData	0	HintStart	D14		
+1778923	LeftMouseClick	1	237	494		
+1780139	LogData	0	HintEnd	D14		
+1809344	LeftMouseClick	1	331	533		
+1822033	LeftMouseClick	1	298	488		
+1845257	LeftMouseClick	1	361	488		
+1885989	LeftMouseClick	1	401	518		
+1888478	LogData	0	HintStart	B6		
+1891143	LeftMouseClick	1	260	487		
+1892297	LogData	0	HintEnd	B6		
+1904836	LeftMouseClick	1	280	550		
+1907372	LogData	0	HintStart	M7		
+1908976	LeftMouseClick	1	257	487		
+1910186	LogData	0	HintEnd	M7		
+1912827	LeftMouseClick	1	799	437		
+1914978	LeftMouseClick	1	240	590		
+1915613	LogData	0	Used Mag	103		
+1922445	LeftMouseClick	1	304	496		
+1936379	LeftMouseClick	1	381	482		
+1945621	LeftMouseClick	1	794	430		
+1947058	LeftMouseClick	1	357	487		
+1947974	LogData	0	Used Mag	59		
+1950769	LeftMouseClick	1	345	437		
+1958090	LeftMouseClick	1	367	386		
+1963822	LogData	0	Mountain	8		
+1981830	LeftMouseClick	1	490	708		
+2002140	LeftMouseClick	1	477	637		
+2018501	LeftMouseClick	1	508	591		
+2038273	LeftMouseClick	1	523	535		
+2044309	LeftMouseClick	1	501	478		
+2050010	LogData	0	Mountain	9		
+2062409	LeftMouseClick	1	533	592		
+2075595	LeftMouseClick	1	525	543		
+2078222	LogData	0	HintStart	D15		
+2085081	LeftMouseClick	1	246	498		
+2086463	LogData	0	HintEnd	D15		
+2087879	LeftMouseClick	1	580	630		
+2088998	LeftMouseClick	1	636	655		
+2093906	LeftMouseClick	1	604	601		
+2112875	LeftMouseClick	1	786	435		
+2114519	LeftMouseClick	1	615	502		
+2115206	LogData	0	Used Mag	69		
+2121599	LeftMouseClick	1	796	442		
+2122764	LeftMouseClick	1	652	540		
+2123648	LogData	0	Used Mag	143		
+2127610	LeftMouseClick	1	535	593		
+2130482	LogData	0	HintStart	D16		
+2131859	LeftMouseClick	1	279	488		
+2132693	LogData	0	HintEnd	D16		
+2134721	LeftMouseClick	1	627	644		
+2142711	LeftMouseClick	1	665	586		
+2144954	LogData	0	HintStart	B7		
+2147307	LeftMouseClick	1	249	491		
+2148773	LogData	0	HintEnd	B7		
+2161768	LeftMouseClick	1	632	597		
+2171663	LeftMouseClick	1	644	541		
+2174300	LogData	0	HintStart	M8		
+2176193	LeftMouseClick	1	256	494		
+2177114	LogData	0	HintEnd	M8		
+2177835	LeftMouseClick	1	562	662		
+2180488	LeftMouseClick	1	644	642		
+2184046	LeftMouseClick	1	804	439		
+2186126	LeftMouseClick	1	586	552		
+2186762	LogData	0	Used Mag	99		
+2208418	LeftMouseClick	1	673	592		
+2229102	LeftMouseClick	1	657	543		
+2232992	LogData	0	HintStart	D17		
+2234665	LeftMouseClick	1	239	489		
+2236208	LogData	0	HintEnd	D17		
+2236227	LeftMouseClick	1	635	657		
+2240429	LeftMouseClick	1	670	588		
+2243042	LogData	0	HintStart	D18		
+2244540	LeftMouseClick	1	255	502		
+2245214	LeftMouseClick	1	258	498		
+2246258	LogData	0	HintEnd	D18		
+2246325	LeftMouseClick	1	262	495		
+2252380	LeftMouseClick	1	792	436		
+2254444	LeftMouseClick	1	601	492		
+2255102	LogData	0	Used Mag	69		
+2259691	LeftMouseClick	1	659	542		
+2262539	LogData	0	HintStart	B8		
+2264576	LeftMouseClick	1	224	491		
+2266157	LogData	0	HintEnd	B8		
+2273668	LeftMouseClick	1	794	438		
+2275848	LeftMouseClick	1	555	497		
+2276609	LogData	0	Used Mag	112		
+2288212	LeftMouseClick	1	604	503		
+2315719	LeftMouseClick	1	792	431		
+2317832	LeftMouseClick	1	626	549		
+2318618	LogData	0	Used Mag	143		
+2320211	LeftMouseClick	1	787	423		
+2321577	LeftMouseClick	1	563	434		
+2322236	LogData	0	Used Mag	84		
+2329739	LeftMouseClick	1	573	436		
+2333090	LogData	0	HintStart	M9		
+2334473	LeftMouseClick	1	270	495		
+2335904	LogData	0	HintEnd	M9		
+2354037	LeftMouseClick	1	794	429		
+2356361	LeftMouseClick	1	663	544		
+2357210	LogData	0	Used Mag	143		
+2358424	LeftMouseClick	1	788	420		
+2359805	LeftMouseClick	1	793	431		
+2361283	LeftMouseClick	1	558	485		
+2362235	LogData	0	Used Mag	112		
+2364406	LeftMouseClick	1	550	491		
+2367461	LogData	0	HintStart	D19		
+2368843	LeftMouseClick	1	242	490		
+2370476	LogData	0	HintEnd	D19		
+2395557	LeftMouseClick	1	509	442		
+2399634	LeftMouseClick	1	509	442		
+2412460	LeftMouseClick	1	787	429		
+2417509	LeftMouseClick	1	439	553		
+2418314	LogData	0	Used Mag	89		
+2422788	LeftMouseClick	1	785	430		
+2424478	LeftMouseClick	1	466	480		
+2424947	LogData	0	Used Mag	107		
+2429160	LeftMouseClick	1	536	380		
+2452965	LeftMouseClick	1	785	432		
+2455759	LeftMouseClick	1	482	489		
+2458128	LeftMouseClick	1	449	380		
+2470106	LeftMouseClick	1	799	438		
+2473253	LeftMouseClick	1	551	383		
+2474192	LogData	0	Used Mag	22		
+2501448	LeftMouseClick	1	511	323		
+2504945	LogData	0	HintStart	D20		
+2506955	LeftMouseClick	1	264	484		
+2508167	LogData	0	Mountain	10		
+2509769	LogData	0	HintEnd	D20		
+2514472	LeftMouseClick	1	316	753		
+2517407	LogData	0	HintStart	B9		
+2518973	LeftMouseClick	1	269	492		
+2521829	LogData	0	HintEnd	B9		
+2539498	LeftMouseClick	1	568	704		
+2566845	LeftMouseClick	1	592	635		
+2581663	LeftMouseClick	1	561	594		
+2585144	LogData	0	HintStart	M10		
+2587331	LeftMouseClick	1	264	488		
+2588762	LogData	0	HintEnd	M10		
+2589551	LeftMouseClick	1	792	437		
+2591935	LeftMouseClick	1	375	743		
+2592581	LogData	0	Used Mag	48		
+2601874	LeftMouseClick	1	785	438		
+2603512	LeftMouseClick	1	339	690		
+2604239	LogData	0	Used Mag	27		
+2609737	LeftMouseClick	1	273	707		
+2613698	LeftMouseClick	1	800	434		
+2615487	LeftMouseClick	1	318	643		
+2616098	LogData	0	Used Mag	183		
+2618643	LeftMouseClick	1	282	699		
+2627945	LeftMouseClick	1	794	442		
+2630968	LeftMouseClick	1	396	656		
+2631977	LogData	0	Used Mag	25		
+2634037	LeftMouseClick	1	341	705		
+2660701	LeftMouseClick	1	783	430		
+2663280	LeftMouseClick	1	652	735		
+2663936	LogData	0	Used Mag	85		
+2665017	LeftMouseClick	1	792	431		
+2666851	LeftMouseClick	1	561	710		
+2667554	LogData	0	Used Mag	36		
+2669670	LeftMouseClick	1	795	437		
+2671887	LeftMouseClick	1	583	750		
+2672579	LogData	0	Used Mag	174		
+2676662	LeftMouseClick	1	587	687		
+2701201	LeftMouseClick	1	798	427		
+2703171	LeftMouseClick	1	666	757		
+2704136	LogData	0	Used Mag	85		
+2707281	LeftMouseClick	1	596	649		
+2722242	LeftMouseClick	1	570	597		
+2733834	LeftMouseClick	1	567	605		
+2737904	LogData	0	HintStart	D21		
+2739494	LeftMouseClick	1	258	491		
+2741522	LogData	0	HintEnd	D21		
+2747017	LeftMouseClick	1	554	706		
+2754215	LeftMouseClick	1	590	645		
+2771542	LeftMouseClick	1	793	437		
+2778829	LeftMouseClick	1	522	655		
+2779511	LogData	0	Used Mag	18		
+2789938	LeftMouseClick	1	564	588		
+2794586	LogData	0	HintStart	D22		
+2796064	LeftMouseClick	1	258	488		
+2798204	LogData	0	HintEnd	D22		
+2803009	LeftMouseClick	1	789	431		
+2808354	LeftMouseClick	1	450	541		
+2809460	LogData	0	Used Mag	277		
+2813071	LeftMouseClick	1	525	525		
+2820246	LeftMouseClick	1	503	488		
+2853616	LeftMouseClick	1	248	749		
+2857097	LogData	0	HintStart	B10		
+2859630	LeftMouseClick	1	255	484		
+2860715	LogData	0	HintEnd	B10		
+2862358	LeftMouseClick	1	796	428		
+2863929	LeftMouseClick	1	311	759		
+2864534	LogData	0	Used Mag	237		
+2865481	LeftMouseClick	1	297	701		
+2870707	LeftMouseClick	1	283	689		
+2878410	LeftMouseClick	1	787	441		
+2879989	LeftMouseClick	1	346	699		
+2881016	LogData	0	Used Mag	27		
+2888129	LeftMouseClick	1	322	640		
+2897617	LeftMouseClick	1	314	656		
+2921600	LeftMouseClick	1	402	649		
+2936405	LeftMouseClick	1	799	438		
+2938905	LeftMouseClick	1	411	601		
+2939507	LogData	0	Used Mag	96		
+2946474	LeftMouseClick	1	356	586		
+2951165	LogData	0	HintStart	M11		
+2952750	LeftMouseClick	1	241	487		
+2953979	LogData	0	HintEnd	M11		
+2956082	LeftMouseClick	1	474	690		
+2957773	LeftMouseClick	1	421	709		
+2961014	LogData	0	HintStart	D23		
+2963628	LeftMouseClick	1	267	493		
+2965436	LogData	0	HintEnd	D23		
+2967852	LeftMouseClick	1	465	635		
+2972069	LogData	0	HintStart	D24		
+2973304	LeftMouseClick	1	225	488		
+2974945	LeftMouseClick	1	232	495		
+2975888	LogData	0	HintEnd	D24		
+2982757	LeftMouseClick	1	388	630		
+2989455	LeftMouseClick	1	415	585		
+2993777	LogData	0	HintStart	B11		
+2995735	LeftMouseClick	1	259	492		
+2997194	LogData	0	HintEnd	B11		
+2999713	LeftMouseClick	1	790	427		
+3003097	LeftMouseClick	1	471	535		
+3004430	LogData	0	Used Mag	277		
+3006178	LeftMouseClick	1	390	537		
+3013914	LeftMouseClick	1	423	483		
+3025338	LeftMouseClick	1	798	434		
+3027205	LeftMouseClick	1	392	548		
+3028349	LogData	0	Used Mag	17		
+3030318	LeftMouseClick	1	466	441		
+3045243	LeftMouseClick	1	798	437		
+3047031	LeftMouseClick	1	462	427		
+3047846	LogData	0	Used Mag	231		
+3051206	LeftMouseClick	1	386	428		
+3066882	LeftMouseClick	1	429	382		
+3071363	LogData	0	HintStart	M12		
+3073667	LeftMouseClick	1	264	483		
+3074903	LogData	0	Mountain	11		
+3077192	LogData	0	HintEnd	M12		
+3086748	LeftMouseClick	1	431	715		
+3090659	LogData	0	HintStart	D25		
+3092762	LeftMouseClick	1	233	491		
+3094880	LogData	0	HintEnd	D25		
+3109979	LeftMouseClick	1	404	644		
+3118765	LeftMouseClick	1	424	596		
+3146730	LeftMouseClick	1	786	436		
+3162006	LeftMouseClick	1	415	705		
+3162818	LogData	0	Used Mag	100		
+3165229	LeftMouseClick	1	789	430		
+3171245	LeftMouseClick	1	483	709		
+3172466	LogData	0	Used Mag	63		
+3178187	LeftMouseClick	1	382	636		
+3190482	LeftMouseClick	1	427	582		
+3194375	LogData	0	HintStart	D26		
+3196280	LeftMouseClick	1	223	492		
+3197591	LogData	0	HintEnd	D26		
+3198817	LeftMouseClick	1	504	773		
+3201819	LeftMouseClick	1	520	755		
+3203385	LeftMouseClick	1	615	771		
+3208720	LeftMouseClick	1	608	701		
+3212465	LogData	0	HintStart	B12		
+3214233	LeftMouseClick	1	579	742		
+3217398	LeftMouseClick	1	597	768		
+3220115	LeftMouseClick	1	443	754		
+3223002	LeftMouseClick	1	524	784		
+3224957	LeftMouseClick	1	605	768		
+3228357	LeftMouseClick	1	259	490		
+3229952	LogData	0	HintEnd	B12		
+3231231	LeftMouseClick	1	587	767		
+3253859	LeftMouseClick	1	542	744		
+3269134	LeftMouseClick	1	279	696		
+3272966	LogData	0	HintStart	M13		
+3275467	LeftMouseClick	1	280	496		
+3277187	LogData	0	HintEnd	M13		
+3297511	LeftMouseClick	1	794	430		
+3306000	LeftMouseClick	1	643	753		
+3306734	LogData	0	Used Mag	82		
+3313959	LeftMouseClick	1	793	441		
+3317903	LeftMouseClick	1	614	750		
+3318794	LogData	0	Used Mag	71		
+3320199	LeftMouseClick	1	542	692		
+3324517	LeftMouseClick	1	537	645		
+3332597	LeftMouseClick	1	528	642		
+3336281	LogData	0	HintStart	D27		
+3340032	LeftMouseClick	1	249	494		
+3341306	LogData	0	HintEnd	D27		
+3388334	LeftMouseClick	1	582	642		
+3417801	LeftMouseClick	1	534	638		
+3422711	LogData	0	HintStart	D28		
+3424902	LeftMouseClick	1	215	488		
+3427334	LogData	0	HintEnd	D28		
+3431128	LeftMouseClick	1	410	703		
+3449862	LeftMouseClick	1	391	650		
+3478928	LeftMouseClick	1	458	630		
+3483792	LeftMouseClick	1	458	631		
+3488840	LogData	0	HintStart	B13		
+3491328	LeftMouseClick	1	255	495		
+3493262	LogData	0	HintEnd	B13		
+3523436	LeftMouseClick	1	779	436		
+3524129	LeftMouseClick	1	785	437		
+3527051	LeftMouseClick	1	450	538		
+3528035	LogData	0	Used Mag	23		
+3533971	LeftMouseClick	1	472	584		
+3539727	LeftMouseClick	1	520	532		
+3544415	LeftMouseClick	1	532	548		
+3549454	LeftMouseClick	1	453	534		
+3554860	LeftMouseClick	1	446	543		
+3555418	LeftMouseClick	1	446	543		
+3555572	LogData	0	HintStart	M14		
+3558585	LeftMouseClick	1	265	495		
+3561770	LeftMouseClick	1	257	492		
+3562351	LeftMouseClick	1	257	492		
+3562406	LogData	0	HintEnd	M14		
+3575900	LeftMouseClick	1	797	427		
+3578432	LeftMouseClick	1	410	488		
+3579491	LogData	0	Used Mag	35		
+3594740	LeftMouseClick	1	495	498		
+3598988	LogData	0	HintStart	D29		
+3604802	LeftMouseClick	1	266	489		
+3607028	LogData	0	HintEnd	D29		
+3607893	LeftMouseClick	1	340	603		
+3617057	LeftMouseClick	1	314	543		
+3625224	LeftMouseClick	1	785	435		
+3626979	LeftMouseClick	1	365	497		
+3627731	LogData	0	Used Mag	84		
+3638516	LeftMouseClick	1	379	533		
+3643208	LogData	0	HintStart	D30		
+3645161	LeftMouseClick	1	244	495		
+3647630	LogData	0	HintEnd	D30		
+3664664	LeftMouseClick	1	785	429		
+3667364	LeftMouseClick	1	385	471		
+3668333	LogData	0	Used Mag	7		
+3687559	LeftMouseClick	1	421	496		
+3693592	LeftMouseClick	1	456	542		
+3698089	LeftMouseClick	1	480	489		
+3701699	LogData	0	HintStart	B14		
+3703120	LeftMouseClick	1	444	546		
+3705897	LeftMouseClick	1	446	543		
+3707388	LeftMouseClick	1	446	543		
+3709598	LeftMouseClick	1	446	543		
+3711450	LeftMouseClick	1	372	532		
+3713424	LeftMouseClick	1	275	493		
+3715366	LogData	0	HintEnd	B14		
+3716320	LeftMouseClick	1	453	543		
+3721355	LeftMouseClick	1	395	537		
+3729507	LeftMouseClick	1	792	428		
+3735409	LeftMouseClick	1	486	493		
+3736672	LogData	0	Used Mag			
+3739689	LeftMouseClick	1	440	492		
+3743908	LogData	0	HintStart	M15		
+3746257	LeftMouseClick	1	268	496		
+3747936	LeftMouseClick	1	565	599		
+3748129	LogData	0	HintEnd	M15		
+3754291	LeftMouseClick	1	541	534		
+3758983	LogData	0	HintStart	D31		
+3760524	LeftMouseClick	1	541	582		
+3762386	LeftMouseClick	1	252	488		
+3763485	LeftMouseClick	1	246	496		
+3764410	LogData	0	HintEnd	D31		
+3765470	LeftMouseClick	1	575	600		
+3771003	LeftMouseClick	1	602	533		
+3776470	LogData	0	HintStart	D32		
+3777753	LeftMouseClick	1	562	603		
+3782074	LeftMouseClick	1	270	490		
+3784108	LogData	0	HintEnd	D32		
+3784809	LeftMouseClick	1	426	599		
+3787884	LeftMouseClick	1	497	611		
+3791204	LeftMouseClick	1	557	601		
+3796771	LogData	0	HintStart	B15		
+3801136	LeftMouseClick	1	278	495		
+3803002	LogData	0	HintEnd	B15		
+3803225	LeftMouseClick	1	274	493		
+3804253	LeftMouseClick	1	492	599		
+3814829	LeftMouseClick	1	796	435		
+3818317	LeftMouseClick	1	439	531		
+3819283	LogData	0	Used Mag	23		
+3827489	LeftMouseClick	1	498	609		
+3848120	LeftMouseClick	1	795	429		
+3851100	LeftMouseClick	1	377	557		
+3852247	LogData	0	Used Mag	55		
+3857757	LeftMouseClick	1	477	549		
+3863302	LogData	0	HintStart	M16		
+3865892	LeftMouseClick	1	223	486		
+3867523	LogData	0	HintEnd	M16		
+3867533	LeftMouseClick	1	223	491		
+3870632	LeftMouseClick	1	491	491		
+3877021	LeftMouseClick	1	790	421		
+3879373	LeftMouseClick	1	788	434		
+3881557	LeftMouseClick	1	347	495		
+3882598	LogData	0	Used Mag	84		
+3898020	LeftMouseClick	1	399	485		
+3902698	LogData	0	HintStart	D33		
+3904069	LeftMouseClick	1	400	590		
+3905995	LeftMouseClick	1	365	596		
+3909396	LeftMouseClick	1	269	495		
+3911341	LogData	0	HintEnd	D33		
+3913656	LeftMouseClick	1	348	600		
+3919046	LeftMouseClick	1	380	554		
+3924205	LogData	0	HintStart	D34		
+3925845	LeftMouseClick	1	259	493		
+3929431	LogData	0	HintEnd	D34		
+3949894	LeftMouseClick	1	796	429		
+3954356	LeftMouseClick	1	453	457		
+3955561	LogData	0	Used Mag	13		
+3962673	LeftMouseClick	1	424	486		
+3978321	LeftMouseClick	1	799	430		
+3980923	LeftMouseClick	1	495	387		
+3982093	LogData	0	Used Mag	39		
+3986750	LeftMouseClick	1	375	436		
+3993735	LeftMouseClick	1	795	435		
+3995737	LeftMouseClick	1	418	383		
+3996565	LogData	0	Used Mag	59		
+4002511	LeftMouseClick	1	415	378		
+4018474	LogData	0	GameEnd	 		
+4068170	KeyPress	4	121	0	F10	
+4068218	KeyPress	4	121	0	F10	
+4068265	URLEnd	1024	0	0	http://roma.cs.ubc.ca:6030/client/PrimeClimbClientTestpage.aspx	
+4068328	ScreenRecStopped	16384	0	0		
