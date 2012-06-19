@@ -1,7 +1,7 @@
 '''
 UBC Eye Movement Data Analysys Toolkit
 The Generic Area of Interest Class
-Created on 2011-08-26
+Created on 2011-08-26  
 
 @author: skardan
 '''
