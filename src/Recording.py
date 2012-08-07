@@ -32,14 +32,15 @@ class Recording():
     def process_rec(self, segfile = None, scenelist = None,  aoifile = None, aoilist = None , prune_length = None,
                      require_valid_segs = True, auto_partition_low_quality_segments = False):
         """
-
         @type segfile: 
         @param segfile: Filename containing segment definitions in format:
-            pid\t[<starttime>, <endtime>]
-
+            <Scene_ID>\t<Segment_ID>\t<start time>\t<end time>
+            e.g.:
+            s1    seg1    0    5988013
         @type aoifile: string
         @param aoifile: the filename of a file defining the Areas of Interest.
-        """
+        """        
+
         if segfile != None:
             scenelist = read_segs(segfile)
             print "Done reading the segments!"
