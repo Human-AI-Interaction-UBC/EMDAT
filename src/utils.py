@@ -97,7 +97,7 @@ def get_chunk(data, ind, start, end):
 
 def stddev(data):
     if len(data)< 2:
-        return 0
+        return float('nan')
     m = mean(data)
     return math.sqrt(sum(map(lambda x: (x-m)**2, data))/float(len(data)-1))
     

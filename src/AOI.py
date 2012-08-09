@@ -12,24 +12,44 @@ from utils import *
 
 class AOI():
 
-    def __init__(self, aid, polyin, polyout, timeseq=[], time_coordinate_seq =[]):
-        '''
-        time_coordinate_seq:[((strat1,end1),polyin1,polyout1),(...),...]
-        '''
+    def __init__(self, aid, polyin, polyout=[], timeseq=[]):
+        """
+        Args:
+            aid: AOI id
+            polyin: the polygon defining the bounderies of the AOI
+            polyout: optional polygon inside the bounderies of the AOI that is not part of the AOI
+            timeseq: the time sequence of the format [(start1, end1), (start2, end2), ...] that specifies the intervals when this AOI is active
+            
+        Yields:
+            an AOI object
+        """
         self.aid = aid
         self.polyin = polyin
         self.polyout = polyout
         self.timeseq = timeseq
-        self.time_coordinate_seq = time_coordinate_seq
-        if time_coordinate_seq:
-            raise Exception ("not implemented yet! Samad")
         print "timeseq", timeseq
 #            self.partial = True
-    def set_coordinates(self, polyin, polyout):
-            self.polyin = polyin
-            self.polyout = polyout
+    def set_coordinates(self, polyin, polyout=[]):
+        """Sets the coordiantes of the AOI
+        
+        Args:
+            polyin: the polygon defining the bounderies of the AOI
+            polyout: optional polygon inside the bounderies of the AOI that is not part of the AOI
+        """
+        
+        self.polyin = polyin
+        self.polyout = polyout
             
     def is_active(self,start,end):
+        """Determines if an AOI is active during a whole given time interval 
+                
+        Args:
+            start: time interval start
+            end: time interval end
+            
+        Returns:
+            true if the AOI is always active in the given time interval 
+        """
         if start == -1:
             return False
         if self.timeseq:
@@ -41,6 +61,20 @@ class AOI():
             return True #global AOI
         
     def is_active_partition(self,start,end):
+        """Determines if an AOI is partially active during a given time interval
+        
+        if the AOI is active at leaset in part of the given time interval returns true 
+        it also returns the time sub-interval that AOI is active otherwise retyurns False, []
+        
+        Args:
+            start: time interval start
+            end: time interval start
+            
+        Returns:
+            A boolean for whether the AOI is active or not 
+            ovelap_part: The subset of the time interval [sub_start,sub_end] that AOI is active or [] if it is active during the whole interval or 
+            not active at all. 
+        """ 
         #if (end - start)== 0:
         if start == -1:
             return False, []
@@ -64,9 +98,18 @@ class AOI():
     
                    
 class AOI_Stat():
+
     def __init__(self,aoi,seg_fixation_data, starttime, endtime, active_aois):
         """
-        @param aois:list of the AOIs used for calculating the transitions between this AOI and other AOIs, this is filled during the segmentation 
+        Args:
+            aoi: the aoi object for which the statistics are calculated
+            seg_fixation_data:
+            starttime:
+            endtime:
+            active_aois:list of the AOI objects that will be used for calculating the transitions between this AOI and other AOIs 
+            
+        Yields:
+            an AOI_Stat object
         """
         self.aoi = aoi
         self.isActive, partition = self.aoi.is_active_partition(starttime, endtime)
@@ -82,9 +125,9 @@ class AOI_Stat():
             if params.DEBUG:
                 print "len(seg_fixation_data)",seg_fixation_data
                 print "len(fixation_data)",fixation_data
-        else:  #global AOI
+        else:  #global AOI (alaways active)
             fixation_data = seg_fixation_data 
-        fixation_indices = filter(lambda i: fixation_in_aoi(fixation_data[i],self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
+        fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i],self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
 
         fixations = map(lambda i: fixation_data[i], fixation_indices)
     
@@ -132,7 +175,7 @@ class AOI_Stat():
                     polyout = aoi.polyout
                     key = 'numtransfrom_%s'%(aid)
                     #self.features[key] = 0 #????? Samad
-                    if fixation_in_aoi(fixation_data[i-1], polyin, polyout):
+                    if _fixation_inside_aoi(fixation_data[i-1], polyin, polyout):
                         self.features[key] += 1
                         sumtransfrom += 1
             if i < len(fixation_data)-2:
@@ -142,7 +185,7 @@ class AOI_Stat():
                     polyout = aoi.polyout
                     key = 'numtransto_%s'%(aid)
                     #self.features[key] = 0 #????? Samad
-                    if fixation_in_aoi(fixation_data[i+1], polyin, polyout):
+                    if _fixation_inside_aoi(fixation_data[i+1], polyin, polyout):
                         self.features[key] += 1
                         sumtransto += 1
 
@@ -163,6 +206,19 @@ class AOI_Stat():
 
 
     def get_features(self, featurelist = None):
+        """Returns the list and values of features for this AOI_Stat object
+        
+        Args:
+            featurelist: optional list of features
+            
+        Returns:
+            featnames: a list of feature names
+            featvals: a corrsponding list of feature values
+            e.g.
+            featnames = ['fixationrate', 'length', 'meanabspathangles']
+            featvals  = [0.00268522882294', '1529851', '1.60354714212']
+        
+        """
         if featurelist == 'NONTEMP':
             featurelist = params.NONTEMP_FEATURES_AOI
 
@@ -194,30 +250,21 @@ class AOI_Stat():
         return featnames, featvals
 
     def print_(self):
+        """Prints the list of features and their vqalues for this AOI_Stat object
+     
         """
-            print  "AOI ID:",self.aoi.aid
-            print  "numfixations:",self.numfixations
-            print  "longestfixation",self.longestfixation
-            print  "timetofirstfixation",self.timetofirstfixation
-            print  "timetolastfixation",self.timetolastfixation
-            print  "proportionnum",self.proportionnum
-            print  "totaltimespent",self.totaltimespent 
-            print  "proportiontime",self.proportiontime 
-            if self.numfixations > 0:
-                print  "longestfixation",self.longestfixation 
-                print  "timetofirstfixation",self.timetofirstfixation 
-                print  "timetolastfixation",self.timetolastfixation 
-                print  "proportionnum",self.proportionnum 
-        """
+
         print  "AOI ID:",self.aoi.aid
         fn,fv = self.get_features()
         for i in xrange(len(fn)):
             print fn[i],':',fv[i]
         print
             
-def fixation_in_aoi(fixation, polyin, polyout):
-        return point_inside_polygon(fixation.mappedfixationpointx,
-        fixation.mappedfixationpointy, polyin) and not point_inside_polygon(fixation.mappedfixationpointx,
-        fixation.mappedfixationpointy, polyout)
-     
+
+def _fixation_inside_aoi(fixation, polyin, polyout):
+    """Helper function that determines if a fixation object is inside polyin and outside polyout
+    """
+    return point_inside_polygon(fixation.mappedfixationpointx,
+    fixation.mappedfixationpointy, polyin) and not point_inside_polygon(fixation.mappedfixationpointx,
+    fixation.mappedfixationpointy, polyout)     
          
