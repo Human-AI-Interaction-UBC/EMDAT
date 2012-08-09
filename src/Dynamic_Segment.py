@@ -4,7 +4,6 @@ Created on 2011-09-23
 
 @author: skardan
 '''
-import AIspace
 from utils import *
 import math, geometry
 from AOI import *

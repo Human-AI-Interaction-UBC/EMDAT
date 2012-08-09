@@ -12,7 +12,6 @@ from data_structures import *
 from Scene import *
 from Dynamic_Segment import *
 from AOI import *
-import AIspace
 from utils import *
 
 

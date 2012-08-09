@@ -141,15 +141,20 @@ def read_participants(segsdir, datadir, prune_length = None, aoifile = None):
 def export_features_all(participants, featurelist = None, aoifeaturelist = None, aoifeaturelabels=None,
                          id_prefix = False, require_valid = True):
     data = []
-    for p in participants:
-        if not(p.is_valid()):
-            print "user",p.id,"was not valid"
-            continue
-        fnames, fvals = p.export_features(featurelist=featurelist, aoifeaturelist=aoifeaturelist, 
-                                          aoifeaturelabels = aoifeaturelabels,
-                                          id_prefix=id_prefix, require_valid = require_valid)
-        featnames = fnames
-        data += fvals
+    featnames = []
+    if participants:
+        for p in participants:
+            if not(p.is_valid()):
+                print "user",p.id,"was not valid"
+                continue
+            fnames, fvals = p.export_features(featurelist=featurelist, aoifeaturelist=aoifeaturelist, 
+                                              aoifeaturelabels = aoifeaturelabels,
+                                              id_prefix=id_prefix, require_valid = require_valid)
+            featnames = fnames
+            data += fvals
+    else:
+        raise NameError('No participants were passed to the function')
+    
     return featnames, data
 
 def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist =  None, 

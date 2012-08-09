@@ -5,6 +5,8 @@ Created on 2011-09-22
 '''
 EXPERIMENT ='CSP'
 if EXPERIMENT == 'CSP':
+    EYELOGDATAFOLDER = "./sampledata"
+    EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
 
     NUMBEROFPROBLEMS = 2
     
