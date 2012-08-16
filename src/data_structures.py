@@ -5,7 +5,8 @@ class Datapoint():
     def __init__(self, data_point):
         """
         @type data_point: str
-        @param data_point: A line read from an "All-Data.tsv" file.
+        Args:
+            data_point: A line read from an "All-Data.tsv" file.
         """
         #data_point = data_point.replace('\t\r\n','')#??
         #print data_point.split('\t')
@@ -60,8 +61,8 @@ class Datapoint():
 class Fixation():
         def __init__(self, fix_point, media_offset = (0, 0)):
             """
-            @type fix_point: str
-            @param fix_point: A line read from a "Fixation-Data.tsv" file.
+            Args:
+                fix_point: string. A line read from a "Fixation-Data.tsv" file.
             """
             #fix_point = fix_point.replace('\t\r\n','')
             [self.fixationindex, self.timestamp, self.fixationduration, self.mappedfixationpointx, self.mappedfixationpointy,_] = fix_point.split('\t')
