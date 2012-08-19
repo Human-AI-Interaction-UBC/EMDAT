@@ -12,26 +12,51 @@ from copy import deepcopy
 
 
 class Scene(Segment):
-    '''
-    A class that combines multiple segments and calculates the aggregated statistics for this new entity as a whole
-    '''
+    """
+    A class that combines multiple segments and calculates the aggregated statistics for
+    this new entity as a whole
+    """
 
                 
-    def __init__(self, scid, seglist, all_data, fixation_data, Segments = None, aoilist = None, prune_length= None, require_valid = True, auto_partition = False):
-
-        '''
-        @type scid: str
-        @param scid: The id of the scene.
-        @type segements: List of Segment.Segement
-        @param scid: The segments belonging to this scene
-        @type all_data: array of L{Datapoints<Datapoint.Datapoint>}
-        @param all_data: The datapoints which make up this Trial.
-        @type fixation_data: array of L{Fixations<Datapoint.Fixation>}
-        @param fixation_data: The fixations which make up this Trial.
-        @type aois: array of L{AOIs<AOI.AOI>}
-        @param aois: The AOIs relevant to this trial
-        @type prune_length: int
-        '''
+    def __init__(self, scid, seglist, all_data, fixation_data, Segments = None, aoilist = None,
+                  prune_length= None, require_valid = True, auto_partition = False):
+        """
+        Args:
+            scid: A string containing the id of the Scene.
+            
+            seglist: a list of tuples of the form (segid, start, end) defining the segments
+            *Note: this method of defining segments is implemented to make batch processing of
+            files defining segments easier
+            
+            all_data: a list of "Datapoint"s which make up this Scene.
+            
+            fixation_data: a list of "Fixation"s which make up this Scene.
+            
+            Segments: a list of "Segment"s which make up this Scene.
+            
+            scenelist: If not None, a list of Scene objects
+            *Note: Both segfile and scenelist cannot be None
+                
+            aoilist: If not None, a list of "AOI"s.
+             
+            prune_length: If not None, an integer that specifies the time 
+                interval (in ms) from the begining of each Segment of this Scene
+                which samples are considered in calculations.  This can be used if, 
+                for example, you only wish to consider data in the first 
+                1000 ms of each Segment. In this case (prune_length = 1000),
+                all data beyond the first 1000ms of the start of the "Segment"s
+                will be disregarded.
+            
+            require_valid: a boolean determining whether invalid "Segment"s
+                will be ignored when calculating the features or not. default = True 
+                
+            auto_partition_low_quality_segments: a boolean flag determining whether
+                EMDAT should automatically split the "Segment"s which have low sample quality
+                into two new ssub "Segment"s discarding the largest invalid sample gap in 
+                the "Segment". default = False
+        Yields:
+            a Segment object
+        """ 
         
         def partition_segement(new_seg, seg_start,seg_end):
             timegaps = new_seg.getgaps()

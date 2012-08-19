@@ -67,7 +67,11 @@ class Recording():
             
             require_valid_segs: a boolean determining whether invalid "Segment"s
                 will be ignored when calculating the features or not. default = True 
-            auto_partition_low_quality_segments = False
+            
+            auto_partition_low_quality_segments: a boolean flag determining whether
+                EMDAT should automatically split the "Segment"s which have low sample quality
+                into two new ssub "Segment"s discarding the largest invalid sample gap in 
+                the "Segment". default = False
         Returns:
             a list of Scene objects for this Recording
             a list of Segment objects for this recording. This is an aggregated list
@@ -153,9 +157,9 @@ class Recording():
                 will be ignored when calculating the features or not. default = True
                  
             auto_partition_low_quality_segments: a boolean flag determining whether
-            EMDAT should automatically split the segments which have low sample quality
-            into two new ssub "Segment"s discarding the largest invalid sample gap in 
-            the "Segment". default = False
+                EMDAT should automatically split the "Segment"s which have low sample quality
+                into two new ssub "Segment"s discarding the largest invalid sample gap in 
+                the "Segment". default = False
         Returns:
             a list of Dynamic_Segment objects 
         """   

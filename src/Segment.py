@@ -20,6 +20,7 @@ class Segment():
             all_data: a list of "Datapoint"s which make up this Segment.
             
             fixation_data: a list of "Fixation"s which make up this Segment.
+            
             aois: a list of "AOI"s relevant to this Segment.
          
             prune_length: If not None, an integer that specifies the time interval (in ms) from the begining of each segment in which
