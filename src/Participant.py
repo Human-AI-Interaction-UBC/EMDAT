@@ -1,10 +1,10 @@
-'''
+"""
 UBC Eye Movement Data Analysys Toolkit
 Generic Participant Class
 Created on 2011-09-25
 
 @author: skardan
-'''
+"""
 import os, string
 from data_structures import *
 import params
@@ -13,40 +13,38 @@ import params
 
 class Participant():
     def __init__(self, pid, eventfile, datafile, fixfile, aoifile = None, prune_length= None):
+        """
+        Args:
+            pid: Participant id
+            eventfile
+            datafile
+            fixfile
+            aoifile: optional
+            prune_length: 
+            
+        Yields:
+            a Participant object
+        """
 
         raise Exception("you must override this and read and process the datafile and create the scenes and segments here!")
         self.id = pid
 
     def invalid_segments(self):
+        """Returns a list of invalid segments in this particiapnt's eye gaze data
+            
+        Returns:
+            a list of "Segment ids" of invalid Segments in this particiapnt's eye gaze data 
+        """
         return map(lambda y: y.segid, filter(lambda x: not x.is_valid, self.segments))
 
     def valid_segments(self):
+        """Returns a list of valid segments in this particiapnt's eye gaze data
+            
+        Returns:
+            a list of "Segment ids" of invalid Segments in this particiapnt's eye gaze data 
+        """
         return map(lambda y: y.segid, filter(lambda x: x.is_valid, self.segments))
 
-#    def export_features(self, featurelist=None, aoifeaturelist=None, aoifeaturelabels = None,
-#                        id_prefix = False, require_valid = True):
-#        data = []
-#        featnames = []
-#        if id_prefix:
-#            featnames.append('part_id')
-#        featnames.append('seg_id')
-#        first = True
-#        for t in self.segments:
-#            if not t.is_valid and require_valid:
-#                continue
-#            seg_feats = []
-#            if id_prefix:
-#                seg_feats.append(self.id)
-#            seg_feats.append(t.segid)
-#            fnames, fvals = t.get_features(featurelist = featurelist,
-#                                           aoifeaturelist = aoifeaturelist, 
-#                                           aoifeaturelabels = aoifeaturelabels)
-#            if first: featnames += fnames
-#            seg_feats += fvals
-#            first = False
-#            data.append(seg_feats)            
-#
-#        return featnames, data
 
     def export_features(self, featurelist=None, aoifeaturelist=None, aoifeaturelabels = None,
                         id_prefix = False, require_valid = True):

@@ -1,10 +1,15 @@
-'''
+"""
 UBC Eye Movement Data Analysys Toolkit
-The Generic Area of Interest Class
+The Generic Area of Interest Classes
 Created on 2011-08-26
 
 @author: skardan
-'''
+In EMDAT, the bounderies of an AOI is defined as a polygon on the screen. You can 
+optionally define a second polygone inside the first polygone to be excluded from an AOI.
+an AOI can be always active (a global AOI) or can be active during certain time intervals.
+In order to calculate the features for an AOI instance, you need to create an AOI_Stat instance and map it to target AOI object by passing it
+to the AOI_Stat constructor. The resulting AOI_Stat will calculate all features related to the given AOI and store them for later reference 
+"""
 from utils import *
 
 

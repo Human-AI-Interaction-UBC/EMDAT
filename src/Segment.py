@@ -14,27 +14,28 @@ from warnings import warn
 class Segment():
     def __init__(self, segid, all_data, fixation_data, aois = None, prune_length = None):
         """
-        @type segid: str
-        @param segid: The id of the segment.
-        @type all_data: array of L{Datapoints<Datapoint.Datapoint>}
-        @param all_data: The datapoints which make up this Trial.
-        @type fixation_data: array of L{Fixations<Datapoint.Fixation>}
-        @param fixation_data: The fixations which make up this Trial.
-        @type aois: array of L{AOIs<AOI.AOI>}
-        @param aois: The AOIs relevant to this trial
-        @type prune_length: int
-        @param prune_length: If not None, this variable specifies the time
-        interval (in ms) in which to consider data. This can be used if, for example,
-        you only wish to consider data in the first 1000 ms of a trial. In this
-        case (prune_length = 1000), all data beyond the first 1000ms of the
-        start of the trial will be disregarded.
+        Args:
+            segid: A string containing the id of the Segment.
+            
+            all_data: a list of "Datapoint"s which make up this Segment.
+            
+            fixation_data: a list of "Fixation"s which make up this Segment.
+            aois: a list of "AOI"s relevant to this Segment.
+         
+            prune_length: If not None, an integer that specifies the time interval (in ms) from the begining of each segment in which
+                samples are considered in calculations.  This can be used if, for example, you only wish to consider data in the first 
+                1000 ms of each segment. In this case (prune_length = 1000), all data beyond the first 1000ms of the start of the segments
+                will be disregarded.
+                
+        Yields:
+            a Segment object
         """
         self.segid = segid
         #self.alldata = all_data
         self.features = {}
         self.completion_time = all_data[-1].timestamp - all_data[0].timestamp
         if self.completion_time == 0:
-            self.completion_time = 16 #length of one sample with 50Hz sampling rate (ms)
+            self.completion_time = 16 #length of one sample with 60Hz sampling rate (ms)
 #        for d in all_data:
 #            d.set_segid(segid)
         self.features['completion_time'] = self.completion_time

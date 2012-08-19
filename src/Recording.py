@@ -1,11 +1,11 @@
-'''
+"""
 UBC Eye Movement Data Analysys Toolkit
 Recording class
 Nicholas FitzGerald - nicholas.fitzgerald@gmail.com
 
-Class to hold all the data from a given recording
+Class to hold all the data from one recording (i.e, one complete experiment session)
 Modified by Samad Kardan to a general class independent of the study
-'''
+"""
 
 
 from data_structures import *
@@ -18,27 +18,62 @@ from utils import *
 class Recording():
     def __init__(self, all_file, fixation_file, media_offset = (0,0)):
         """
-        @type all_file: str
-        @type fixation_file: str
-        @param all_file: The filename of the 'All-Data.tsv' file output by the
-        Tobii software.
-        @param fixation_file: The filename of the 'Fixation-Data.tsv' file output by the
-        Tobii software.
+        Args:
+            all_file: a string containing the filename of the 'All-Data.tsv' 
+                file output by the Tobii software.
+                
+            fixation_file: a string containing the filename of the 
+                'Fixation-Data.tsv' file output by the Tobii software.
+                
+            media_offset: the coordinates of the top left corner of the window
+                showing the interface under study. (0,0) if the interfacce was
+                in full screen (default value)
+            
+        Yields:
+            a Recording object
         """
         self.all_data = read_all_data(all_file)
-        self.fix_data = read_fixation_data(fixation_file, media_offset = params.MEDIA_OFFSET)
+        self.fix_data = read_fixation_data(fixation_file, 
+                                           media_offset = params.MEDIA_OFFSET)
 
-    def process_rec(self, segfile = None, scenelist = None,  aoifile = None, aoilist = None , prune_length = None,
-                     require_valid_segs = True, auto_partition_low_quality_segments = False):
-        """
-        @type segfile: 
-        @param segfile: Filename containing segment definitions in format:
-            <Scene_ID>\t<Segment_ID>\t<start time>\t<end time>
-            e.g.:
-            s1    seg1    0    5988013
-        @type aoifile: string
-        @param aoifile: the filename of a file defining the Areas of Interest.
+    def process_rec(self, segfile = None, scenelist = None,  aoifile = None, 
+                    aoilist = None , prune_length = None, require_valid_segs = True, 
+                    auto_partition_low_quality_segments = False):
+        """Processes the data for one recording (i.e, one complete experiment session)
+        
+                
+        Args:
+            segfile: If not None, a string containing the name of the segfile 
+                with segment definitions in following format:
+                <Scene_ID>\t<Segment_ID>\t<start time>\t<end time>\n
+                e.g.:
+                s1    seg1    0    5988013
+                With one segment definition per line
+            scenelist: If not None, a list of Scene objects
+            *Note: Both segfile and scenelist cannot be None
+                
+            aoifile: If not None, a string conatining the name of the aoifile 
+                with definitions of the "AOI"s.
+            aoilist: If not None, a list of "AOI"s.
+            *Note: if aoifile is not None, aoilist will be ignored
+             
+            prune_length: If not None, an integer that specifies the time 
+                interval (in ms) from the begining of each Segment in which
+                samples are considered in calculations.  This can be used if, 
+                for example, you only wish to consider data in the first 
+                1000 ms of each Segment. In this case (prune_length = 1000),
+                all data beyond the first 1000ms of the start of the "Segment"s
+                will be disregarded.
+            
+            require_valid_segs: a boolean determining whether invalid "Segment"s
+                will be ignored when calculating the features or not. default = True 
+            auto_partition_low_quality_segments = False
+        Returns:
+            a list of Scene objects for this Recording
+            a list of Segment objects for this recording. This is an aggregated list
+            of the "Segment"s of all "Scene"s in the Recording 
         """        
+      
 
         if segfile != None:
             scenelist = read_segs(segfile)
@@ -62,8 +97,9 @@ class Recording():
                 print "len(all_data)",len(self.all_data)
             try:
                 newSc = Scene(scid, sc, self.all_data,self.fix_data, aoilist=aoilist, 
-                              prune_length=prune_length, require_valid = require_valid_segs,
-                               auto_partition = auto_partition_low_quality_segments)               
+                              prune_length=prune_length, 
+                              require_valid = require_valid_segs,
+                              auto_partition = auto_partition_low_quality_segments)               
             except Exception as e:
                 warn(e)
                 newSc = None 
@@ -79,21 +115,50 @@ class Recording():
 #                _, all_start, all_end = get_chunk(self.all_data, 0, start, end)
 #                _, fix_start, fix_end = get_chunk(self.fix_data, 0, start, end)
 #                new_seg = Segment(segid, self.all_data[all_start:all_end],
-#                                  self.fix_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length)
+#                                  self.fix_data[fix_start:fix_end], aois=aoilist,
+#                                  prune_length=prune_length)
 #                new_seg.set_indices(all_start,all_end,fix_start,fix_end)
 #                ret.append(new_seg)
         return segs , scenes
      
-    def process_dynamic(self, segfile = None, scenes = None,  aoifile = None, aoilist = None , prune_length = None, media_offset = (0,0)):
-        """
-
-        @type segfile: 
-        @param segfile: Filename containing segment definitions in format:
-            pid\t[<starttime>, <endtime>]
-
-        @type aoifile: string
-        @param aoifile: the filename of a file defining the Areas of Interest.
-        """
+    def process_dynamic(self, segfile = None, scenes = None,  aoifile = None, 
+                        aoilist = None , prune_length = None, media_offset = (0,0)):
+        """Processes the data for one recording (i.e, one complete experiment session)
+        
+                
+        Args:
+            segfile: If not None, a string containing the name of the segfile 
+                with segment definitions in following format:
+                <Scene_ID>\t<Segment_ID>\t<start time>\t<end time>\n
+                e.g.:
+                s1    seg1    0    5988013
+                With one segment definition per line
+            scenelist: If not None, a list of Scene objects
+            *Note: Both segfile and scenelist cannot be None
+                
+            aoifile: If not None, a string conatining the name of the aoifile 
+                with definitions of the "AOI"s.
+            aoilist: If not None, a list of "AOI"s.
+            *Note: if aoifile is not None, aoilist will be ignored
+             
+            prune_length: If not None, an integer that specifies the time 
+                interval (in ms) from the begining of each segment in which
+                samples are considered in calculations.  This can be used if, 
+                for example, you only wish to consider data in the first 
+                1000 ms of each segment. In this case (prune_length = 1000),
+                all data beyond the first 1000ms of the start of the "Segment"s
+                will be disregarded.
+            
+            require_valid_segs: a boolean flag determining whether invalid "Segment"s
+                will be ignored when calculating the features or not. default = True
+                 
+            auto_partition_low_quality_segments: a boolean flag determining whether
+            EMDAT should automatically split the segments which have low sample quality
+            into two new ssub "Segment"s discarding the largest invalid sample gap in 
+            the "Segment". default = False
+        Returns:
+            a list of Dynamic_Segment objects 
+        """   
         if segfile != None:
             scenes = read_segs(segfile)
             print "Done reading the segments!"
@@ -117,8 +182,8 @@ class Recording():
                 _, all_start, all_end = get_chunk(self.all_data, 0, start, end)
                 _, fix_start, fix_end = get_chunk(self.fix_data, 0, start, end)
                 ret.append(Dynamic_Segment(segid, self.all_data[all_start:all_end],
-                self.fix_data[fix_start:fix_end], aois=aoilist,
-                prune_length=prune_length))
+                                           self.fix_data[fix_start:fix_end], aois=aoilist,
+                                           prune_length=prune_length))
         return ret
            
             
@@ -137,7 +202,8 @@ def read_all_data(all_file):
     with open(all_file, 'r') as f:
         lines = f.readlines()
 
-    alld = map(Datapoint, lines[(params.ALLDATAHEADERLINES+params.NUMBEROFEXTRAHEADERLINES):])
+    alld = map(Datapoint, lines[(params.ALLDATAHEADERLINES+
+                                 params.NUMBEROFEXTRAHEADERLINES):])
     return filter(lambda x: x.number!=None,alld)
 
 # read_fixation_data(all_file)
@@ -157,7 +223,8 @@ def read_fixation_data(fixation_file, media_offset = (0,0)):
     with open(fixation_file, 'r') as f:
         lines = f.readlines()
 
-    return map(lambda x: Fixation(x, media_offset=media_offset), lines[params.FIXATIONHEADERLINES:])
+    return map(lambda x: Fixation(x, media_offset=media_offset), 
+               lines[params.FIXATIONHEADERLINES:])
 
 
 def read_aois(aoifile):
