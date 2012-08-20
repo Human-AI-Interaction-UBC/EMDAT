@@ -1,9 +1,9 @@
-'''
+"""
 UBC Eye Movement Data Analysys Toolkit
 Created on 2011-09-30
 
 @author: skardan
-'''
+"""
 
 import math, geometry
 from utils import *
@@ -13,8 +13,9 @@ from copy import deepcopy
 
 class Scene(Segment):
     """
-    A class that combines multiple segments and calculates the aggregated statistics for
-    this new entity as a whole
+    A Scene is a class that represent one scene in the experiment. The Scene is designed to capture all "Datapoint"s related to a terget
+    conceptual entity in the experiment. A Scene should have at least one Segment assigned to it. The Scene class is also used to 
+    combine multiple "Segment"s and calculate the aggregated statistics for this new entity as a whole.
     """
 
                 
@@ -32,11 +33,8 @@ class Scene(Segment):
             
             fixation_data: a list of "Fixation"s which make up this Scene.
             
-            Segments: a list of "Segment"s which make up this Scene.
-            
-            scenelist: If not None, a list of Scene objects
-            *Note: Both segfile and scenelist cannot be None
-                
+            Segments: a list of "Segment"s which belong to this Scene.
+                         
             aoilist: If not None, a list of "AOI"s.
              
             prune_length: If not None, an integer that specifies the time 
@@ -55,10 +53,29 @@ class Scene(Segment):
                 into two new ssub "Segment"s discarding the largest invalid sample gap in 
                 the "Segment". default = False
         Yields:
-            a Segment object
+            a Scene object
         """ 
         
+        ########################################
         def partition_segement(new_seg, seg_start,seg_end):
+            """ A helper method for splitting a Segment object into new Segments and removing gaps of invalid samples
+            
+            One way to deal with a low quality Segment is to find the gaps of invalid samples within its "Datapoint"s and 
+            splitting the Segment into two Segments one from the beginnning of the Segment to the gap and another from after
+            the gap to the end of the Segment. This can be done multiple times resulting multiple "Segmenet"s with higher
+            quality. For example if a Segment S1 stated at s1 and ended at e1 and had two invalid gaps between gs1-ge1 and 
+            gs2-ge2 milliseconds, this method will generate the following three segments
+                SS1: starting at s1 and ending at gs1
+                SS2: starting at ge1 and ending at gs2
+                SS3: starting at ge2 and ending at e1
+            
+            Args:
+                new_seg: The Segment that is being splitted
+                
+                seg_start: An integer showing the start time of the segment in milliseconds
+                
+                seg_end: An integer showing the end time of the segment in milliseconds 
+            """
             timegaps = new_seg.getgaps()
             subsegments = []
             sub_segid=0
@@ -94,6 +111,7 @@ class Scene(Segment):
             #end of handling the last sub_seg
                 
             return subsegments, samp_inds, fix_inds
+        ########################################
         
         if len(all_data)<=0:
             raise Exception('A scene with no sample data!')
@@ -213,12 +231,13 @@ class Scene(Segment):
     def getid(self):
         return self.scid
     
-    def set_aois(self, segments, aois, fixationlist):
-        """
-        @type fixation_data: array of L{Fixations<Datapoint.Fixation>}
-        @param fixation_data: The fixations which make up this segement.
-        @type aois: array of L{AOIs<AOI.AOI>}
-        @param aois: The AOIs relevant to this segement
+    def set_aois(self, segments, aois):
+        """Sets the "AOI"s relevant to this Scene
+        
+        Args:
+            segments: a list of "Segment"s which belong to this Scene.
+
+            aois: a list of "AOI"s relevant to this Scene        
         """
         if len(aois) == 0:
             print "no AOI:",self.segid
@@ -242,11 +261,10 @@ class Scene(Segment):
             self.has_aois = True
 
     def calc_distances(self, fixdatalists):
-        """
-        Calculate the Euclidean distances between subsequent L{Fixations<Fixation.Fixation>}.
+        """returns the Euclidean distances between a sequence of "Fixation"s
     
-        @type fixdata: Array of L{Fixations<Fixation.Fixation>}.
-        @param fixdata: The array of L{Fixations<Fixation.Fixation>}.
+        Args:
+            fixdatalists: a list of "Fixation"s
         """
         distances = []
         for fixdata in fixdatalists:
@@ -266,6 +284,16 @@ class Scene(Segment):
         return distances
     
     def calc_abs_angles(self, fixdatalists):
+        """returns the absolute angles between a sequence of "Fixation"s that build a scan path.
+        
+        Abosolute angle for each saccade is the angle between that saccade and the horizental axis
+    
+        Args:
+            fixdatalists: a list of "Fixation"s
+            
+        Returns:
+            a list of absolute angles for the saccades formed by the given sequence of "Fixation"s in Radiant
+        """
         abs_angles = []
         for fixdata in fixdatalists:
             if not(fixdata):
@@ -284,6 +312,16 @@ class Scene(Segment):
         return abs_angles
 
     def calc_rel_angles(self, fixdatalists):
+        """returns the relative angles between a sequence of "Fixation"s that build a scan path in Radiant
+        
+        Relative angle for each saccade is the angle between that saccade and the previous saccade.
+    
+        Args:
+            fixdatalists: a list of "Fixation"s
+            
+        Returns:
+            a list of relative angles for the saccades formed by the given sequence of "Fixation"s in Radiant
+        """
         rel_angles = []
         
         for fixdata in fixdatalists:
@@ -307,6 +345,20 @@ class Scene(Segment):
         return rel_angles   
 
 def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations):
+        """a helper method that updates the AOI_Stat object of this Scene with a new AOI_Stat object
+        
+        Args:
+            main_AOI_Stat: AOI_Stat object of this Scene
+            
+            new_AOI_Stat: a new AOI_Stat object
+            
+            total_time:
+            
+            total_numfixations:
+        
+        Returns:
+            the updated AOI_Sata object
+        """   
         maois = main_AOI_Stat
         maois.features['numfixations'] += new_AOI_Stat.features['numfixations']
         maois.features['longestfixation'] = max(maois.features['longestfixation'],new_AOI_Stat.features['longestfixation'])
@@ -355,12 +407,18 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations):
         return maois
 
 def weightedmeanfeat(obj_list, totalfeat,ratefeat):
-    '''
-    Calculates the weighted average of the ratefeat over the Segments
-    @param obj_list: 
-    @param totalfeat: 
-    @param ratefeat: 
-    '''
+    """a helper method that calculates the weighted average of a target feature over a list of Segments
+    
+    Args:
+        obj_list: a list of Segments which all have a numeric field for which the weighted average is calculated 
+        
+        totalfeat: a string containing the name of the feature that has the total value of the target feature 
+        
+        ratefeat: a string containing the name of the feature that has the rate value of the target feature
+    
+    Returns:
+        the weighted average of the ratefeat over the Segments
+    """
     num_valid = float(0)
     num = 0
 
@@ -374,12 +432,34 @@ def weightedmeanfeat(obj_list, totalfeat,ratefeat):
     
 
 def sumfeat(obj_list, feat):
+    """a helper method that calculates the sum of a target feature over a list of objects
+    
+    Args:
+    
+        obj_list: a list of objects
+        
+        feat: a string containing the name of the target feature
+    
+    Returns:
+        the sum of the target feature over the given list of objects
+    """
     sum = 0
     for obj in obj_list:
         sum += eval('obj.'+feat)
     return sum
 
 def minfeat(obj_list, feat):
+    """a helper method that calculates the min of a target feature over a list of objects
+    
+    Args:
+    
+        obj_list: a list of objects
+        
+        feat: a string containing the name of the target feature
+    
+    Returns:
+        the min of the target feature over the given list of objects
+    """
     min = float('+infinity')
     for obj in obj_list:
         val = eval('obj.'+feat)
@@ -388,6 +468,17 @@ def minfeat(obj_list, feat):
     return min     
     
 def maxfeat(obj_list, feat):
+    """a helper method that calculates the max of a target feature over a list of objects
+    
+    Args:
+    
+        obj_list: a list of objects
+        
+        feat: a string containing the name of the target feature
+    
+    Returns:
+        the max of the target feature over the given list of objects
+    """
     max = float('-infinity')
     for obj in obj_list:
         val = eval('obj.'+feat)
