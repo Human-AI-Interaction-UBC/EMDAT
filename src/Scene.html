@@ -1,0 +1,215 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module Scene</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>Scene</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///C|/temp/skardan/workspace/python/emdat/src/scene.py">c:\temp\skardan\workspace\python\emdat\src\scene.py</a></font></td></tr></table>
+    <p><tt>UBC&nbsp;Eye&nbsp;Movement&nbsp;Data&nbsp;Analysys&nbsp;Toolkit<br>
+Created&nbsp;on&nbsp;2011-09-30<br>
+&nbsp;<br>
+@author:&nbsp;skardan</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="geometry.html">geometry</a><br>
+</td><td width="25%" valign=top><a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="params.html">params</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="Segment.html#Segment">Segment.Segment</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="Scene.html#Scene">Scene</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Scene">class <strong>Scene</strong></a>(<a href="Segment.html#Segment">Segment.Segment</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;<a href="#Scene">Scene</a>&nbsp;is&nbsp;a&nbsp;class&nbsp;that&nbsp;represent&nbsp;one&nbsp;scene&nbsp;in&nbsp;the&nbsp;experiment.&nbsp;The&nbsp;<a href="#Scene">Scene</a>&nbsp;is&nbsp;designed&nbsp;to&nbsp;capture&nbsp;all&nbsp;"Datapoint"s&nbsp;related&nbsp;to&nbsp;a&nbsp;terget<br>
+conceptual&nbsp;entity&nbsp;in&nbsp;the&nbsp;experiment.&nbsp;A&nbsp;<a href="#Scene">Scene</a>&nbsp;should&nbsp;have&nbsp;at&nbsp;least&nbsp;one&nbsp;<a href="Segment.html#Segment">Segment</a>&nbsp;assigned&nbsp;to&nbsp;it.&nbsp;The&nbsp;<a href="#Scene">Scene</a>&nbsp;class&nbsp;is&nbsp;also&nbsp;used&nbsp;to&nbsp;<br>
+combine&nbsp;multiple&nbsp;"<a href="Segment.html#Segment">Segment</a>"s&nbsp;and&nbsp;calculate&nbsp;the&nbsp;aggregated&nbsp;statistics&nbsp;for&nbsp;this&nbsp;new&nbsp;entity&nbsp;as&nbsp;a&nbsp;whole.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Scene-__init__"><strong>__init__</strong></a>(self, scid, seglist, all_data, fixation_data, Segments<font color="#909090">=None</font>, aoilist<font color="#909090">=None</font>, prune_length<font color="#909090">=None</font>, require_valid<font color="#909090">=True</font>, auto_partition<font color="#909090">=False</font>)</dt><dd><tt>Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;scid:&nbsp;A&nbsp;string&nbsp;containing&nbsp;the&nbsp;id&nbsp;of&nbsp;the&nbsp;<a href="#Scene">Scene</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;seglist:&nbsp;a&nbsp;list&nbsp;of&nbsp;tuples&nbsp;of&nbsp;the&nbsp;form&nbsp;(segid,&nbsp;start,&nbsp;end)&nbsp;defining&nbsp;the&nbsp;segments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*Note:&nbsp;this&nbsp;method&nbsp;of&nbsp;defining&nbsp;segments&nbsp;is&nbsp;implemented&nbsp;to&nbsp;make&nbsp;batch&nbsp;processing&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;files&nbsp;defining&nbsp;segments&nbsp;easier<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;all_data:&nbsp;a&nbsp;list&nbsp;of&nbsp;"Datapoint"s&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;<a href="#Scene">Scene</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixation_data:&nbsp;a&nbsp;list&nbsp;of&nbsp;"Fixation"s&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;<a href="#Scene">Scene</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Segments:&nbsp;a&nbsp;list&nbsp;of&nbsp;"<a href="Segment.html#Segment">Segment</a>"s&nbsp;which&nbsp;belong&nbsp;to&nbsp;this&nbsp;<a href="#Scene">Scene</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoilist:&nbsp;If&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;"AOI"s.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;prune_length:&nbsp;If&nbsp;not&nbsp;None,&nbsp;an&nbsp;integer&nbsp;that&nbsp;specifies&nbsp;the&nbsp;time&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;interval&nbsp;(in&nbsp;ms)&nbsp;from&nbsp;the&nbsp;begining&nbsp;of&nbsp;each&nbsp;<a href="Segment.html#Segment">Segment</a>&nbsp;of&nbsp;this&nbsp;<a href="#Scene">Scene</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;which&nbsp;samples&nbsp;are&nbsp;considered&nbsp;in&nbsp;calculations.&nbsp;&nbsp;This&nbsp;can&nbsp;be&nbsp;used&nbsp;if,&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;example,&nbsp;you&nbsp;only&nbsp;wish&nbsp;to&nbsp;consider&nbsp;data&nbsp;in&nbsp;the&nbsp;first&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1000&nbsp;ms&nbsp;of&nbsp;each&nbsp;<a href="Segment.html#Segment">Segment</a>.&nbsp;In&nbsp;this&nbsp;case&nbsp;(prune_length&nbsp;=&nbsp;1000),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;all&nbsp;data&nbsp;beyond&nbsp;the&nbsp;first&nbsp;1000ms&nbsp;of&nbsp;the&nbsp;start&nbsp;of&nbsp;the&nbsp;"<a href="Segment.html#Segment">Segment</a>"s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;disregarded.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;require_valid:&nbsp;a&nbsp;boolean&nbsp;determining&nbsp;whether&nbsp;invalid&nbsp;"<a href="Segment.html#Segment">Segment</a>"s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;ignored&nbsp;when&nbsp;calculating&nbsp;the&nbsp;features&nbsp;or&nbsp;not.&nbsp;default&nbsp;=&nbsp;True&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;auto_partition_low_quality_segments:&nbsp;a&nbsp;boolean&nbsp;flag&nbsp;determining&nbsp;whether<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EMDAT&nbsp;should&nbsp;automatically&nbsp;split&nbsp;the&nbsp;"<a href="Segment.html#Segment">Segment</a>"s&nbsp;which&nbsp;have&nbsp;low&nbsp;sample&nbsp;quality<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;into&nbsp;two&nbsp;new&nbsp;ssub&nbsp;"<a href="Segment.html#Segment">Segment</a>"s&nbsp;discarding&nbsp;the&nbsp;largest&nbsp;invalid&nbsp;sample&nbsp;gap&nbsp;in&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;"<a href="Segment.html#Segment">Segment</a>".&nbsp;default&nbsp;=&nbsp;False<br>
+Yields:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;<a href="#Scene">Scene</a>&nbsp;object</tt></dd></dl>
+
+<dl><dt><a name="Scene-calc_abs_angles"><strong>calc_abs_angles</strong></a>(self, fixdatalists)</dt><dd><tt>returns&nbsp;the&nbsp;absolute&nbsp;angles&nbsp;between&nbsp;a&nbsp;sequence&nbsp;of&nbsp;"Fixation"s&nbsp;that&nbsp;build&nbsp;a&nbsp;scan&nbsp;path.<br>
+&nbsp;<br>
+Abosolute&nbsp;angle&nbsp;for&nbsp;each&nbsp;saccade&nbsp;is&nbsp;the&nbsp;angle&nbsp;between&nbsp;that&nbsp;saccade&nbsp;and&nbsp;the&nbsp;horizental&nbsp;axis<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixdatalists:&nbsp;a&nbsp;list&nbsp;of&nbsp;"Fixation"s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;absolute&nbsp;angles&nbsp;for&nbsp;the&nbsp;saccades&nbsp;formed&nbsp;by&nbsp;the&nbsp;given&nbsp;sequence&nbsp;of&nbsp;"Fixation"s&nbsp;in&nbsp;Radiant</tt></dd></dl>
+
+<dl><dt><a name="Scene-calc_distances"><strong>calc_distances</strong></a>(self, fixdatalists)</dt><dd><tt>returns&nbsp;the&nbsp;Euclidean&nbsp;distances&nbsp;between&nbsp;a&nbsp;sequence&nbsp;of&nbsp;"Fixation"s<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixdatalists:&nbsp;a&nbsp;list&nbsp;of&nbsp;"Fixation"s</tt></dd></dl>
+
+<dl><dt><a name="Scene-calc_rel_angles"><strong>calc_rel_angles</strong></a>(self, fixdatalists)</dt><dd><tt>returns&nbsp;the&nbsp;relative&nbsp;angles&nbsp;between&nbsp;a&nbsp;sequence&nbsp;of&nbsp;"Fixation"s&nbsp;that&nbsp;build&nbsp;a&nbsp;scan&nbsp;path&nbsp;in&nbsp;Radiant<br>
+&nbsp;<br>
+Relative&nbsp;angle&nbsp;for&nbsp;each&nbsp;saccade&nbsp;is&nbsp;the&nbsp;angle&nbsp;between&nbsp;that&nbsp;saccade&nbsp;and&nbsp;the&nbsp;previous&nbsp;saccade.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixdatalists:&nbsp;a&nbsp;list&nbsp;of&nbsp;"Fixation"s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;relative&nbsp;angles&nbsp;for&nbsp;the&nbsp;saccades&nbsp;formed&nbsp;by&nbsp;the&nbsp;given&nbsp;sequence&nbsp;of&nbsp;"Fixation"s&nbsp;in&nbsp;Radiant</tt></dd></dl>
+
+<dl><dt><a name="Scene-getid"><strong>getid</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Scene-set_aois"><strong>set_aois</strong></a>(self, segments, aois)</dt><dd><tt>Sets&nbsp;the&nbsp;"AOI"s&nbsp;relevant&nbsp;to&nbsp;this&nbsp;<a href="#Scene">Scene</a><br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;segments:&nbsp;a&nbsp;list&nbsp;of&nbsp;"<a href="Segment.html#Segment">Segment</a>"s&nbsp;which&nbsp;belong&nbsp;to&nbsp;this&nbsp;<a href="#Scene">Scene</a>.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aois:&nbsp;a&nbsp;list&nbsp;of&nbsp;"AOI"s&nbsp;relevant&nbsp;to&nbsp;this&nbsp;<a href="#Scene">Scene</a></tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="Segment.html#Segment">Segment.Segment</a>:<br>
+<dl><dt><a name="Scene-calc_largest_validity_gap"><strong>calc_largest_validity_gap</strong></a>(self, all_data)</dt></dl>
+
+<dl><dt><a name="Scene-calc_num_samples"><strong>calc_num_samples</strong></a>(self, all_data)</dt></dl>
+
+<dl><dt><a name="Scene-calc_validity1"><strong>calc_validity1</strong></a>(self, threshold<font color="#909090">=0.84999999999999998</font>)</dt></dl>
+
+<dl><dt><a name="Scene-calc_validity2"><strong>calc_validity2</strong></a>(self, threshold<font color="#909090">=3000</font>)</dt></dl>
+
+<dl><dt><a name="Scene-calc_validity3"><strong>calc_validity3</strong></a>(self, threshold<font color="#909090">=0.84999999999999998</font>)</dt></dl>
+
+<dl><dt><a name="Scene-calc_validity_fixation"><strong>calc_validity_fixation</strong></a>(self, all_data)</dt><dd><tt>Calculate&nbsp;the&nbsp;proportion&nbsp;of&nbsp;datapoints&nbsp;which&nbsp;are&nbsp;part&nbsp;of&nbsp;a&nbsp;valid&nbsp;fixation.<br>
+@type&nbsp;all_data:&nbsp;array&nbsp;of&nbsp;L{Datapoints&lt;Datapoint.Datapoint&gt;}<br>
+@param&nbsp;all_data:&nbsp;The&nbsp;datapoints&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;Trial.</tt></dd></dl>
+
+<dl><dt><a name="Scene-calc_validity_proportion"><strong>calc_validity_proportion</strong></a>(self, all_data)</dt><dd><tt>Calculate&nbsp;the&nbsp;proportion&nbsp;of&nbsp;datapoints&nbsp;which&nbsp;are&nbsp;valid.<br>
+@type&nbsp;all_data:&nbsp;array&nbsp;of&nbsp;L{Datapoints&lt;Datapoint.Datapoint&gt;}<br>
+@param&nbsp;all_data:&nbsp;The&nbsp;datapoints&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;Trial.</tt></dd></dl>
+
+<dl><dt><a name="Scene-get_features"><strong>get_features</strong></a>(self, featurelist<font color="#909090">=None</font>, aoifeaturelist<font color="#909090">=None</font>, aoifeaturelabels<font color="#909090">=None</font>)</dt></dl>
+
+<dl><dt><a name="Scene-get_indices"><strong>get_indices</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Scene-get_validity"><strong>get_validity</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Scene-getgaps"><strong>getgaps</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Scene-print_"><strong>print_</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Scene-set_indices"><strong>set_indices</strong></a>(self, sample_st, sample_end, fix_st, fix_end)</dt></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-maxfeat"><strong>maxfeat</strong></a>(obj_list, feat)</dt><dd><tt>a&nbsp;helper&nbsp;method&nbsp;that&nbsp;calculates&nbsp;the&nbsp;max&nbsp;of&nbsp;a&nbsp;target&nbsp;feature&nbsp;over&nbsp;a&nbsp;list&nbsp;of&nbsp;objects<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;obj_list:&nbsp;a&nbsp;list&nbsp;of&nbsp;objects<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;feat:&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;target&nbsp;feature<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;max&nbsp;of&nbsp;the&nbsp;target&nbsp;feature&nbsp;over&nbsp;the&nbsp;given&nbsp;list&nbsp;of&nbsp;objects</tt></dd></dl>
+ <dl><dt><a name="-merge_aoistats"><strong>merge_aoistats</strong></a>(main_AOI_Stat, new_AOI_Stat, total_time, total_numfixations)</dt><dd><tt>a&nbsp;helper&nbsp;method&nbsp;that&nbsp;updates&nbsp;the&nbsp;AOI_Stat&nbsp;object&nbsp;of&nbsp;this&nbsp;<a href="#Scene">Scene</a>&nbsp;with&nbsp;a&nbsp;new&nbsp;AOI_Stat&nbsp;object<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;main_AOI_Stat:&nbsp;AOI_Stat&nbsp;object&nbsp;of&nbsp;this&nbsp;<a href="#Scene">Scene</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;new_AOI_Stat:&nbsp;a&nbsp;new&nbsp;AOI_Stat&nbsp;object<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;total_time:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;total_numfixations:<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;updated&nbsp;AOI_Sata&nbsp;object</tt></dd></dl>
+ <dl><dt><a name="-minfeat"><strong>minfeat</strong></a>(obj_list, feat)</dt><dd><tt>a&nbsp;helper&nbsp;method&nbsp;that&nbsp;calculates&nbsp;the&nbsp;min&nbsp;of&nbsp;a&nbsp;target&nbsp;feature&nbsp;over&nbsp;a&nbsp;list&nbsp;of&nbsp;objects<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;obj_list:&nbsp;a&nbsp;list&nbsp;of&nbsp;objects<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;feat:&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;target&nbsp;feature<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;min&nbsp;of&nbsp;the&nbsp;target&nbsp;feature&nbsp;over&nbsp;the&nbsp;given&nbsp;list&nbsp;of&nbsp;objects</tt></dd></dl>
+ <dl><dt><a name="-sumfeat"><strong>sumfeat</strong></a>(obj_list, feat)</dt><dd><tt>a&nbsp;helper&nbsp;method&nbsp;that&nbsp;calculates&nbsp;the&nbsp;sum&nbsp;of&nbsp;a&nbsp;target&nbsp;feature&nbsp;over&nbsp;a&nbsp;list&nbsp;of&nbsp;objects<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;obj_list:&nbsp;a&nbsp;list&nbsp;of&nbsp;objects<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;feat:&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;target&nbsp;feature<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;sum&nbsp;of&nbsp;the&nbsp;target&nbsp;feature&nbsp;over&nbsp;the&nbsp;given&nbsp;list&nbsp;of&nbsp;objects</tt></dd></dl>
+ <dl><dt><a name="-warn"><strong>warn</strong></a>(...)</dt><dd><tt>Issue&nbsp;a&nbsp;warning,&nbsp;or&nbsp;maybe&nbsp;ignore&nbsp;it&nbsp;or&nbsp;raise&nbsp;an&nbsp;exception.</tt></dd></dl>
+ <dl><dt><a name="-weightedmeanfeat"><strong>weightedmeanfeat</strong></a>(obj_list, totalfeat, ratefeat)</dt><dd><tt>a&nbsp;helper&nbsp;method&nbsp;that&nbsp;calculates&nbsp;the&nbsp;weighted&nbsp;average&nbsp;of&nbsp;a&nbsp;target&nbsp;feature&nbsp;over&nbsp;a&nbsp;list&nbsp;of&nbsp;Segments<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;obj_list:&nbsp;a&nbsp;list&nbsp;of&nbsp;Segments&nbsp;which&nbsp;all&nbsp;have&nbsp;a&nbsp;numeric&nbsp;field&nbsp;for&nbsp;which&nbsp;the&nbsp;weighted&nbsp;average&nbsp;is&nbsp;calculated&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;totalfeat:&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;feature&nbsp;that&nbsp;has&nbsp;the&nbsp;total&nbsp;value&nbsp;of&nbsp;the&nbsp;target&nbsp;feature&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ratefeat:&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;feature&nbsp;that&nbsp;has&nbsp;the&nbsp;rate&nbsp;value&nbsp;of&nbsp;the&nbsp;target&nbsp;feature<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;weighted&nbsp;average&nbsp;of&nbsp;the&nbsp;ratefeat&nbsp;over&nbsp;the&nbsp;Segments</tt></dd></dl>
+</td></tr></table>
+</body></html>

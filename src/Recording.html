@@ -1,0 +1,163 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module Recording</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>Recording</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///C|/temp/skardan/workspace/python/emdat/src/recording.py">c:\temp\skardan\workspace\python\emdat\src\recording.py</a></font></td></tr></table>
+    <p><tt>UBC&nbsp;Eye&nbsp;Movement&nbsp;Data&nbsp;Analysys&nbsp;Toolkit<br>
+<a href="#Recording">Recording</a>&nbsp;class<br>
+Nicholas&nbsp;FitzGerald&nbsp;-&nbsp;nicholas.fitzgerald@gmail.com<br>
+&nbsp;<br>
+Class&nbsp;to&nbsp;hold&nbsp;all&nbsp;the&nbsp;data&nbsp;from&nbsp;one&nbsp;recording&nbsp;(i.e,&nbsp;one&nbsp;complete&nbsp;experiment&nbsp;session)<br>
+Modified&nbsp;by&nbsp;Samad&nbsp;Kardan&nbsp;to&nbsp;a&nbsp;general&nbsp;class&nbsp;independent&nbsp;of&nbsp;the&nbsp;study</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="geometry.html">geometry</a><br>
+</td><td width="25%" valign=top><a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="params.html">params</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="Recording.html#Recording">Recording</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Recording">class <strong>Recording</strong></a></font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Recording-__init__"><strong>__init__</strong></a>(self, all_file, fixation_file, media_offset<font color="#909090">=(0, 0)</font>)</dt><dd><tt>Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;all_file:&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;filename&nbsp;of&nbsp;the&nbsp;'All-Data.tsv'&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file&nbsp;output&nbsp;by&nbsp;the&nbsp;Tobii&nbsp;software.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixation_file:&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;filename&nbsp;of&nbsp;the&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'Fixation-Data.tsv'&nbsp;file&nbsp;output&nbsp;by&nbsp;the&nbsp;Tobii&nbsp;software.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;media_offset:&nbsp;the&nbsp;coordinates&nbsp;of&nbsp;the&nbsp;top&nbsp;left&nbsp;corner&nbsp;of&nbsp;the&nbsp;window<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;showing&nbsp;the&nbsp;interface&nbsp;under&nbsp;study.&nbsp;(0,0)&nbsp;if&nbsp;the&nbsp;interfacce&nbsp;was<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;full&nbsp;screen&nbsp;(default&nbsp;value)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Yields:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;<a href="#Recording">Recording</a>&nbsp;object</tt></dd></dl>
+
+<dl><dt><a name="Recording-process_dynamic"><strong>process_dynamic</strong></a>(self, segfile<font color="#909090">=None</font>, scenes<font color="#909090">=None</font>, aoifile<font color="#909090">=None</font>, aoilist<font color="#909090">=None</font>, prune_length<font color="#909090">=None</font>, media_offset<font color="#909090">=(0, 0)</font>)</dt><dd><tt>Processes&nbsp;the&nbsp;data&nbsp;for&nbsp;one&nbsp;recording&nbsp;(i.e,&nbsp;one&nbsp;complete&nbsp;experiment&nbsp;session)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;segfile:&nbsp;If&nbsp;not&nbsp;None,&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;segfile&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;segment&nbsp;definitions&nbsp;in&nbsp;following&nbsp;format:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Scene_ID&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Segment_ID&gt;&nbsp;&nbsp;&nbsp;&nbsp;&lt;start&nbsp;time&gt;&nbsp;&nbsp;&nbsp;&nbsp;&lt;end&nbsp;time&gt;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.g.:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s1&nbsp;&nbsp;&nbsp;&nbsp;seg1&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;5988013<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;With&nbsp;one&nbsp;segment&nbsp;definition&nbsp;per&nbsp;line<br>
+&nbsp;&nbsp;&nbsp;&nbsp;scenelist:&nbsp;If&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;Scene&nbsp;objects<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*Note:&nbsp;Both&nbsp;segfile&nbsp;and&nbsp;scenelist&nbsp;cannot&nbsp;be&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoifile:&nbsp;If&nbsp;not&nbsp;None,&nbsp;a&nbsp;string&nbsp;conatining&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;aoifile&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;definitions&nbsp;of&nbsp;the&nbsp;"AOI"s.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoilist:&nbsp;If&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;"AOI"s.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*Note:&nbsp;if&nbsp;aoifile&nbsp;is&nbsp;not&nbsp;None,&nbsp;aoilist&nbsp;will&nbsp;be&nbsp;ignored<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;prune_length:&nbsp;If&nbsp;not&nbsp;None,&nbsp;an&nbsp;integer&nbsp;that&nbsp;specifies&nbsp;the&nbsp;time&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;interval&nbsp;(in&nbsp;ms)&nbsp;from&nbsp;the&nbsp;begining&nbsp;of&nbsp;each&nbsp;segment&nbsp;in&nbsp;which<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;samples&nbsp;are&nbsp;considered&nbsp;in&nbsp;calculations.&nbsp;&nbsp;This&nbsp;can&nbsp;be&nbsp;used&nbsp;if,&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;example,&nbsp;you&nbsp;only&nbsp;wish&nbsp;to&nbsp;consider&nbsp;data&nbsp;in&nbsp;the&nbsp;first&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1000&nbsp;ms&nbsp;of&nbsp;each&nbsp;segment.&nbsp;In&nbsp;this&nbsp;case&nbsp;(prune_length&nbsp;=&nbsp;1000),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;all&nbsp;data&nbsp;beyond&nbsp;the&nbsp;first&nbsp;1000ms&nbsp;of&nbsp;the&nbsp;start&nbsp;of&nbsp;the&nbsp;"Segment"s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;disregarded.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;require_valid_segs:&nbsp;a&nbsp;boolean&nbsp;flag&nbsp;determining&nbsp;whether&nbsp;invalid&nbsp;"Segment"s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;ignored&nbsp;when&nbsp;calculating&nbsp;the&nbsp;features&nbsp;or&nbsp;not.&nbsp;default&nbsp;=&nbsp;True<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;auto_partition_low_quality_segments:&nbsp;a&nbsp;boolean&nbsp;flag&nbsp;determining&nbsp;whether<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EMDAT&nbsp;should&nbsp;automatically&nbsp;split&nbsp;the&nbsp;"Segment"s&nbsp;which&nbsp;have&nbsp;low&nbsp;sample&nbsp;quality<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;into&nbsp;two&nbsp;new&nbsp;ssub&nbsp;"Segment"s&nbsp;discarding&nbsp;the&nbsp;largest&nbsp;invalid&nbsp;sample&nbsp;gap&nbsp;in&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;"Segment".&nbsp;default&nbsp;=&nbsp;False<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;Dynamic_Segment&nbsp;objects</tt></dd></dl>
+
+<dl><dt><a name="Recording-process_rec"><strong>process_rec</strong></a>(self, segfile<font color="#909090">=None</font>, scenelist<font color="#909090">=None</font>, aoifile<font color="#909090">=None</font>, aoilist<font color="#909090">=None</font>, prune_length<font color="#909090">=None</font>, require_valid_segs<font color="#909090">=True</font>, auto_partition_low_quality_segments<font color="#909090">=False</font>)</dt><dd><tt>Processes&nbsp;the&nbsp;data&nbsp;for&nbsp;one&nbsp;recording&nbsp;(i.e,&nbsp;one&nbsp;complete&nbsp;experiment&nbsp;session)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;segfile:&nbsp;If&nbsp;not&nbsp;None,&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;segfile&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;segment&nbsp;definitions&nbsp;in&nbsp;following&nbsp;format:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Scene_ID&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Segment_ID&gt;&nbsp;&nbsp;&nbsp;&nbsp;&lt;start&nbsp;time&gt;&nbsp;&nbsp;&nbsp;&nbsp;&lt;end&nbsp;time&gt;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.g.:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s1&nbsp;&nbsp;&nbsp;&nbsp;seg1&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;5988013<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;With&nbsp;one&nbsp;segment&nbsp;definition&nbsp;per&nbsp;line<br>
+&nbsp;&nbsp;&nbsp;&nbsp;scenelist:&nbsp;If&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;Scene&nbsp;objects<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*Note:&nbsp;Both&nbsp;segfile&nbsp;and&nbsp;scenelist&nbsp;cannot&nbsp;be&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoifile:&nbsp;If&nbsp;not&nbsp;None,&nbsp;a&nbsp;string&nbsp;conatining&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;aoifile&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;definitions&nbsp;of&nbsp;the&nbsp;"AOI"s.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoilist:&nbsp;If&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;"AOI"s.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*Note:&nbsp;if&nbsp;aoifile&nbsp;is&nbsp;not&nbsp;None,&nbsp;aoilist&nbsp;will&nbsp;be&nbsp;ignored<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;prune_length:&nbsp;If&nbsp;not&nbsp;None,&nbsp;an&nbsp;integer&nbsp;that&nbsp;specifies&nbsp;the&nbsp;time&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;interval&nbsp;(in&nbsp;ms)&nbsp;from&nbsp;the&nbsp;begining&nbsp;of&nbsp;each&nbsp;Segment&nbsp;in&nbsp;which<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;samples&nbsp;are&nbsp;considered&nbsp;in&nbsp;calculations.&nbsp;&nbsp;This&nbsp;can&nbsp;be&nbsp;used&nbsp;if,&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;example,&nbsp;you&nbsp;only&nbsp;wish&nbsp;to&nbsp;consider&nbsp;data&nbsp;in&nbsp;the&nbsp;first&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1000&nbsp;ms&nbsp;of&nbsp;each&nbsp;Segment.&nbsp;In&nbsp;this&nbsp;case&nbsp;(prune_length&nbsp;=&nbsp;1000),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;all&nbsp;data&nbsp;beyond&nbsp;the&nbsp;first&nbsp;1000ms&nbsp;of&nbsp;the&nbsp;start&nbsp;of&nbsp;the&nbsp;"Segment"s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;disregarded.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;require_valid_segs:&nbsp;a&nbsp;boolean&nbsp;determining&nbsp;whether&nbsp;invalid&nbsp;"Segment"s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;ignored&nbsp;when&nbsp;calculating&nbsp;the&nbsp;features&nbsp;or&nbsp;not.&nbsp;default&nbsp;=&nbsp;True&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;auto_partition_low_quality_segments:&nbsp;a&nbsp;boolean&nbsp;flag&nbsp;determining&nbsp;whether<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EMDAT&nbsp;should&nbsp;automatically&nbsp;split&nbsp;the&nbsp;"Segment"s&nbsp;which&nbsp;have&nbsp;low&nbsp;sample&nbsp;quality<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;into&nbsp;two&nbsp;new&nbsp;ssub&nbsp;"Segment"s&nbsp;discarding&nbsp;the&nbsp;largest&nbsp;invalid&nbsp;sample&nbsp;gap&nbsp;in&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;"Segment".&nbsp;default&nbsp;=&nbsp;False<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;Scene&nbsp;objects&nbsp;for&nbsp;this&nbsp;<a href="#Recording">Recording</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;Segment&nbsp;objects&nbsp;for&nbsp;this&nbsp;recording.&nbsp;This&nbsp;is&nbsp;an&nbsp;aggregated&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;the&nbsp;"Segment"s&nbsp;of&nbsp;all&nbsp;"Scene"s&nbsp;in&nbsp;the&nbsp;<a href="#Recording">Recording</a></tt></dd></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-read_all_data"><strong>read_all_data</strong></a>(all_file)</dt><dd><tt>Returns&nbsp;an&nbsp;array&nbsp;of&nbsp;L{Datapoints&lt;Datapoint.Datapoint&gt;}&nbsp;read&nbsp;from&nbsp;the&nbsp;data<br>
+file.<br>
+&nbsp;<br>
+@type&nbsp;all_file:&nbsp;str<br>
+@param&nbsp;all_file:&nbsp;The&nbsp;filename&nbsp;of&nbsp;the&nbsp;'All-Data.tsv'&nbsp;file&nbsp;output&nbsp;by&nbsp;the<br>
+Tobii&nbsp;software.</tt></dd></dl>
+ <dl><dt><a name="-read_aois"><strong>read_aois</strong></a>(aoifile)</dt></dl>
+ <dl><dt><a name="-read_aois_Tobii"><strong>read_aois_Tobii</strong></a>(aoifile)</dt><dd><tt>&nbsp;&nbsp;&nbsp;&nbsp;aoiname[&nbsp;&nbsp;&nbsp;&nbsp;]point1x,point1y[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]point2x,point2y[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]...[<br>
+]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#[&nbsp;&nbsp;]start1,end1[&nbsp;&nbsp;&nbsp;]...[<br>
+]</tt></dd></dl>
+ <dl><dt><a name="-read_fixation_data"><strong>read_fixation_data</strong></a>(fixation_file, media_offset<font color="#909090">=(0, 0)</font>)</dt><dd><tt>Returns&nbsp;an&nbsp;array&nbsp;of&nbsp;L{Fixations&lt;Datapoint.Fixation&gt;}&nbsp;read&nbsp;from&nbsp;the&nbsp;fixation<br>
+file.<br>
+&nbsp;<br>
+@type&nbsp;fixation_file:&nbsp;str<br>
+@param&nbsp;fixation_file:&nbsp;The&nbsp;filename&nbsp;of&nbsp;the&nbsp;'Fixation-Data.tsv'&nbsp;file&nbsp;output<br>
+by&nbsp;the&nbsp;Tobii&nbsp;software.</tt></dd></dl>
+ <dl><dt><a name="-read_segs"><strong>read_segs</strong></a>(segfile)</dt></dl>
+ <dl><dt><a name="-warn"><strong>warn</strong></a>(...)</dt><dd><tt>Issue&nbsp;a&nbsp;warning,&nbsp;or&nbsp;maybe&nbsp;ignore&nbsp;it&nbsp;or&nbsp;raise&nbsp;an&nbsp;exception.</tt></dd></dl>
+</td></tr></table>
+</body></html>

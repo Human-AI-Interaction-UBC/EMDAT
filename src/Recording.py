@@ -1,10 +1,12 @@
 """
 UBC Eye Movement Data Analysys Toolkit
 Recording class
-Nicholas FitzGerald - nicholas.fitzgerald@gmail.com
+
+Author: Nicholas FitzGerald - nicholas.fitzgerald@gmail.com
+Modified by: Samad Kardan to a general class independent of the study
 
 Class to hold all the data from one recording (i.e, one complete experiment session)
-Modified by Samad Kardan to a general class independent of the study
+
 """
 
 
@@ -107,8 +109,10 @@ class Recording():
             except Exception as e:
                 warn(e)
                 newSc = None 
-                pass 
-#                raise         
+                if params.DEBUG:
+                    raise
+                else:
+                    pass        
             if newSc:
                 scenes.append(newSc)
         segs = []

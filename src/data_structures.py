@@ -1,12 +1,23 @@
-'''
+"""
 UBC Eye Movement Data Analysys Toolkit
-'''
+
+Author: Nicholas FitzGerald - nicholas.fitzgerald@gmail.com
+Modified by: Samad Kardan
+
+Basic data structures used in EMDAT
+"""
 class Datapoint():
+    """
+    A class that holds the infromation 
+    """
     def __init__(self, data_point):
-        """
-        @type data_point: str
+        """Inits Datapoint class with a line of gaze data from "all-Data.tsv" file
+        
         Args:
-            data_point: A line read from an "All-Data.tsv" file.
+            data_point: a string containing one line read from an "All-Data.tsv" file.
+            
+        Yields:
+            a Datapoint object
         """
         #data_point = data_point.replace('\t\r\n','')#??
         #print data_point.split('\t')
@@ -49,8 +60,24 @@ class Datapoint():
         #self.is_valid = (not self.camxleft == -1)
         self.is_valid = (self.validityright < 2 or self.validityleft < 2)
     def set_segid(self,segid):
+        """Sets the "Segment" id for this Datapoint
+        
+        Args:
+            segid: a string containing the "Segment" id
+        """
         self.segid = segid
     def get_segid(self):
+        """Returns the "Segment" id for this Datapoint
+        
+        Args:
+            data_point: a string containing one line read from an "All-Data.tsv" file.
+            
+        Returns:
+            a string containing the "Segment" id
+            
+        Raises:
+            Exception: if the segid is not set before reading it an Exception will be thrown
+        """
         if self.segid != None:
             return self.segid
         raise Exception('The segid is accessed before setting the initial value in a datapoint!')
@@ -59,58 +86,66 @@ class Datapoint():
                     
 
 class Fixation():
-        def __init__(self, fix_point, media_offset = (0, 0)):
-            """
-            Args:
-                fix_point: string. A line read from a "Fixation-Data.tsv" file.
-            """
-            #fix_point = fix_point.replace('\t\r\n','')
-            [self.fixationindex, self.timestamp, self.fixationduration, self.mappedfixationpointx, self.mappedfixationpointy,_] = fix_point.split('\t')
-            self.fixationindex = cast_int(self.fixationindex)
-            self.timestamp = cast_int(self.timestamp)
-            self.fixationduration = cast_int(self.fixationduration)
-            (media_offset_x, media_offset_y) = media_offset
-            self.mappedfixationpointx = cast_int(self.mappedfixationpointx) - media_offset_x
-            self.mappedfixationpointy = cast_int(self.mappedfixationpointy) - media_offset_y
-            self.segid = None
-            
-        def set_segid(self,segid):
-            self.segid = segid
-        def get_segid(self):
-            if self.segid != None:
-                return self.segid
-            raise Exception('The segid is accessed before setting the initial value in a fixation point!')
+    """
+    """
+    def __init__(self, fix_point, media_offset = (0, 0)):
+        """
+        Args:
+            fix_point: string. A line read from a "Fixation-Data.tsv" file.
+        """
+        #fix_point = fix_point.replace('\t\r\n','')
+        [self.fixationindex, self.timestamp, self.fixationduration, self.mappedfixationpointx, self.mappedfixationpointy,_] = fix_point.split('\t')
+        self.fixationindex = cast_int(self.fixationindex)
+        self.timestamp = cast_int(self.timestamp)
+        self.fixationduration = cast_int(self.fixationduration)
+        (media_offset_x, media_offset_y) = media_offset
+        self.mappedfixationpointx = cast_int(self.mappedfixationpointx) - media_offset_x
+        self.mappedfixationpointy = cast_int(self.mappedfixationpointy) - media_offset_y
+        self.segid = None
+        
+    def set_segid(self,segid):
+        self.segid = segid
+    def get_segid(self):
+        if self.segid != None:
+            return self.segid
+        raise Exception('The segid is accessed before setting the initial value in a fixation point!')
 
 class Event():
-        def __init__(self, eventstr):
-            """
-            """
-            #Timestamp    Event    EventKey    Data1    Data2    Descriptor
-            #print eventstr.split('\t')
-            [self.timestamp, self.event, self.eventKey, self.data1, self.data2,self.descriptor,_] = eventstr.split('\t')
-            self.timestamp = cast_int(self.timestamp)
-            self.eventKey = cast_int(self.eventKey)
+    """
+    """
+    def __init__(self, eventstr):
+        """
+        """
+        #Timestamp    Event    EventKey    Data1    Data2    Descriptor
+        #print eventstr.split('\t')
+        [self.timestamp, self.event, self.eventKey, self.data1, self.data2,self.descriptor,_] = eventstr.split('\t')
+        self.timestamp = cast_int(self.timestamp)
+        self.eventKey = cast_int(self.eventKey)
 
 class Action():
-        def __init__(self, actstr):
-            """
-            """
-            #Action TimeStartoffset
-            #print eventstr.split('\t')
-            [self.action, self.timestamp] = actstr.split('\t')
-            self.timestamp = cast_int(self.timestamp)
-            self.action = cast_int(self.action) #action is a nubmeric code!
+    """
+    """
+    def __init__(self, actstr):
+        """
+        """
+        #Action TimeStartoffset
+        #print eventstr.split('\t')
+        [self.action, self.timestamp] = actstr.split('\t')
+        self.timestamp = cast_int(self.timestamp)
+        self.action = cast_int(self.action) #action is a nubmeric code!
             
 class Action2():
-        def __init__(self, actstr):
-            """
-            """
-            #Action TimeStartoffset
-            #print eventstr.split('\t')
-            [self.timeSincePre, self.timestamp, self.action] = actstr.split('\t')
-            self.timeSincePre = cast_int(self.timeSincePre)
-            self.timestamp = cast_int(self.timestamp)
-            self.action = cast_int(self.action) #action is a nubmeric code!
+    """
+    """
+    def __init__(self, actstr):
+        """
+        """
+        #Action TimeStartoffset
+        #print eventstr.split('\t')
+        [self.timeSincePre, self.timestamp, self.action] = actstr.split('\t')
+        self.timeSincePre = cast_int(self.timeSincePre)
+        self.timestamp = cast_int(self.timestamp)
+        self.action = cast_int(self.action) #action is a nubmeric code!
 
 def cast_int(str):
     try:

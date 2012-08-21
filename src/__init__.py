@@ -1,4 +1,4 @@
 '''
 UBC Eye Movement Data Analysys Toolkit
 '''
-#__all__ = ["Participant", "Trial", "Recording", "AOI"]
+#__all__ = ["Participant", "Scene", "Segment", "Recording", "AOI"]

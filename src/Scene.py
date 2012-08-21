@@ -226,7 +226,7 @@ class Scene(Segment):
             self.features['stddevrelpathangles'] = 0
         self.has_aois = False
         if aoilist:
-            self.set_aois(segments, aoilist,fixationlist)
+            self.set_aois(segments, aoilist)
             
     def getid(self):
         return self.scid

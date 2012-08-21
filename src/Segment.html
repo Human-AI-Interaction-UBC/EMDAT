@@ -44,15 +44,19 @@ Created&nbsp;on&nbsp;2011-08-26<br>
 <dl><dt><a name="Segment-__init__"><strong>__init__</strong></a>(self, segid, all_data, fixation_data, aois<font color="#909090">=None</font>, prune_length<font color="#909090">=None</font>)</dt><dd><tt>Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;segid:&nbsp;A&nbsp;string&nbsp;containing&nbsp;the&nbsp;id&nbsp;of&nbsp;the&nbsp;<a href="#Segment">Segment</a>.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;all_data:&nbsp;a&nbsp;list&nbsp;of&nbsp;Datapoint&nbsp;s&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;<a href="#Segment">Segment</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;all_data:&nbsp;a&nbsp;list&nbsp;of&nbsp;"Datapoint"s&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;<a href="#Segment">Segment</a>.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;fixation_data:&nbsp;a&nbsp;list&nbsp;of&nbsp;Fixation&nbsp;s&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;<a href="#Segment">Segment</a>.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;aois:&nbsp;a&nbsp;list&nbsp;of&nbsp;AOI&nbsp;s&nbsp;relevant&nbsp;to&nbsp;this&nbsp;<a href="#Segment">Segment</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixation_data:&nbsp;a&nbsp;list&nbsp;of&nbsp;"Fixation"s&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;<a href="#Segment">Segment</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aois:&nbsp;a&nbsp;list&nbsp;of&nbsp;"AOI"s&nbsp;relevant&nbsp;to&nbsp;this&nbsp;<a href="#Segment">Segment</a>.<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;prune_length:&nbsp;If&nbsp;not&nbsp;None,&nbsp;an&nbsp;integer&nbsp;that&nbsp;specifies&nbsp;the&nbsp;time&nbsp;interval&nbsp;(in&nbsp;ms)&nbsp;from&nbsp;the&nbsp;begining&nbsp;of&nbsp;each&nbsp;segment&nbsp;in&nbsp;which<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;samples&nbsp;are&nbsp;considered&nbsp;in&nbsp;calculations.&nbsp;&nbsp;This&nbsp;can&nbsp;be&nbsp;used&nbsp;if,&nbsp;for&nbsp;example,&nbsp;you&nbsp;only&nbsp;wish&nbsp;to&nbsp;consider&nbsp;data&nbsp;in&nbsp;the&nbsp;first&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1000&nbsp;ms&nbsp;of&nbsp;each&nbsp;segment.&nbsp;In&nbsp;this&nbsp;case&nbsp;(prune_length&nbsp;=&nbsp;1000),&nbsp;all&nbsp;data&nbsp;beyond&nbsp;the&nbsp;first&nbsp;1000ms&nbsp;of&nbsp;the&nbsp;start&nbsp;of&nbsp;the&nbsp;segments<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;disregarded.</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;disregarded.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Yields:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;<a href="#Segment">Segment</a>&nbsp;object</tt></dd></dl>
 
 <dl><dt><a name="Segment-calc_abs_angles"><strong>calc_abs_angles</strong></a>(self, fixdata)</dt></dl>
 
