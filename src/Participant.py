@@ -12,15 +12,30 @@ import params
 
 
 class Participant():
+    """
+    A class that hold the information for one Participant in the experiment
+    """
     def __init__(self, pid, eventfile, datafile, fixfile, aoifile = None, prune_length= None):
-        """
+        """Inits Participant class
         Args:
             pid: Participant id
-            eventfile
-            datafile
-            fixfile
-            aoifile: optional
-            prune_length: 
+            
+            eventfile: a string containing the name of the "Event-Data.tsv" file for this participant
+            
+            datafile: a string containing the name of the "all-Data.tsv" file for this participant
+            
+            fixfile: a string containing the name of the "Fixation-Data.tsv" file for this participant
+            
+            aoifile: If not None, a string conatining the name of the aoifile 
+                with definitions of the "AOI"s.
+            
+            prune_length: If not None, an integer that specifies the time 
+                interval (in ms) from the begining of each Segment in which
+                samples are considered in calculations.  This can be used if, 
+                for example, you only wish to consider data in the first 
+                1000 ms of each Segment. In this case (prune_length = 1000),
+                all data beyond the first 1000ms of the start of the "Segment"s
+                will be disregarded.
             
         Yields:
             a Participant object
@@ -48,6 +63,8 @@ class Participant():
 
     def export_features(self, featurelist=None, aoifeaturelist=None, aoifeaturelabels = None,
                         id_prefix = False, require_valid = True):
+        """
+        """
         data = []
         featnames = []
         if id_prefix:
@@ -76,14 +93,20 @@ class Participant():
                             require_valid = True):
         featnames, data  = self.export_features(featurelist, aoifeaturelist = aoifeaturelist, 
                                                 id_prefix = id_prefix, require_valid = require_valid)
+        """
+        """
 
         ret = string.join(featnames, '\t') + '\n'
         for t in data:
             ret += (string.join(map(str, t), '\t') + '\n')
         return ret
     
-    def print_(self):       
+    def print_(self):
+        """
+        """       
         def format_list(list,leng=None):
+            """
+            """
             out=''
             if leng == None:
                 maxlen=0
@@ -132,12 +155,16 @@ class Participant():
     
 
 def read_participants(segsdir, datadir, prune_length = None, aoifile = None):
+    """
+    """
     participants = []
     raise Exception("override read_participants")
     return participants
 
 def export_features_all(participants, featurelist = None, aoifeaturelist = None, aoifeaturelabels=None,
                          id_prefix = False, require_valid = True):
+    """
+    """
     data = []
     featnames = []
     if participants:
@@ -157,9 +184,15 @@ def export_features_all(participants, featurelist = None, aoifeaturelist = None,
 
 def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist =  None, 
                        aoifeaturelabels=None, id_prefix = False):
-    '''
-    participants, outfile, featurelist = None, aoifeaturelist =  None, aoifeaturelabels=None, id_prefix = False
-    '''
+    """
+    Args:
+        participants:
+        outfile:
+        featurelist: If not None,
+        aoifeaturelist: If not None,
+        aoifeaturelabels: If not None,
+        id_prefix:    default value = False
+    """
     fnames, fvals = export_features_all(participants, featurelist =  featurelist, 
                                         aoifeaturelabels = aoifeaturelabels,
                                         aoifeaturelist = aoifeaturelist, id_prefix=id_prefix)
@@ -179,9 +212,7 @@ def test_validity():
     return
 
 def read_events(evfile):
-    """
-    Returns an array of L{Datapoints<Datapoint.Datapoint>} read from the event
-    file.
+    """Returns a list Event objects read from 'Event-Data.tsv' file.
 
     @type all_file: str
     @param all_file: The filename of the 'Event-Data.tsv' file output by the

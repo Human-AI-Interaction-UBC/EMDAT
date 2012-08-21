@@ -19,11 +19,14 @@ from utils import *
 class AOI():
 
     def __init__(self, aid, polyin, polyout=[], timeseq=[]):
-        """
+        """Inits AOI class
         Args:
             aid: AOI id
+            
             polyin: the polygon defining the bounderies of the AOI
+            
             polyout: optional polygon inside the bounderies of the AOI that is not part of the AOI
+            
             timeseq: the time sequence of the format [(start1, end1), (start2, end2), ...] that specifies the intervals when this AOI is active
             
         Yields:
@@ -106,7 +109,7 @@ class AOI():
 class AOI_Stat():
 
     def __init__(self,aoi,seg_fixation_data, starttime, endtime, active_aois):
-        """
+        """Inits AOI_Stat class
         Args:
             aoi: the aoi object for which the statistics are calculated
             seg_fixation_data:
@@ -215,10 +218,10 @@ class AOI_Stat():
         """Returns the list and values of features for this AOI_Stat object
         
         Args:
-            featurelist: optional list of features
+            featurelist: optional list of features. If this is None all features will be returned
             
         Returns:
-            featnames: a list of feature names
+            featnames: a list of feature names sorted alphabetically
             featvals: a corrsponding list of feature values
             e.g.
             featnames = ['fixationrate', 'length', 'meanabspathangles']
@@ -230,9 +233,9 @@ class AOI_Stat():
 
         if featurelist == []:
             return [], []
-        elif not featurelist:
+        elif not featurelist:   #all features
             featnames = self.features.keys()
-        else:
+        else:                   #a list was given
             featnames = []
             for name in featurelist:
                 if name == 'numtransto':

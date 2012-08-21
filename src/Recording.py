@@ -12,7 +12,7 @@ Class to hold all the data from one recording (i.e, one complete experiment sess
 
 from data_structures import *
 from Scene import *
-from Dynamic_Segment import *
+#from Dynamic_Segment import *
 from AOI import *
 from utils import *
 
@@ -129,70 +129,70 @@ class Recording():
 #                ret.append(new_seg)
         return segs , scenes
      
-    def process_dynamic(self, segfile = None, scenes = None,  aoifile = None, 
-                        aoilist = None , prune_length = None, media_offset = (0,0)):
-        """Processes the data for one recording (i.e, one complete experiment session)
-        
-                
-        Args:
-            segfile: If not None, a string containing the name of the segfile 
-                with segment definitions in following format:
-                <Scene_ID>\t<Segment_ID>\t<start time>\t<end time>\n
-                e.g.:
-                s1    seg1    0    5988013
-                With one segment definition per line
-            scenelist: If not None, a list of Scene objects
-            *Note: Both segfile and scenelist cannot be None
-                
-            aoifile: If not None, a string conatining the name of the aoifile 
-                with definitions of the "AOI"s.
-            aoilist: If not None, a list of "AOI"s.
-            *Note: if aoifile is not None, aoilist will be ignored
-             
-            prune_length: If not None, an integer that specifies the time 
-                interval (in ms) from the begining of each segment in which
-                samples are considered in calculations.  This can be used if, 
-                for example, you only wish to consider data in the first 
-                1000 ms of each segment. In this case (prune_length = 1000),
-                all data beyond the first 1000ms of the start of the "Segment"s
-                will be disregarded.
-            
-            require_valid_segs: a boolean flag determining whether invalid "Segment"s
-                will be ignored when calculating the features or not. default = True
-                 
-            auto_partition_low_quality_segments: a boolean flag determining whether
-                EMDAT should automatically split the "Segment"s which have low sample quality
-                into two new ssub "Segment"s discarding the largest invalid sample gap in 
-                the "Segment". default = False
-        Returns:
-            a list of Dynamic_Segment objects 
-        """   
-        if segfile != None:
-            scenes = read_segs(segfile)
-            print "Done reading the segments!"
-        elif scenes == None:
-            print "Error in scene file"
-            
-        ret = []
-        
-        if aoifile!= None:
-            aoilist = read_aois_Tobii(aoifile)
-            print "Done reading the AOIs!"
-        elif aoilist == None:
-            aoilist = []
-            print "No AOIs defined!"
-
-#        all_ind = 0
-#        fix_ind = 0
-        for sc in scenes.values():
-            for (segid, start, end) in sc:
-                print "segid, start, end:",segid, start, end
-                _, all_start, all_end = get_chunk(self.all_data, 0, start, end)
-                _, fix_start, fix_end = get_chunk(self.fix_data, 0, start, end)
-                ret.append(Dynamic_Segment(segid, self.all_data[all_start:all_end],
-                                           self.fix_data[fix_start:fix_end], aois=aoilist,
-                                           prune_length=prune_length))
-        return ret
+#    def process_dynamic(self, segfile = None, scenes = None,  aoifile = None, 
+#                        aoilist = None , prune_length = None, media_offset = (0,0)):
+#        """Processes the data for one recording (i.e, one complete experiment session)
+#        
+#                
+#        Args:
+#            segfile: If not None, a string containing the name of the segfile 
+#                with segment definitions in following format:
+#                <Scene_ID>\t<Segment_ID>\t<start time>\t<end time>\n
+#                e.g.:
+#                s1    seg1    0    5988013
+#                With one segment definition per line
+#            scenelist: If not None, a list of Scene objects
+#            *Note: Both segfile and scenelist cannot be None
+#                
+#            aoifile: If not None, a string conatining the name of the aoifile 
+#                with definitions of the "AOI"s.
+#            aoilist: If not None, a list of "AOI"s.
+#            *Note: if aoifile is not None, aoilist will be ignored
+#             
+#            prune_length: If not None, an integer that specifies the time 
+#                interval (in ms) from the begining of each segment in which
+#                samples are considered in calculations.  This can be used if, 
+#                for example, you only wish to consider data in the first 
+#                1000 ms of each segment. In this case (prune_length = 1000),
+#                all data beyond the first 1000ms of the start of the "Segment"s
+#                will be disregarded.
+#            
+#            require_valid_segs: a boolean flag determining whether invalid "Segment"s
+#                will be ignored when calculating the features or not. default = True
+#                 
+#            auto_partition_low_quality_segments: a boolean flag determining whether
+#                EMDAT should automatically split the "Segment"s which have low sample quality
+#                into two new ssub "Segment"s discarding the largest invalid sample gap in 
+#                the "Segment". default = False
+#        Returns:
+#            a list of Dynamic_Segment objects 
+#        """   
+#        if segfile != None:
+#            scenes = read_segs(segfile)
+#            print "Done reading the segments!"
+#        elif scenes == None:
+#            print "Error in scene file"
+#            
+#        ret = []
+#        
+#        if aoifile!= None:
+#            aoilist = read_aois_Tobii(aoifile)
+#            print "Done reading the AOIs!"
+#        elif aoilist == None:
+#            aoilist = []
+#            print "No AOIs defined!"
+#
+##        all_ind = 0
+##        fix_ind = 0
+#        for sc in scenes.values():
+#            for (segid, start, end) in sc:
+#                print "segid, start, end:",segid, start, end
+#                _, all_start, all_end = get_chunk(self.all_data, 0, start, end)
+#                _, fix_start, fix_end = get_chunk(self.fix_data, 0, start, end)
+#                ret.append(Dynamic_Segment(segid, self.all_data[all_start:all_end],
+#                                           self.fix_data[fix_start:fix_end], aois=aoilist,
+#                                           prune_length=prune_length))
+#        return ret
            
             
 

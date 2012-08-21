@@ -47,19 +47,19 @@ class Participant_CSP(Participant.Participant):
             return self.whole_scene.proportion_valid_fix >= threshold
 
                
-class Dydnamic_Participant_CSP(Participant_CSP):
-    def __init__(self, pid, eventfile, datafile, fixfile, aoifiles = None, prune_length= None):
-        
-        self.features={}
-        rec = Recording.Recording(datafile, fixfile, params.MEDIA_OFFSET)
-        scenelist,self.numofsegments,aoi_seqs = partition_CSP(eventfile)
-        if aoifiles != None:
-            aois = read_aois_Tobii_CSP(aoifiles,aoi_seqs)
-        else:
-            aois = None
-        self.features['numofsegments']= self.numofsegments
-        self.id = pid
-        self.Dynamic_segments, self.scenes = rec.process_dynamic(scenes = scenelist,aoilist= aois,prune_length = prune_length, media_offset = params.MEDIA_OFFSET)
+#class Dydnamic_Participant_CSP(Participant_CSP):
+#    def __init__(self, pid, eventfile, datafile, fixfile, aoifiles = None, prune_length= None):
+#        
+#        self.features={}
+#        rec = Recording.Recording(datafile, fixfile, params.MEDIA_OFFSET)
+#        scenelist,self.numofsegments,aoi_seqs = partition_CSP(eventfile)
+#        if aoifiles != None:
+#            aois = read_aois_Tobii_CSP(aoifiles,aoi_seqs)
+#        else:
+#            aois = None
+#        self.features['numofsegments']= self.numofsegments
+#        self.id = pid
+#        self.Dynamic_segments, self.scenes = rec.process_dynamic(scenes = scenelist,aoilist= aois,prune_length = prune_length, media_offset = params.MEDIA_OFFSET)
 
 def read_participants_CSP(datadir, user_list ,pids, prune_length = None, aoifiles = None, log_time_offsets=None, 
                           externaldatadir="", use_actions = True, require_valid_segs = True, auto_partition_low_quality_segments = False):
@@ -393,3 +393,15 @@ def read_aois_Tobii_CSP(aoifiles,aoi_seqs):
             aoilist.append(aoi)
 
     return aoilist
+
+class Action():
+    """
+    """
+    def __init__(self, actstr):
+        """
+        """
+        #Action TimeStartoffset
+        #print eventstr.split('\t')
+        [self.action, self.timestamp] = actstr.split('\t')
+        self.timestamp = cast_int(self.timestamp)
+        self.action = cast_int(self.action) #action is a nubmeric code!

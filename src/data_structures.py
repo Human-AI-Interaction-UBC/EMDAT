@@ -8,7 +8,7 @@ Basic data structures used in EMDAT
 """
 class Datapoint():
     """
-    A class that holds the infromation 
+    A class that holds the infromation for one eye data sample (one line of data logs) 
     """
     def __init__(self, data_point):
         """Inits Datapoint class with a line of gaze data from "all-Data.tsv" file
@@ -68,9 +68,6 @@ class Datapoint():
         self.segid = segid
     def get_segid(self):
         """Returns the "Segment" id for this Datapoint
-        
-        Args:
-            data_point: a string containing one line read from an "All-Data.tsv" file.
             
         Returns:
             a string containing the "Segment" id
@@ -87,12 +84,19 @@ class Datapoint():
 
 class Fixation():
     """
+    A class that holds the infromation for one Fixation representing one line in a "Fixation-Data.tsv" file
     """
+
     def __init__(self, fix_point, media_offset = (0, 0)):
-        """
+        """Inits Fixation class with a line of gaze data from a "Fixation-Data.tsv" file
+        
         Args:
-            fix_point: string. A line read from a "Fixation-Data.tsv" file.
+            fix_point: a string containing one line read from a "Fixation-Data.tsv" file
+            
+        Yields:
+            a Fixation object
         """
+
         #fix_point = fix_point.replace('\t\r\n','')
         [self.fixationindex, self.timestamp, self.fixationduration, self.mappedfixationpointx, self.mappedfixationpointy,_] = fix_point.split('\t')
         self.fixationindex = cast_int(self.fixationindex)
@@ -104,17 +108,37 @@ class Fixation():
         self.segid = None
         
     def set_segid(self,segid):
+        """Sets the "Segment" id for this Fixation
+        
+        Args:
+            segid: a string containing the "Segment" id
+        """
         self.segid = segid
     def get_segid(self):
+        """Returns the "Segment" id for this Fixation
+            
+        Returns:
+            a string containing the "Segment" id
+            
+        Raises:
+            Exception: if the segid is not set before reading it an Exception will be thrown
+        """
         if self.segid != None:
             return self.segid
         raise Exception('The segid is accessed before setting the initial value in a fixation point!')
 
 class Event():
     """
+    A class that holds the infromation for one Event representing one line in the an "Event-Data.tsv" file
     """
     def __init__(self, eventstr):
-        """
+        """Inits Event class with a line of gaze data from an "Event-Data.tsv" file
+        
+        Args:
+            eventstr: a string containing one line read from an "Event-Data.tsv" file
+            
+        Yields:
+            an Event object
         """
         #Timestamp    Event    EventKey    Data1    Data2    Descriptor
         #print eventstr.split('\t')
@@ -122,32 +146,17 @@ class Event():
         self.timestamp = cast_int(self.timestamp)
         self.eventKey = cast_int(self.eventKey)
 
-class Action():
-    """
-    """
-    def __init__(self, actstr):
-        """
-        """
-        #Action TimeStartoffset
-        #print eventstr.split('\t')
-        [self.action, self.timestamp] = actstr.split('\t')
-        self.timestamp = cast_int(self.timestamp)
-        self.action = cast_int(self.action) #action is a nubmeric code!
-            
-class Action2():
-    """
-    """
-    def __init__(self, actstr):
-        """
-        """
-        #Action TimeStartoffset
-        #print eventstr.split('\t')
-        [self.timeSincePre, self.timestamp, self.action] = actstr.split('\t')
-        self.timeSincePre = cast_int(self.timeSincePre)
-        self.timestamp = cast_int(self.timestamp)
-        self.action = cast_int(self.action) #action is a nubmeric code!
+
 
 def cast_int(str):
+    """a helper method for converting strings to their integer value
+    
+    Args:
+        str: a string containing a number
+    
+    Returns:
+        the integer value of the string given or None if not an integer
+    """
     try:
         v = int(str)
     except ValueError:
@@ -155,6 +164,14 @@ def cast_int(str):
     return v
 
 def cast_float(str):
+    """a helper method for converting strings to their float value
+    
+    Args:
+        str: a string containing a number
+    
+    Returns:
+        the float value of the string given or None if not a float
+    """
     try:
         v = float(str)
     except ValueError:
