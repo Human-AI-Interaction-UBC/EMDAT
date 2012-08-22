@@ -1,6 +1,8 @@
-'''
+"""
 UBC Eye Movement Data Analysys Toolkit
-'''
+
+Author: Nicholas FitzGerald - nicholas.fitzgerald@gmail.com
+"""
 import os, sys, math, random
 
 

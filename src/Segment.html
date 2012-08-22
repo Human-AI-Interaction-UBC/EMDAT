@@ -39,7 +39,41 @@ Created&nbsp;on&nbsp;2011-08-26<br>
 <td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#000000" face="helvetica, arial"><a name="Segment">class <strong>Segment</strong></a></font></td></tr>
     
-<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;<a href="#Segment">Segment</a>&nbsp;is&nbsp;a&nbsp;class&nbsp;that&nbsp;represent&nbsp;the&nbsp;smallest&nbsp;unit&nbsp;of&nbsp;aggregated&nbsp;eye&nbsp;data&nbsp;samples&nbsp;with&nbsp;a&nbsp;conceptual&nbsp;meaning.<br>
+&nbsp;<br>
+A&nbsp;segment&nbsp;is&nbsp;the&nbsp;smallest&nbsp;unit&nbsp;of&nbsp;aggregated&nbsp;eye&nbsp;data&nbsp;samples&nbsp;that&nbsp;has&nbsp;conceptual&nbsp;meaning.&nbsp;This&nbsp;class&nbsp;is&nbsp;equivalant<br>
+of&nbsp;segments&nbsp;as&nbsp;defined&nbsp;in&nbsp;Tobii&nbsp;studio.&nbsp;<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;segid:&nbsp;A&nbsp;string&nbsp;containing&nbsp;the&nbsp;id&nbsp;of&nbsp;the&nbsp;<a href="#Segment">Segment</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;alldata:&nbsp;A&nbsp;list&nbsp;of&nbsp;"Datapoint"s&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;features:&nbsp;A&nbsp;dict&nbsp;with&nbsp;feature&nbsp;names&nbsp;as&nbsp;its&nbsp;keys&nbsp;and&nbsp;feature&nbsp;values&nbsp;as&nbsp;its&nbsp;values&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;completion_time:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;total&nbsp;duration&nbsp;of&nbsp;the&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;milliseconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;minimum&nbsp;is&nbsp;16&nbsp;ms&nbsp;(ength&nbsp;of&nbsp;one&nbsp;sample&nbsp;with&nbsp;60Hz&nbsp;sampling&nbsp;rate&nbsp;(ms)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;start:An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;<a href="#Segment">Segment</a>'s&nbsp;start&nbsp;time&nbsp;in&nbsp;milliseconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;end:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;<a href="#Segment">Segment</a>'s&nbsp;end&nbsp;time&nbsp;in&nbsp;milliseconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sample_start_ind:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;first&nbsp;Datapoint&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;the&nbsp;Participant's&nbsp;list&nbsp;of&nbsp;all&nbsp;"Datapoint"s&nbsp;(all_data)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sample_end_ind:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;last&nbsp;Datapoint&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;the&nbsp;Participant's&nbsp;list&nbsp;of&nbsp;all&nbsp;"Datapoint"s&nbsp;(all_data)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixation_start_ind:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;first&nbsp;Fixation&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;the&nbsp;Participant's&nbsp;list&nbsp;of&nbsp;all&nbsp;"Fixation"s&nbsp;(fixation_data)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixation_end_ind:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;first&nbsp;Fixation&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;the&nbsp;Participant's&nbsp;list&nbsp;of&nbsp;all&nbsp;"Fixation"s&nbsp;(fixation_data)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;numfixations:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;number&nbsp;of&nbsp;"Fixation"s&nbsp;in&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;time_gaps:&nbsp;a&nbsp;list&nbsp;of&nbsp;tuples&nbsp;of&nbsp;the&nbsp;form&nbsp;(start,&nbsp;end)&nbsp;indicating&nbsp;the&nbsp;start&nbsp;and&nbsp;end&nbsp;of&nbsp;the&nbsp;gaps&nbsp;of&nbsp;invalid&nbsp;samples&nbsp;in&nbsp;the&nbsp;Segement's&nbsp;samples<br>
+&nbsp;&nbsp;&nbsp;&nbsp;largest_data_gap:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;length&nbsp;of&nbsp;largest&nbsp;invalid&nbsp;gap&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;milliseconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;proportion_valid:&nbsp;A&nbsp;float&nbsp;indicating&nbsp;the&nbsp;proportion&nbsp;of&nbsp;valid&nbsp;samples&nbsp;over&nbsp;all&nbsp;the&nbsp;samples&nbsp;in&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;proportion_valid_fix:&nbsp;A&nbsp;float&nbsp;indicating&nbsp;the&nbsp;proportion&nbsp;of&nbsp;(valid&nbsp;+&nbsp;restored)&nbsp;samples&nbsp;over&nbsp;all&nbsp;the&nbsp;samples&nbsp;in&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;validity1:&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;is&nbsp;valid&nbsp;using&nbsp;proportion&nbsp;of&nbsp;valid&nbsp;samples&nbsp;threshold&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;validity2:&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;is&nbsp;valid&nbsp;using&nbsp;largest&nbsp;acceptable&nbsp;gap&nbsp;threshold<br>
+&nbsp;&nbsp;&nbsp;&nbsp;validity3:&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;is&nbsp;valid&nbsp;using&nbsp;proportion&nbsp;of&nbsp;(valid&nbsp;+&nbsp;restored)&nbsp;samples&nbsp;threshold<br>
+&nbsp;&nbsp;&nbsp;&nbsp;is_valid:&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;is&nbsp;considered&nbsp;valid&nbsp;by&nbsp;the&nbsp;validity&nbsp;method&nbsp;indicated&nbsp;by&nbsp;params.VALIDITY_METHOD<br>
+&nbsp;&nbsp;&nbsp;&nbsp;length:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;total&nbsp;duration&nbsp;of&nbsp;the&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;milliseconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;numsamples:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;total&nbsp;number&nbsp;of&nbsp;samples&nbsp;in&nbsp;the&nbsp;<a href="#Segment">Segment</a>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixation_data:&nbsp;A&nbsp;list&nbsp;of&nbsp;"Fixation"s&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixation_start&nbsp;=&nbsp;fixation_data[0].timestamp<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixation_end&nbsp;=&nbsp;fixation_data[-1].timestamp<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoi_data:&nbsp;A&nbsp;list&nbsp;of&nbsp;AOI_Stat&nbsp;objects&nbsp;for&nbsp;relevants&nbsp;"AOI"s&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;has_aois:&nbsp;A&nbsp;boolean&nbsp;indicating&nbsp;if&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;has&nbsp;AOI&nbsp;features&nbsp;calculated&nbsp;for&nbsp;it<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="Segment-__init__"><strong>__init__</strong></a>(self, segid, all_data, fixation_data, aois<font color="#909090">=None</font>, prune_length<font color="#909090">=None</font>)</dt><dd><tt>Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;segid:&nbsp;A&nbsp;string&nbsp;containing&nbsp;the&nbsp;id&nbsp;of&nbsp;the&nbsp;<a href="#Segment">Segment</a>.<br>
@@ -58,51 +92,134 @@ Created&nbsp;on&nbsp;2011-08-26<br>
 Yields:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;<a href="#Segment">Segment</a>&nbsp;object</tt></dd></dl>
 
-<dl><dt><a name="Segment-calc_abs_angles"><strong>calc_abs_angles</strong></a>(self, fixdata)</dt></dl>
-
-<dl><dt><a name="Segment-calc_distances"><strong>calc_distances</strong></a>(self, fixdata)</dt><dd><tt>Calculate&nbsp;the&nbsp;Euclidean&nbsp;distances&nbsp;between&nbsp;subsequent&nbsp;L{Fixations&lt;Fixation.Fixation&gt;}.<br>
+<dl><dt><a name="Segment-calc_abs_angles"><strong>calc_abs_angles</strong></a>(self, fixdata)</dt><dd><tt>returns&nbsp;the&nbsp;absolute&nbsp;angles&nbsp;between&nbsp;a&nbsp;sequence&nbsp;of&nbsp;"Fixation"s&nbsp;that&nbsp;build&nbsp;a&nbsp;scan&nbsp;path.<br>
 &nbsp;<br>
-@type&nbsp;fixdata:&nbsp;Array&nbsp;of&nbsp;L{Fixations&lt;Fixation.Fixation&gt;}.<br>
-@param&nbsp;fixdata:&nbsp;The&nbsp;array&nbsp;of&nbsp;L{Fixations&lt;Fixation.Fixation&gt;}.</tt></dd></dl>
+Abosolute&nbsp;angle&nbsp;for&nbsp;each&nbsp;saccade&nbsp;is&nbsp;the&nbsp;angle&nbsp;between&nbsp;that&nbsp;saccade&nbsp;and&nbsp;the&nbsp;horizental&nbsp;axis<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixdata:&nbsp;a&nbsp;list&nbsp;of&nbsp;"Fixation"s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;absolute&nbsp;angles&nbsp;for&nbsp;the&nbsp;saccades&nbsp;formed&nbsp;by&nbsp;the&nbsp;given&nbsp;sequence&nbsp;of&nbsp;"Fixation"s&nbsp;in&nbsp;Radiant</tt></dd></dl>
 
-<dl><dt><a name="Segment-calc_largest_validity_gap"><strong>calc_largest_validity_gap</strong></a>(self, all_data)</dt></dl>
+<dl><dt><a name="Segment-calc_distances"><strong>calc_distances</strong></a>(self, fixdata)</dt><dd><tt>returns&nbsp;the&nbsp;Euclidean&nbsp;distances&nbsp;between&nbsp;a&nbsp;sequence&nbsp;of&nbsp;"Fixation"s<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixdata:&nbsp;a&nbsp;list&nbsp;of&nbsp;"Fixation"s</tt></dd></dl>
 
-<dl><dt><a name="Segment-calc_num_samples"><strong>calc_num_samples</strong></a>(self, all_data)</dt></dl>
+<dl><dt><a name="Segment-calc_largest_validity_gap"><strong>calc_largest_validity_gap</strong></a>(self, all_data)</dt><dd><tt>Calculates&nbsp;the&nbsp;largest&nbsp;gap&nbsp;of&nbsp;invalid&nbsp;samples&nbsp;in&nbsp;the&nbsp;"Datapoint"s&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;all_data:&nbsp;The&nbsp;list&nbsp;of&nbsp;"Datapoint"s&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;Segement<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;length&nbsp;of&nbsp;largest&nbsp;invalid&nbsp;gap&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;milliseconds</tt></dd></dl>
 
-<dl><dt><a name="Segment-calc_rel_angles"><strong>calc_rel_angles</strong></a>(self, fixdata)</dt></dl>
+<dl><dt><a name="Segment-calc_num_samples"><strong>calc_num_samples</strong></a>(self, all_data)</dt><dd><tt>Returns&nbsp;the&nbsp;number&nbsp;of&nbsp;samples&nbsp;in&nbsp;the&nbsp;<a href="#Segment">Segment</a><br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;all_data:&nbsp;a&nbsp;list&nbsp;of&nbsp;"Datapoint"s&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;<a href="#Segment">Segment</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;An&nbsp;integer&nbsp;determining&nbsp;the&nbsp;number&nbsp;of&nbsp;samples&nbsp;in&nbsp;the&nbsp;<a href="#Segment">Segment</a></tt></dd></dl>
 
-<dl><dt><a name="Segment-calc_validity1"><strong>calc_validity1</strong></a>(self, threshold<font color="#909090">=0.84999999999999998</font>)</dt></dl>
+<dl><dt><a name="Segment-calc_rel_angles"><strong>calc_rel_angles</strong></a>(self, fixdata)</dt><dd><tt>returns&nbsp;the&nbsp;relative&nbsp;angles&nbsp;between&nbsp;a&nbsp;sequence&nbsp;of&nbsp;"Fixation"s&nbsp;that&nbsp;build&nbsp;a&nbsp;scan&nbsp;path&nbsp;in&nbsp;Radiant<br>
+&nbsp;<br>
+Relative&nbsp;angle&nbsp;for&nbsp;each&nbsp;saccade&nbsp;is&nbsp;the&nbsp;angle&nbsp;between&nbsp;that&nbsp;saccade&nbsp;and&nbsp;the&nbsp;previous&nbsp;saccade.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixdata:&nbsp;a&nbsp;list&nbsp;of&nbsp;"Fixation"s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;relative&nbsp;angles&nbsp;for&nbsp;the&nbsp;saccades&nbsp;formed&nbsp;by&nbsp;the&nbsp;given&nbsp;sequence&nbsp;of&nbsp;"Fixation"s&nbsp;in&nbsp;Radiant</tt></dd></dl>
 
-<dl><dt><a name="Segment-calc_validity2"><strong>calc_validity2</strong></a>(self, threshold<font color="#909090">=3000</font>)</dt></dl>
+<dl><dt><a name="Segment-calc_validity1"><strong>calc_validity1</strong></a>(self, threshold<font color="#909090">=0.84999999999999998</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;is&nbsp;valid&nbsp;using&nbsp;proportion&nbsp;of&nbsp;valid&nbsp;samples&nbsp;threshold<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;threshold:</tt></dd></dl>
 
-<dl><dt><a name="Segment-calc_validity3"><strong>calc_validity3</strong></a>(self, threshold<font color="#909090">=0.84999999999999998</font>)</dt></dl>
+<dl><dt><a name="Segment-calc_validity2"><strong>calc_validity2</strong></a>(self, threshold<font color="#909090">=3000</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;is&nbsp;valid&nbsp;using&nbsp;largest&nbsp;acceptable&nbsp;gap&nbsp;threshold</tt></dd></dl>
 
-<dl><dt><a name="Segment-calc_validity_fixation"><strong>calc_validity_fixation</strong></a>(self, all_data)</dt><dd><tt>Calculate&nbsp;the&nbsp;proportion&nbsp;of&nbsp;datapoints&nbsp;which&nbsp;are&nbsp;part&nbsp;of&nbsp;a&nbsp;valid&nbsp;fixation.<br>
-@type&nbsp;all_data:&nbsp;array&nbsp;of&nbsp;L{Datapoints&lt;Datapoint.Datapoint&gt;}<br>
-@param&nbsp;all_data:&nbsp;The&nbsp;datapoints&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;Trial.</tt></dd></dl>
+<dl><dt><a name="Segment-calc_validity3"><strong>calc_validity3</strong></a>(self, threshold<font color="#909090">=0.84999999999999998</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;is&nbsp;valid&nbsp;using&nbsp;proportion&nbsp;of&nbsp;(valid&nbsp;+&nbsp;restored)&nbsp;samples&nbsp;threshold</tt></dd></dl>
 
-<dl><dt><a name="Segment-calc_validity_proportion"><strong>calc_validity_proportion</strong></a>(self, all_data)</dt><dd><tt>Calculate&nbsp;the&nbsp;proportion&nbsp;of&nbsp;datapoints&nbsp;which&nbsp;are&nbsp;valid.<br>
-@type&nbsp;all_data:&nbsp;array&nbsp;of&nbsp;L{Datapoints&lt;Datapoint.Datapoint&gt;}<br>
-@param&nbsp;all_data:&nbsp;The&nbsp;datapoints&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;Trial.</tt></dd></dl>
+<dl><dt><a name="Segment-calc_validity_fixation"><strong>calc_validity_fixation</strong></a>(self, all_data)</dt><dd><tt>Calculates&nbsp;the&nbsp;proportion&nbsp;of&nbsp;(valid&nbsp;+&nbsp;restored)&nbsp;"Datapoint"s&nbsp;over&nbsp;all&nbsp;"Datapoint"s&nbsp;of&nbsp;the&nbsp;<a href="#Segment">Segment</a>.<br>
+&nbsp;<br>
+Restored&nbsp;samples&nbsp;are&nbsp;the&nbsp;samples&nbsp;which&nbsp;are&nbsp;not&nbsp;valid&nbsp;but&nbsp;they&nbsp;are&nbsp;part&nbsp;of&nbsp;a&nbsp;Fixation.<br>
+The&nbsp;idea&nbsp;is&nbsp;that&nbsp;if&nbsp;the&nbsp;user&nbsp;was&nbsp;looking&nbsp;at&nbsp;a&nbsp;certain&nbsp;point&nbsp;and&nbsp;then&nbsp;we&nbsp;loose&nbsp;the&nbsp;eye&nbsp;data&nbsp;for&nbsp;<br>
+a&nbsp;short&nbsp;period&nbsp;of&nbsp;time&nbsp;and&nbsp;afterwards&nbsp;the&nbsp;user&nbsp;is&nbsp;looking&nbsp;at&nbsp;the&nbsp;same&nbsp;point&nbsp;we&nbsp;can&nbsp;assume&nbsp;that&nbsp;user<br>
+was&nbsp;looking&nbsp;at&nbsp;that&nbsp;same&nbsp;point&nbsp;during&nbsp;that&nbsp;period.&nbsp;<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;all_data:&nbsp;The&nbsp;list&nbsp;of&nbsp;"Datapoint"s&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;Segement<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;float&nbsp;indicating&nbsp;the&nbsp;proportion&nbsp;of&nbsp;(valid&nbsp;+&nbsp;restored)&nbsp;samples&nbsp;over&nbsp;all&nbsp;the&nbsp;samples&nbsp;in&nbsp;this&nbsp;<a href="#Segment">Segment</a></tt></dd></dl>
 
-<dl><dt><a name="Segment-get_features"><strong>get_features</strong></a>(self, featurelist<font color="#909090">=None</font>, aoifeaturelist<font color="#909090">=None</font>, aoifeaturelabels<font color="#909090">=None</font>)</dt></dl>
+<dl><dt><a name="Segment-calc_validity_proportion"><strong>calc_validity_proportion</strong></a>(self, all_data)</dt><dd><tt>Calculates&nbsp;the&nbsp;proportion&nbsp;of&nbsp;"Datapoint"s&nbsp;which&nbsp;are&nbsp;valid.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;all_data:&nbsp;The&nbsp;list&nbsp;of&nbsp;"Datapoint"s&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;Segement<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;float&nbsp;indicating&nbsp;the&nbsp;proportion&nbsp;of&nbsp;valid&nbsp;samples&nbsp;over&nbsp;all&nbsp;the&nbsp;samples&nbsp;in&nbsp;this&nbsp;<a href="#Segment">Segment</a></tt></dd></dl>
 
-<dl><dt><a name="Segment-get_indices"><strong>get_indices</strong></a>(self)</dt></dl>
+<dl><dt><a name="Segment-get_features"><strong>get_features</strong></a>(self, featurelist<font color="#909090">=None</font>, aoifeaturelist<font color="#909090">=None</font>, aoifeaturelabels<font color="#909090">=None</font>)</dt><dd><tt>Returns&nbsp;feature&nbsp;names&nbsp;and&nbsp;their&nbsp;values&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featurelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;features&nbsp;to&nbsp;be&nbsp;returned.&nbsp;If&nbsp;this&nbsp;is&nbsp;None&nbsp;all&nbsp;features&nbsp;will&nbsp;be&nbsp;returned<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoifeaturelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;features&nbsp;to&nbsp;be&nbsp;returned&nbsp;for&nbsp;each&nbsp;of&nbsp;the&nbsp;"AOI"s&nbsp;relevant&nbsp;to&nbsp;this&nbsp;<a href="#Segment">Segment</a>.&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoifeaturelabels:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;AOI&nbsp;related&nbsp;features&nbsp;to&nbsp;be&nbsp;returned.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*Note:&nbsp;while&nbsp;aoifeaturelist&nbsp;is&nbsp;a&nbsp;subset&nbsp;of&nbsp;features&nbsp;that&nbsp;will&nbsp;be&nbsp;returned&nbsp;for&nbsp;all&nbsp;relevant&nbsp;"AOI"s,&nbsp;aoifeaturelabels&nbsp;contains&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;exact&nbsp;AOI&nbsp;feature&nbsp;name,&nbsp;i.e.,&nbsp;a&nbsp;feature&nbsp;of&nbsp;the&nbsp;form:&nbsp;[AOI&nbsp;name]_[feature&nbsp;name]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;For&nbsp;example&nbsp;if&nbsp;an&nbsp;AOI&nbsp;called&nbsp;'graph'&nbsp;is&nbsp;releveant&nbsp;to&nbsp;this&nbsp;<a href="#Segment">Segment</a>,&nbsp;aoifeaturelabels&nbsp;may&nbsp;contain&nbsp;'graph_fixationrate'&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featnames:&nbsp;a&nbsp;list&nbsp;of&nbsp;feature&nbsp;names&nbsp;sorted&nbsp;alphabetically<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featvals:&nbsp;a&nbsp;corrsponding&nbsp;list&nbsp;of&nbsp;feature&nbsp;values<br>
+&nbsp;&nbsp;&nbsp;&nbsp;e.g.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featnames&nbsp;=&nbsp;['fixationrate',&nbsp;'length',&nbsp;'meanabspathangles']<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featvals&nbsp;&nbsp;=&nbsp;[0.00268522882294',&nbsp;'1529851',&nbsp;'1.60354714212']</tt></dd></dl>
 
-<dl><dt><a name="Segment-get_validity"><strong>get_validity</strong></a>(self)</dt></dl>
+<dl><dt><a name="Segment-get_indices"><strong>get_indices</strong></a>(self)</dt><dd><tt>Returns&nbsp;the&nbsp;index&nbsp;features<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;first&nbsp;Datapoint&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;the&nbsp;Participant's&nbsp;list&nbsp;of&nbsp;all&nbsp;"Datapoint"s&nbsp;(all_data)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;last&nbsp;Datapoint&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;the&nbsp;Participant's&nbsp;list&nbsp;of&nbsp;all&nbsp;"Datapoint"s&nbsp;(all_data)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;first&nbsp;Fixation&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;the&nbsp;Participant's&nbsp;list&nbsp;of&nbsp;all&nbsp;"Fixation"s&nbsp;(fixation_data)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;first&nbsp;Fixation&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;the&nbsp;Participant's&nbsp;list&nbsp;of&nbsp;all&nbsp;"Fixation"s&nbsp;(fixation_data)&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Exception:&nbsp;An&nbsp;exception&nbsp;is&nbsp;thrown&nbsp;if&nbsp;the&nbsp;values&nbsp;are&nbsp;read&nbsp;before&nbsp;initialization</tt></dd></dl>
 
-<dl><dt><a name="Segment-getgaps"><strong>getgaps</strong></a>(self)</dt></dl>
+<dl><dt><a name="Segment-get_validity"><strong>get_validity</strong></a>(self)</dt><dd><tt>Determines&nbsp;if&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;is&nbsp;valid&nbsp;with&nbsp;the&nbsp;given&nbsp;validity&nbsp;method&nbsp;set&nbsp;in&nbsp;params.VALIDITY_METHOD<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;is&nbsp;valid</tt></dd></dl>
 
-<dl><dt><a name="Segment-getid"><strong>getid</strong></a>(self)</dt></dl>
+<dl><dt><a name="Segment-getgaps"><strong>getgaps</strong></a>(self)</dt><dd><tt>Returns&nbsp;the&nbsp;list&nbsp;of&nbsp;invalid&nbsp;gaps&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;invalid&nbsp;gaps&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a></tt></dd></dl>
 
-<dl><dt><a name="Segment-print_"><strong>print_</strong></a>(self)</dt></dl>
+<dl><dt><a name="Segment-getid"><strong>getid</strong></a>(self)</dt><dd><tt>Returns&nbsp;the&nbsp;segid&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
+&nbsp;<br>
+Returns:&nbsp;a&nbsp;string&nbsp;conataining&nbsp;the&nbsp;segid&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a></tt></dd></dl>
 
-<dl><dt><a name="Segment-set_aois"><strong>set_aois</strong></a>(self, aois, fixation_data)</dt><dd><tt>@type&nbsp;fixation_data:&nbsp;array&nbsp;of&nbsp;L{Fixations&lt;Datapoint.Fixation&gt;}<br>
-@param&nbsp;fixation_data:&nbsp;The&nbsp;fixations&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;segement.<br>
-@type&nbsp;aois:&nbsp;array&nbsp;of&nbsp;L{AOIs&lt;AOI.AOI&gt;}<br>
-@param&nbsp;aois:&nbsp;The&nbsp;AOIs&nbsp;relevant&nbsp;to&nbsp;this&nbsp;segement</tt></dd></dl>
+<dl><dt><a name="Segment-print_"><strong>print_</strong></a>(self)</dt><dd><tt>Ourputs&nbsp;all&nbsp;feature&nbsp;names&nbsp;and&nbsp;their&nbsp;values&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;on&nbsp;the&nbsp;console</tt></dd></dl>
 
-<dl><dt><a name="Segment-set_indices"><strong>set_indices</strong></a>(self, sample_st, sample_end, fix_st, fix_end)</dt></dl>
+<dl><dt><a name="Segment-set_aois"><strong>set_aois</strong></a>(self, aois, fixation_data)</dt><dd><tt>Sets&nbsp;the&nbsp;relevant&nbsp;"AOI"s&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixation_data:&nbsp;The&nbsp;list&nbsp;of&nbsp;"Fixation"s&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;Segement<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aois:&nbsp;a&nbsp;list&nbsp;of&nbsp;"AOI"s&nbsp;relevant&nbsp;to&nbsp;this&nbsp;segement</tt></dd></dl>
+
+<dl><dt><a name="Segment-set_indices"><strong>set_indices</strong></a>(self, sample_st, sample_end, fix_st, fix_end)</dt><dd><tt>Sets&nbsp;the&nbsp;index&nbsp;features<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sample_st:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;first&nbsp;Datapoint&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;the&nbsp;Participant's&nbsp;list&nbsp;of&nbsp;all&nbsp;"Datapoint"s&nbsp;(all_data)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sample_end:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;last&nbsp;Datapoint&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;the&nbsp;Participant's&nbsp;list&nbsp;of&nbsp;all&nbsp;"Datapoint"s&nbsp;(all_data)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fix_st:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;first&nbsp;Fixation&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;the&nbsp;Participant's&nbsp;list&nbsp;of&nbsp;all&nbsp;"Fixation"s&nbsp;(fixation_data)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fix_st:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;first&nbsp;Fixation&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;the&nbsp;Participant's&nbsp;list&nbsp;of&nbsp;all&nbsp;"Fixation"s&nbsp;(fixation_data)</tt></dd></dl>
 
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">

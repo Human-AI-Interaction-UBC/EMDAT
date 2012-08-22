@@ -63,7 +63,30 @@ class Participant():
 
     def export_features(self, featurelist=None, aoifeaturelist=None, aoifeaturelabels = None,
                         id_prefix = False, require_valid = True):
-        """
+        """Returns feature names and their values for this Participant
+        
+        Args:
+            featurelist: if not None, a lsit of strings containing the name of the features to be
+                returned
+            
+            aoifeaturelist: if not None, a list of features to be returned for each of the "AOI"s. 
+            aoifeaturelabels: if not None, a list of AOI related features to be returned.
+            *Note: while aoifeaturelist is a subset of features that will be returned for all 
+            "AOI"s, aoifeaturelabels contains the exact AOI feature name, i.e., a feature
+            of the form: [AOI name]_[feature name]
+            For example for an AOI called 'graph', aoifeaturelabels may contain 'graph_fixationrate'  
+
+            id_prefix: a boolean determining if the method should also export the participant id 
+            
+            require_valid: a boolean determining if only valid segments should be used when
+            calculating the features. default = True
+            
+        Returns:
+            featnames: a list of feature names sorted alphabetically
+            featvals: a corrsponding list of feature values
+            e.g.
+            featnames = ['fixationrate', 'length', 'meanabspathangles']
+            featvals  = [0.00268522882294', '1529851', '1.60354714212']
         """
         data = []
         featnames = []
@@ -91,10 +114,29 @@ class Participant():
 
     def export_features_tsv(self, featurelist=None, aoifeaturelist=None, id_prefix = False, 
                             require_valid = True):
+        """Returns feature names and their values for this Participant in a tab separated format
+        
+        Args:
+            featurelist: if not None, a lsit of strings containing the name of the features to be
+                returned
+            
+            aoifeaturelist: if not None, a list of features to be returned for each of the "AOI"s. 
+
+            id_prefix: a boolean determining if the method should also export the participant id 
+            
+            require_valid: a boolean determining if only valid segments should be used when
+            calculating the features. default = True
+            
+        Returns:
+            A two-line string with the first line having the feature names sorted alphabetically
+            and separated by a tab '/t', and the second line containing the corresponding values
+            separated by a tab '/t'
+            For example:
+            fixationrate    length    meanabspathangles
+            0.00268522882294    1529851    1.60354714212
+        """
         featnames, data  = self.export_features(featurelist, aoifeaturelist = aoifeaturelist, 
                                                 id_prefix = id_prefix, require_valid = require_valid)
-        """
-        """
 
         ret = string.join(featnames, '\t') + '\n'
         for t in data:
@@ -102,7 +144,7 @@ class Participant():
         return ret
     
     def print_(self):
-        """
+        """Ourputs all feature names and their values for this Participant on the console        
         """       
         def format_list(list,leng=None):
             """
@@ -155,15 +197,40 @@ class Participant():
     
 
 def read_participants(segsdir, datadir, prune_length = None, aoifile = None):
-    """
+    """Placeholder for a method that generates Participant objects for each participant 
+    in the experiment 
     """
     participants = []
-    raise Exception("override read_participants")
+    raise Exception("You should override the default Participant.read_participants method!")
     return participants
 
 def export_features_all(participants, featurelist = None, aoifeaturelist = None, aoifeaturelabels=None,
                          id_prefix = False, require_valid = True):
-    """
+    """Returns feature names and their values for a list of "Participant"s
+    
+    Args:
+        participants: a list of "Participant"s
+        featurelist: if not None, a lsit of strings containing the name of the features to be
+            returned
+        
+        aoifeaturelist: if not None, a list of features to be returned for each of the "AOI"s. 
+        aoifeaturelabels: if not None, a list of AOI related features to be returned.
+        *Note: while aoifeaturelist is a subset of features that will be returned for all 
+        "AOI"s, aoifeaturelabels contains the exact AOI feature name, i.e., a feature
+        of the form: [AOI name]_[feature name]
+        For example for an AOI called 'graph', aoifeaturelabels may contain 'graph_fixationrate'  
+
+        id_prefix: a boolean determining if the method should also export the participant id 
+        
+        require_valid: a boolean determining if only valid segments should be used when
+        calculating the features. default = True
+        
+    Returns:
+        featnames: a list of feature names sorted alphabetically
+        featvals: a corrsponding list of feature values
+        e.g.
+        featnames = ['fixationrate', 'length', 'meanabspathangles']
+        featvals  = [0.00268522882294', '1529851', '1.60354714212']
     """
     data = []
     featnames = []
@@ -184,14 +251,29 @@ def export_features_all(participants, featurelist = None, aoifeaturelist = None,
 
 def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist =  None, 
                        aoifeaturelabels=None, id_prefix = False):
-    """
+    """Returns feature names and their values for a list of "Participant"s in a tsv file
+    
+    This method writes to a multi-line tab separated values (tsv) file with the first 
+    line having the feature names sorted alphabetically and separated by a tab '/t',
+    and the rest of the lines containing the corresponding values for each participant
+    separated by a tab '/t'
+    For example:
+    fixationrate    length    meanabspathangles
+    0.0026852294    1529851    1.60354714212
+    0.00456324344    453455    1.74324423
+    
     Args:
-        participants:
-        outfile:
-        featurelist: If not None,
-        aoifeaturelist: If not None,
-        aoifeaturelabels: If not None,
-        id_prefix:    default value = False
+        participants: a list of "Participant"s
+        outfile: a string containing the name of the output file
+        featurelist: if not None, a lsit of strings containing the name of the features to be
+            returned
+        
+        aoifeaturelist: if not None, a list of features to be returned for each of the "AOI"s. 
+
+        id_prefix: a boolean determining if the method should also export the participant id 
+        
+        require_valid: a boolean determining if only valid segments should be used when
+        calculating the features. default = True
     """
     fnames, fvals = export_features_all(participants, featurelist =  featurelist, 
                                         aoifeaturelabels = aoifeaturelabels,
@@ -202,21 +284,27 @@ def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist
         for l in fvals:
             f.write(string.join(map(str, l), '\t') + '\n')
 
-def partition(eventfile):
+def partition(externallogfile):
     """
-    Generates the scenes based on the events log
+    Placeholder for a method that generates the scenes based on some external log files and/or 'Event-Data.tsv" files
     """
+    raise Exception("You should override the default Participant.partition method!")
     return
 
 def test_validity():
+    """
+    Placeholder for a method that tests the quality of the eye data for each Participant
+    """
     return
 
 def read_events(evfile):
-    """Returns a list Event objects read from 'Event-Data.tsv' file.
+    """Returns a list of Event objects read from an 'Event-Data.tsv' file.
 
-    @type all_file: str
-    @param all_file: The filename of the 'Event-Data.tsv' file output by the
-    Tobii software.
+    Args:
+        evfile: a string containing the name of the 'Event-Data.tsv' file
+    
+    Returns:
+        a list of Event objects
     """
     with open(evfile, 'r') as f:
         lines = f.readlines()

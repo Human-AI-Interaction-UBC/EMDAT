@@ -12,10 +12,45 @@ from copy import deepcopy
 
 
 class Scene(Segment):
-    """
+    """A Scene is a class that represent one scene in the experiment.
+    
     A Scene is a class that represent one scene in the experiment. The Scene is designed to capture all "Datapoint"s related to a terget
     conceptual entity in the experiment. A Scene should have at least one Segment assigned to it. The Scene class is also used to 
-    combine multiple "Segment"s and calculate the aggregated statistics for this new entity as a whole.
+    combine multiple "Segment"s and calculate the aggregated statistics for this new entity as a whole. This class is equivalant
+    of scenes as defined in Tobii studio.
+    
+    Attributes:
+        scid: a string conatinihg the Scene ids
+        segments: a list of "Segment"s fior this Scene
+        
+    Attributes inherited from Segment:
+        alldata: A list of "Datapoint"s for this Scene
+        features: A dict with feature names as its keys and feature values as its values 
+        completion_time: An integer indicating total duration of the Scene in milliseconds
+            minimum is 16 ms (ength of one sample with 60Hz sampling rate (ms)
+        start:An integer indicating the Scene's start time in milliseconds
+        end: An integer indicating the Scene's end time in milliseconds
+        sample_start_ind: An integer indicating the index of the first Datapoint for this Scene in the Participant's list of all "Datapoint"s (all_data) 
+        sample_end_ind: An integer indicating the index of the last Datapoint for this Scene in the Participant's list of all "Datapoint"s (all_data)
+        fixation_start_ind: An integer indicating the index of the first Fixation for this Scene in the Participant's list of all "Fixation"s (fixation_data)
+        fixation_end_ind: An integer indicating the index of the first Fixation for this Scene in the Participant's list of all "Fixation"s (fixation_data)
+        numfixations: An integer indicating the number of "Fixation"s in this Scene
+        time_gaps: a list of tuples of the form (start, end) indicating the start and end of the gaps of invalid samples in the Segement's samples
+        largest_data_gap: An integer indicating the length of largest invalid gap for this Scene in milliseconds
+        proportion_valid: A float indicating the proportion of valid samples over all the samples in this Scene
+        proportion_valid_fix: A float indicating the proportion of (valid + restored) samples over all the samples in this Scene 
+        validity1: a boolean indicating whether this Scene is valid using proportion of valid samples threshold 
+        validity2: a boolean indicating whether this Scene is valid using largest acceptable gap threshold
+        validity3: a boolean indicating whether this Scene is valid using proportion of (valid + restored) samples threshold
+        is_valid: a boolean indicating whether this Scene is considered valid by the validity method indicated by params.VALIDITY_METHOD
+        length: An integer indicating total duration of the Scene in milliseconds
+        numsamples: An integer indicating total number of samples in the Scene 
+        fixation_data: A list of "Fixation"s for this Scene
+        fixation_start = fixation_data[0].timestamp
+        fixation_end = fixation_data[-1].timestamp
+        aoi_data: A list of AOI_Stat objects for relevants "AOI"s for this Scene
+        has_aois: A boolean indicating if this Scene has AOI features calculated for it
+        
     """
 
                 
@@ -75,6 +110,15 @@ class Scene(Segment):
                 seg_start: An integer showing the start time of the segment in milliseconds
                 
                 seg_end: An integer showing the end time of the segment in milliseconds 
+            
+            Returns:
+                subsegments: a list of newly generated "Segment"s
+                
+                samp_inds: a list of tuples of the form (start, end) that detrmines the index of the strat and end of each 
+                    new Segment in the old Segment's all_data field
+                    
+                fix_inds: a list of tuples of the form (start, end) that detrmines the index of the strat and end of each 
+                    new Segment in the old Segment's fixation_data field
             """
             timegaps = new_seg.getgaps()
             subsegments = []
@@ -229,6 +273,10 @@ class Scene(Segment):
             self.set_aois(segments, aoilist)
             
     def getid(self):
+        """Returns the scid for this Scene
+        
+        Returns: a string conataining the scid for this Scene
+        """
         return self.scid
     
     def set_aois(self, segments, aois):
@@ -264,7 +312,7 @@ class Scene(Segment):
         """returns the Euclidean distances between a sequence of "Fixation"s
     
         Args:
-            fixdatalists: a list of "Fixation"s
+            fixdatalists: a list of lists of "Fixation"s
         """
         distances = []
         for fixdata in fixdatalists:
@@ -289,7 +337,7 @@ class Scene(Segment):
         Abosolute angle for each saccade is the angle between that saccade and the horizental axis
     
         Args:
-            fixdatalists: a list of "Fixation"s
+            fixdatalists: a list of lists of "Fixation"s
             
         Returns:
             a list of absolute angles for the saccades formed by the given sequence of "Fixation"s in Radiant
@@ -317,7 +365,7 @@ class Scene(Segment):
         Relative angle for each saccade is the angle between that saccade and the previous saccade.
     
         Args:
-            fixdatalists: a list of "Fixation"s
+            fixdatalists: a list of lists of  "Fixation"s
             
         Returns:
             a list of relative angles for the saccades formed by the given sequence of "Fixation"s in Radiant

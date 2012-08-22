@@ -8,12 +8,18 @@ from data_structures import Fixation
 import params
 import math
 
-# Determine if a point is inside a given polygon or not
-# Polygon is a list of (x,y) pairs. This fuction
-# returns True or False.  The algorithm is called
-# "Ray Casting Method".
 
 def point_inside_polygon(x,y,poly):
+    """Determines if a point is inside a given polygon or not
+    
+        The algorithm is called "Ray Casting Method".
+        
+    Args:
+        poly: is a list of (x,y) pairs defining the polgon 
+        
+    Returns:
+        True or False.
+    """
     n = len(poly)
     
     if n==0:
@@ -36,10 +42,18 @@ def point_inside_polygon(x,y,poly):
     return inside   
 
 def get_chunk(data, ind, start, end):
-    '''
-    data, ind, start, end
-    curr_ind, start_ind, end_ind
-    '''
+    """
+    Args:
+        data: 
+        ind
+        start
+        end
+        
+    Returns:
+        curr_ind
+        start_ind
+        end_ind
+    """
     datalen = len(data)
     curr_ind = ind
     if isinstance(data[curr_ind],Fixation): #if it is a fixation
@@ -96,12 +110,28 @@ def get_chunk(data, ind, start, end):
     return curr_ind, start_ind, end_ind
 
 def stddev(data):
+    """Returns the standard deviation of a list of numbers
+    
+    Args:
+        data: a list of numbers
+    
+    returns:
+        a float that is the std deviation of the list of numbers or NAN if it is undefined
+    """
     if len(data)< 2:
         return float('nan')
     m = mean(data)
     return math.sqrt(sum(map(lambda x: (x-m)**2, data))/float(len(data)-1))
     
 def mean(data):
+    """Returns the average of a list of numbers
+    
+    Args:
+        data: a list of numbers
+    
+    returns:
+        a float that is the average of the list of numbers
+    """
     if len(data)==0:
         return 0
     return sum(data) / float(len(data))

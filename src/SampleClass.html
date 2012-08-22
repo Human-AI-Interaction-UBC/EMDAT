@@ -36,51 +36,19 @@ Created&nbsp;on&nbsp;2011-08-26<br>
 </font></dt><dd>
 <dl>
 <dt><font face="helvetica, arial"><a href="SampleClass.html#Participant_CSP">Participant_CSP</a>
-</font></dt><dd>
-<dl>
-<dt><font face="helvetica, arial"><a href="SampleClass.html#Dydnamic_Participant_CSP">Dydnamic_Participant_CSP</a>
 </font></dt></dl>
 </dd>
-</dl>
-</dd>
-</dl>
+<dt><font face="helvetica, arial"><a href="SampleClass.html#Action">Action</a>
+</font></dt></dl>
  <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ffc8d8">
 <td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#000000" face="helvetica, arial"><a name="Dydnamic_Participant_CSP">class <strong>Dydnamic_Participant_CSP</strong></a>(<a href="SampleClass.html#Participant_CSP">Participant_CSP</a>)</font></td></tr>
+<font color="#000000" face="helvetica, arial"><a name="Action">class <strong>Action</strong></a></font></td></tr>
     
 <tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt>Method resolution order:</dt>
-<dd><a href="SampleClass.html#Dydnamic_Participant_CSP">Dydnamic_Participant_CSP</a></dd>
-<dd><a href="SampleClass.html#Participant_CSP">Participant_CSP</a></dd>
-<dd><a href="Participant.html#Participant">Participant.Participant</a></dd>
-</dl>
-<hr>
-Methods defined here:<br>
-<dl><dt><a name="Dydnamic_Participant_CSP-__init__"><strong>__init__</strong></a>(self, pid, eventfile, datafile, fixfile, aoifiles<font color="#909090">=None</font>, prune_length<font color="#909090">=None</font>)</dt></dl>
-
-<hr>
-Methods inherited from <a href="SampleClass.html#Participant_CSP">Participant_CSP</a>:<br>
-<dl><dt><a name="Dydnamic_Participant_CSP-is_valid"><strong>is_valid</strong></a>(self, threshold<font color="#909090">=None</font>)</dt></dl>
-
-<hr>
-Methods inherited from <a href="Participant.html#Participant">Participant.Participant</a>:<br>
-<dl><dt><a name="Dydnamic_Participant_CSP-export_features"><strong>export_features</strong></a>(self, featurelist<font color="#909090">=None</font>, aoifeaturelist<font color="#909090">=None</font>, aoifeaturelabels<font color="#909090">=None</font>, id_prefix<font color="#909090">=False</font>, require_valid<font color="#909090">=True</font>)</dt></dl>
-
-<dl><dt><a name="Dydnamic_Participant_CSP-export_features_tsv"><strong>export_features_tsv</strong></a>(self, featurelist<font color="#909090">=None</font>, aoifeaturelist<font color="#909090">=None</font>, id_prefix<font color="#909090">=False</font>, require_valid<font color="#909090">=True</font>)</dt></dl>
-
-<dl><dt><a name="Dydnamic_Participant_CSP-invalid_segments"><strong>invalid_segments</strong></a>(self)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;invalid&nbsp;segments&nbsp;in&nbsp;this&nbsp;particiapnt's&nbsp;eye&nbsp;gaze&nbsp;data<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<br>
-Returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;"Segment&nbsp;ids"&nbsp;of&nbsp;invalid&nbsp;Segments&nbsp;in&nbsp;this&nbsp;particiapnt's&nbsp;eye&nbsp;gaze&nbsp;data</tt></dd></dl>
-
-<dl><dt><a name="Dydnamic_Participant_CSP-print_"><strong>print_</strong></a>(self)</dt></dl>
-
-<dl><dt><a name="Dydnamic_Participant_CSP-valid_segments"><strong>valid_segments</strong></a>(self)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;valid&nbsp;segments&nbsp;in&nbsp;this&nbsp;particiapnt's&nbsp;eye&nbsp;gaze&nbsp;data<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<br>
-Returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;"Segment&nbsp;ids"&nbsp;of&nbsp;invalid&nbsp;Segments&nbsp;in&nbsp;this&nbsp;particiapnt's&nbsp;eye&nbsp;gaze&nbsp;data</tt></dd></dl>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Action-__init__"><strong>__init__</strong></a>(self, actstr)</dt></dl>
 
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -88,7 +56,10 @@ Returns:<br>
 <td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#000000" face="helvetica, arial"><a name="Participant_CSP">class <strong>Participant_CSP</strong></a>(<a href="Participant.html#Participant">Participant.Participant</a>)</font></td></tr>
     
-<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;is&nbsp;a&nbsp;sample&nbsp;child&nbsp;class&nbsp;based&nbsp;on&nbsp;the&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;class&nbsp;that&nbsp;implements&nbsp;all&nbsp;the&nbsp;<br>
+placeholder&nbsp;methods&nbsp;in&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;class&nbsp;for&nbsp;thee&nbsp;AIspace&nbsp;CSP&nbsp;project<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="Participant_CSP-__init__"><strong>__init__</strong></a>(self, pid, eventfile, datafile, fixfile, actionsfile<font color="#909090">=None</font>, log_time_offset<font color="#909090">=None</font>, aoifiles<font color="#909090">=None</font>, prune_length<font color="#909090">=None</font>, require_valid_segs<font color="#909090">=True</font>, auto_partition_low_quality_segments<font color="#909090">=False</font>)</dt><dd><tt>pid,&nbsp;eventfile,&nbsp;datafile,&nbsp;fixfile,&nbsp;actionsfile&nbsp;=&nbsp;None,&nbsp;log_time_offset&nbsp;=&nbsp;None,&nbsp;aoifiles&nbsp;=&nbsp;None,&nbsp;prune_length=&nbsp;None</tt></dd></dl>
 
@@ -96,16 +67,58 @@ Returns:<br>
 
 <hr>
 Methods inherited from <a href="Participant.html#Participant">Participant.Participant</a>:<br>
-<dl><dt><a name="Participant_CSP-export_features"><strong>export_features</strong></a>(self, featurelist<font color="#909090">=None</font>, aoifeaturelist<font color="#909090">=None</font>, aoifeaturelabels<font color="#909090">=None</font>, id_prefix<font color="#909090">=False</font>, require_valid<font color="#909090">=True</font>)</dt></dl>
+<dl><dt><a name="Participant_CSP-export_features"><strong>export_features</strong></a>(self, featurelist<font color="#909090">=None</font>, aoifeaturelist<font color="#909090">=None</font>, aoifeaturelabels<font color="#909090">=None</font>, id_prefix<font color="#909090">=False</font>, require_valid<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;feature&nbsp;names&nbsp;and&nbsp;their&nbsp;values&nbsp;for&nbsp;this&nbsp;<a href="Participant.html#Participant">Participant</a><br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featurelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;lsit&nbsp;of&nbsp;strings&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;features&nbsp;to&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returned<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoifeaturelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;features&nbsp;to&nbsp;be&nbsp;returned&nbsp;for&nbsp;each&nbsp;of&nbsp;the&nbsp;"AOI"s.&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoifeaturelabels:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;AOI&nbsp;related&nbsp;features&nbsp;to&nbsp;be&nbsp;returned.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*Note:&nbsp;while&nbsp;aoifeaturelist&nbsp;is&nbsp;a&nbsp;subset&nbsp;of&nbsp;features&nbsp;that&nbsp;will&nbsp;be&nbsp;returned&nbsp;for&nbsp;all&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"AOI"s,&nbsp;aoifeaturelabels&nbsp;contains&nbsp;the&nbsp;exact&nbsp;AOI&nbsp;feature&nbsp;name,&nbsp;i.e.,&nbsp;a&nbsp;feature<br>
+&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;the&nbsp;form:&nbsp;[AOI&nbsp;name]_[feature&nbsp;name]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;For&nbsp;example&nbsp;for&nbsp;an&nbsp;AOI&nbsp;called&nbsp;'graph',&nbsp;aoifeaturelabels&nbsp;may&nbsp;contain&nbsp;'graph_fixationrate'&nbsp;&nbsp;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;id_prefix:&nbsp;a&nbsp;boolean&nbsp;determining&nbsp;if&nbsp;the&nbsp;method&nbsp;should&nbsp;also&nbsp;export&nbsp;the&nbsp;participant&nbsp;id&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;require_valid:&nbsp;a&nbsp;boolean&nbsp;determining&nbsp;if&nbsp;only&nbsp;valid&nbsp;segments&nbsp;should&nbsp;be&nbsp;used&nbsp;when<br>
+&nbsp;&nbsp;&nbsp;&nbsp;calculating&nbsp;the&nbsp;features.&nbsp;default&nbsp;=&nbsp;True<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featnames:&nbsp;a&nbsp;list&nbsp;of&nbsp;feature&nbsp;names&nbsp;sorted&nbsp;alphabetically<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featvals:&nbsp;a&nbsp;corrsponding&nbsp;list&nbsp;of&nbsp;feature&nbsp;values<br>
+&nbsp;&nbsp;&nbsp;&nbsp;e.g.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featnames&nbsp;=&nbsp;['fixationrate',&nbsp;'length',&nbsp;'meanabspathangles']<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featvals&nbsp;&nbsp;=&nbsp;[0.00268522882294',&nbsp;'1529851',&nbsp;'1.60354714212']</tt></dd></dl>
 
-<dl><dt><a name="Participant_CSP-export_features_tsv"><strong>export_features_tsv</strong></a>(self, featurelist<font color="#909090">=None</font>, aoifeaturelist<font color="#909090">=None</font>, id_prefix<font color="#909090">=False</font>, require_valid<font color="#909090">=True</font>)</dt></dl>
+<dl><dt><a name="Participant_CSP-export_features_tsv"><strong>export_features_tsv</strong></a>(self, featurelist<font color="#909090">=None</font>, aoifeaturelist<font color="#909090">=None</font>, id_prefix<font color="#909090">=False</font>, require_valid<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;feature&nbsp;names&nbsp;and&nbsp;their&nbsp;values&nbsp;for&nbsp;this&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;in&nbsp;a&nbsp;tab&nbsp;separated&nbsp;format<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featurelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;lsit&nbsp;of&nbsp;strings&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;features&nbsp;to&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returned<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoifeaturelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;features&nbsp;to&nbsp;be&nbsp;returned&nbsp;for&nbsp;each&nbsp;of&nbsp;the&nbsp;"AOI"s.&nbsp;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;id_prefix:&nbsp;a&nbsp;boolean&nbsp;determining&nbsp;if&nbsp;the&nbsp;method&nbsp;should&nbsp;also&nbsp;export&nbsp;the&nbsp;participant&nbsp;id&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;require_valid:&nbsp;a&nbsp;boolean&nbsp;determining&nbsp;if&nbsp;only&nbsp;valid&nbsp;segments&nbsp;should&nbsp;be&nbsp;used&nbsp;when<br>
+&nbsp;&nbsp;&nbsp;&nbsp;calculating&nbsp;the&nbsp;features.&nbsp;default&nbsp;=&nbsp;True<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;two-line&nbsp;string&nbsp;with&nbsp;the&nbsp;first&nbsp;line&nbsp;having&nbsp;the&nbsp;feature&nbsp;names&nbsp;sorted&nbsp;alphabetically<br>
+&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;separated&nbsp;by&nbsp;a&nbsp;tab&nbsp;'/t',&nbsp;and&nbsp;the&nbsp;second&nbsp;line&nbsp;containing&nbsp;the&nbsp;corresponding&nbsp;values<br>
+&nbsp;&nbsp;&nbsp;&nbsp;separated&nbsp;by&nbsp;a&nbsp;tab&nbsp;'/t'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;For&nbsp;example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixationrate&nbsp;&nbsp;&nbsp;&nbsp;length&nbsp;&nbsp;&nbsp;&nbsp;meanabspathangles<br>
+&nbsp;&nbsp;&nbsp;&nbsp;0.00268522882294&nbsp;&nbsp;&nbsp;&nbsp;1529851&nbsp;&nbsp;&nbsp;&nbsp;1.60354714212</tt></dd></dl>
 
 <dl><dt><a name="Participant_CSP-invalid_segments"><strong>invalid_segments</strong></a>(self)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;invalid&nbsp;segments&nbsp;in&nbsp;this&nbsp;particiapnt's&nbsp;eye&nbsp;gaze&nbsp;data<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;"Segment&nbsp;ids"&nbsp;of&nbsp;invalid&nbsp;Segments&nbsp;in&nbsp;this&nbsp;particiapnt's&nbsp;eye&nbsp;gaze&nbsp;data</tt></dd></dl>
 
-<dl><dt><a name="Participant_CSP-print_"><strong>print_</strong></a>(self)</dt></dl>
+<dl><dt><a name="Participant_CSP-print_"><strong>print_</strong></a>(self)</dt><dd><tt>Ourputs&nbsp;all&nbsp;feature&nbsp;names&nbsp;and&nbsp;their&nbsp;values&nbsp;for&nbsp;this&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;on&nbsp;the&nbsp;console</tt></dd></dl>
 
 <dl><dt><a name="Participant_CSP-valid_segments"><strong>valid_segments</strong></a>(self)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;valid&nbsp;segments&nbsp;in&nbsp;this&nbsp;particiapnt's&nbsp;eye&nbsp;gaze&nbsp;data<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>

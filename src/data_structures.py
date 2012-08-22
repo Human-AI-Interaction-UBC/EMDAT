@@ -91,7 +91,10 @@ class Fixation():
         """Inits Fixation class with a line of gaze data from a "Fixation-Data.tsv" file
         
         Args:
-            fix_point: a string containing one line read from a "Fixation-Data.tsv" file
+            fix_point: a string containing one line read from a "Fixation-Data.tsv" file        
+            media_offset: the coordinates of the top left corner of the window
+                showing the interface under study. (0,0) if the interfacce was
+                in full screen (default value)
             
         Yields:
             a Fixation object

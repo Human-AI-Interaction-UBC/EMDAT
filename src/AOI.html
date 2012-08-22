@@ -14,6 +14,7 @@ The&nbsp;Generic&nbsp;Area&nbsp;of&nbsp;Interest&nbsp;Classes<br>
 Created&nbsp;on&nbsp;2011-08-26<br>
 &nbsp;<br>
 @author:&nbsp;skardan<br>
+&nbsp;<br>
 In&nbsp;EMDAT,&nbsp;the&nbsp;bounderies&nbsp;of&nbsp;an&nbsp;<a href="#AOI">AOI</a>&nbsp;is&nbsp;defined&nbsp;as&nbsp;a&nbsp;polygon&nbsp;on&nbsp;the&nbsp;screen.&nbsp;You&nbsp;can&nbsp;<br>
 optionally&nbsp;define&nbsp;a&nbsp;second&nbsp;polygone&nbsp;inside&nbsp;the&nbsp;first&nbsp;polygone&nbsp;to&nbsp;be&nbsp;excluded&nbsp;from&nbsp;an&nbsp;<a href="#AOI">AOI</a>.<br>
 an&nbsp;<a href="#AOI">AOI</a>&nbsp;can&nbsp;be&nbsp;always&nbsp;active&nbsp;(a&nbsp;global&nbsp;<a href="#AOI">AOI</a>)&nbsp;or&nbsp;can&nbsp;be&nbsp;active&nbsp;during&nbsp;certain&nbsp;time&nbsp;intervals.<br>
@@ -47,10 +48,14 @@ to&nbsp;the&nbsp;<a href="#AOI_Stat">AOI_Stat</a>&nbsp;constructor.&nbsp;The&nbs
     
 <tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="AOI-__init__"><strong>__init__</strong></a>(self, aid, polyin, polyout<font color="#909090">=[]</font>, timeseq<font color="#909090">=[]</font>)</dt><dd><tt>Args:<br>
+<dl><dt><a name="AOI-__init__"><strong>__init__</strong></a>(self, aid, polyin, polyout<font color="#909090">=[]</font>, timeseq<font color="#909090">=[]</font>)</dt><dd><tt>Inits&nbsp;<a href="#AOI">AOI</a>&nbsp;class<br>
+Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;aid:&nbsp;<a href="#AOI">AOI</a>&nbsp;id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;polyin:&nbsp;the&nbsp;polygon&nbsp;defining&nbsp;the&nbsp;bounderies&nbsp;of&nbsp;the&nbsp;<a href="#AOI">AOI</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;polyout:&nbsp;optional&nbsp;polygon&nbsp;inside&nbsp;the&nbsp;bounderies&nbsp;of&nbsp;the&nbsp;<a href="#AOI">AOI</a>&nbsp;that&nbsp;is&nbsp;not&nbsp;part&nbsp;of&nbsp;the&nbsp;<a href="#AOI">AOI</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;timeseq:&nbsp;the&nbsp;time&nbsp;sequence&nbsp;of&nbsp;the&nbsp;format&nbsp;[(start1,&nbsp;end1),&nbsp;(start2,&nbsp;end2),&nbsp;...]&nbsp;that&nbsp;specifies&nbsp;the&nbsp;intervals&nbsp;when&nbsp;this&nbsp;<a href="#AOI">AOI</a>&nbsp;is&nbsp;active<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
 Yields:<br>
@@ -93,7 +98,8 @@ Args:<br>
     
 <tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="AOI_Stat-__init__"><strong>__init__</strong></a>(self, aoi, seg_fixation_data, starttime, endtime, active_aois)</dt><dd><tt>Args:<br>
+<dl><dt><a name="AOI_Stat-__init__"><strong>__init__</strong></a>(self, aoi, seg_fixation_data, starttime, endtime, active_aois)</dt><dd><tt>Inits&nbsp;<a href="#AOI_Stat">AOI_Stat</a>&nbsp;class<br>
+Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;aoi:&nbsp;the&nbsp;aoi&nbsp;object&nbsp;for&nbsp;which&nbsp;the&nbsp;statistics&nbsp;are&nbsp;calculated<br>
 &nbsp;&nbsp;&nbsp;&nbsp;seg_fixation_data:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;starttime:<br>
@@ -106,10 +112,10 @@ Yields:<br>
 <dl><dt><a name="AOI_Stat-get_features"><strong>get_features</strong></a>(self, featurelist<font color="#909090">=None</font>)</dt><dd><tt>Returns&nbsp;the&nbsp;list&nbsp;and&nbsp;values&nbsp;of&nbsp;features&nbsp;for&nbsp;this&nbsp;<a href="#AOI_Stat">AOI_Stat</a>&nbsp;object<br>
 &nbsp;<br>
 Args:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;featurelist:&nbsp;optional&nbsp;list&nbsp;of&nbsp;features<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featurelist:&nbsp;optional&nbsp;list&nbsp;of&nbsp;features.&nbsp;If&nbsp;this&nbsp;is&nbsp;None&nbsp;all&nbsp;features&nbsp;will&nbsp;be&nbsp;returned<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
 Returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;featnames:&nbsp;a&nbsp;list&nbsp;of&nbsp;feature&nbsp;names<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featnames:&nbsp;a&nbsp;list&nbsp;of&nbsp;feature&nbsp;names&nbsp;sorted&nbsp;alphabetically<br>
 &nbsp;&nbsp;&nbsp;&nbsp;featvals:&nbsp;a&nbsp;corrsponding&nbsp;list&nbsp;of&nbsp;feature&nbsp;values<br>
 &nbsp;&nbsp;&nbsp;&nbsp;e.g.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;featnames&nbsp;=&nbsp;['fixationrate',&nbsp;'length',&nbsp;'meanabspathangles']<br>

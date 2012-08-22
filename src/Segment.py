@@ -1,9 +1,11 @@
-'''
+"""
 UBC Eye Movement Data Analysys Toolkit
 Created on 2011-08-26
 
 @author: skardan
-'''
+
+
+"""
 import params
 import geometry
 from AOI import *
@@ -12,6 +14,41 @@ from warnings import warn
 
 
 class Segment():
+    """A Segment is a class that represent the smallest unit of aggregated eye data samples with a conceptual meaning.
+    
+    A segment is the smallest unit of aggregated eye data samples that has conceptual meaning. This class is equivalant
+    of segments as defined in Tobii studio. 
+    
+    Attributes:
+        segid: A string containing the id of the Segment.
+        alldata: A list of "Datapoint"s for this Segment
+        features: A dict with feature names as its keys and feature values as its values 
+        completion_time: An integer indicating total duration of the Segment in milliseconds
+            minimum is 16 ms (ength of one sample with 60Hz sampling rate (ms)
+        start:An integer indicating the Segment's start time in milliseconds
+        end: An integer indicating the Segment's end time in milliseconds
+        sample_start_ind: An integer indicating the index of the first Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data) 
+        sample_end_ind: An integer indicating the index of the last Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data)
+        fixation_start_ind: An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
+        fixation_end_ind: An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
+        numfixations: An integer indicating the number of "Fixation"s in this Segment
+        time_gaps: a list of tuples of the form (start, end) indicating the start and end of the gaps of invalid samples in the Segement's samples
+        largest_data_gap: An integer indicating the length of largest invalid gap for this Segment in milliseconds
+        proportion_valid: A float indicating the proportion of valid samples over all the samples in this Segment
+        proportion_valid_fix: A float indicating the proportion of (valid + restored) samples over all the samples in this Segment 
+        validity1: a boolean indicating whether this Segment is valid using proportion of valid samples threshold 
+        validity2: a boolean indicating whether this Segment is valid using largest acceptable gap threshold
+        validity3: a boolean indicating whether this Segment is valid using proportion of (valid + restored) samples threshold
+        is_valid: a boolean indicating whether this Segment is considered valid by the validity method indicated by params.VALIDITY_METHOD
+        length: An integer indicating total duration of the Segment in milliseconds
+        numsamples: An integer indicating total number of samples in the Segment 
+        fixation_data: A list of "Fixation"s for this Segment
+        fixation_start = fixation_data[0].timestamp
+        fixation_end = fixation_data[-1].timestamp
+        aoi_data: A list of AOI_Stat objects for relevants "AOI"s for this Segment
+        has_aois: A boolean indicating if this Segment has AOI features calculated for it
+        
+    """
     def __init__(self, segid, all_data, fixation_data, aois = None, prune_length = None):
         """
         Args:
@@ -107,22 +144,41 @@ class Segment():
         if aois:
             self.set_aois(aois,fixation_data)
     def set_indices(self,sample_st,sample_end,fix_st,fix_end):
+        """Sets the index features
+        
+        Args:
+            sample_st: An integer indicating the index of the first Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data) 
+            sample_end: An integer indicating the index of the last Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data)
+            fix_st: An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
+            fix_st: An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)        
+        """
         self.sample_start_ind = sample_st
         self.sample_end_ind = sample_end
         self.fixation_start_ind = fix_st
         self.fixation_end_ind = fix_end
 
     def get_indices(self):
+        """Returns the index features
+        
+        Returns:
+            An integer indicating the index of the first Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data) 
+            An integer indicating the index of the last Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data)
+            An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
+            An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)   
+            
+        Raises:
+            Exception: An exception is thrown if the values are read before initialization
+        """
         if self.sample_start_ind != None:
             return self.sample_start_ind, self.sample_end_ind, self.fixation_start_ind, self.fixation_end_ind 
         raise Exception ('The indices values are accessed before setting the initial value in segement:'+self.segid+'!')
 
     def set_aois(self, aois, fixation_data):
-        """
-        @type fixation_data: array of L{Fixations<Datapoint.Fixation>}
-        @param fixation_data: The fixations which make up this segement.
-        @type aois: array of L{AOIs<AOI.AOI>}
-        @param aois: The AOIs relevant to this segement
+        """Sets the relevant "AOI"s for this Segment
+        
+        Args:
+            fixation_data: The list of "Fixation"s which make up this Segement
+            aois: a list of "AOI"s relevant to this segement
         """
         if len(aois) == 0:
             warn("no AOIs passed to segment:"+self.segid)
@@ -141,10 +197,13 @@ class Segment():
             self.has_aois = True
 
     def calc_validity_proportion(self, all_data):
-        """
-        Calculate the proportion of datapoints which are valid.
-        @type all_data: array of L{Datapoints<Datapoint.Datapoint>}
-        @param all_data: The datapoints which make up this Trial.
+        """Calculates the proportion of "Datapoint"s which are valid.
+        
+        Args:
+            all_data: The list of "Datapoint"s which make up this Segement
+            
+        Returns:
+            A float indicating the proportion of valid samples over all the samples in this Segment
         """
         num_valid = float(0)
         num = 0
@@ -163,6 +222,14 @@ class Segment():
             return num_valid / num
 
     def calc_largest_validity_gap(self, all_data):
+        """Calculates the largest gap of invalid samples in the "Datapoint"s for this Segment.
+        
+        Args:
+            all_data: The list of "Datapoint"s which make up this Segement
+            
+        Returns:
+            An integer indicating the length of largest invalid gap for this Segment in milliseconds  
+        """
         if self.numfixations == 0:
             return all_data[-1].timestamp - all_data[0].timestamp
         self.time_gaps = []
@@ -188,13 +255,26 @@ class Segment():
         return max
 
     def getgaps(self):
+        """Returns the list of invalid gaps for this Segment
+        
+        Args:
+            a list of invalid gaps for this Segment
+        """
         return self.time_gaps
 
     def calc_validity_fixation(self, all_data):
-        """
-        Calculate the proportion of datapoints which are part of a valid fixation.
-        @type all_data: array of L{Datapoints<Datapoint.Datapoint>}
-        @param all_data: The datapoints which make up this Trial.
+        """Calculates the proportion of (valid + restored) "Datapoint"s over all "Datapoint"s of the Segment.
+        
+        Restored samples are the samples which are not valid but they are part of a Fixation.
+        The idea is that if the user was looking at a certain point and then we loose the eye data for 
+        a short period of time and afterwards the user is looking at the same point we can assume that user
+        was looking at that same point during that period. 
+        
+        Args:
+            all_data: The list of "Datapoint"s which make up this Segement
+            
+        Returns:
+            A float indicating the proportion of (valid + restored) samples over all the samples in this Segment
         """
         if self.numfixations == 0:
             return 0.0
@@ -213,20 +293,33 @@ class Segment():
             return 0.0
         else:
             return num_valid / num
-        #return float(self.sumfixationduration)/self.completion_time
         
-
     def calc_validity1(self, threshold = params.VALID_PROP_THRESH):
+        """Returns a boolean indicating whether this Segment is valid using proportion of valid samples threshold
+        
+        Args:
+            threshold:
+            
+        """
         return self.proportion_valid > threshold
 
     def calc_validity2(self, threshold = params.VALID_TIME_THRESH):
+        """Returns a boolean indicating whether this Segment is valid using largest acceptable gap threshold
+        """
         return self.largest_data_gap <= threshold
 
        
     def calc_validity3(self, threshold = params.VALID_PROP_THRESH):
+        """Returns a boolean indicating whether this Segment is valid using proportion of (valid + restored) samples threshold
+        """
         return self.proportion_valid_fix > threshold
     
     def get_validity(self):
+        """Determines if this Segment is valid with the given validity method set in params.VALIDITY_METHOD
+        
+        Returns:
+            A boolean indicating whether this Segment is valid
+        """
         if params.VALIDITY_METHOD == 1:
             return self.validity1
         elif params.VALIDITY_METHOD == 2:
@@ -235,11 +328,10 @@ class Segment():
             return self.validity3
     
     def calc_distances(self, fixdata):
-        """
-        Calculate the Euclidean distances between subsequent L{Fixations<Fixation.Fixation>}.
+        """returns the Euclidean distances between a sequence of "Fixation"s
     
-        @type fixdata: Array of L{Fixations<Fixation.Fixation>}.
-        @param fixdata: The array of L{Fixations<Fixation.Fixation>}.
+        Args:
+            fixdata: a list of "Fixation"s
         """
         distances = []
         lastx = fixdata[0].mappedfixationpointx
@@ -256,6 +348,16 @@ class Segment():
         return distances
 
     def calc_abs_angles(self, fixdata):
+        """returns the absolute angles between a sequence of "Fixation"s that build a scan path.
+        
+        Abosolute angle for each saccade is the angle between that saccade and the horizental axis
+    
+        Args:
+            fixdata: a list of "Fixation"s
+            
+        Returns:
+            a list of absolute angles for the saccades formed by the given sequence of "Fixation"s in Radiant
+        """
         abs_angles = []
         lastx = fixdata[0].mappedfixationpointx
         lasty = fixdata[0].mappedfixationpointy
@@ -271,6 +373,16 @@ class Segment():
         return abs_angles
 
     def calc_rel_angles(self, fixdata):
+        """returns the relative angles between a sequence of "Fixation"s that build a scan path in Radiant
+        
+        Relative angle for each saccade is the angle between that saccade and the previous saccade.
+    
+        Args:
+            fixdata: a list of "Fixation"s
+            
+        Returns:
+            a list of relative angles for the saccades formed by the given sequence of "Fixation"s in Radiant
+        """
         rel_angles = []
         lastx = fixdata[0].mappedfixationpointx
         lasty = fixdata[0].mappedfixationpointy
@@ -290,6 +402,15 @@ class Segment():
         return rel_angles
 
     def calc_num_samples(self, all_data):
+        """Returns the number of samples in the Segment
+        
+        Args:
+            all_data: a list of "Datapoint"s which make up this Segment.
+            
+        Returns:
+            An integer determining the number of samples in the Segment
+        
+        """
         num = 0
         for d in all_data:
             if d.stimuliname != '':
@@ -297,17 +418,36 @@ class Segment():
         return num
     
     def getid(self):
+        """Returns the segid for this Segment
+        
+        Returns: a string conataining the segid for this Segment
+        """
         return self.segid
     
     def get_features(self, featurelist = None, aoifeaturelist = None, aoifeaturelabels = None):
-        if featurelist == 'NONTEMP':
-            featurelist = params.NONTEMP_FEATURES_SEG
-
+        """Returns feature names and their values for this Segment
+        
+        Args:
+            featurelist: if not None, a list containing the name of features to be returned. If this is None all features will be returned
+            aoifeaturelist: if not None, a list of features to be returned for each of the "AOI"s relevant to this Segment. 
+            aoifeaturelabels: if not None, a list of AOI related features to be returned.
+            *Note: while aoifeaturelist is a subset of features that will be returned for all relevant "AOI"s, aoifeaturelabels contains 
+            the exact AOI feature name, i.e., a feature of the form: [AOI name]_[feature name]
+            For example if an AOI called 'graph' is releveant to this Segment, aoifeaturelabels may contain 'graph_fixationrate'  
+            
+        Returns:
+            featnames: a list of feature names sorted alphabetically
+            featvals: a corrsponding list of feature values
+            e.g.
+            featnames = ['fixationrate', 'length', 'meanabspathangles']
+            featvals  = [0.00268522882294', '1529851', '1.60354714212']
+        
+        """ 
         if featurelist == []:
             featnames = []
-        elif not featurelist:
+        elif not featurelist:       #include all features
             featnames = self.features.keys()
-        else:
+        else:                       #a list of features was given
             featnames = []
             for name in featurelist:
                 if name in self.features.keys():
@@ -321,7 +461,7 @@ class Segment():
 
         if self.has_aois:
             for aid, aoi in self.aoi_data.iteritems():
-                if aoifeaturelabels:
+                if aoifeaturelabels:    #an exact list of aoifeatures was given 
                     anames, avals = aoi.get_features()
                     anames = map(lambda x: '%s_%s'%(aid, x), anames)
                     featval = zip(anames,avals)
@@ -334,7 +474,7 @@ class Segment():
                     if featnames:                    
                         featnames += anames
                         featvals += avals                   
-                else:
+                else:                   #a list of features for each AIO was given
                     anames, avals = aoi.get_features(aoifeaturelist)
                     anames = map(lambda x: '%s_%s'%(aid, x), anames)
                     featnames += anames
@@ -343,6 +483,8 @@ class Segment():
         return featnames, featvals
     
     def print_(self):
+        """Ourputs all feature names and their values for this Segment on the console        
+        """ 
         print"ID", self.getid()
         print"start",self.start 
         print"end",self.end

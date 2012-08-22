@@ -228,9 +228,6 @@ class AOI_Stat():
             featvals  = [0.00268522882294', '1529851', '1.60354714212']
         
         """
-        if featurelist == 'NONTEMP':
-            featurelist = params.NONTEMP_FEATURES_AOI
-
         if featurelist == []:
             return [], []
         elif not featurelist:   #all features

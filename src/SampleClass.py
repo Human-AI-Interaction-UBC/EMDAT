@@ -15,6 +15,10 @@ from math import ceil, floor
 
 
 class Participant_CSP(Participant.Participant):
+    """
+    This is a sample child class based on the Participant class that implements all the 
+    placeholder methods in Participant class for thee AIspace CSP project
+    """
     def __init__(self, pid, eventfile, datafile, fixfile, actionsfile = None, log_time_offset = None, aoifiles = None, prune_length= None, 
                  require_valid_segs = True, auto_partition_low_quality_segments = False):
         '''

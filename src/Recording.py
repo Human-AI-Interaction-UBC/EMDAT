@@ -199,13 +199,13 @@ class Recording():
 
 
 def read_all_data(all_file):
-    """
-    Returns an array of L{Datapoints<Datapoint.Datapoint>} read from the data
-    file.
+    """Returns a list of "Datapoint"s read from an "All-Data" file.
 
-    @type all_file: str
-    @param all_file: The filename of the 'All-Data.tsv' file output by the
-    Tobii software.
+    Args:
+        all_file:A string containing the name of the 'All-Data.tsv' file output by the
+            Tobii software.
+    Returns:
+        a list of "Datapoint"s
     """
     with open(all_file, 'r') as f:
         lines = f.readlines()
@@ -214,20 +214,20 @@ def read_all_data(all_file):
                                  params.NUMBEROFEXTRAHEADERLINES):])
     return filter(lambda x: x.number!=None,alld)
 
-# read_fixation_data(all_file)
-# pre:
-#      fixation_file = filename for the "Fixation-Data.tsv" file holding the data
-# post:
-#      returns an array of Fixationss corresponding to the lines of the datafile
-def read_fixation_data(fixation_file, media_offset = (0,0)):
-    """
-    Returns an array of L{Fixations<Datapoint.Fixation>} read from the fixation
-    file.
 
-    @type fixation_file: str
-    @param fixation_file: The filename of the 'Fixation-Data.tsv' file output
-    by the Tobii software.
+def read_fixation_data(fixation_file, media_offset = (0,0)):
+    """Returns a list of "Fixation"s read from an "Fixation-Data" file. 
+
+    Args:
+        fixation_file: A string containing the name of the 'Fixation-Data.tsv' file output by the
+            Tobii software.
+        media_offset: the coordinates of the top left corner of the window
+                showing the interface under study. (0,0) if the interfacce was
+                in full screen (default value) 
+    Returns:
+        a list of "Fixation"s
     """
+
     with open(fixation_file, 'r') as f:
         lines = f.readlines()
 
@@ -235,28 +235,53 @@ def read_fixation_data(fixation_file, media_offset = (0,0)):
                lines[params.FIXATIONHEADERLINES:])
 
 
-def read_aois(aoifile):
-    aoidict = {}
-    with open(aoifile, 'r') as f:
-        aoilines = f.readlines()
-
-    aids = aoilines[0].strip().split('t')
-   
-    for l in aoilines[1:]:
-        l = l.strip()
-        chunks = l.split('\t')
-        chart_type = chunks[0][:9]
-        #join the aids to the ploys
-        polys = map(lambda x, (y,z): (x,y,z), aids, map(eval, chunks[1:]))
-        aoidict[chart_type] = polys
-
-    return aoidict
+#def read_aois(aoifile):
+#    """Returns a dict of 
+#
+#    Args:
+#        aoifile: A string containing the name of the AOI file.
+#        
+#    Returns:
+#        a dict of
+#    """
+#    aoidict = {}
+#    with open(aoifile, 'r') as f:
+#        aoilines = f.readlines()
+#
+#    aids = aoilines[0].strip().split('t')
+#   
+#    for l in aoilines[1:]:
+#        l = l.strip()
+#        chunks = l.split('\t')
+#        chart_type = chunks[0][:9]
+#        #join the aids to the ploys
+#        polys = map(lambda x, (y,z): (x,y,z), aids, map(eval, chunks[1:]))
+#        aoidict[chart_type] = polys
+#
+#    return aoidict
 
 def read_aois_Tobii(aoifile):
-    '''
+    """Returns a list of "AOI"s read from a '.aoi' file.
+    
+    The '.aoi' files have pairs of lines of the form:
     aoiname[\t]point1x,point1y[\t]point2x,point2y[\t]...[\n]
     #[\t]start1,end1[\t]...[\n]
-    '''
+    
+    The first line determines name of the AOI and the coordinates of each vertex of 
+    the polygon that determines the bounderies of the AOI.
+    The second line which starts with a '#' is optional and determines the time
+    intervals when the AOI is active. If the second line does not exist the AOI will
+    be active throughout the whole session (global AOI). 
+    *Note: If the AOIs are exported from Tobii software the '.aoi' file will only have the 
+    first line for each AOI and you need to override this method to generate AOIs that are
+    active only at certain times (non-global AOI). 
+
+    Args:
+        aoifile: A string containing the name of the '.aoi' file
+        
+    Returns:
+        a list of "AOI"s
+    """
     aoilist = []
     with open(aoifile, 'r') as f:
         aoilines = f.readlines()
@@ -294,6 +319,21 @@ def read_aois_Tobii(aoifile):
 
 
 def read_segs(segfile):
+    """Returns a dict with scid as the key and segments as value from a '.seg' file.
+    
+    The '.seg' files have lines of the form:
+    scene_name[\t]segment_name[\t]start_time[\t]end_time[\n]
+    
+    scene_name is the id of the Scene that this Segment belongs to,
+    segment_name is the id of the Segement,
+    and tart_time and end_time determines the time interval for the Segment
+
+    Args:
+        segfile: A string containing the name of the '.seg' file
+        
+    Returns:
+        a dict with scid as the key and segments as value 
+    """
     scenes = {}
     with open(segfile, 'r') as f:
         seglines = f.readlines() 

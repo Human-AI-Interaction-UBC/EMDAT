@@ -29,10 +29,38 @@ Created&nbsp;on&nbsp;2011-08-25<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-get_chunk"><strong>get_chunk</strong></a>(data, ind, start, end)</dt><dd><tt>data,&nbsp;ind,&nbsp;start,&nbsp;end<br>
-curr_ind,&nbsp;start_ind,&nbsp;end_ind</tt></dd></dl>
- <dl><dt><a name="-mean"><strong>mean</strong></a>(data)</dt></dl>
- <dl><dt><a name="-point_inside_polygon"><strong>point_inside_polygon</strong></a>(x, y, poly)</dt></dl>
- <dl><dt><a name="-stddev"><strong>stddev</strong></a>(data)</dt></dl>
+<td width="100%"><dl><dt><a name="-get_chunk"><strong>get_chunk</strong></a>(data, ind, start, end)</dt><dd><tt>Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ind<br>
+&nbsp;&nbsp;&nbsp;&nbsp;start<br>
+&nbsp;&nbsp;&nbsp;&nbsp;end<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;curr_ind<br>
+&nbsp;&nbsp;&nbsp;&nbsp;start_ind<br>
+&nbsp;&nbsp;&nbsp;&nbsp;end_ind</tt></dd></dl>
+ <dl><dt><a name="-mean"><strong>mean</strong></a>(data)</dt><dd><tt>Returns&nbsp;the&nbsp;average&nbsp;of&nbsp;a&nbsp;list&nbsp;of&nbsp;numbers<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;a&nbsp;list&nbsp;of&nbsp;numbers<br>
+&nbsp;<br>
+returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;float&nbsp;that&nbsp;is&nbsp;the&nbsp;average&nbsp;of&nbsp;the&nbsp;list&nbsp;of&nbsp;numbers</tt></dd></dl>
+ <dl><dt><a name="-point_inside_polygon"><strong>point_inside_polygon</strong></a>(x, y, poly)</dt><dd><tt>Determines&nbsp;if&nbsp;a&nbsp;point&nbsp;is&nbsp;inside&nbsp;a&nbsp;given&nbsp;polygon&nbsp;or&nbsp;not<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;algorithm&nbsp;is&nbsp;called&nbsp;"Ray&nbsp;Casting&nbsp;Method".<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;poly:&nbsp;is&nbsp;a&nbsp;list&nbsp;of&nbsp;(x,y)&nbsp;pairs&nbsp;defining&nbsp;the&nbsp;polgon&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;True&nbsp;or&nbsp;False.</tt></dd></dl>
+ <dl><dt><a name="-stddev"><strong>stddev</strong></a>(data)</dt><dd><tt>Returns&nbsp;the&nbsp;standard&nbsp;deviation&nbsp;of&nbsp;a&nbsp;list&nbsp;of&nbsp;numbers<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;a&nbsp;list&nbsp;of&nbsp;numbers<br>
+&nbsp;<br>
+returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;float&nbsp;that&nbsp;is&nbsp;the&nbsp;std&nbsp;deviation&nbsp;of&nbsp;the&nbsp;list&nbsp;of&nbsp;numbers&nbsp;or&nbsp;NAN&nbsp;if&nbsp;it&nbsp;is&nbsp;undefined</tt></dd></dl>
 </td></tr></table>
 </body></html>
