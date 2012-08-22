@@ -17,13 +17,44 @@ from math import ceil, floor
 class Participant_CSP(Participant.Participant):
     """
     This is a sample child class based on the Participant class that implements all the 
-    placeholder methods in Participant class for thee AIspace CSP project
+    placeholder methods in Participant class for the AIspace CSP project
     """
     def __init__(self, pid, eventfile, datafile, fixfile, actionsfile = None, log_time_offset = None, aoifiles = None, prune_length= None, 
                  require_valid_segs = True, auto_partition_low_quality_segments = False):
-        '''
-        pid, eventfile, datafile, fixfile, actionsfile = None, log_time_offset = None, aoifiles = None, prune_length= None
-        '''
+        """Inits Participant_CSP class
+        Args:
+            pid: Participant id
+            
+            eventfile: a string containing the name of the "Event-Data.tsv" file for this participant
+            
+            datafile: a string containing the name of the "all-Data.tsv" file for this participant
+            
+            fixfile: a string containing the name of the "Fixation-Data.tsv" file for this participant
+            
+            actionsfile: If not None, a string containing the name of the external log file for
+                this participant
+            
+            log_time_offset: If not None, an integer indicating the time offset between the 
+                external log file and eye tracking logs
+            
+            aoifile: If not None, a string conatining the name of the aoifile 
+                with definitions of the "AOI"s.
+            
+            prune_length: If not None, an integer that specifies the time 
+                interval (in ms) from the begining of each Segment in which
+                samples are considered in calculations.  This can be used if, 
+                for example, you only wish to consider data in the first 
+                1000 ms of each Segment. In this case (prune_length = 1000),
+                all data beyond the first 1000ms of the start of the "Segment"s
+                will be disregarded.
+                
+            auto_partition_low_quality_segments: a boolean indicating whether EMDAT should 
+                split the "Segment"s which have low sample quality, into two new 
+                sub "Segment"s discarding the largest gap of invalid samples.
+            
+        Yields:
+            a Participant object
+        """
         
         print "reading the files"
         self.features={}
@@ -45,6 +76,15 @@ class Participant_CSP(Participant.Participant):
         self.scenes.insert(0,self.whole_scene)
         
     def is_valid(self,threshold=None):
+        """Determines if the samples for this Participant meets the validity threshold
+        
+        Args:
+            threshold: if not None, the threshold value that should be used for the 
+                validity criterion
+                
+        Returns:
+            True or False
+        """
         if threshold == None:
             return self.whole_scene.is_valid
         else:
@@ -348,13 +388,14 @@ def partition_CSP(eventfile, actionfile = None, log_time_offset = None):
     
 
 def read_events(evfile):
-    """
-    Returns an array of L{Datapoints<Datapoint.Datapoint>} read from the event
-    file.
+    """Returns a list of Event objects read from an 'Event-Data.tsv' file.
 
-    @type all_file: str
-    @param all_file: The filename of the 'Event-Data.tsv' file output by the
-    Tobii software.
+    Args:
+        evfile: a string containing the name of the 'Event-Data.tsv' file exported by 
+            Tobii software
+    
+    Returns:
+        a list of Event objects
     """
     with open(evfile, 'r') as f:
         lines = f.readlines()
@@ -362,13 +403,10 @@ def read_events(evfile):
     return map(Event, lines[(params.EVENTSHEADERLINES+params.NUMBEROFEXTRAHEADERLINES):])
 
 def read_actions_logs(actionfile):
-    """
-    Returns an array of L{Actions<Datapoint.Datapoint>} read from the event
-    file.
+    """Returns a list of "Action"s read from the external log file.
 
-    @type all_file: str
-    @param all_file: The filename of the 'Event-Data.tsv' file output by the
-    Tobii software.
+    Args:
+        actionfile: a string containing the name of the external log file
     """
     with open(actionfile, 'r') as f:
         lines = f.readlines()
@@ -376,10 +414,28 @@ def read_actions_logs(actionfile):
     return map(Action, lines[(params.ACTIONHEADERLINES):])
 
 def read_aois_Tobii_CSP(aoifiles,aoi_seqs):
-    '''
+    """Returns a list of "AOI"s read from a '.aoi' file.
+    
+    The '.aoi' files have pairs of lines of the form:
     aoiname[\t]point1x,point1y[\t]point2x,point2y[\t]...[\n]
     #[\t]start1,end1[\t]...[\n]
-    '''
+    
+    The first line determines name of the AOI and the coordinates of each vertex of 
+    the polygon that determines the bounderies of the AOI.
+    The second line which starts with a '#' is optional and determines the time
+    intervals when the AOI is active. If the second line does not exist the AOI will
+    be active throughout the whole session (global AOI). 
+    *Note: If the AOIs are exported from Tobii software the '.aoi' file will only have the 
+    first line for each AOI and you need to override this method to generate AOIs that are
+    active only at certain times (non-global AOI). 
+
+    Args:
+        aoifile: A string containing the name of the '.aoi' file
+        aoi_seqs: a list of lists of intervals for each AOI indicating when that AOI is active
+        
+    Returns:
+        a list of "AOI"s
+    """
     aoilist = []
     
     for problem in xrange(params.NUMBEROFPROBLEMS+1):
@@ -399,7 +455,12 @@ def read_aois_Tobii_CSP(aoifiles,aoi_seqs):
     return aoilist
 
 class Action():
-    """
+    """A class for holding action information extracted from the external log file
+    
+    Attributes:
+        timestamp: an integer indicating the time this action occured in seconds
+        action: an integer indicaitng the code of the action performed
+        
     """
     def __init__(self, actstr):
         """

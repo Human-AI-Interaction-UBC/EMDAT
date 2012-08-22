@@ -9,6 +9,12 @@ Basic data structures used in EMDAT
 class Datapoint():
     """
     A class that holds the infromation for one eye data sample (one line of data logs) 
+    
+    Attributes:
+        segid: a string indicating the Segment that this Datapoint belongs to
+        is_valid: a boolean indicating whether this sample is valid
+    
+        Please refer to the Tobii manual for the descriotion of the rest of the attributes
     """
     def __init__(self, data_point):
         """Inits Datapoint class with a line of gaze data from "all-Data.tsv" file
@@ -85,6 +91,11 @@ class Datapoint():
 class Fixation():
     """
     A class that holds the infromation for one Fixation representing one line in a "Fixation-Data.tsv" file
+    
+    Attributes:
+        segid: a string indicating the Segment that this Datapoint belongs to
+    
+        Please refer to the Tobii manual for the descriotion of the rest of the attributes
     """
 
     def __init__(self, fix_point, media_offset = (0, 0)):
@@ -133,6 +144,8 @@ class Fixation():
 class Event():
     """
     A class that holds the infromation for one Event representing one line in the an "Event-Data.tsv" file
+    
+    Please refer to the Tobii manual for the descriotion of the attributes
     """
     def __init__(self, eventstr):
         """Inits Event class with a line of gaze data from an "Event-Data.tsv" file

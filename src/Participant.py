@@ -301,7 +301,8 @@ def read_events(evfile):
     """Returns a list of Event objects read from an 'Event-Data.tsv' file.
 
     Args:
-        evfile: a string containing the name of the 'Event-Data.tsv' file
+        evfile: a string containing the name of the 'Event-Data.tsv' file exported from 
+            Tobii software
     
     Returns:
         a list of Event objects
