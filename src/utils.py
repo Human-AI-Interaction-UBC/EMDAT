@@ -1,9 +1,11 @@
-'''
+"""
 UBC Eye Movement Data Analysys Toolkit
 Created on 2011-08-25
 
 @author: skardan
-'''
+
+Commonly used helper methods
+"""
 from data_structures import Fixation
 import params
 import math
@@ -42,17 +44,22 @@ def point_inside_polygon(x,y,poly):
     return inside   
 
 def get_chunk(data, ind, start, end):
-    """
+    """Returns index of first and last records in data that fall within a time interval (start-end) 
     Args:
-        data: 
-        ind
-        start
-        end
+        data: a list of subsequent Fixations or Datapoints
+        ind: an integer indicating the starting index in data for search, if not known 
+            should be set to zero.
+        start: an integer indicating the start of interval in milliseconds
+        end: an integer indicating the end of interval in milliseconds
         
     Returns:
-        curr_ind
-        start_ind
-        end_ind
+        curr_ind: an integer indicating the index of the next record for search. 
+            This is useful if you are performing a series searches in a sequential manner.
+            The method can start the next search from this index instead of beginning of the list.               
+        start_ind: an integer indicating the index of first record in the list that falls within
+            the given time interval
+        end_ind: an integer indicating the index of last record in the list that falls within
+            the given time interval
     """
     datalen = len(data)
     curr_ind = ind
@@ -69,7 +76,7 @@ def get_chunk(data, ind, start, end):
                 curr_ind += 1
         
              
-            if curr_ind == start_ind:   # a no point chunk!
+            if curr_ind == start_ind:   # an empty chunk!
                 end_ind = curr_ind -1
             elif data[curr_ind-1].fixationduration!= None: # if the last fixation is mostly outside this segment
                 if (data[curr_ind-1].timestamp + (data[curr_ind-1].fixationduration)/2.0) > end:
@@ -96,7 +103,7 @@ def get_chunk(data, ind, start, end):
                     end_ind = curr_ind -1
             else:
                 end_ind = curr_ind -1            
-    else:
+    else: # if this is not a Fixation we do not have to worry about half fixations
         while curr_ind < datalen and data[curr_ind].timestamp < start:
             curr_ind += 1
     
@@ -106,7 +113,7 @@ def get_chunk(data, ind, start, end):
     
         end_ind = curr_ind -1
     
-    end_ind +=1 #because the last index is not inclusive in pythond!
+    end_ind +=1 #because the last index is not inclusive in Python!
     return curr_ind, start_ind, end_ind
 
 def stddev(data):
