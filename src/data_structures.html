@@ -34,7 +34,13 @@ Basic&nbsp;data&nbsp;structures&nbsp;used&nbsp;in&nbsp;EMDAT</tt></p>
 <font color="#000000" face="helvetica, arial"><a name="Datapoint">class <strong>Datapoint</strong></a></font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>A&nbsp;class&nbsp;that&nbsp;holds&nbsp;the&nbsp;infromation&nbsp;for&nbsp;one&nbsp;eye&nbsp;data&nbsp;sample&nbsp;(one&nbsp;line&nbsp;of&nbsp;data&nbsp;logs)<br>&nbsp;</tt></td></tr>
+<td colspan=2><tt>A&nbsp;class&nbsp;that&nbsp;holds&nbsp;the&nbsp;infromation&nbsp;for&nbsp;one&nbsp;eye&nbsp;data&nbsp;sample&nbsp;(one&nbsp;line&nbsp;of&nbsp;data&nbsp;logs)&nbsp;<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;segid:&nbsp;a&nbsp;string&nbsp;indicating&nbsp;the&nbsp;Segment&nbsp;that&nbsp;this&nbsp;<a href="#Datapoint">Datapoint</a>&nbsp;belongs&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;is_valid:&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;this&nbsp;sample&nbsp;is&nbsp;valid<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Please&nbsp;refer&nbsp;to&nbsp;the&nbsp;Tobii&nbsp;manual&nbsp;for&nbsp;the&nbsp;descriotion&nbsp;of&nbsp;the&nbsp;rest&nbsp;of&nbsp;the&nbsp;attributes<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="Datapoint-__init__"><strong>__init__</strong></a>(self, data_point)</dt><dd><tt>Inits&nbsp;<a href="#Datapoint">Datapoint</a>&nbsp;class&nbsp;with&nbsp;a&nbsp;line&nbsp;of&nbsp;gaze&nbsp;data&nbsp;from&nbsp;"all-Data.tsv"&nbsp;file<br>
@@ -65,7 +71,9 @@ Args:<br>
 <font color="#000000" face="helvetica, arial"><a name="Event">class <strong>Event</strong></a></font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>A&nbsp;class&nbsp;that&nbsp;holds&nbsp;the&nbsp;infromation&nbsp;for&nbsp;one&nbsp;<a href="#Event">Event</a>&nbsp;representing&nbsp;one&nbsp;line&nbsp;in&nbsp;the&nbsp;an&nbsp;"<a href="#Event">Event</a>-Data.tsv"&nbsp;file<br>&nbsp;</tt></td></tr>
+<td colspan=2><tt>A&nbsp;class&nbsp;that&nbsp;holds&nbsp;the&nbsp;infromation&nbsp;for&nbsp;one&nbsp;<a href="#Event">Event</a>&nbsp;representing&nbsp;one&nbsp;line&nbsp;in&nbsp;the&nbsp;an&nbsp;"<a href="#Event">Event</a>-Data.tsv"&nbsp;file<br>
+&nbsp;<br>
+Please&nbsp;refer&nbsp;to&nbsp;the&nbsp;Tobii&nbsp;manual&nbsp;for&nbsp;the&nbsp;descriotion&nbsp;of&nbsp;the&nbsp;attributes<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="Event-__init__"><strong>__init__</strong></a>(self, eventstr)</dt><dd><tt>Inits&nbsp;<a href="#Event">Event</a>&nbsp;class&nbsp;with&nbsp;a&nbsp;line&nbsp;of&nbsp;gaze&nbsp;data&nbsp;from&nbsp;an&nbsp;"<a href="#Event">Event</a>-Data.tsv"&nbsp;file<br>
@@ -83,7 +91,12 @@ Yields:<br>
 <font color="#000000" face="helvetica, arial"><a name="Fixation">class <strong>Fixation</strong></a></font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>A&nbsp;class&nbsp;that&nbsp;holds&nbsp;the&nbsp;infromation&nbsp;for&nbsp;one&nbsp;<a href="#Fixation">Fixation</a>&nbsp;representing&nbsp;one&nbsp;line&nbsp;in&nbsp;a&nbsp;"<a href="#Fixation">Fixation</a>-Data.tsv"&nbsp;file<br>&nbsp;</tt></td></tr>
+<td colspan=2><tt>A&nbsp;class&nbsp;that&nbsp;holds&nbsp;the&nbsp;infromation&nbsp;for&nbsp;one&nbsp;<a href="#Fixation">Fixation</a>&nbsp;representing&nbsp;one&nbsp;line&nbsp;in&nbsp;a&nbsp;"<a href="#Fixation">Fixation</a>-Data.tsv"&nbsp;file<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;segid:&nbsp;a&nbsp;string&nbsp;indicating&nbsp;the&nbsp;Segment&nbsp;that&nbsp;this&nbsp;<a href="#Datapoint">Datapoint</a>&nbsp;belongs&nbsp;to<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Please&nbsp;refer&nbsp;to&nbsp;the&nbsp;Tobii&nbsp;manual&nbsp;for&nbsp;the&nbsp;descriotion&nbsp;of&nbsp;the&nbsp;rest&nbsp;of&nbsp;the&nbsp;attributes<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="Fixation-__init__"><strong>__init__</strong></a>(self, fix_point, media_offset<font color="#909090">=(0, 0)</font>)</dt><dd><tt>Inits&nbsp;<a href="#Fixation">Fixation</a>&nbsp;class&nbsp;with&nbsp;a&nbsp;line&nbsp;of&nbsp;gaze&nbsp;data&nbsp;from&nbsp;a&nbsp;"<a href="#Fixation">Fixation</a>-Data.tsv"&nbsp;file<br>

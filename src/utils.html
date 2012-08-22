@@ -12,7 +12,9 @@
     <p><tt>UBC&nbsp;Eye&nbsp;Movement&nbsp;Data&nbsp;Analysys&nbsp;Toolkit<br>
 Created&nbsp;on&nbsp;2011-08-25<br>
 &nbsp;<br>
-@author:&nbsp;skardan</tt></p>
+@author:&nbsp;skardan<br>
+&nbsp;<br>
+Commonly&nbsp;used&nbsp;helper&nbsp;methods</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -29,16 +31,22 @@ Created&nbsp;on&nbsp;2011-08-25<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-get_chunk"><strong>get_chunk</strong></a>(data, ind, start, end)</dt><dd><tt>Args:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;ind<br>
-&nbsp;&nbsp;&nbsp;&nbsp;start<br>
-&nbsp;&nbsp;&nbsp;&nbsp;end<br>
+<td width="100%"><dl><dt><a name="-get_chunk"><strong>get_chunk</strong></a>(data, ind, start, end)</dt><dd><tt>Returns&nbsp;index&nbsp;of&nbsp;first&nbsp;and&nbsp;last&nbsp;records&nbsp;in&nbsp;data&nbsp;that&nbsp;fall&nbsp;within&nbsp;a&nbsp;time&nbsp;interval&nbsp;(start-end)&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;a&nbsp;list&nbsp;of&nbsp;subsequent&nbsp;Fixations&nbsp;or&nbsp;Datapoints<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ind:&nbsp;an&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;starting&nbsp;index&nbsp;in&nbsp;data&nbsp;for&nbsp;search,&nbsp;if&nbsp;not&nbsp;known&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;should&nbsp;be&nbsp;set&nbsp;to&nbsp;zero.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;start:&nbsp;an&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;start&nbsp;of&nbsp;interval&nbsp;in&nbsp;milliseconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;end:&nbsp;an&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;end&nbsp;of&nbsp;interval&nbsp;in&nbsp;milliseconds<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
 Returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;curr_ind<br>
-&nbsp;&nbsp;&nbsp;&nbsp;start_ind<br>
-&nbsp;&nbsp;&nbsp;&nbsp;end_ind</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;curr_ind:&nbsp;an&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;next&nbsp;record&nbsp;for&nbsp;search.&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;is&nbsp;useful&nbsp;if&nbsp;you&nbsp;are&nbsp;performing&nbsp;a&nbsp;series&nbsp;searches&nbsp;in&nbsp;a&nbsp;sequential&nbsp;manner.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;method&nbsp;can&nbsp;start&nbsp;the&nbsp;next&nbsp;search&nbsp;from&nbsp;this&nbsp;index&nbsp;instead&nbsp;of&nbsp;beginning&nbsp;of&nbsp;the&nbsp;list.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;start_ind:&nbsp;an&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;first&nbsp;record&nbsp;in&nbsp;the&nbsp;list&nbsp;that&nbsp;falls&nbsp;within<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;given&nbsp;time&nbsp;interval<br>
+&nbsp;&nbsp;&nbsp;&nbsp;end_ind:&nbsp;an&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;last&nbsp;record&nbsp;in&nbsp;the&nbsp;list&nbsp;that&nbsp;falls&nbsp;within<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;given&nbsp;time&nbsp;interval</tt></dd></dl>
  <dl><dt><a name="-mean"><strong>mean</strong></a>(data)</dt><dd><tt>Returns&nbsp;the&nbsp;average&nbsp;of&nbsp;a&nbsp;list&nbsp;of&nbsp;numbers<br>
 &nbsp;<br>
 Args:<br>
