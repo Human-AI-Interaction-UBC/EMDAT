@@ -61,6 +61,14 @@ class Participant_CSP(Participant.Participant):
         rec = Recording.Recording(datafile, fixfile, params.MEDIA_OFFSET)
         print "Done!"
         scenelist,self.numofsegments,aoi_seqs = partition_CSP(eventfile,actionsfile,log_time_offset)
+        
+        #wrting the .seg file
+        segfile = open("./sampledata/P"+str(pid)+".seg",'w')
+        for ssc in scenelist.iteritems():
+            for ssg in ssc[1]:
+                segfile.write(ssc[0]+'\t'+ssg[0]+'\t'+str(ssg[1])+'\t'+str(ssg[2])+'\n')   #scid, segid, start, end
+        segfile.close()
+        
         print "partition done!"
         if aoifiles != None:
             aoi_seqs.append(aoi_seqs[0]+aoi_seqs[1])

@@ -264,11 +264,11 @@ def read_aois_Tobii(aoifile):
     """Returns a list of "AOI"s read from a '.aoi' file.
     
     The '.aoi' files have pairs of lines of the form:
-    aoiname[\t]point1x,point1y[\t]point2x,point2y[\t]...[\n]
-    #[\t]start1,end1[\t]...[\n]
+    aoiname[tab]point1x,point1y[tab]point2x,point2y[tab]...[new line]
+    #[tab]start1,end1[tab]...[new line]
     
     The first line determines name of the AOI and the coordinates of each vertex of 
-    the polygon that determines the bounderies of the AOI.
+    the polygon that determines the boundaries of the AOI.
     The second line which starts with a '#' is optional and determines the time
     intervals when the AOI is active. If the second line does not exist the AOI will
     be active throughout the whole session (global AOI). 
