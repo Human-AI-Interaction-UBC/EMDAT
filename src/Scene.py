@@ -14,14 +14,14 @@ from copy import deepcopy
 class Scene(Segment):
     """A Scene is a class that represent one scene in the experiment.
     
-    A Scene is a class that represent one scene in the experiment. The Scene is designed to capture all "Datapoint"s related to a terget
+    A Scene is a class that represent one scene in the experiment. The Scene is designed to capture all "Datapoint"s related to a target
     conceptual entity in the experiment. A Scene should have at least one Segment assigned to it. The Scene class is also used to 
-    combine multiple "Segment"s and calculate the aggregated statistics for this new entity as a whole. This class is equivalant
+    combine multiple "Segment"s and calculate the aggregated statistics for this new entity as a whole. This class is the equivalent
     of scenes as defined in Tobii studio.
     
     Attributes:
-        scid: a string conatinihg the Scene ids
-        segments: a list of "Segment"s fior this Scene
+        scid: a string containing the Scene ids
+        segments: a list of "Segment"s for this Scene
         
     Attributes inherited from Segment:
         alldata: A list of "Datapoint"s for this Scene
@@ -97,15 +97,15 @@ class Scene(Segment):
             
             One way to deal with a low quality Segment is to find the gaps of invalid samples within its "Datapoint"s and 
             splitting the Segment into two Segments one from the beginnning of the Segment to the gap and another from after
-            the gap to the end of the Segment. This can be done multiple times resulting multiple "Segmenet"s with higher
-            quality. For example if a Segment S1 stated at s1 and ended at e1 and had two invalid gaps between gs1-ge1 and 
+            the gap to the end of the Segment. This can be done multiple times resulting multiple "Segment"s with higher
+            quality. For example if a Segment S1 started at s1 and ended at e1 and had two invalid gaps between gs1-ge1 and 
             gs2-ge2 milliseconds, this method will generate the following three segments
                 SS1: starting at s1 and ending at gs1
                 SS2: starting at ge1 and ending at gs2
                 SS3: starting at ge2 and ending at e1
             
             Args:
-                new_seg: The Segment that is being splitted
+                new_seg: The Segment that is being split
                 
                 seg_start: An integer showing the start time of the segment in milliseconds
                 
@@ -114,10 +114,10 @@ class Scene(Segment):
             Returns:
                 subsegments: a list of newly generated "Segment"s
                 
-                samp_inds: a list of tuples of the form (start, end) that detrmines the index of the strat and end of each 
+                samp_inds: a list of tuples of the form (start, end) that detrmines the index of the start and end of each 
                     new Segment in the old Segment's all_data field
                     
-                fix_inds: a list of tuples of the form (start, end) that detrmines the index of the strat and end of each 
+                fix_inds: a list of tuples of the form (start, end) that detrmines the index of the start and end of each 
                     new Segment in the old Segment's fixation_data field
             """
             timegaps = new_seg.getgaps()

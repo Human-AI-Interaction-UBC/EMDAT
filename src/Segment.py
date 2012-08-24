@@ -16,7 +16,11 @@ from warnings import warn
 class Segment():
     """A Segment is a class that represents the smallest unit of aggregated eye data samples with a conceptual meaning.
     
+<<<<<<< HEAD
     A segment is the smallest unit of aggregated eye data samples that has conceptual meaning. This class is equivalent
+=======
+    A segment is the smallest unit of aggregated eye data samples that has conceptual meaning. This class is the equivalent
+>>>>>>> General Comment Cleanup
     of segments as defined in Tobii studio. 
     
     Attributes:

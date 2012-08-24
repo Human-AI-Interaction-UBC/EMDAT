@@ -5,10 +5,17 @@ Created on 2011-08-26
 
 @author: skardan
 
+<<<<<<< HEAD
 In EMDAT, the boundaries of an AOI are defined as a polygon on the screen. You can 
 optionally define a second polygon inside the first polygon to be excluded from an AOI.
 an AOI can be always active (a global AOI) or can be active during certain time intervals.
 In order to calculate the features for an AOI instance, you need to create an AOI_Stat instance and map it to target AOI object by passing it
+=======
+In EMDAT, the bounderies of an Area of Interest (AOI) is defined as a polygon on the screen. You can 
+optionally define a second polygone inside the first polygone to be excluded from an AOI.
+An AOI can be always active (a global AOI) or can be active during certain time intervals.
+In order to calculate the features for an AOI instance, you need to create an AOI_Stat instance and map it to a target AOI object by passing it
+>>>>>>> General Comment Cleanup
 to the AOI_Stat constructor. The resulting AOI_Stat will calculate all features related to the given AOI and store them for later reference 
 """
 from utils import *
@@ -50,14 +57,22 @@ class AOI():
         self.polyout = polyout
             
     def is_active(self,start,end):
+<<<<<<< HEAD
         """Determines if an AOI is active during the whole given time interval 
+=======
+        """Determines if an AOI is constantly active during a given time interval 
+>>>>>>> General Comment Cleanup
                 
         Args:
             start: time interval start
             end: time interval end
             
         Returns:
+<<<<<<< HEAD
             true if the AOI is always active within the given time interval 
+=======
+            true if the AOI is constantly active in the given time interval 
+>>>>>>> General Comment Cleanup
         """
         if start == -1:
             return False
@@ -72,11 +87,16 @@ class AOI():
     def is_active_partition(self,start,end):
         """Determines if an AOI is partially active during a given time interval
         
+<<<<<<< HEAD
         $$$ Daria:
         $$$ Delete this: if the AOI is active at least in part of the given time interval returns true 
         $$$ Add this: if the AOI is active at any time of the given time interval returns true
         
         Returns the time sub-interval when AOI is active otherwise returns False, []
+=======
+        if the AOI is active at least in part of the given time interval returns true 
+        it also returns the time sub-interval that AOI is active otherwise returns False, []
+>>>>>>> General Comment Cleanup
         
         Args:
             start: time interval start

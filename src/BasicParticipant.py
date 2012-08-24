@@ -18,7 +18,7 @@ from math import ceil, floor
 class Participant_Basic(Participant.Participant):
     """
     This is a sample child class based on the Participant class that implements all the 
-    placeholder methods in Participant class for a basic project
+    placeholder methods in the Participant class for a basic project
     """
     def __init__(self, pid, eventfile, datafile, fixfile, segfile, log_time_offset = None, aoifile = None, prune_length= None, 
                  require_valid_segs = True, auto_partition_low_quality_segments = False):
@@ -239,7 +239,7 @@ def partition_Basic(segfile):
     Returns:
         a dict with scid as the key and tuples of (segid, start , end) for segments that belong to
             that scene as value
-        an integer setermining the number of segments
+        an integer determining the number of segments
     """
     scenelist = Recording.read_segs(segfile)
     segcount = 0

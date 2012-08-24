@@ -8,7 +8,11 @@ Basic data structures used in EMDAT
 """
 class Datapoint():
     """
+<<<<<<< HEAD
     A class that holds the information for one eye data sample (one line of data logs) 
+=======
+    A class that holds the information for one eye gaze data sample (one line of data logs) 
+>>>>>>> General Comment Cleanup
     
     Attributes:
         segid: a string indicating the Segment that this Datapoint belongs to

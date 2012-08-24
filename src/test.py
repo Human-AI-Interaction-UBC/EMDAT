@@ -9,7 +9,7 @@ from Participant import export_features_all, write_features_tsv
 ul =        [61, 62]    # list of user recordings (files extracted for one participant from Tobii studio)
 uids =      [61, 62]    # User ID that is used in the external logs (can be different from above but there should be a 1-1 mapping)
 
-alogoffset =[ 3,  2]    # the time sifference between the eye tracker logs and the external log
+alogoffset =[ 3,  2]    # the time difference between the eye tracker logs and the external log
 
 
 

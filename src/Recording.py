@@ -6,6 +6,7 @@ Author: Nicholas FitzGerald - nicholas.fitzgerald@gmail.com
 Modified by: Samad Kardan to a general class independent of the study
 
 Class to hold all the data from one recording (i.e, one complete experiment session)
+for one participant
 
 """
 

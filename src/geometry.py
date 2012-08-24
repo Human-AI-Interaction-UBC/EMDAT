@@ -4,6 +4,8 @@ UBC Eye Movement Data Analysis Toolkit
 $$$Daria: contains auxiliary functions for math calculations performed within EMDAT
 
 Author: Nicholas FitzGerald - nicholas.fitzgerald@gmail.com
+
+Basic geometrical helper functions
 """
 import os, sys, math, random
 
