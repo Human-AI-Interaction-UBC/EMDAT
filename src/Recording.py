@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysys Toolkit
+UBC Eye Movement Data Analysis Toolkit
 Recording class
 
 Author: Nicholas FitzGerald - nicholas.fitzgerald@gmail.com
@@ -28,7 +28,7 @@ class Recording():
                 'Fixation-Data.tsv' file output by the Tobii software.
                 
             media_offset: the coordinates of the top left corner of the window
-                showing the interface under study. (0,0) if the interfacce was
+                showing the interface under study. (0,0) if the interface was
                 in full screen (default value)
             
         Yields:
@@ -52,15 +52,17 @@ class Recording():
                 s1    seg1    0    5988013
                 With one segment definition per line
             scenelist: If not None, a list of Scene objects
-            *Note: Both segfile and scenelist cannot be None
+            *Note: At least one of segfile and scenelist should be not None
                 
-            aoifile: If not None, a string conatining the name of the aoifile 
+            aoifile: If not None, a string containing the name of the aoifile 
                 with definitions of the "AOI"s.
             aoilist: If not None, a list of "AOI"s.
             *Note: if aoifile is not None, aoilist will be ignored
              
+             $$$ Daria: if both aoifile and aoilist are none AOIs are ignored
+             
             prune_length: If not None, an integer that specifies the time 
-                interval (in ms) from the begining of each Segment in which
+                interval (in ms) from the beginning of each Segment in which
                 samples are considered in calculations.  This can be used if, 
                 for example, you only wish to consider data in the first 
                 1000 ms of each Segment. In this case (prune_length = 1000),
@@ -72,7 +74,7 @@ class Recording():
             
             auto_partition_low_quality_segments: a boolean flag determining whether
                 EMDAT should automatically split the "Segment"s which have low sample quality
-                into two new ssub "Segment"s discarding the largest invalid sample gap in 
+                into two new sub "Segment"s discarding the largest invalid sample gap in 
                 the "Segment". default = False
         Returns:
             a list of Scene objects for this Recording
@@ -222,7 +224,7 @@ def read_fixation_data(fixation_file, media_offset = (0,0)):
         fixation_file: A string containing the name of the 'Fixation-Data.tsv' file output by the
             Tobii software.
         media_offset: the coordinates of the top left corner of the window
-                showing the interface under study. (0,0) if the interfacce was
+                showing the interface under study. (0,0) if the interface was
                 in full screen (default value) 
     Returns:
         a list of "Fixation"s
@@ -321,12 +323,12 @@ def read_aois_Tobii(aoifile):
 def read_segs(segfile):
     """Returns a dict with scid as the key and segments as value from a '.seg' file.
     
-    The '.seg' files have lines of the form:
+    A '.seg' file consists of a set of lines with the following format:
     scene_name[\t]segment_name[\t]start_time[\t]end_time[\n]
     
     scene_name is the id of the Scene that this Segment belongs to,
     segment_name is the id of the Segement,
-    and tart_time and end_time determines the time interval for the Segment
+    and start_time and end_time determines the time interval for the Segment
 
     Args:
         segfile: A string containing the name of the '.seg' file

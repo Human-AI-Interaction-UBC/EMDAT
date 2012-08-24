@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysys Toolkit
+UBC Eye Movement Data Analysis Toolkit
 Generic Participant Class
 Created on 2011-09-25
 
@@ -13,7 +13,7 @@ import params
 
 class Participant():
     """
-    A class that hold the information for one Participant in the experiment
+    A class that holds the information for one Participant in the experiment
     """
     def __init__(self, pid, eventfile, datafile, fixfile, aoifile = None, prune_length= None):
         """Inits Participant class
@@ -21,16 +21,16 @@ class Participant():
             pid: Participant id
             
             eventfile: a string containing the name of the "Event-Data.tsv" file for this participant
-            
-            datafile: a string containing the name of the "all-Data.tsv" file for this participant
+                        
+            datafile: a string containing the name of the "All-Data.tsv" file for this participant
             
             fixfile: a string containing the name of the "Fixation-Data.tsv" file for this participant
             
-            aoifile: If not None, a string conatining the name of the aoifile 
+            aoifile: If not None, a string containing the name of the aoifile 
                 with definitions of the "AOI"s.
             
             prune_length: If not None, an integer that specifies the time 
-                interval (in ms) from the begining of each Segment in which
+                interval (in ms) from the beginning of each Segment in which
                 samples are considered in calculations.  This can be used if, 
                 for example, you only wish to consider data in the first 
                 1000 ms of each Segment. In this case (prune_length = 1000),
@@ -66,7 +66,7 @@ class Participant():
         """Returns feature names and their values for this Participant
         
         Args:
-            featurelist: if not None, a lsit of strings containing the name of the features to be
+            featurelist: if not None, a list of strings containing the name of the features to be
                 returned
             
             aoifeaturelist: if not None, a list of features to be returned for each of the "AOI"s. 
@@ -83,7 +83,7 @@ class Participant():
             
         Returns:
             featnames: a list of feature names sorted alphabetically
-            featvals: a corrsponding list of feature values
+            featvals: a corresponding list of feature values
             e.g.
             featnames = ['fixationrate', 'length', 'meanabspathangles']
             featvals  = [0.00268522882294', '1529851', '1.60354714212']
@@ -117,12 +117,13 @@ class Participant():
         """Returns feature names and their values for this Participant in a tab separated format
         
         Args:
-            featurelist: if not None, a lsit of strings containing the name of the features to be
+            featurelist: if not None, a list of strings containing the name of the features to be
                 returned
             
             aoifeaturelist: if not None, a list of features to be returned for each of the "AOI"s. 
 
-            id_prefix: a boolean determining if the method should also export the participant id 
+            id_prefix: a boolean determining if the method should also export the participant id.
+             
             
             require_valid: a boolean determining if only valid segments should be used when
             calculating the features. default = True
@@ -144,7 +145,7 @@ class Participant():
         return ret
     
     def print_(self):
-        """Ourputs all feature names and their values for this Participant on the console        
+        """Outputs all feature names and their values for this Participant to the console        
         """       
         def format_list(list,leng=None):
             """
@@ -210,7 +211,7 @@ def export_features_all(participants, featurelist = None, aoifeaturelist = None,
     
     Args:
         participants: a list of "Participant"s
-        featurelist: if not None, a lsit of strings containing the name of the features to be
+        featurelist: if not None, a list of strings containing the name of the features to be
             returned
         
         aoifeaturelist: if not None, a list of features to be returned for each of the "AOI"s. 
@@ -251,7 +252,7 @@ def export_features_all(participants, featurelist = None, aoifeaturelist = None,
 
 def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist =  None, 
                        aoifeaturelabels=None, id_prefix = False):
-    """Returns feature names and their values for a list of "Participant"s in a tsv file
+    """Returns feature names and their values for a list of "Participant"s in a tsv-format file
     
     This method writes to a multi-line tab separated values (tsv) file with the first 
     line having the feature names sorted alphabetically and separated by a tab '/t',
@@ -265,7 +266,7 @@ def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist
     Args:
         participants: a list of "Participant"s
         outfile: a string containing the name of the output file
-        featurelist: if not None, a lsit of strings containing the name of the features to be
+        featurelist: if not None, a list of strings containing the name of the features to be
             returned
         
         aoifeaturelist: if not None, a list of features to be returned for each of the "AOI"s. 

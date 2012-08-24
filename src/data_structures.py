@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysys Toolkit
+UBC Eye Movement Data Analysis Toolkit
 
 Author: Nicholas FitzGerald - nicholas.fitzgerald@gmail.com
 Modified by: Samad Kardan
@@ -8,13 +8,13 @@ Basic data structures used in EMDAT
 """
 class Datapoint():
     """
-    A class that holds the infromation for one eye data sample (one line of data logs) 
+    A class that holds the information for one eye data sample (one line of data logs) 
     
     Attributes:
         segid: a string indicating the Segment that this Datapoint belongs to
         is_valid: a boolean indicating whether this sample is valid
     
-        Please refer to the Tobii manual for the descriotion of the rest of the attributes
+        Please refer to the Tobii manual for the description of the rest of the attributes
     """
     def __init__(self, data_point):
         """Inits Datapoint class with a line of gaze data from "all-Data.tsv" file
@@ -90,12 +90,12 @@ class Datapoint():
 
 class Fixation():
     """
-    A class that holds the infromation for one Fixation representing one line in a "Fixation-Data.tsv" file
+    A class that holds the information for one Fixation representing one line in a "Fixation-Data.tsv" file
     
     Attributes:
         segid: a string indicating the Segment that this Datapoint belongs to
     
-        Please refer to the Tobii manual for the descriotion of the rest of the attributes
+        Please refer to the Tobii manual for the description of the rest of the attributes
     """
 
     def __init__(self, fix_point, media_offset = (0, 0)):
@@ -104,7 +104,7 @@ class Fixation():
         Args:
             fix_point: a string containing one line read from a "Fixation-Data.tsv" file        
             media_offset: the coordinates of the top left corner of the window
-                showing the interface under study. (0,0) if the interfacce was
+                showing the interface under study. (0,0) if the interface was
                 in full screen (default value)
             
         Yields:
@@ -143,9 +143,9 @@ class Fixation():
 
 class Event():
     """
-    A class that holds the infromation for one Event representing one line in the an "Event-Data.tsv" file
+    A class that holds the information for one Event representing one line in the an "Event-Data.tsv" file
     
-    Please refer to the Tobii manual for the descriotion of the attributes
+    Please refer to the Tobii manual for the description of the attributes
     """
     def __init__(self, eventstr):
         """Inits Event class with a line of gaze data from an "Event-Data.tsv" file

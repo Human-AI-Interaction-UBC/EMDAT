@@ -1,7 +1,10 @@
 '''
-Created on 2011-09-22
+UBC Eye Movement Data Analysis Toolkit
 
-@author: skardan
+$$$Daria: Module that contains all global parameters. Values of parameters are specific to the project.
+
+Author: skardan
+
 '''
 EXPERIMENT ='CSP'
 #a work around for having multiple experiments in one params file
@@ -13,7 +16,7 @@ if EXPERIMENT == 'CSP':
     # the folder that has the external log files
     
     NUMBEROFEXTRAHEADERLINES = 8 
-    #number of extra lines at the beginning of the exported files from Tobii 
+    #number of extra lines at the beginning of the files exported from Tobii 
     #this is specific to study and is based on the number of variables defined in Tobii
     # studio for the experiment
     
@@ -34,7 +37,7 @@ if EXPERIMENT == 'CSP':
     
     MEDIA_OFFSET = (0, 0)   
     # the coordinates of the top left corner of the window
-    # showing the interface under study. (0,0) if the interfacce was
+    # showing the interface under study. (0,0) if the interface was
     # in full screen (default value)
     
     featurelist = ['numsegments','length','numfixations','fixationrate','meanabspathangles',
@@ -81,7 +84,7 @@ if EXPERIMENT == 'CSP':
     
     MAX_SEG_TIMEGAP = 300 #maximum gap size (ms) allowable in a segment with auto-partition option
     """
-    Autopartion option is when EMDAT automatically splits the "Segment"s which have low sample 
+    Auto-partition option is when EMDAT automatically splits the "Segment"s which have low sample 
     quality, into two new sub "Segment"s discarding the largest gap of invalid samples for 
     a "Segment". EMDAT will continue to perform the splitting on the Segments until there is not
     any gap larger than MAX_SEG_TIMEGAP left in the data.
@@ -100,7 +103,7 @@ if EXPERIMENT == 'CSP':
     MINSEGSIZE = 300 #minimum segment size in ms that is considered meaningful for this experiment
     
     INCLUDE_HALF_FIXATIONS = False
-    #if a Fixation extends between two consequtive Segments, should it be included in those 
+    #if a Fixation extends between two consecutive Segments, should it be included in those 
     #Segments or not
     
     DEBUG = False

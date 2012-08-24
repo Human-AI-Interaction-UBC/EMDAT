@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysys Toolkit
+UBC Eye Movement Data Analysis Toolkit
 Created on 2011-08-26
 
 @author: skardan
@@ -14,9 +14,9 @@ from warnings import warn
 
 
 class Segment():
-    """A Segment is a class that represent the smallest unit of aggregated eye data samples with a conceptual meaning.
+    """A Segment is a class that represents the smallest unit of aggregated eye data samples with a conceptual meaning.
     
-    A segment is the smallest unit of aggregated eye data samples that has conceptual meaning. This class is equivalant
+    A segment is the smallest unit of aggregated eye data samples that has conceptual meaning. This class is equivalent
     of segments as defined in Tobii studio. 
     
     Attributes:
@@ -24,8 +24,8 @@ class Segment():
         alldata: A list of "Datapoint"s for this Segment
         features: A dict with feature names as its keys and feature values as its values 
         completion_time: An integer indicating total duration of the Segment in milliseconds
-            minimum is 16 ms (ength of one sample with 60Hz sampling rate (ms)
-        start:An integer indicating the Segment's start time in milliseconds
+            minimum is 16 ms (length of one sample with 60Hz sampling rate (ms))
+        start: An integer indicating the Segment's start time in milliseconds
         end: An integer indicating the Segment's end time in milliseconds
         sample_start_ind: An integer indicating the index of the first Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data) 
         sample_end_ind: An integer indicating the index of the last Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data)
@@ -44,8 +44,10 @@ class Segment():
         numsamples: An integer indicating total number of samples in the Segment 
         fixation_data: A list of "Fixation"s for this Segment
         fixation_start = fixation_data[0].timestamp
+        $$$ Daria: fixation_start - timestamp of the first entry from list of "Fixation"s for this Segment
         fixation_end = fixation_data[-1].timestamp
-        aoi_data: A list of AOI_Stat objects for relevants "AOI"s for this Segment
+        $$$ Daria: fixation_end - timestamp of the last entry from list of "Fixation"s for this Segment
+        aoi_data: A list of AOI_Stat objects for relevant "AOI"s for this Segment
         has_aois: A boolean indicating if this Segment has AOI features calculated for it
         
     """
@@ -60,7 +62,7 @@ class Segment():
             
             aois: a list of "AOI"s relevant to this Segment.
          
-            prune_length: If not None, an integer that specifies the time interval (in ms) from the begining of each segment in which
+            prune_length: If not None, an integer that specifies the time interval (in ms) from the beginning of each segment in which
                 samples are considered in calculations.  This can be used if, for example, you only wish to consider data in the first 
                 1000 ms of each segment. In this case (prune_length = 1000), all data beyond the first 1000ms of the start of the segments
                 will be disregarded.
@@ -177,8 +179,8 @@ class Segment():
         """Sets the relevant "AOI"s for this Segment
         
         Args:
-            fixation_data: The list of "Fixation"s which make up this Segement
-            aois: a list of "AOI"s relevant to this segement
+            fixation_data: The list of "Fixation"s which make up this Segment
+            aois: a list of "AOI"s relevant to this Segment
         """
         if len(aois) == 0:
             warn("no AOIs passed to segment:"+self.segid)
@@ -299,7 +301,8 @@ class Segment():
         
         Args:
             threshold:
-            
+            $$$ Daria: threshold: the minimum proportion of valid samples for a Segment or Scene to be considered valid.
+            $$$ By default set to value VALID_PROP_THRESH from module params.py 
         """
         return self.proportion_valid > threshold
 

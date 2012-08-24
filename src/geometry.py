@@ -1,5 +1,7 @@
 """
-UBC Eye Movement Data Analysys Toolkit
+UBC Eye Movement Data Analysis Toolkit
+
+$$$Daria: contains auxiliary functions for math calculations performed within EMDAT
 
 Author: Nicholas FitzGerald - nicholas.fitzgerald@gmail.com
 """

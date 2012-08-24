@@ -1,12 +1,12 @@
 """
-UBC Eye Movement Data Analysys Toolkit
+UBC Eye Movement Data Analysis Toolkit
 The Generic Area of Interest Classes
 Created on 2011-08-26
 
 @author: skardan
 
-In EMDAT, the bounderies of an AOI is defined as a polygon on the screen. You can 
-optionally define a second polygone inside the first polygone to be excluded from an AOI.
+In EMDAT, the boundaries of an AOI are defined as a polygon on the screen. You can 
+optionally define a second polygon inside the first polygon to be excluded from an AOI.
 an AOI can be always active (a global AOI) or can be active during certain time intervals.
 In order to calculate the features for an AOI instance, you need to create an AOI_Stat instance and map it to target AOI object by passing it
 to the AOI_Stat constructor. The resulting AOI_Stat will calculate all features related to the given AOI and store them for later reference 
@@ -23,9 +23,9 @@ class AOI():
         Args:
             aid: AOI id
             
-            polyin: the polygon defining the bounderies of the AOI
+            polyin: the polygon defining the boundaries of the AOI
             
-            polyout: optional polygon inside the bounderies of the AOI that is not part of the AOI
+            polyout: optional polygon inside the boundaries of the AOI that is not part of the AOI
             
             timeseq: the time sequence of the format [(start1, end1), (start2, end2), ...] that specifies the intervals when this AOI is active
             
@@ -50,14 +50,14 @@ class AOI():
         self.polyout = polyout
             
     def is_active(self,start,end):
-        """Determines if an AOI is active during a whole given time interval 
+        """Determines if an AOI is active during the whole given time interval 
                 
         Args:
             start: time interval start
             end: time interval end
             
         Returns:
-            true if the AOI is always active in the given time interval 
+            true if the AOI is always active within the given time interval 
         """
         if start == -1:
             return False
@@ -72,8 +72,11 @@ class AOI():
     def is_active_partition(self,start,end):
         """Determines if an AOI is partially active during a given time interval
         
-        if the AOI is active at leaset in part of the given time interval returns true 
-        it also returns the time sub-interval that AOI is active otherwise retyurns False, []
+        $$$ Daria:
+        $$$ Delete this: if the AOI is active at least in part of the given time interval returns true 
+        $$$ Add this: if the AOI is active at any time of the given time interval returns true
+        
+        Returns the time sub-interval when AOI is active otherwise returns False, []
         
         Args:
             start: time interval start
@@ -110,6 +113,7 @@ class AOI_Stat():
 
     def __init__(self,aoi,seg_fixation_data, starttime, endtime, active_aois):
         """Inits AOI_Stat class
+        $$$ Daria: Methods of AOI_Stat calculate and store all features related to the given AOI aoi
         Args:
             aoi: the aoi object for which the statistics are calculated
             seg_fixation_data:
@@ -215,14 +219,14 @@ class AOI_Stat():
 
 
     def get_features(self, featurelist = None):
-        """Returns the list and values of features for this AOI_Stat object
+        """Returns the list of names and values of features for this AOI_Stat object
         
         Args:
-            featurelist: optional list of features. If this is None all features will be returned
+            featurelist: optional list of features. If equal to None the full set of all features will be returned
             
         Returns:
             featnames: a list of feature names sorted alphabetically
-            featvals: a corrsponding list of feature values
+            featvals: a corresponding list of feature values
             e.g.
             featnames = ['fixationrate', 'length', 'meanabspathangles']
             featvals  = [0.00268522882294', '1529851', '1.60354714212']
@@ -256,7 +260,7 @@ class AOI_Stat():
         return featnames, featvals
 
     def print_(self):
-        """Prints the list of features and their vqalues for this AOI_Stat object
+        """Prints the list of features and their values for this AOI_Stat object
      
         """
 
@@ -269,6 +273,8 @@ class AOI_Stat():
 
 def _fixation_inside_aoi(fixation, polyin, polyout):
     """Helper function that determines if a fixation object is inside polyin and outside polyout
+    $$$ Daria: Helper function that checks if a fixation object is inside the AOI described by external polygon polyin and the internal polygon polyout.
+    $$$ Fixation object is inside AOI if it is inside polyin but outside polyout
     """
     return point_inside_polygon(fixation.mappedfixationpointx,
     fixation.mappedfixationpointy, polyin) and not point_inside_polygon(fixation.mappedfixationpointx,
