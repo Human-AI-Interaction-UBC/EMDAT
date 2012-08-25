@@ -9,7 +9,7 @@
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>Segment</strong></big></big></font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///C|/temp/skardan/workspace/python/emdat/src/segment.py">c:\temp\skardan\workspace\python\emdat\src\segment.py</a></font></td></tr></table>
-    <p><tt>UBC&nbsp;Eye&nbsp;Movement&nbsp;Data&nbsp;Analysys&nbsp;Toolkit<br>
+    <p><tt>UBC&nbsp;Eye&nbsp;Movement&nbsp;Data&nbsp;Analysis&nbsp;Toolkit<br>
 Created&nbsp;on&nbsp;2011-08-26<br>
 &nbsp;<br>
 @author:&nbsp;skardan</tt></p>
@@ -40,9 +40,9 @@ Created&nbsp;on&nbsp;2011-08-26<br>
 <font color="#000000" face="helvetica, arial"><a name="Segment">class <strong>Segment</strong></a></font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>A&nbsp;<a href="#Segment">Segment</a>&nbsp;is&nbsp;a&nbsp;class&nbsp;that&nbsp;represent&nbsp;the&nbsp;smallest&nbsp;unit&nbsp;of&nbsp;aggregated&nbsp;eye&nbsp;data&nbsp;samples&nbsp;with&nbsp;a&nbsp;conceptual&nbsp;meaning.<br>
+<td colspan=2><tt>A&nbsp;<a href="#Segment">Segment</a>&nbsp;is&nbsp;a&nbsp;class&nbsp;that&nbsp;represents&nbsp;the&nbsp;smallest&nbsp;unit&nbsp;of&nbsp;aggregated&nbsp;eye&nbsp;data&nbsp;samples&nbsp;with&nbsp;a&nbsp;conceptual&nbsp;meaning.<br>
 &nbsp;<br>
-A&nbsp;segment&nbsp;is&nbsp;the&nbsp;smallest&nbsp;unit&nbsp;of&nbsp;aggregated&nbsp;eye&nbsp;data&nbsp;samples&nbsp;that&nbsp;has&nbsp;conceptual&nbsp;meaning.&nbsp;This&nbsp;class&nbsp;is&nbsp;equivalant<br>
+A&nbsp;segment&nbsp;is&nbsp;the&nbsp;smallest&nbsp;unit&nbsp;of&nbsp;aggregated&nbsp;eye&nbsp;data&nbsp;samples&nbsp;that&nbsp;has&nbsp;conceptual&nbsp;meaning.&nbsp;This&nbsp;class&nbsp;is&nbsp;the&nbsp;equivalent<br>
 of&nbsp;segments&nbsp;as&nbsp;defined&nbsp;in&nbsp;Tobii&nbsp;studio.&nbsp;<br>
 &nbsp;<br>
 Attributes:<br>
@@ -50,8 +50,8 @@ Attributes:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;alldata:&nbsp;A&nbsp;list&nbsp;of&nbsp;"Datapoint"s&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;features:&nbsp;A&nbsp;dict&nbsp;with&nbsp;feature&nbsp;names&nbsp;as&nbsp;its&nbsp;keys&nbsp;and&nbsp;feature&nbsp;values&nbsp;as&nbsp;its&nbsp;values&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;completion_time:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;total&nbsp;duration&nbsp;of&nbsp;the&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;milliseconds<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;minimum&nbsp;is&nbsp;16&nbsp;ms&nbsp;(ength&nbsp;of&nbsp;one&nbsp;sample&nbsp;with&nbsp;60Hz&nbsp;sampling&nbsp;rate&nbsp;(ms)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;start:An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;<a href="#Segment">Segment</a>'s&nbsp;start&nbsp;time&nbsp;in&nbsp;milliseconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;minimum&nbsp;is&nbsp;16&nbsp;ms&nbsp;(length&nbsp;of&nbsp;one&nbsp;sample&nbsp;with&nbsp;60Hz&nbsp;sampling&nbsp;rate&nbsp;(ms))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;start:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;<a href="#Segment">Segment</a>'s&nbsp;start&nbsp;time&nbsp;in&nbsp;milliseconds<br>
 &nbsp;&nbsp;&nbsp;&nbsp;end:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;<a href="#Segment">Segment</a>'s&nbsp;end&nbsp;time&nbsp;in&nbsp;milliseconds<br>
 &nbsp;&nbsp;&nbsp;&nbsp;sample_start_ind:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;first&nbsp;Datapoint&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;the&nbsp;Participant's&nbsp;list&nbsp;of&nbsp;all&nbsp;"Datapoint"s&nbsp;(all_data)&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;sample_end_ind:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;last&nbsp;Datapoint&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;in&nbsp;the&nbsp;Participant's&nbsp;list&nbsp;of&nbsp;all&nbsp;"Datapoint"s&nbsp;(all_data)<br>
@@ -70,8 +70,10 @@ Attributes:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;numsamples:&nbsp;An&nbsp;integer&nbsp;indicating&nbsp;total&nbsp;number&nbsp;of&nbsp;samples&nbsp;in&nbsp;the&nbsp;<a href="#Segment">Segment</a>&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;fixation_data:&nbsp;A&nbsp;list&nbsp;of&nbsp;"Fixation"s&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;fixation_start&nbsp;=&nbsp;fixation_data[0].timestamp<br>
+&nbsp;&nbsp;&nbsp;&nbsp;$$$&nbsp;Daria:&nbsp;fixation_start&nbsp;-&nbsp;timestamp&nbsp;of&nbsp;the&nbsp;first&nbsp;entry&nbsp;from&nbsp;list&nbsp;of&nbsp;"Fixation"s&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;fixation_end&nbsp;=&nbsp;fixation_data[-1].timestamp<br>
-&nbsp;&nbsp;&nbsp;&nbsp;aoi_data:&nbsp;A&nbsp;list&nbsp;of&nbsp;AOI_Stat&nbsp;objects&nbsp;for&nbsp;relevants&nbsp;"AOI"s&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;$$$&nbsp;Daria:&nbsp;fixation_end&nbsp;-&nbsp;timestamp&nbsp;of&nbsp;the&nbsp;last&nbsp;entry&nbsp;from&nbsp;list&nbsp;of&nbsp;"Fixation"s&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoi_data:&nbsp;A&nbsp;list&nbsp;of&nbsp;AOI_Stat&nbsp;objects&nbsp;for&nbsp;relevant&nbsp;"AOI"s&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;has_aois:&nbsp;A&nbsp;boolean&nbsp;indicating&nbsp;if&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;has&nbsp;AOI&nbsp;features&nbsp;calculated&nbsp;for&nbsp;it<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
@@ -84,7 +86,7 @@ Attributes:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;aois:&nbsp;a&nbsp;list&nbsp;of&nbsp;"AOI"s&nbsp;relevant&nbsp;to&nbsp;this&nbsp;<a href="#Segment">Segment</a>.<br>
 &nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;prune_length:&nbsp;If&nbsp;not&nbsp;None,&nbsp;an&nbsp;integer&nbsp;that&nbsp;specifies&nbsp;the&nbsp;time&nbsp;interval&nbsp;(in&nbsp;ms)&nbsp;from&nbsp;the&nbsp;begining&nbsp;of&nbsp;each&nbsp;segment&nbsp;in&nbsp;which<br>
+&nbsp;&nbsp;&nbsp;&nbsp;prune_length:&nbsp;If&nbsp;not&nbsp;None,&nbsp;an&nbsp;integer&nbsp;that&nbsp;specifies&nbsp;the&nbsp;time&nbsp;interval&nbsp;(in&nbsp;ms)&nbsp;from&nbsp;the&nbsp;beginning&nbsp;of&nbsp;each&nbsp;segment&nbsp;in&nbsp;which<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;samples&nbsp;are&nbsp;considered&nbsp;in&nbsp;calculations.&nbsp;&nbsp;This&nbsp;can&nbsp;be&nbsp;used&nbsp;if,&nbsp;for&nbsp;example,&nbsp;you&nbsp;only&nbsp;wish&nbsp;to&nbsp;consider&nbsp;data&nbsp;in&nbsp;the&nbsp;first&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1000&nbsp;ms&nbsp;of&nbsp;each&nbsp;segment.&nbsp;In&nbsp;this&nbsp;case&nbsp;(prune_length&nbsp;=&nbsp;1000),&nbsp;all&nbsp;data&nbsp;beyond&nbsp;the&nbsp;first&nbsp;1000ms&nbsp;of&nbsp;the&nbsp;start&nbsp;of&nbsp;the&nbsp;segments<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;disregarded.<br>
@@ -136,7 +138,9 @@ Returns:<br>
 <dl><dt><a name="Segment-calc_validity1"><strong>calc_validity1</strong></a>(self, threshold<font color="#909090">=0.84999999999999998</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;is&nbsp;valid&nbsp;using&nbsp;proportion&nbsp;of&nbsp;valid&nbsp;samples&nbsp;threshold<br>
 &nbsp;<br>
 Args:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;threshold:</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;threshold:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;$$$&nbsp;Daria:&nbsp;threshold:&nbsp;the&nbsp;minimum&nbsp;proportion&nbsp;of&nbsp;valid&nbsp;samples&nbsp;for&nbsp;a&nbsp;<a href="#Segment">Segment</a>&nbsp;or&nbsp;Scene&nbsp;to&nbsp;be&nbsp;considered&nbsp;valid.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;$$$&nbsp;By&nbsp;default&nbsp;set&nbsp;to&nbsp;value&nbsp;VALID_PROP_THRESH&nbsp;from&nbsp;module&nbsp;params.py</tt></dd></dl>
 
 <dl><dt><a name="Segment-calc_validity2"><strong>calc_validity2</strong></a>(self, threshold<font color="#909090">=3000</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;this&nbsp;<a href="#Segment">Segment</a>&nbsp;is&nbsp;valid&nbsp;using&nbsp;largest&nbsp;acceptable&nbsp;gap&nbsp;threshold</tt></dd></dl>
 
@@ -210,8 +214,8 @@ Returns:&nbsp;a&nbsp;string&nbsp;conataining&nbsp;the&nbsp;segid&nbsp;for&nbsp;t
 <dl><dt><a name="Segment-set_aois"><strong>set_aois</strong></a>(self, aois, fixation_data)</dt><dd><tt>Sets&nbsp;the&nbsp;relevant&nbsp;"AOI"s&nbsp;for&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
 &nbsp;<br>
 Args:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;fixation_data:&nbsp;The&nbsp;list&nbsp;of&nbsp;"Fixation"s&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;Segement<br>
-&nbsp;&nbsp;&nbsp;&nbsp;aois:&nbsp;a&nbsp;list&nbsp;of&nbsp;"AOI"s&nbsp;relevant&nbsp;to&nbsp;this&nbsp;segement</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;fixation_data:&nbsp;The&nbsp;list&nbsp;of&nbsp;"Fixation"s&nbsp;which&nbsp;make&nbsp;up&nbsp;this&nbsp;<a href="#Segment">Segment</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;aois:&nbsp;a&nbsp;list&nbsp;of&nbsp;"AOI"s&nbsp;relevant&nbsp;to&nbsp;this&nbsp;<a href="#Segment">Segment</a></tt></dd></dl>
 
 <dl><dt><a name="Segment-set_indices"><strong>set_indices</strong></a>(self, sample_st, sample_end, fix_st, fix_end)</dt><dd><tt>Sets&nbsp;the&nbsp;index&nbsp;features<br>
 &nbsp;<br>

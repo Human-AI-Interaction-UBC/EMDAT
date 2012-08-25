@@ -47,14 +47,14 @@ Created&nbsp;on&nbsp;2011-09-30<br>
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
 <td colspan=2><tt>A&nbsp;<a href="#Scene">Scene</a>&nbsp;is&nbsp;a&nbsp;class&nbsp;that&nbsp;represent&nbsp;one&nbsp;scene&nbsp;in&nbsp;the&nbsp;experiment.<br>
 &nbsp;<br>
-A&nbsp;<a href="#Scene">Scene</a>&nbsp;is&nbsp;a&nbsp;class&nbsp;that&nbsp;represent&nbsp;one&nbsp;scene&nbsp;in&nbsp;the&nbsp;experiment.&nbsp;The&nbsp;<a href="#Scene">Scene</a>&nbsp;is&nbsp;designed&nbsp;to&nbsp;capture&nbsp;all&nbsp;"Datapoint"s&nbsp;related&nbsp;to&nbsp;a&nbsp;terget<br>
+A&nbsp;<a href="#Scene">Scene</a>&nbsp;is&nbsp;a&nbsp;class&nbsp;that&nbsp;represent&nbsp;one&nbsp;scene&nbsp;in&nbsp;the&nbsp;experiment.&nbsp;The&nbsp;<a href="#Scene">Scene</a>&nbsp;is&nbsp;designed&nbsp;to&nbsp;capture&nbsp;all&nbsp;"Datapoint"s&nbsp;related&nbsp;to&nbsp;a&nbsp;target<br>
 conceptual&nbsp;entity&nbsp;in&nbsp;the&nbsp;experiment.&nbsp;A&nbsp;<a href="#Scene">Scene</a>&nbsp;should&nbsp;have&nbsp;at&nbsp;least&nbsp;one&nbsp;<a href="Segment.html#Segment">Segment</a>&nbsp;assigned&nbsp;to&nbsp;it.&nbsp;The&nbsp;<a href="#Scene">Scene</a>&nbsp;class&nbsp;is&nbsp;also&nbsp;used&nbsp;to&nbsp;<br>
-combine&nbsp;multiple&nbsp;"<a href="Segment.html#Segment">Segment</a>"s&nbsp;and&nbsp;calculate&nbsp;the&nbsp;aggregated&nbsp;statistics&nbsp;for&nbsp;this&nbsp;new&nbsp;entity&nbsp;as&nbsp;a&nbsp;whole.&nbsp;This&nbsp;class&nbsp;is&nbsp;equivalant<br>
+combine&nbsp;multiple&nbsp;"<a href="Segment.html#Segment">Segment</a>"s&nbsp;and&nbsp;calculate&nbsp;the&nbsp;aggregated&nbsp;statistics&nbsp;for&nbsp;this&nbsp;new&nbsp;entity&nbsp;as&nbsp;a&nbsp;whole.&nbsp;This&nbsp;class&nbsp;is&nbsp;the&nbsp;equivalent<br>
 of&nbsp;scenes&nbsp;as&nbsp;defined&nbsp;in&nbsp;Tobii&nbsp;studio.<br>
 &nbsp;<br>
 Attributes:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;scid:&nbsp;a&nbsp;string&nbsp;conatinihg&nbsp;the&nbsp;<a href="#Scene">Scene</a>&nbsp;ids<br>
-&nbsp;&nbsp;&nbsp;&nbsp;segments:&nbsp;a&nbsp;list&nbsp;of&nbsp;"<a href="Segment.html#Segment">Segment</a>"s&nbsp;fior&nbsp;this&nbsp;<a href="#Scene">Scene</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;scid:&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;<a href="#Scene">Scene</a>&nbsp;ids<br>
+&nbsp;&nbsp;&nbsp;&nbsp;segments:&nbsp;a&nbsp;list&nbsp;of&nbsp;"<a href="Segment.html#Segment">Segment</a>"s&nbsp;for&nbsp;this&nbsp;<a href="#Scene">Scene</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
 Attributes&nbsp;inherited&nbsp;from&nbsp;<a href="Segment.html#Segment">Segment</a>:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;alldata:&nbsp;A&nbsp;list&nbsp;of&nbsp;"Datapoint"s&nbsp;for&nbsp;this&nbsp;<a href="#Scene">Scene</a><br>
@@ -175,7 +175,9 @@ Returns:<br>
 <dl><dt><a name="Scene-calc_validity1"><strong>calc_validity1</strong></a>(self, threshold<font color="#909090">=0.84999999999999998</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;this&nbsp;<a href="Segment.html#Segment">Segment</a>&nbsp;is&nbsp;valid&nbsp;using&nbsp;proportion&nbsp;of&nbsp;valid&nbsp;samples&nbsp;threshold<br>
 &nbsp;<br>
 Args:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;threshold:</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;threshold:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;$$$&nbsp;Daria:&nbsp;threshold:&nbsp;the&nbsp;minimum&nbsp;proportion&nbsp;of&nbsp;valid&nbsp;samples&nbsp;for&nbsp;a&nbsp;<a href="Segment.html#Segment">Segment</a>&nbsp;or&nbsp;<a href="#Scene">Scene</a>&nbsp;to&nbsp;be&nbsp;considered&nbsp;valid.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;$$$&nbsp;By&nbsp;default&nbsp;set&nbsp;to&nbsp;value&nbsp;VALID_PROP_THRESH&nbsp;from&nbsp;module&nbsp;params.py</tt></dd></dl>
 
 <dl><dt><a name="Scene-calc_validity2"><strong>calc_validity2</strong></a>(self, threshold<font color="#909090">=3000</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;this&nbsp;<a href="Segment.html#Segment">Segment</a>&nbsp;is&nbsp;valid&nbsp;using&nbsp;largest&nbsp;acceptable&nbsp;gap&nbsp;threshold</tt></dd></dl>
 

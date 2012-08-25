@@ -43,10 +43,8 @@ class Segment():
         length: An integer indicating total duration of the Segment in milliseconds
         numsamples: An integer indicating total number of samples in the Segment 
         fixation_data: A list of "Fixation"s for this Segment
-        fixation_start = fixation_data[0].timestamp
-        $$$ Daria: fixation_start - timestamp of the first entry from list of "Fixation"s for this Segment
-        fixation_end = fixation_data[-1].timestamp
-        $$$ Daria: fixation_end - timestamp of the last entry from list of "Fixation"s for this Segment
+        fixation_start: timestamp of the first entry from list of "Fixation"s for this Segment
+        fixation_end: timestamp of the last entry from list of "Fixation"s for this Segment
         aoi_data: A list of AOI_Stat objects for relevant "AOI"s for this Segment
         has_aois: A boolean indicating if this Segment has AOI features calculated for it
         
@@ -300,9 +298,8 @@ class Segment():
         """Returns a boolean indicating whether this Segment is valid using proportion of valid samples threshold
         
         Args:
-            threshold:
-            $$$ Daria: threshold: the minimum proportion of valid samples for a Segment or Scene to be considered valid.
-            $$$ By default set to value VALID_PROP_THRESH from module params.py 
+            threshold: the minimum proportion of valid samples for a Segment or Scene to be 
+                considered valid. By default set to value VALID_PROP_THRESH from module params.py 
         """
         return self.proportion_valid > threshold
 

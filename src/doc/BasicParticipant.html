@@ -47,7 +47,7 @@ Created&nbsp;on&nbsp;2012-08-23<br>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
 <td colspan=2><tt>This&nbsp;is&nbsp;a&nbsp;sample&nbsp;child&nbsp;class&nbsp;based&nbsp;on&nbsp;the&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;class&nbsp;that&nbsp;implements&nbsp;all&nbsp;the&nbsp;<br>
-placeholder&nbsp;methods&nbsp;in&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;class&nbsp;for&nbsp;a&nbsp;basic&nbsp;project<br>&nbsp;</tt></td></tr>
+placeholder&nbsp;methods&nbsp;in&nbsp;the&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;class&nbsp;for&nbsp;a&nbsp;basic&nbsp;project<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="Participant_Basic-__init__"><strong>__init__</strong></a>(self, pid, eventfile, datafile, fixfile, segfile, log_time_offset<font color="#909090">=None</font>, aoifile<font color="#909090">=None</font>, prune_length<font color="#909090">=None</font>, require_valid_segs<font color="#909090">=True</font>, auto_partition_low_quality_segments<font color="#909090">=False</font>)</dt><dd><tt>Inits&nbsp;<a href="#Participant_Basic">Participant_Basic</a>&nbsp;class<br>
@@ -97,7 +97,7 @@ Methods inherited from <a href="Participant.html#Participant">Participant.Partic
 <dl><dt><a name="Participant_Basic-export_features"><strong>export_features</strong></a>(self, featurelist<font color="#909090">=None</font>, aoifeaturelist<font color="#909090">=None</font>, aoifeaturelabels<font color="#909090">=None</font>, id_prefix<font color="#909090">=False</font>, require_valid<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;feature&nbsp;names&nbsp;and&nbsp;their&nbsp;values&nbsp;for&nbsp;this&nbsp;<a href="Participant.html#Participant">Participant</a><br>
 &nbsp;<br>
 Args:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;featurelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;lsit&nbsp;of&nbsp;strings&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;features&nbsp;to&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featurelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;strings&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;features&nbsp;to&nbsp;be<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returned<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;aoifeaturelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;features&nbsp;to&nbsp;be&nbsp;returned&nbsp;for&nbsp;each&nbsp;of&nbsp;the&nbsp;"AOI"s.&nbsp;<br>
@@ -114,7 +114,7 @@ Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;featnames:&nbsp;a&nbsp;list&nbsp;of&nbsp;feature&nbsp;names&nbsp;sorted&nbsp;alphabetically<br>
-&nbsp;&nbsp;&nbsp;&nbsp;featvals:&nbsp;a&nbsp;corrsponding&nbsp;list&nbsp;of&nbsp;feature&nbsp;values<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featvals:&nbsp;a&nbsp;corresponding&nbsp;list&nbsp;of&nbsp;feature&nbsp;values<br>
 &nbsp;&nbsp;&nbsp;&nbsp;e.g.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;featnames&nbsp;=&nbsp;['fixationrate',&nbsp;'length',&nbsp;'meanabspathangles']<br>
 &nbsp;&nbsp;&nbsp;&nbsp;featvals&nbsp;&nbsp;=&nbsp;[0.00268522882294',&nbsp;'1529851',&nbsp;'1.60354714212']</tt></dd></dl>
@@ -122,12 +122,13 @@ Returns:<br>
 <dl><dt><a name="Participant_Basic-export_features_tsv"><strong>export_features_tsv</strong></a>(self, featurelist<font color="#909090">=None</font>, aoifeaturelist<font color="#909090">=None</font>, id_prefix<font color="#909090">=False</font>, require_valid<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;feature&nbsp;names&nbsp;and&nbsp;their&nbsp;values&nbsp;for&nbsp;this&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;in&nbsp;a&nbsp;tab&nbsp;separated&nbsp;format<br>
 &nbsp;<br>
 Args:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;featurelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;lsit&nbsp;of&nbsp;strings&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;features&nbsp;to&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featurelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;strings&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;features&nbsp;to&nbsp;be<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returned<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;aoifeaturelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;features&nbsp;to&nbsp;be&nbsp;returned&nbsp;for&nbsp;each&nbsp;of&nbsp;the&nbsp;"AOI"s.&nbsp;<br>
 &nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;id_prefix:&nbsp;a&nbsp;boolean&nbsp;determining&nbsp;if&nbsp;the&nbsp;method&nbsp;should&nbsp;also&nbsp;export&nbsp;the&nbsp;participant&nbsp;id&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;id_prefix:&nbsp;a&nbsp;boolean&nbsp;determining&nbsp;if&nbsp;the&nbsp;method&nbsp;should&nbsp;also&nbsp;export&nbsp;the&nbsp;participant&nbsp;id.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;require_valid:&nbsp;a&nbsp;boolean&nbsp;determining&nbsp;if&nbsp;only&nbsp;valid&nbsp;segments&nbsp;should&nbsp;be&nbsp;used&nbsp;when<br>
 &nbsp;&nbsp;&nbsp;&nbsp;calculating&nbsp;the&nbsp;features.&nbsp;default&nbsp;=&nbsp;True<br>
@@ -145,7 +146,7 @@ Returns:<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;"Segment&nbsp;ids"&nbsp;of&nbsp;invalid&nbsp;Segments&nbsp;in&nbsp;this&nbsp;particiapnt's&nbsp;eye&nbsp;gaze&nbsp;data</tt></dd></dl>
 
-<dl><dt><a name="Participant_Basic-print_"><strong>print_</strong></a>(self)</dt><dd><tt>Ourputs&nbsp;all&nbsp;feature&nbsp;names&nbsp;and&nbsp;their&nbsp;values&nbsp;for&nbsp;this&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;on&nbsp;the&nbsp;console</tt></dd></dl>
+<dl><dt><a name="Participant_Basic-print_"><strong>print_</strong></a>(self)</dt><dd><tt>Outputs&nbsp;all&nbsp;feature&nbsp;names&nbsp;and&nbsp;their&nbsp;values&nbsp;for&nbsp;this&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;to&nbsp;the&nbsp;console</tt></dd></dl>
 
 <dl><dt><a name="Participant_Basic-valid_segments"><strong>valid_segments</strong></a>(self)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;valid&nbsp;segments&nbsp;in&nbsp;this&nbsp;particiapnt's&nbsp;eye&nbsp;gaze&nbsp;data<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
@@ -175,7 +176,7 @@ Args:<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;dict&nbsp;with&nbsp;scid&nbsp;as&nbsp;the&nbsp;key&nbsp;and&nbsp;tuples&nbsp;of&nbsp;(segid,&nbsp;start&nbsp;,&nbsp;end)&nbsp;for&nbsp;segments&nbsp;that&nbsp;belong&nbsp;to<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;that&nbsp;scene&nbsp;as&nbsp;value<br>
-&nbsp;&nbsp;&nbsp;&nbsp;an&nbsp;integer&nbsp;setermining&nbsp;the&nbsp;number&nbsp;of&nbsp;segments</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;an&nbsp;integer&nbsp;determining&nbsp;the&nbsp;number&nbsp;of&nbsp;segments</tt></dd></dl>
  <dl><dt><a name="-read_events"><strong>read_events</strong></a>(evfile)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;Event&nbsp;objects&nbsp;read&nbsp;from&nbsp;an&nbsp;'Event-Data.tsv'&nbsp;file.<br>
 &nbsp;<br>
 Args:<br>

@@ -15,14 +15,14 @@ from utils import *
 from math import ceil, floor
 
 
-class Participant_Basic(Participant.Participant):
+class BasicParticipant(Participant.Participant):
     """
     This is a sample child class based on the Participant class that implements all the 
     placeholder methods in the Participant class for a basic project
     """
     def __init__(self, pid, eventfile, datafile, fixfile, segfile, log_time_offset = None, aoifile = None, prune_length= None, 
                  require_valid_segs = True, auto_partition_low_quality_segments = False):
-        """Inits Participant_Basic class
+        """Inits BasicParticipant class
         Args:
             pid: Participant id
             
@@ -53,7 +53,7 @@ class Participant_Basic(Participant.Participant):
                 sub "Segment"s discarding the largest gap of invalid samples.
             
         Yields:
-            a Participant object
+            a BasicParticipant object
         """
         
         print "reading the files"
@@ -112,7 +112,7 @@ def read_participants_Basic(datadir, user_list ,pids, prune_length = None, aoifi
         print allfile
         import os.path
         if os.path.exists(allfile):
-            p = Participant_Basic(rec, evefile, allfile, fixfile, segfile, log_time_offset = offset, 
+            p = BasicParticipant(rec, evefile, allfile, fixfile, segfile, log_time_offset = offset, 
                                 aoifile=aoifile, prune_length = prune_length, require_valid_segs = require_valid_segs,
                                 auto_partition_low_quality_segments = auto_partition_low_quality_segments)
             participants.append(p)

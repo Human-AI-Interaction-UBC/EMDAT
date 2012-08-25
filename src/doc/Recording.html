@@ -9,13 +9,14 @@
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>Recording</strong></big></big></font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///C|/temp/skardan/workspace/python/emdat/src/recording.py">c:\temp\skardan\workspace\python\emdat\src\recording.py</a></font></td></tr></table>
-    <p><tt>UBC&nbsp;Eye&nbsp;Movement&nbsp;Data&nbsp;Analysys&nbsp;Toolkit<br>
+    <p><tt>UBC&nbsp;Eye&nbsp;Movement&nbsp;Data&nbsp;Analysis&nbsp;Toolkit<br>
 <a href="#Recording">Recording</a>&nbsp;class<br>
 &nbsp;<br>
 Author:&nbsp;Nicholas&nbsp;FitzGerald&nbsp;-&nbsp;nicholas.fitzgerald@gmail.com<br>
 Modified&nbsp;by:&nbsp;Samad&nbsp;Kardan&nbsp;to&nbsp;a&nbsp;general&nbsp;class&nbsp;independent&nbsp;of&nbsp;the&nbsp;study<br>
 &nbsp;<br>
-Class&nbsp;to&nbsp;hold&nbsp;all&nbsp;the&nbsp;data&nbsp;from&nbsp;one&nbsp;recording&nbsp;(i.e,&nbsp;one&nbsp;complete&nbsp;experiment&nbsp;session)</tt></p>
+Class&nbsp;to&nbsp;hold&nbsp;all&nbsp;the&nbsp;data&nbsp;from&nbsp;one&nbsp;recording&nbsp;(i.e,&nbsp;one&nbsp;complete&nbsp;experiment&nbsp;session)<br>
+for&nbsp;one&nbsp;participant</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -52,7 +53,7 @@ Class&nbsp;to&nbsp;hold&nbsp;all&nbsp;the&nbsp;data&nbsp;from&nbsp;one&nbsp;reco
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'Fixation-Data.tsv'&nbsp;file&nbsp;output&nbsp;by&nbsp;the&nbsp;Tobii&nbsp;software.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;media_offset:&nbsp;the&nbsp;coordinates&nbsp;of&nbsp;the&nbsp;top&nbsp;left&nbsp;corner&nbsp;of&nbsp;the&nbsp;window<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;showing&nbsp;the&nbsp;interface&nbsp;under&nbsp;study.&nbsp;(0,0)&nbsp;if&nbsp;the&nbsp;interfacce&nbsp;was<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;showing&nbsp;the&nbsp;interface&nbsp;under&nbsp;study.&nbsp;(0,0)&nbsp;if&nbsp;the&nbsp;interface&nbsp;was<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;full&nbsp;screen&nbsp;(default&nbsp;value)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
 Yields:<br>
@@ -70,15 +71,17 @@ Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s1&nbsp;&nbsp;&nbsp;&nbsp;seg1&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;5988013<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;With&nbsp;one&nbsp;segment&nbsp;definition&nbsp;per&nbsp;line<br>
 &nbsp;&nbsp;&nbsp;&nbsp;scenelist:&nbsp;If&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;Scene&nbsp;objects<br>
-&nbsp;&nbsp;&nbsp;&nbsp;*Note:&nbsp;Both&nbsp;segfile&nbsp;and&nbsp;scenelist&nbsp;cannot&nbsp;be&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*Note:&nbsp;At&nbsp;least&nbsp;one&nbsp;of&nbsp;segfile&nbsp;and&nbsp;scenelist&nbsp;should&nbsp;be&nbsp;not&nbsp;None<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;aoifile:&nbsp;If&nbsp;not&nbsp;None,&nbsp;a&nbsp;string&nbsp;conatining&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;aoifile&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoifile:&nbsp;If&nbsp;not&nbsp;None,&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;aoifile&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;definitions&nbsp;of&nbsp;the&nbsp;"AOI"s.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;aoilist:&nbsp;If&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;"AOI"s.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;*Note:&nbsp;if&nbsp;aoifile&nbsp;is&nbsp;not&nbsp;None,&nbsp;aoilist&nbsp;will&nbsp;be&nbsp;ignored<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$$$&nbsp;Daria:&nbsp;if&nbsp;both&nbsp;aoifile&nbsp;and&nbsp;aoilist&nbsp;are&nbsp;none&nbsp;AOIs&nbsp;are&nbsp;ignored<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;prune_length:&nbsp;If&nbsp;not&nbsp;None,&nbsp;an&nbsp;integer&nbsp;that&nbsp;specifies&nbsp;the&nbsp;time&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;interval&nbsp;(in&nbsp;ms)&nbsp;from&nbsp;the&nbsp;begining&nbsp;of&nbsp;each&nbsp;Segment&nbsp;in&nbsp;which<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;interval&nbsp;(in&nbsp;ms)&nbsp;from&nbsp;the&nbsp;beginning&nbsp;of&nbsp;each&nbsp;Segment&nbsp;in&nbsp;which<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;samples&nbsp;are&nbsp;considered&nbsp;in&nbsp;calculations.&nbsp;&nbsp;This&nbsp;can&nbsp;be&nbsp;used&nbsp;if,&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;example,&nbsp;you&nbsp;only&nbsp;wish&nbsp;to&nbsp;consider&nbsp;data&nbsp;in&nbsp;the&nbsp;first&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1000&nbsp;ms&nbsp;of&nbsp;each&nbsp;Segment.&nbsp;In&nbsp;this&nbsp;case&nbsp;(prune_length&nbsp;=&nbsp;1000),<br>
@@ -90,7 +93,7 @@ Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;auto_partition_low_quality_segments:&nbsp;a&nbsp;boolean&nbsp;flag&nbsp;determining&nbsp;whether<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EMDAT&nbsp;should&nbsp;automatically&nbsp;split&nbsp;the&nbsp;"Segment"s&nbsp;which&nbsp;have&nbsp;low&nbsp;sample&nbsp;quality<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;into&nbsp;two&nbsp;new&nbsp;ssub&nbsp;"Segment"s&nbsp;discarding&nbsp;the&nbsp;largest&nbsp;invalid&nbsp;sample&nbsp;gap&nbsp;in&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;into&nbsp;two&nbsp;new&nbsp;sub&nbsp;"Segment"s&nbsp;discarding&nbsp;the&nbsp;largest&nbsp;invalid&nbsp;sample&nbsp;gap&nbsp;in&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;"Segment".&nbsp;default&nbsp;=&nbsp;False<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;Scene&nbsp;objects&nbsp;for&nbsp;this&nbsp;<a href="#Recording">Recording</a><br>
@@ -137,19 +140,19 @@ Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;fixation_file:&nbsp;A&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;'Fixation-Data.tsv'&nbsp;file&nbsp;output&nbsp;by&nbsp;the<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tobii&nbsp;software.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;media_offset:&nbsp;the&nbsp;coordinates&nbsp;of&nbsp;the&nbsp;top&nbsp;left&nbsp;corner&nbsp;of&nbsp;the&nbsp;window<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;showing&nbsp;the&nbsp;interface&nbsp;under&nbsp;study.&nbsp;(0,0)&nbsp;if&nbsp;the&nbsp;interfacce&nbsp;was<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;showing&nbsp;the&nbsp;interface&nbsp;under&nbsp;study.&nbsp;(0,0)&nbsp;if&nbsp;the&nbsp;interface&nbsp;was<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;full&nbsp;screen&nbsp;(default&nbsp;value)&nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;"Fixation"s</tt></dd></dl>
  <dl><dt><a name="-read_segs"><strong>read_segs</strong></a>(segfile)</dt><dd><tt>Returns&nbsp;a&nbsp;dict&nbsp;with&nbsp;scid&nbsp;as&nbsp;the&nbsp;key&nbsp;and&nbsp;segments&nbsp;as&nbsp;value&nbsp;from&nbsp;a&nbsp;'.seg'&nbsp;file.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;'.seg'&nbsp;files&nbsp;have&nbsp;lines&nbsp;of&nbsp;the&nbsp;form:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;'.seg'&nbsp;file&nbsp;consists&nbsp;of&nbsp;a&nbsp;set&nbsp;of&nbsp;lines&nbsp;with&nbsp;the&nbsp;following&nbsp;format:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;scene_name[&nbsp;]segment_name[&nbsp;&nbsp;]start_time[&nbsp;&nbsp;&nbsp;&nbsp;]end_time[<br>
 ]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;scene_name&nbsp;is&nbsp;the&nbsp;id&nbsp;of&nbsp;the&nbsp;Scene&nbsp;that&nbsp;this&nbsp;Segment&nbsp;belongs&nbsp;to,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;segment_name&nbsp;is&nbsp;the&nbsp;id&nbsp;of&nbsp;the&nbsp;Segement,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;tart_time&nbsp;and&nbsp;end_time&nbsp;determines&nbsp;the&nbsp;time&nbsp;interval&nbsp;for&nbsp;the&nbsp;Segment<br>
+&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;start_time&nbsp;and&nbsp;end_time&nbsp;determines&nbsp;the&nbsp;time&nbsp;interval&nbsp;for&nbsp;the&nbsp;Segment<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;segfile:&nbsp;A&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;'.seg'&nbsp;file<br>

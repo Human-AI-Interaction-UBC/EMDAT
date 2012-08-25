@@ -48,7 +48,7 @@ class Recording():
         Args:
             segfile: If not None, a string containing the name of the segfile 
                 with segment definitions in following format:
-                <Scene_ID>\t<Segment_ID>\t<start time>\t<end time>\n
+                Scene_ID<tab>Segment_ID<tab>start time<tab>end time<newline>
                 e.g.:
                 s1    seg1    0    5988013
                 With one segment definition per line
@@ -58,9 +58,8 @@ class Recording():
             aoifile: If not None, a string containing the name of the aoifile 
                 with definitions of the "AOI"s.
             aoilist: If not None, a list of "AOI"s.
-            *Note: if aoifile is not None, aoilist will be ignored
-             
-             $$$ Daria: if both aoifile and aoilist are none AOIs are ignored
+            *Note:  if aoifile is not None, aoilist will be ignored
+                    if both aoifile and aoilist are none AOIs are ignored
              
             prune_length: If not None, an integer that specifies the time 
                 interval (in ms) from the beginning of each Segment in which
