@@ -5,18 +5,12 @@ Created on 2011-08-26
 
 @author: skardan
 
-<<<<<<< HEAD
-In EMDAT, the boundaries of an AOI are defined as a polygon on the screen. You can 
-optionally define a second polygon inside the first polygon to be excluded from an AOI.
-an AOI can be always active (a global AOI) or can be active during certain time intervals.
-In order to calculate the features for an AOI instance, you need to create an AOI_Stat instance and map it to target AOI object by passing it
-=======
 In EMDAT, the bounderies of an Area of Interest (AOI) is defined as a polygon on the screen. You can 
 optionally define a second polygone inside the first polygone to be excluded from an AOI.
 An AOI can be always active (a global AOI) or can be active during certain time intervals.
-In order to calculate the features for an AOI instance, you need to create an AOI_Stat instance and map it to a target AOI object by passing it
->>>>>>> General Comment Cleanup
-to the AOI_Stat constructor. The resulting AOI_Stat will calculate all features related to the given AOI and store them for later reference 
+In order to calculate the features for an AOI instance, you need to create an AOI_Stat instance and
+map it to a target AOI object by passing it to the AOI_Stat constructor. The resulting AOI_Stat
+will calculate all features related to the given AOI and store them for later reference 
 """
 from utils import *
 
@@ -30,11 +24,13 @@ class AOI():
         Args:
             aid: AOI id
             
-            polyin: the polygon defining the boundaries of the AOI
+            polyin: the polygon defining the boundaries of the AOI in form of a list of (x,y) tuples
             
-            polyout: optional polygon inside the boundaries of the AOI that is not part of the AOI
+            polyout: optional polygon inside the boundaries of the AOI that is not part of 
+                the AOI in form of a list of (x,y) tuples
             
-            timeseq: the time sequence of the format [(start1, end1), (start2, end2), ...] that specifies the intervals when this AOI is active
+            timeseq: the time sequence of the format [(start1, end1), (start2, end2), ...] that 
+                specifies the intervals when this AOI is active
             
         Yields:
             an AOI object
@@ -49,30 +45,24 @@ class AOI():
         """Sets the coordiantes of the AOI
         
         Args:
-            polyin: the polygon defining the bounderies of the AOI
-            polyout: optional polygon inside the bounderies of the AOI that is not part of the AOI
+            polyin: the polygon defining the bounderies of the AOI in form of a list of (x,y) tuples
+            polyout: optional polygon inside the bounderies of the AOI that is not part of the AOI 
+                in form of a list of (x,y) tuples
         """
         
         self.polyin = polyin
         self.polyout = polyout
             
     def is_active(self,start,end):
-<<<<<<< HEAD
         """Determines if an AOI is active during the whole given time interval 
-=======
-        """Determines if an AOI is constantly active during a given time interval 
->>>>>>> General Comment Cleanup
+
                 
         Args:
             start: time interval start
             end: time interval end
             
         Returns:
-<<<<<<< HEAD
             true if the AOI is always active within the given time interval 
-=======
-            true if the AOI is constantly active in the given time interval 
->>>>>>> General Comment Cleanup
         """
         if start == -1:
             return False
@@ -87,16 +77,8 @@ class AOI():
     def is_active_partition(self,start,end):
         """Determines if an AOI is partially active during a given time interval
         
-<<<<<<< HEAD
-        $$$ Daria:
-        $$$ Delete this: if the AOI is active at least in part of the given time interval returns true 
-        $$$ Add this: if the AOI is active at any time of the given time interval returns true
-        
-        Returns the time sub-interval when AOI is active otherwise returns False, []
-=======
-        if the AOI is active at least in part of the given time interval returns true 
-        it also returns the time sub-interval that AOI is active otherwise returns False, []
->>>>>>> General Comment Cleanup
+        If the AOI is active at any sub-interval of the given time interval returns true
+        if such sub-interval exists it also returns its start and end that AOI is active otherwise returns False, []
         
         Args:
             start: time interval start
@@ -104,8 +86,8 @@ class AOI():
             
         Returns:
             A boolean for whether the AOI is active or not 
-            ovelap_part: The subset of the time interval [sub_start,sub_end] that AOI is active or [] if it is active during the whole interval or 
-            not active at all. 
+            ovelap_part: The subset of the time interval [sub_start,sub_end] that AOI is active or 
+            [] if it is active during the whole interval or not active at all. 
         """ 
         #if (end - start)== 0:
         if start == -1:
@@ -130,10 +112,12 @@ class AOI():
     
                    
 class AOI_Stat():
+    """Methods of AOI_Stat calculate and store all features related to the given AOI object
+    """
 
     def __init__(self,aoi,seg_fixation_data, starttime, endtime, active_aois):
         """Inits AOI_Stat class
-        $$$ Daria: Methods of AOI_Stat calculate and store all features related to the given AOI aoi
+        
         Args:
             aoi: the aoi object for which the statistics are calculated
             seg_fixation_data:
@@ -292,9 +276,17 @@ class AOI_Stat():
             
 
 def _fixation_inside_aoi(fixation, polyin, polyout):
-    """Helper function that determines if a fixation object is inside polyin and outside polyout
-    $$$ Daria: Helper function that checks if a fixation object is inside the AOI described by external polygon polyin and the internal polygon polyout.
-    $$$ Fixation object is inside AOI if it is inside polyin but outside polyout
+    """Helper function that checks if a fixation object is inside the AOI described by external polygon polyin and the internal polygon polyout.
+    
+    Fixation object is inside AOI if it is inside polyin but outside polyout
+    
+    Args:
+        fixation: A Fixation object
+        polyin: the external polygon in form of a list of (x,y) tuples
+        polyout: the internal polygon in form of a list of (x,y) tuples
+    
+    Returns: 
+        A boolean for whether the Fixation is inside the AOI or not
     """
     return point_inside_polygon(fixation.mappedfixationpointx,
     fixation.mappedfixationpointy, polyin) and not point_inside_polygon(fixation.mappedfixationpointx,
