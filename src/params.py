@@ -43,33 +43,35 @@ featurelist = ['numsegments','length','numfixations','fixationrate','meanabspath
                'stddevfixationduration','stddevpathdistance','stddevrelpathangles']#'numsamples','sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
 # list of non-AOI feature names 
 
-aoigeneralfeat = ['_fixationrate','_numfixations','_totaltimespent','_proportionnum',
-                  '_proportiontime','_longestfixation']#'_timetofirstfixation','_timetolastfixation',
+aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum',
+                  'proportiontime','longestfixation']#'timetofirstfixation','timetolastfixation',
 #list of general AOI features
-
-aoitransfrom = ['_numtransfrom_Bottom','_numtransfrom_Graph','_numtransfrom_Toolbar',
-                '_numtransfrom_Top']
-#list of transition-based AOI features
-
-#aoitransto = ['_numtransto_Bottom','_numtransto_Graph','_numtransto_Toolbar','_numtransto_Top']
-
-
-aoiproportion = ['_proptransfrom_Bottom','_proptransfrom_Graph','_proptransfrom_Toolbar',
-                 '_proptransfrom_Top']
-#list of transition-based AOI features
-
-##,'_proptransto_Bottom','_proptransto_Graph','_proptransto_Toolbar','_proptransto_Top']
 
 aoinames = ['Top','Bottom','Graph','Toolbar']
 #list of the AOI names
 
+aoitransfrom = map(lambda x:'numtransfrom'+x, aoinames) 
+#['numtransfromBottom','numtransfromGraph','numtransfromToolbar','numtransfromTop']
+#list of transition-based AOI features
+
+#aoitransto = ['numtranstoBottom','numtranstoGraph','numtranstoToolbar','numtranstoTop']
+
+
+aoiproportion = map(lambda x:'proptransfrom'+x, aoinames) 
+#['proptransfromBottom','proptransfromGraph','proptransfromToolbar','proptransfromTop']
+#list of transition-based AOI features
+
+##,'_proptransto_Bottom','_proptransto_Graph','_proptransto_Toolbar','_proptransto_Top']
+
+
+
 #generating a list of all AOI-based features
 aoifeaturelist =[]
 for aoin in aoinames:
-    aoifeaturelist.extend(map(lambda x:aoin+x, aoigeneralfeat))
-    aoifeaturelist.extend(map(lambda x:aoin+x, aoitransfrom))
+    aoifeaturelist.extend(map(lambda x:aoin+'_'+x, aoigeneralfeat))
+    aoifeaturelist.extend(map(lambda x:aoin+'_'+x, aoitransfrom))
     #aoifeaturelist.extend(map(lambda x:aoin+x, aoitransto))
-    aoifeaturelist.extend(map(lambda x:aoin+x, aoiproportion))
+    aoifeaturelist.extend(map(lambda x:aoin+'_'+x, aoiproportion))
     
 
 
@@ -101,8 +103,8 @@ was looking at that same point during that period.
 MINSEGSIZE = 300 #minimum segment size in ms that is considered meaningful for this experiment
 
 INCLUDE_HALF_FIXATIONS = False
-#if a Fixation extends between two consecutive Segments, should it be included in those 
-#Segments or not
+#A boolean value determining if a Fixation extends between two consecutive Segments, should it be 
+#included in those Segments or not
 
 DEBUG = False
 #DEBUG = True
@@ -110,8 +112,7 @@ DEBUG = False
 
 
 
-#Predefined feature lists
-
+#Predefined lists of features that are not calculated using time
 NONTEMP_FEATURES_SEG = ['meanfixationduration', 'stddevfixationduration',
 'fixationrate', 'meanpathdistance', 'stddevpathdistance', 'meanabspathangles', 'stddevabspathangles',
 'meanrelpathangles', 'stddevabspathangles'] 
