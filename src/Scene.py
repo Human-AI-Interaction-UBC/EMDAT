@@ -175,8 +175,9 @@ class Scene(Segment):
                 if (new_seg.largest_data_gap > params.MAX_SEG_TIMEGAP) and auto_partition: #low quality segment that needs to be partitioned!
                     new_segs, samp_inds, fix_inds = partition_segement(new_seg, start, end) 
                     for nseg,samp,fix in zip(new_segs, samp_inds, fix_inds):
-                            nseg.set_indices(samp[0],samp[1],fix[0],fix[1])
-                            self.segments.append(nseg)
+                            if nseg.length > params.MINSEGSIZE:
+                                nseg.set_indices(samp[0],samp[1],fix[0],fix[1])
+                                self.segments.append(nseg)
                 else:   #good quality segment OR no auto_partition
                     new_seg.set_indices(all_start,all_end,fix_start,fix_end)
                     self.segments.append(new_seg)

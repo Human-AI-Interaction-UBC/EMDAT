@@ -73,7 +73,8 @@ class Segment():
         self.features = {}
         self.completion_time = all_data[-1].timestamp - all_data[0].timestamp
         if self.completion_time == 0:
-            self.completion_time = 16 #length of one sample with 60Hz sampling rate (ms)
+            raise Exception("Zero length segment")
+#            self.completion_time = 16 #length of one sample with 60Hz sampling rate (ms)
 #        for d in all_data:
 #            d.set_segid(segid)
         self.features['completion_time'] = self.completion_time
