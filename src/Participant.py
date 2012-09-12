@@ -5,9 +5,11 @@ Created on 2011-09-25
 
 @author: skardan
 """
-import os, string
+import string
 from data_structures import *
 import params
+from Scene import Scene
+import Recording
 
 
 
@@ -15,34 +17,64 @@ class Participant():
     """
     A class that holds the information for one Participant in the experiment
     """
-    def __init__(self, pid, eventfile, datafile, fixfile, aoifile = None, prune_length= None):
-        """Inits Participant class
+
+    def __init__(self, pid, eventfile, datafile, fixfile, segfile, log_time_offset = None, aoifile = None, prune_length= None, 
+                 require_valid_segs = True, auto_partition_low_quality_segments = False):
+        """Inits BasicParticipant class
         Args:
             pid: Participant id
             
             eventfile: a string containing the name of the "Event-Data.tsv" file for this participant
-                        
-            datafile: a string containing the name of the "All-Data.tsv" file for this participant
+            
+            datafile: a string containing the name of the "all-Data.tsv" file for this participant
             
             fixfile: a string containing the name of the "Fixation-Data.tsv" file for this participant
             
-            aoifile: If not None, a string containing the name of the aoifile 
+            segfile: a string containing the name of the '.seg' file for this participant
+            
+            log_time_offset: If not None, an integer indicating the time offset between the 
+                external log file and eye tracking logs
+            
+            aoifile: If not None, a string conatining the name of the '.aoi' file 
                 with definitions of the "AOI"s.
             
             prune_length: If not None, an integer that specifies the time 
-                interval (in ms) from the beginning of each Segment in which
+                interval (in ms) from the begining of each Segment in which
                 samples are considered in calculations.  This can be used if, 
                 for example, you only wish to consider data in the first 
                 1000 ms of each Segment. In this case (prune_length = 1000),
                 all data beyond the first 1000ms of the start of the "Segment"s
                 will be disregarded.
+                
+            require_valid_segs: a boolean determining whether invalid "Segment"s
+                will be ignored when calculating the features or not. default = True 
+                
+            auto_partition_low_quality_segments: a boolean indicating whether EMDAT should 
+                split the "Segment"s which have low sample quality, into two new 
+                sub "Segment"s discarding the largest gap of invalid samples.
             
         Yields:
             a Participant object
         """
+        self.pid = pid
+        self.require_valid_segments = require_valid_segs
 
-        raise Exception("you must override this and read and process the datafile and create the scenes and segments here!")
-        self.id = pid
+        
+    def is_valid(self,threshold=None):
+        """Determines if the samples for this Participant meets the validity threshold
+        
+        Args:
+            threshold: if not None, the threshold value that should be used for the 
+                validity criterion
+                
+        Returns:
+            True or False
+        """
+        if threshold == None:
+            return self.whole_scene.is_valid
+        else:
+            return self.whole_scene.proportion_valid_fix >= threshold
+
 
     def invalid_segments(self):
         """Returns a list of invalid segments in this particiapnt's eye gaze data
@@ -285,7 +317,7 @@ def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist
         for l in fvals:
             f.write(string.join(map(str, l), '\t') + '\n')
 
-def partition(externallogfile):
+def partition(segfile):
     """
     Placeholder for a method that generates the scenes based on some external log files and/or 'Event-Data.tsv" files
     """

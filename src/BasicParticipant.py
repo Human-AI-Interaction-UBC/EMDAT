@@ -8,14 +8,14 @@ Created on 2012-08-23
 from data_structures import *
 import Recording
 params=__import__('params')
-import Participant
+from Participant import *
 from AOI import AOI
 from Scene import Scene
 from utils import *
 from math import ceil, floor
 
 
-class BasicParticipant(Participant.Participant):
+class BasicParticipant(Participant):
     """
     This is a sample child class based on the Participant class that implements all the 
     placeholder methods in the Participant class for a basic project
@@ -56,10 +56,15 @@ class BasicParticipant(Participant.Participant):
             a BasicParticipant object
         """
         
+
+        Participant.__init__(self, pid, eventfile, datafile, fixfile, segfile, log_time_offset, aoifile, prune_length, 
+                 require_valid_segs, auto_partition_low_quality_segments)   #calling the Participan's constructor
+        
         print "reading the files"
         self.features={}
         rec = Recording.Recording(datafile, fixfile, params.MEDIA_OFFSET)
         print "Done!"
+        
         scenelist,self.numofsegments = partition_Basic(segfile)
         print "partition done!"
         if aoifile != None:
@@ -67,7 +72,7 @@ class BasicParticipant(Participant.Participant):
         else:
             aois = None
         self.features['numofsegments']= self.numofsegments
-        self.id = pid
+        
         self.segments, self.scenes = rec.process_rec(scenelist = scenelist,aoilist = aois,prune_length = prune_length, require_valid_segs = require_valid_segs, 
                                                      auto_partition_low_quality_segments = auto_partition_low_quality_segments)
         

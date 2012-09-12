@@ -134,7 +134,7 @@ class Scene(Segment):
                 last_fix_idx, fix_start, fix_end = get_chunk(fixation_data, last_fix_idx, sub_seg_time_start, sub_seg_time_end)
                 sub_seg_time_start = timebounds[1] #beginning of the next sub_seg is end of this gap
                 if fix_end - fix_start>0:
-                    new_sub_seg = Segment(segid, all_data[all_start:all_end],
+                    new_sub_seg = Segment(segid+"_"+str(sub_segid), all_data[all_start:all_end],
                                       fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length)
                 else:
                     continue
@@ -184,7 +184,8 @@ class Scene(Segment):
         else:
             self.segments = Segments #segments are already generated
         
-        if require_valid:
+        self.require_valid_Segments = require_valid
+        if require_valid:   #filter out the invalid Segments
             segments = filter(lambda x:x.is_valid,self.segments)
         else:
             segments = self.segments

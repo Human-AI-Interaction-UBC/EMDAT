@@ -4,34 +4,90 @@ Created on 2012-09-05
 @author: skardan
 """
 from Participant import Participant
-def test_validity(datadir, prune_length = None, user_list = xrange(7,38),
-                  auto_partition_low_quality_segments = False):
+#def explore_validation_threshold_segments(datadir, prune_length = None, user_list = xrange(7,38),
+#                  auto_partition_low_quality_segments = False):
+#    
+#    participants = []
+#    pid = 55
+#    seglen = 0
+#    segs = 0
+#    for rec in user_list:
+#        print "pid:", pid
+#        if rec<10:
+#            allfile = datadir+'/Rec 0'+str(rec)+'-All-Data.tsv'
+#            fixfile = datadir+'/Rec 0'+str(rec)+'-Fixation-Data.tsv'
+#            evefile = datadir+'/Rec 0'+str(rec)+'-Event-Data.tsv'
+#        else:
+#            allfile = datadir+'/Rec '+str(rec)+'-All-Data.tsv'
+#            fixfile = datadir+'/Rec '+str(rec)+'-Fixation-Data.tsv'
+#            evefile = datadir+'/Rec '+str(rec)+'-Event-Data.tsv'
+#        print allfile
+#        import os.path
+#        if os.path.exists(allfile):
+#            p = Participant(pid, evefile, allfile, fixfile, aoifiles=None, prune_length = prune_length,
+#                                require_valid_segs = False,
+#                                auto_partition_low_quality_segments = auto_partition_low_quality_segments)
+#            tvalidity = []
+#            
+#            for seg in p.segments:
+#                seglen += seg.completion_time
+#            segs += len(p.segments)
+#
+##            for tresh in range(1,100,1):##proportion
+##                invc = 0
+##                invsegs=[]
+##                for seg in segments:
+##                    if seg.calc_validity1(tresh/100.0) == False:
+##                        invc +=1
+##            for tresh in range(1,21,1):##prop-gap
+##                invc = 0
+##                invsegs=[]
+##                for seg in segments:
+##                    if seg.calc_validity2(tresh*seg.completion_time/100.0) == False:
+##                        invc +=1                        
+##            for tresh in range(1,20000,100):##time-gap
+##                invc = 0
+##                invsegs=[]
+##                for seg in segments:
+##                    if seg.calc_validity2(tresh) == False:
+##                        invc +=1
+#
+#            for tresh in range(1,102,1):##proportion Fixation
+#                invc = 0
+#                invsegs=[]
+#                for seg in p.segments:
+#                    if seg.calc_validity3(tresh/100.0) == False:
+#                        invc +=1                        
+#                        invsegs.append(seg.segid)
+#                        
+#                if len(invsegs)>0:
+#                    print "seg:",invsegs 
+#                        
+#                tvalidity.append((tresh, invc))
+#            participants.append( (pid,tvalidity, len(p.segments) ) )
+#            print ( (tvalidity, len(p.segments)) )
+#           
+#        pid += 1
+#        print "average seg len",seglen/float(segs)
+#    return participants
+
+def explore_validation_threshold_segments(participant_list, prune_length = None, 
+                                          auto_partition_low_quality_segments = False):
     
-    participants = []
-    pid = 55
     seglen = 0
     segs = 0
-    for rec in user_list:
-        print "pid:", pid
-        if rec<10:
-            allfile = datadir+'/Rec 0'+str(rec)+'-All-Data.tsv'
-            fixfile = datadir+'/Rec 0'+str(rec)+'-Fixation-Data.tsv'
-            evefile = datadir+'/Rec 0'+str(rec)+'-Event-Data.tsv'
-        else:
-            allfile = datadir+'/Rec '+str(rec)+'-All-Data.tsv'
-            fixfile = datadir+'/Rec '+str(rec)+'-Fixation-Data.tsv'
-            evefile = datadir+'/Rec '+str(rec)+'-Event-Data.tsv'
-        print allfile
-        import os.path
-        if os.path.exists(allfile):
-            p = Participant(pid, evefile, allfile, fixfile, aoifiles=None, prune_length = prune_length,
-                                require_valid_segs = False,
-                                auto_partition_low_quality_segments = auto_partition_low_quality_segments)
-            tvalidity = []
+    participants = []
+    for p in participant_list:
+        print "pid:", p.pid
+        if p.require_valid_segments == True:
+            raise Exception("explore_validation_threshold_segments should be called with a list of Participants with require_valid_segments = False")
             
-            for seg in p.segments:
-                seglen += seg.completion_time
-            segs += len(p.segments)
+        
+        tvalidity = []
+        
+        for seg in p.segments:
+            seglen += seg.completion_time
+        segs += len(p.segments)
 
 #            for tresh in range(1,100,1):##proportion
 #                invc = 0
@@ -52,26 +108,25 @@ def test_validity(datadir, prune_length = None, user_list = xrange(7,38),
 #                    if seg.calc_validity2(tresh) == False:
 #                        invc +=1
 
-            for tresh in range(1,102,1):##proportion Fixation
-                invc = 0
-                invsegs=[]
-                for seg in p.segments:
-                    if seg.calc_validity3(tresh/100.0) == False:
-                        invc +=1                        
-                        invsegs.append(seg.segid)
-                        
-                if len(invsegs)>0:
-                    print "seg:",invsegs 
-                        
-                tvalidity.append((tresh, invc))
-            participants.append( (pid,tvalidity, len(p.segments) ) )
-            print ( (tvalidity, len(p.segments)) )
-           
-        pid += 1
-        print "average seg len",seglen/float(segs)
+        for tresh in range(1,102,1):##proportion Fixation
+            invc = 0
+            invsegs=[]
+            for seg in p.segments:
+                if seg.calc_validity3(tresh/100.0) == False:
+                    invc +=1                        
+                    invsegs.append(seg.segid)
+                    
+            if len(invsegs)>0:
+                print "seg:",invsegs 
+                    
+            tvalidity.append((tresh, invc))
+        participants.append( (p.pid,tvalidity, len(p.segments) ) )
+        print ( (tvalidity, len(p.segments)) )
+       
+    print "average seg len",seglen/float(segs)
     return participants
 
-def test_validity2(datadir, prune_length = None, user_list = xrange(7,38),
+def explore_validation_threshold_participants(datadir, prune_length = None, user_list = xrange(7,38),
                    auto_partition_low_quality_segments = False):
     
     participants = []
@@ -112,7 +167,7 @@ def test_validity2(datadir, prune_length = None, user_list = xrange(7,38),
 
 
 ########### Validuty of users
-#pv = test_validity2(user_list=ul,datadir='./data/', prune_length = None, 
+#pv = explore_validation_threshold_participants(user_list=ul,datadir='./data/', prune_length = None, 
 #                    auto_partition_low_quality_segments = True)
 #
 #for rate in xrange(1,102,1): ##porportion
@@ -135,7 +190,7 @@ def test_validity2(datadir, prune_length = None, user_list = xrange(7,38),
 
 
 ################### Segements Validity info
-#pv = test_validity(user_list=ul,datadir='./data/', prune_length = None,
+#pv = explore_validation_threshold_segments(user_list=ul,datadir='./data/', prune_length = None,
 #                   auto_partition_low_quality_segments = True)
 #
 #print
