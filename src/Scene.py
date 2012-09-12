@@ -134,8 +134,15 @@ class Scene(Segment):
                 last_fix_idx, fix_start, fix_end = get_chunk(fixation_data, last_fix_idx, sub_seg_time_start, sub_seg_time_end)
                 sub_seg_time_start = timebounds[1] #beginning of the next sub_seg is end of this gap
                 if fix_end - fix_start>0:
-                    new_sub_seg = Segment(segid+"_"+str(sub_segid), all_data[all_start:all_end],
+                    try:
+                        new_sub_seg = Segment(segid+"_"+str(sub_segid), all_data[all_start:all_end],
                                       fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length)
+                    except  Exception as e:
+                        warn(str(e))
+                        if params.DEBUG:
+                            raise
+                        else:
+                            pass
                 else:
                     continue
                 subsegments.append(new_sub_seg)
@@ -147,8 +154,15 @@ class Scene(Segment):
             last_samp_idx, all_start,all_end = get_chunk(all_data, last_samp_idx, sub_seg_time_start, sub_seg_time_end)
             last_fix_idx, fix_start, fix_end = get_chunk(fixation_data, last_fix_idx, sub_seg_time_start, sub_seg_time_end)
             if fix_end - fix_start>0: #add the last sub_seg
-                new_sub_seg = Segment(segid, all_data[all_start:all_end],
-                                  fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length)
+                try:
+                    new_sub_seg = Segment(segid, all_data[all_start:all_end],
+                                      fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length)
+                except  Exception as e:
+                    warn(str(e))
+                    if params.DEBUG:
+                        raise
+                    else:
+                        pass
                 subsegments.append(new_sub_seg)
                 samp_inds.append((all_start,all_end))
                 fix_inds.append((fix_start, fix_end))
@@ -167,8 +181,15 @@ class Scene(Segment):
                 _, all_start, all_end = get_chunk(all_data, 0, start, end)
                 _, fix_start, fix_end = get_chunk(fixation_data, 0, start, end)
                 if fix_end - fix_start>0:
-                    new_seg = Segment(segid, all_data[all_start:all_end],
-                                      fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length)
+                    try:
+                        new_seg = Segment(segid, all_data[all_start:all_end],
+                                          fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length)
+                    except  Exception as e:
+                        warn(str(e))
+                        if params.DEBUG:
+                            raise
+                        else:
+                            pass
                 else:
                     continue
                 

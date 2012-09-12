@@ -109,7 +109,7 @@ class Recording():
                               require_valid = require_valid_segs,
                               auto_partition = auto_partition_low_quality_segments)               
             except Exception as e:
-                warn(e)
+                warn(str(e))
                 newSc = None 
                 if params.DEBUG:
                     raise

@@ -6,6 +6,7 @@ Modified by: Samad Kardan
 
 Basic data structures used in EMDAT
 """
+from warnings import warn
 class Datapoint():
     """
 
@@ -117,6 +118,8 @@ class Fixation():
         self.fixationindex = cast_int(self.fixationindex)
         self.timestamp = cast_int(self.timestamp)
         self.fixationduration = cast_int(self.fixationduration)
+        if self.fixationduration == 0:
+            warn("A zero duration Fixation!")
         (media_offset_x, media_offset_y) = media_offset
         self.mappedfixationpointx = cast_int(self.mappedfixationpointx) - media_offset_x
         self.mappedfixationpointy = cast_int(self.mappedfixationpointy) - media_offset_y
