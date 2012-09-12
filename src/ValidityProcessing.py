@@ -126,43 +126,28 @@ def explore_validation_threshold_segments(participant_list, prune_length = None,
     print "average seg len",seglen/float(segs)
     return participants
 
-def explore_validation_threshold_participants(datadir, prune_length = None, user_list = xrange(7,38),
+def explore_validation_threshold_participants(participant_list, prune_length = None,
                    auto_partition_low_quality_segments = False):
     
     participants = []
-    pid = 55
     seglen = 0
     segs = 0
-    for rec in user_list:
-        print "pid:", pid
-        if rec<10:
-            allfile = datadir+'/Rec 0'+str(rec)+'-All-Data.tsv'
-            fixfile = datadir+'/Rec 0'+str(rec)+'-Fixation-Data.tsv'
-            evefile = datadir+'/Rec 0'+str(rec)+'-Event-Data.tsv'
-        else:
-            allfile = datadir+'/Rec '+str(rec)+'-All-Data.tsv'
-            fixfile = datadir+'/Rec '+str(rec)+'-Fixation-Data.tsv'
-            evefile = datadir+'/Rec '+str(rec)+'-Event-Data.tsv'
-        print allfile
-        import os.path
-        if os.path.exists(allfile):
-            p = Participant(pid, evefile, allfile, fixfile, aoifiles=None, prune_length = prune_length,
-                                auto_partition_low_quality_segments = auto_partition_low_quality_segments)
-            tvalidity = []
+    for p in participant_list:
+        print "pid:", p.pid
+        tvalidity = []
             
-            for seg in p.segments:
-                seglen += seg.completion_time
-            segs += len(p.segments)
-            
-            for tresh in range(1,102,1):##proportion Fixation
-                invc = 0
-                if p.is_valid(tresh/100.0) == False:
-                    invc +=1                        
-                tvalidity.append((tresh, invc))
-            participants.append( (pid,tvalidity, len(p.segments) ) )
-            print ( (tvalidity, len(p.segments)) )
-           
-        pid += 1        
+        for seg in p.segments:
+            seglen += seg.completion_time
+        segs += len(p.segments)
+        
+        for tresh in range(1,102,1):##proportion Fixation
+            invc = 0
+            if p.is_valid(tresh/100.0) == False:
+                invc +=1                        
+            tvalidity.append((tresh, invc))
+    participants.append( (p.pid,tvalidity, len(p.segments) ) )
+    print ( (tvalidity, len(p.segments)) )
+                 
     return participants
 
 
