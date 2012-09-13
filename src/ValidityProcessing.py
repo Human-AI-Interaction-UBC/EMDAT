@@ -145,8 +145,8 @@ def explore_validation_threshold_participants(participant_list, prune_length = N
             if p.is_valid(tresh/100.0) == False:
                 invc +=1                        
             tvalidity.append((tresh, invc))
-    participants.append( (p.pid,tvalidity, len(p.segments) ) )
-    print ( (tvalidity, len(p.segments)) )
+        participants.append( (p.pid,tvalidity, len(p.segments) ) )
+        print ( (tvalidity, len(p.segments)) )
                  
     return participants
 

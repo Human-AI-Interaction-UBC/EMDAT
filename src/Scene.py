@@ -142,7 +142,7 @@ class Scene(Segment):
                         if params.DEBUG:
                             raise
                         else:
-                            pass
+                            continue
                 else:
                     continue
                 subsegments.append(new_sub_seg)
@@ -162,10 +162,12 @@ class Scene(Segment):
                     if params.DEBUG:
                         raise
                     else:
-                        pass
-                subsegments.append(new_sub_seg)
-                samp_inds.append((all_start,all_end))
-                fix_inds.append((fix_start, fix_end))
+                        new_sub_seg = None
+                        
+                if new_sub_seg != None:
+                    subsegments.append(new_sub_seg)
+                    samp_inds.append((all_start,all_end))
+                    fix_inds.append((fix_start, fix_end))
             #end of handling the last sub_seg
                 
             return subsegments, samp_inds, fix_inds
@@ -189,7 +191,7 @@ class Scene(Segment):
                         if params.DEBUG:
                             raise
                         else:
-                            pass
+                            continue
                 else:
                     continue
                 
