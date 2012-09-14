@@ -63,57 +63,61 @@ def get_chunk(data, ind, start, end):
     """
     datalen = len(data)
     curr_ind = ind
-    if isinstance(data[curr_ind],Fixation): #if it is a fixation
-        if params.INCLUDE_HALF_FIXATIONS: 
+    if curr_ind < datalen:
+        if isinstance(data[curr_ind],Fixation): #if it is a fixation
+            if params.INCLUDE_HALF_FIXATIONS: 
+                while curr_ind < datalen and data[curr_ind].timestamp < start:
+                    curr_ind += 1
+            
+                if data[curr_ind-1].fixationduration!= None: # if the last fixation before, is mostly in this segment
+                    if (data[curr_ind-1].timestamp + (data[curr_ind-1].fixationduration)/2.0) > start:
+                        curr_ind -=1
+                start_ind = curr_ind
+                while curr_ind < datalen and (data[curr_ind].timestamp + (data[curr_ind].fixationduration)) <= end:
+                    curr_ind += 1
+            
+                 
+                if curr_ind == start_ind:   # an empty chunk!
+                    end_ind = curr_ind -1
+                elif data[curr_ind-1].fixationduration!= None: # if the last fixation is mostly outside this segment
+                    if (data[curr_ind-1].timestamp + (data[curr_ind-1].fixationduration)/2.0) > end:
+                        end_ind = curr_ind - 2 
+                    else: 
+                        end_ind = curr_ind -1
+                else:
+                    end_ind = curr_ind -1
+            else:   #No half fixation inclusion
+                while curr_ind < datalen and data[curr_ind].timestamp < start:
+                    curr_ind += 1
+            
+                start_ind = curr_ind
+                while curr_ind < datalen and (data[curr_ind].timestamp + (data[curr_ind].fixationduration)) <= end:
+                    curr_ind += 1
+            
+                 
+                if curr_ind == start_ind:   # a no point chunk!
+                    end_ind = curr_ind -1
+                elif data[curr_ind-1].fixationduration!= None: # if the last fixation is mostly outside this segment
+                    if (data[curr_ind-1].timestamp + (data[curr_ind-1].fixationduration)/2.0) > end:
+                        end_ind = curr_ind - 2 
+                    else: 
+                        end_ind = curr_ind -1
+                else:
+                    end_ind = curr_ind -1            
+        else: # if this is not a Fixation we do not have to worry about half fixations
             while curr_ind < datalen and data[curr_ind].timestamp < start:
                 curr_ind += 1
         
-            if data[curr_ind-1].fixationduration!= None: # if the last fixation before, is mostly in this segment
-                if (data[curr_ind-1].timestamp + (data[curr_ind-1].fixationduration)/2.0) > start:
-                    curr_ind -=1
             start_ind = curr_ind
-            while curr_ind < datalen and (data[curr_ind].timestamp + (data[curr_ind].fixationduration)) <= end:
+            while curr_ind < datalen and data[curr_ind].timestamp <= end:
                 curr_ind += 1
         
-             
-            if curr_ind == start_ind:   # an empty chunk!
-                end_ind = curr_ind -1
-            elif data[curr_ind-1].fixationduration!= None: # if the last fixation is mostly outside this segment
-                if (data[curr_ind-1].timestamp + (data[curr_ind-1].fixationduration)/2.0) > end:
-                    end_ind = curr_ind - 2 
-                else: 
-                    end_ind = curr_ind -1
-            else:
-                end_ind = curr_ind -1
-        else:   #No half fixation inclusion
-            while curr_ind < datalen and data[curr_ind].timestamp < start:
-                curr_ind += 1
+            end_ind = curr_ind -1
         
-            start_ind = curr_ind
-            while curr_ind < datalen and (data[curr_ind].timestamp + (data[curr_ind].fixationduration)) <= end:
-                curr_ind += 1
+        end_ind +=1 #because the last index is not inclusive in Python!
+    else:
+        curr_ind = start_ind = end_ind = datalen
         
-             
-            if curr_ind == start_ind:   # a no point chunk!
-                end_ind = curr_ind -1
-            elif data[curr_ind-1].fixationduration!= None: # if the last fixation is mostly outside this segment
-                if (data[curr_ind-1].timestamp + (data[curr_ind-1].fixationduration)/2.0) > end:
-                    end_ind = curr_ind - 2 
-                else: 
-                    end_ind = curr_ind -1
-            else:
-                end_ind = curr_ind -1            
-    else: # if this is not a Fixation we do not have to worry about half fixations
-        while curr_ind < datalen and data[curr_ind].timestamp < start:
-            curr_ind += 1
-    
-        start_ind = curr_ind
-        while curr_ind < datalen and data[curr_ind].timestamp <= end:
-            curr_ind += 1
-    
-        end_ind = curr_ind -1
-    
-    end_ind +=1 #because the last index is not inclusive in Python!
     return curr_ind, start_ind, end_ind
 
 def stddev(data):
