@@ -236,32 +236,6 @@ def read_fixation_data(fixation_file, media_offset = (0,0)):
     return map(lambda x: Fixation(x, media_offset=media_offset), 
                lines[params.FIXATIONHEADERLINES:])
 
-
-#def read_aois(aoifile):
-#    """Returns a dict of 
-#
-#    Args:
-#        aoifile: A string containing the name of the AOI file.
-#        
-#    Returns:
-#        a dict of
-#    """
-#    aoidict = {}
-#    with open(aoifile, 'r') as f:
-#        aoilines = f.readlines()
-#
-#    aids = aoilines[0].strip().split('t')
-#   
-#    for l in aoilines[1:]:
-#        l = l.strip()
-#        chunks = l.split('\t')
-#        chart_type = chunks[0][:9]
-#        #join the aids to the ploys
-#        polys = map(lambda x, (y,z): (x,y,z), aids, map(eval, chunks[1:]))
-#        aoidict[chart_type] = polys
-#
-#    return aoidict
-
 def read_aois_Tobii(aoifile):
     """Returns a list of "AOI"s read from a '.aoi' file.
     
@@ -284,41 +258,51 @@ def read_aois_Tobii(aoifile):
     Returns:
         a list of "AOI"s
     """
-    aoilist = []
     with open(aoifile, 'r') as f:
         aoilines = f.readlines()
 
-   
-    polyin=[]
+    return read_aoilines(aoilines)
+
+def read_aoilines(aoilines):
+    """
+    Args:
+        aoilines: Contents of a '.aoi' file
+
+    Returns:
+        list of AOIs
+    """
+    aoilist = []
+    polyin = []
     last_aid = ''
-    for l in aoilines:
-        l = l.strip()
-        chunks = l.split('\t')
-        if chunks[0].startswith('#'): #second line
+
+    for line in aoilines:
+        chunks = line.strip().split('\t')
+        if chunks[0].startswith('#'): # second line
             if polyin:
-                seq=[]
+                seq = []
                 for v in chunks[1:]:
                     seq.append((eval(v)))
-                aoi=AOI(last_aid, polyin, [],seq)
+
+                aoi = AOI(last_aid, polyin, [], seq)
                 aoilist.append(aoi)
-                polyin=[]
+                polyin = []
             else:
                 raise Exception('error in the AOI file')
         else:
-            if polyin: #a global AOI
-                aoi=AOI(last_aid, polyin, [],[])
+            if polyin: # global AOI
+                aoi = AOI(last_aid, polyin, [], [])
                 aoilist.append(aoi)
-                polyin=[]
-            print "AOIs",chunks #first line
-            last_aid = chunks[0]
+                polyin = []
+
+            last_aid = chunks[0] # first line
             for v in chunks[1:]:
                 polyin.append((eval(v)))
-    if polyin: #the last (global) AOI            
-        aoi=AOI(last_aid, polyin, [],[])
-        aoilist.append(aoi)
-    
-    return aoilist
 
+    if polyin: # last (global) AOI
+        aoi = AOI(last_aid, polyin, [], [])
+        aoilist.append(aoi)
+
+    return aoilist
 
 def read_segs(segfile):
     """Returns a dict with scid as the key and segments as value from a '.seg' file.
