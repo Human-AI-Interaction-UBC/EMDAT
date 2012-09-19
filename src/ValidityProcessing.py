@@ -71,7 +71,53 @@ from Participant import Participant
 #        print "average seg len",seglen/float(segs)
 #    return participants
 
-def explore_validation_threshold_segments(participant_list, prune_length = None, 
+def explore_validation_proportion_threshold_segments(participant_list, include_restored_samples = True, prune_length = None, 
+                                          auto_partition_low_quality_segments = False):
+    """Explores different threshiold values for the proportion of valid samples method in terms of Segments for all Participant in the list
+    """
+    
+    seglen = 0
+    segs = 0
+    participants = []
+    for p in participant_list:
+        print "pid:", p.pid
+        if p.require_valid_segments == True:
+            raise Exception("explore_validation_threshold_segments should be called with a list of Participants with require_valid_segments = False")
+            
+        
+        tvalidity = []
+        
+        for seg in p.segments:
+            seglen += seg.completion_time
+        segs += len(p.segments)
+        if include_restored_samples == False:
+            for tresh in range(1,100,1):    ##proportion
+                invc = 0
+                invsegs=[]
+                for seg in p.segments:
+                    if seg.calc_validity1(tresh/100.0) == False:
+                        invc +=1
+
+        else:
+            for tresh in range(1,102,1):    ##proportion with restored samples from Fixations
+                invc = 0
+                invsegs=[]
+                for seg in p.segments:
+                    if seg.calc_validity3(tresh/100.0) == False:
+                        invc +=1                        
+                        invsegs.append(seg.segid)
+                    
+            if len(invsegs)>0:
+                print "seg:",invsegs 
+                    
+            tvalidity.append((tresh, invc))
+        participants.append( (p.pid,tvalidity, len(p.segments) ) )
+        print ( (tvalidity, len(p.segments)) )
+       
+    print "average seg len",seglen/float(segs)
+    return participants
+
+def explore_validation_time_gap_threshold_segments(participant_list, time_gap_list = [100, 200, 300, 400, 500, 1000, 2000], prune_length = None, 
                                           auto_partition_low_quality_segments = False):
     
     seglen = 0
@@ -89,33 +135,14 @@ def explore_validation_threshold_segments(participant_list, prune_length = None,
             seglen += seg.completion_time
         segs += len(p.segments)
 
-#            for tresh in range(1,100,1):##proportion
-#                invc = 0
-#                invsegs=[]
-#                for seg in segments:
-#                    if seg.calc_validity1(tresh/100.0) == False:
-#                        invc +=1
-#            for tresh in range(1,21,1):##prop-gap
-#                invc = 0
-#                invsegs=[]
-#                for seg in segments:
-#                    if seg.calc_validity2(tresh*seg.completion_time/100.0) == False:
-#                        invc +=1                        
-#            for tresh in range(1,20000,100):##time-gap
-#                invc = 0
-#                invsegs=[]
-#                for seg in segments:
-#                    if seg.calc_validity2(tresh) == False:
-#                        invc +=1
-
-        for tresh in range(1,102,1):##proportion Fixation
+                       
+        for tresh in time_gap_list:     ##time-gap
             invc = 0
             invsegs=[]
             for seg in p.segments:
-                if seg.calc_validity3(tresh/100.0) == False:
-                    invc +=1                        
-                    invsegs.append(seg.segid)
-                    
+                if seg.calc_validity2(tresh) == False:
+                    invc +=1
+
             if len(invsegs)>0:
                 print "seg:",invsegs 
                     
@@ -126,7 +153,8 @@ def explore_validation_threshold_segments(participant_list, prune_length = None,
     print "average seg len",seglen/float(segs)
     return participants
 
-def explore_validation_threshold_participants(participant_list, prune_length = None,
+
+def explore_validation_proportion_threshold_participants(participant_list, include_restored_samples =True, prune_length = None,
                    auto_partition_low_quality_segments = False):
     
     participants = []
@@ -140,11 +168,19 @@ def explore_validation_threshold_participants(participant_list, prune_length = N
             seglen += seg.completion_time
         segs += len(p.segments)
         
-        for tresh in range(1,102,1):##proportion Fixation
-            invc = 0
-            if p.is_valid(tresh/100.0) == False:
-                invc +=1                        
-            tvalidity.append((tresh, invc))
+        if include_restored_samples == False:
+            for tresh in range(1,102,1):    ##proportion 
+                invc = 0
+                if p.is_valid(method=1, tresh/100.0) == False:
+                    invc +=1                        
+                tvalidity.append((tresh, invc))
+        else:
+            for tresh in range(1,102,1):    ##proportion Fixation
+                invc = 0
+                if p.is_valid(method=3, tresh/100.0) == False:
+                    invc +=1                        
+                tvalidity.append((tresh, invc))
+
         participants.append( (p.pid,tvalidity, len(p.segments) ) )
         print ( (tvalidity, len(p.segments)) )
                  
@@ -174,32 +210,31 @@ def explore_validation_threshold_participants(participant_list, prune_length = N
 ###########
 
 
-################### Segements Validity info
-#pv = explore_validation_threshold_segments(user_list=ul,datadir='./data/', prune_length = None,
-#                   auto_partition_low_quality_segments = True)
-#
-#print
-#
-##for rate in xrange(1,21,1): ##porportion gap
-#for rate in xrange(1,102,1): ##porportion
-##for rate in xrange(1,200,1): ##time gap 
-#    usr=[]
-#    totalseg = 0
-#    inv_seg = 0
-#    inv_user = 0
-#    for p in pv:
-#        pid, i,t = p
-#        totalseg += t
-#        _,invc = i[rate-1] 
-#        inv_seg += invc
-#        if invc > 0 :
-#            inv_user+=1
-#            usr.append(invc)
-#        else:
-#            usr.append(0)
-#        
-##    print rate*100,":",inv_seg,"/",totalseg,"user:",inv_user,":",usr
-#    print rate,":",inv_seg,"/",totalseg,"user:",inv_user,":",usr
+def Calculate_Segements_Validity_info(user_list, auto_partition_low_quality_segments_flag):
+    pv = explore_validation_proportion_threshold_segments(user_list=user_list, prune_length = None,
+                       auto_partition_low_quality_segments = auto_partition_low_quality_segments_flag)
+    
+    print
+    
+    for rate in xrange(1,102,1): ##porportion
+    #for rate in xrange(1,200,1): ##time gap 
+        usr=[]
+        totalseg = 0
+        inv_seg = 0
+        inv_user = 0
+        for p in pv:
+            pid, i,t = p
+            totalseg += t
+            _,invc = i[rate-1] 
+            inv_seg += invc
+            if invc > 0 :
+                inv_user+=1
+                usr.append(invc)
+            else:
+                usr.append(0)
+            
+    #    print rate*100,":",inv_seg,"/",totalseg,"user:",inv_user,":",usr
+        print rate,":",inv_seg,"/",totalseg,"user:",inv_user,":",usr
 ##################
 
 
