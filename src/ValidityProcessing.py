@@ -91,7 +91,7 @@ def explore_validation_proportion_threshold_segments(participant_list, include_r
             seglen += seg.completion_time
         segs += len(p.segments)
         if include_restored_samples == False:
-            for tresh in range(1,100,1):    ##proportion
+            for tresh in range(1,102,1):    ##proportion
                 invc = 0
                 invsegs=[]
                 for seg in p.segments:
@@ -106,11 +106,11 @@ def explore_validation_proportion_threshold_segments(participant_list, include_r
                     if seg.calc_validity3(tresh/100.0) == False:
                         invc +=1                        
                         invsegs.append(seg.segid)
-                    
-            if len(invsegs)>0:
-                print "seg:",invsegs 
-                    
-            tvalidity.append((tresh, invc))
+                        
+                if len(invsegs)>0:
+                    print "seg:",invsegs 
+                        
+                tvalidity.append((tresh, invc))
         participants.append( (p.pid,tvalidity, len(p.segments) ) )
         print ( (tvalidity, len(p.segments)) )
        
@@ -171,13 +171,13 @@ def explore_validation_proportion_threshold_participants(participant_list, inclu
         if include_restored_samples == False:
             for tresh in range(1,102,1):    ##proportion 
                 invc = 0
-                if p.is_valid(method=1, tresh/100.0) == False:
+                if p.is_valid(method=1, threshold = tresh/100.0) == False:
                     invc +=1                        
                 tvalidity.append((tresh, invc))
         else:
             for tresh in range(1,102,1):    ##proportion Fixation
                 invc = 0
-                if p.is_valid(method=3, tresh/100.0) == False:
+                if p.is_valid(method=3, threshold = tresh/100.0) == False:
                     invc +=1                        
                 tvalidity.append((tresh, invc))
 
@@ -210,8 +210,8 @@ def explore_validation_proportion_threshold_participants(participant_list, inclu
 ###########
 
 
-def Calculate_Segements_Validity_info(user_list, auto_partition_low_quality_segments_flag):
-    pv = explore_validation_proportion_threshold_segments(user_list=user_list, prune_length = None,
+def Calculate_Validity_info(user_list, auto_partition_low_quality_segments_flag):
+    pv = explore_validation_proportion_threshold_segments(participant_list=user_list, prune_length = None,
                        auto_partition_low_quality_segments = auto_partition_low_quality_segments_flag)
     
     print
@@ -234,7 +234,7 @@ def Calculate_Segements_Validity_info(user_list, auto_partition_low_quality_segm
                 usr.append(0)
             
     #    print rate*100,":",inv_seg,"/",totalseg,"user:",inv_user,":",usr
-        print rate,":",inv_seg,"/",totalseg,"user:",inv_user,":",usr
+        print rate,":",inv_seg,"/",totalseg,"invalid user(s):",inv_user,":",usr
 ##################
 
 
@@ -270,10 +270,24 @@ def Calculate_Segements_Validity_info(user_list, auto_partition_low_quality_segm
 #    print p.invalid_segments()
 #    print p.valid_segments() 
     
-####### %Discarded
-#print "p.id,valid,vlength_sum,length_sum,valid portion"
-#for p in ps:
-#    vlength_sum = sum(map (lambda y:y.length,filter(lambda x:x.is_valid,p.segments)))
-#    length_sum = sum(map(lambda x:x.length,p.segments))
-#    print p.id,p.is_valid(),vlength_sum,length_sum,vlength_sum*1.0/length_sum
-####### 
+def output_percent_discarded(participant_list, output_file= None):
+    """percent of data Discarded due to validity
+    """
+    if output_file:
+        print "writing results to: "+output_file
+        ofile = open(output_file,"w")
+        s="pid,is_valid,valid_duration,total_duration,valid_portion"
+        for p in participant_list:
+            vlength_sum = sum(map (lambda y:y.length,filter(lambda x:x.is_valid,p.segments)))
+            length_sum = sum(map(lambda x:x.length,p.segments))
+            s=str(p.pid)+","+str(p.is_valid())+","+str(vlength_sum)+","+str(length_sum)+","+str(vlength_sum*1.0/length_sum)+"\n"
+            ofile.write(s)
+        ofile.close()
+    else:
+        print "pid,is_valid,valid_duration,total_duration,valid_portion"
+        for p in participant_list:
+            vlength_sum = sum(map (lambda y:y.length,filter(lambda x:x.is_valid,p.segments)))
+            length_sum = sum(map(lambda x:x.length,p.segments))
+            print p.pid,p.is_valid(),vlength_sum,length_sum,vlength_sum*1.0/length_sum
+        
+    ###### 

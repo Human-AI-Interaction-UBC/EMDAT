@@ -5,7 +5,7 @@ Created on 2012-08-23
 '''
 from BasicParticipant import *
 from Participant import export_features_all, write_features_tsv
-from ValidityProcessing import Calculate_Segements_Validity_info
+from ValidityProcessing import Calculate_Validity_info, output_percent_discarded
 
 ul =        [61, 62]    # list of user recordings (files extracted for one participant from Tobii studio)
 uids =      [61, 62]    # User ID that is used in the external logs (can be different from above but there should be a 1-1 mapping)
@@ -20,7 +20,8 @@ print
 ######
 
 #explore_validation_threshold_segments(ps, auto_partition_low_quality_segments = False)
-Calculate_Segements_Validity_info(ps, auto_partition_low_quality_segments = False)
+Calculate_Validity_info(ps, auto_partition_low_quality_segments_flag = False)
+output_percent_discarded(ps,'disc.csv')
 #explore_validation_threshold_participants(ps, auto_partition_low_quality_segments = False)
 
 ##### WRITE features to file
