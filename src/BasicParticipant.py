@@ -79,20 +79,6 @@ class BasicParticipant(Participant):
         self.whole_scene = Scene('P'+str(pid),[],rec.all_data,rec.fix_data, Segments = self.segments, aoilist = aois,prune_length = prune_length, require_valid = require_valid_segs )
         self.scenes.insert(0,self.whole_scene)
         
-    def is_valid(self,threshold=None):
-        """Determines if the samples for this Participant meets the validity threshold
-        
-        Args:
-            threshold: if not None, the threshold value that should be used for the 
-                validity criterion
-                
-        Returns:
-            True or False
-        """
-        if threshold == None:
-            return self.whole_scene.is_valid
-        else:
-            return self.whole_scene.proportion_valid_fix >= threshold
 
                
 def read_participants_Basic(datadir, user_list ,pids, prune_length = None, aoifile = None, log_time_offsets=None, 

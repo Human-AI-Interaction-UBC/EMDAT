@@ -186,47 +186,20 @@ def explore_validation_proportion_threshold_participants(participant_list, inclu
                  
     return participants
 
-
-########### Validuty of users
-#pv = explore_validation_threshold_participants(user_list=ul,datadir='./data/', prune_length = None, 
-#                    auto_partition_low_quality_segments = True)
-#
-#for rate in xrange(1,102,1): ##porportion
-#    usr=[]
-#    totalseg = 0
-#    inv_user = 0
-#    for p in pv:
-#        pid, i,t = p
-#        totalseg += t
-#        _,invc = i[rate-1] 
-#        if invc > 0 :
-#            inv_user+=1
-#            usr.append(invc)
-#        else:
-#            usr.append(0)
-#        
-##    print rate*100,":",inv_seg,"/",totalseg,"user:",inv_user,":",usr
-#    print rate,"segs:",totalseg,"users:",inv_user,":",usr
-###########
-
-
-def Calculate_Validity_info(user_list, auto_partition_low_quality_segments_flag):
-    pv = explore_validation_proportion_threshold_segments(participant_list=user_list, prune_length = None,
-                       auto_partition_low_quality_segments = auto_partition_low_quality_segments_flag)
-    
-    print
+def output_Validity_info_Participants(user_list, auto_partition_low_quality_segments_flag):
+    """ Validuty of users
+    """
+    pv = explore_validation_proportion_threshold_participants(user_list=user_list,datadir='./data/', prune_length = None, 
+                        auto_partition_low_quality_segments = auto_partition_low_quality_segments_flag)
     
     for rate in xrange(1,102,1): ##porportion
-    #for rate in xrange(1,200,1): ##time gap 
         usr=[]
         totalseg = 0
-        inv_seg = 0
         inv_user = 0
         for p in pv:
             pid, i,t = p
             totalseg += t
             _,invc = i[rate-1] 
-            inv_seg += invc
             if invc > 0 :
                 inv_user+=1
                 usr.append(invc)
@@ -234,7 +207,56 @@ def Calculate_Validity_info(user_list, auto_partition_low_quality_segments_flag)
                 usr.append(0)
             
     #    print rate*100,":",inv_seg,"/",totalseg,"user:",inv_user,":",usr
-        print rate,":",inv_seg,"/",totalseg,"invalid user(s):",inv_user,":",usr
+        print rate,"segs:",totalseg,"users:",inv_user,":",usr
+##########
+
+
+def output_Validity_info_Segments(user_list, auto_partition_low_quality_segments_flag, validity_method, threshold_gaps_list = []):
+    """ Validuty info for Segments overall 
+    """
+    
+    print
+    if validity_method == 1|validity_method == 3:   ##porportion
+        pv = explore_validation_proportion_threshold_segments(participant_list=user_list, prune_length = None,
+                           auto_partition_low_quality_segments = auto_partition_low_quality_segments_flag)
+        for rate in xrange(1,102,1): 
+            usr=[]
+            totalseg = 0
+            inv_seg = 0
+            inv_user = 0
+            for p in pv:
+                pid, i,t = p
+                totalseg += t
+                _,invc = i[rate-1] 
+                inv_seg += invc
+                if invc > 0 :
+                    inv_user+=1
+                    usr.append(invc)
+                else:
+                    usr.append(0)
+                
+            print rate,":",inv_seg,"/",totalseg,", invalid user(s):",inv_user,":",usr
+
+    elif validity_method == 2:  ##time gap\
+        pv = explore_validation_time_gap_threshold_segments(participant_list = user_list, time_gap_list = threshold_gaps_list, prune_length = None, 
+                                                            auto_partition_low_quality_segments = auto_partition_low_quality_segments_flag)
+        for gap_index in xrange(len(threshold_gaps_list)): 
+            usr=[]
+            totalseg = 0
+            inv_seg = 0
+            inv_user = 0
+            for p in pv:
+                pid, i,t = p
+                totalseg += t
+                _,invc = i[gap_index]    #rate-1 
+                inv_seg += invc
+                if invc > 0 :
+                    inv_user+=1
+                    usr.append(invc)
+                else:
+                    usr.append(0)
+                
+            print threshold_gaps_list[gap_index],":",inv_seg,"/",totalseg,", invalid user(s):",inv_user,":",usr        
 ##################
 
 
@@ -278,6 +300,9 @@ def output_percent_discarded(participant_list, output_file= None):
         ofile = open(output_file,"w")
         s="pid,is_valid,valid_duration,total_duration,valid_portion"
         for p in participant_list:
+            if p.require_valid_segments == True:
+                raise Exception("output_percent_discarded should be called with a list of Participants with require_valid_segments = False")
+
             vlength_sum = sum(map (lambda y:y.length,filter(lambda x:x.is_valid,p.segments)))
             length_sum = sum(map(lambda x:x.length,p.segments))
             s=str(p.pid)+","+str(p.is_valid())+","+str(vlength_sum)+","+str(length_sum)+","+str(vlength_sum*1.0/length_sum)+"\n"

@@ -5,7 +5,7 @@ Created on 2012-08-23
 '''
 from BasicParticipant import *
 from Participant import export_features_all, write_features_tsv
-from ValidityProcessing import Calculate_Validity_info, output_percent_discarded
+from ValidityProcessing import output_Validity_info_Segments, output_percent_discarded, explore_validation_proportion_threshold_participants
 
 ul =        [61, 62]    # list of user recordings (files extracted for one participant from Tobii studio)
 uids =      [61, 62]    # User ID that is used in the external logs (can be different from above but there should be a 1-1 mapping)
@@ -20,9 +20,11 @@ print
 ######
 
 #explore_validation_threshold_segments(ps, auto_partition_low_quality_segments = False)
-Calculate_Validity_info(ps, auto_partition_low_quality_segments_flag = False)
+output_Validity_info_Segments(ps, auto_partition_low_quality_segments_flag = False, validity_method = 3)
 output_percent_discarded(ps,'disc.csv')
-#explore_validation_threshold_participants(ps, auto_partition_low_quality_segments = False)
+output_Validity_info_Segments(ps, auto_partition_low_quality_segments_flag = False, validity_method = 2, threshold_gaps_list = [100, 200, 300])
+explore_validation_proportion_threshold_participants(ps, include_restored_samples =True, auto_partition_low_quality_segments = False)
+
 
 ##### WRITE features to file
 #write_features_tsv(ps, './outputfolder/smaple_features.tsv',featurelist = params.featurelist, aoifeaturelabels=params.aoifeaturelist, id_prefix = False)
