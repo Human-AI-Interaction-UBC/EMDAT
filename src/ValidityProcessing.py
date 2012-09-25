@@ -186,10 +186,10 @@ def explore_validation_proportion_threshold_participants(participant_list, inclu
                  
     return participants
 
-def output_Validity_info_Participants(user_list, auto_partition_low_quality_segments_flag):
+def output_Validity_info_Participants(user_list, include_restored_samples, auto_partition_low_quality_segments_flag):
     """ Validuty of users
     """
-    pv = explore_validation_proportion_threshold_participants(user_list=user_list,datadir='./data/', prune_length = None, 
+    pv = explore_validation_proportion_threshold_participants(participant_list=user_list, include_restored_samples = include_restored_samples, prune_length = None, 
                         auto_partition_low_quality_segments = auto_partition_low_quality_segments_flag)
     
     for rate in xrange(1,102,1): ##porportion
@@ -207,7 +207,9 @@ def output_Validity_info_Participants(user_list, auto_partition_low_quality_segm
                 usr.append(0)
             
     #    print rate*100,":",inv_seg,"/",totalseg,"user:",inv_user,":",usr
-        print rate,"segs:",totalseg,"users:",inv_user,":",usr
+        print rate,": invalid user(s):",inv_user,":",usr
+    print
+    print "Total Segments:",totalseg
 ##########
 
 
@@ -256,7 +258,7 @@ def output_Validity_info_Segments(user_list, auto_partition_low_quality_segments
                 else:
                     usr.append(0)
                 
-            print threshold_gaps_list[gap_index],":",inv_seg,"/",totalseg,", invalid user(s):",inv_user,":",usr        
+            print threshold_gaps_list[gap_index],":",inv_seg,"/",totalseg,", users with invalid Segment:",inv_user,":",usr        
 ##################
 
 
