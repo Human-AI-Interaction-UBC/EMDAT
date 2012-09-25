@@ -22,7 +22,7 @@ print
 #explore_validation_threshold_segments(ps, auto_partition_low_quality_segments = False)
 output_Validity_info_Segments(ps, auto_partition_low_quality_segments_flag = False, validity_method = 3)
 output_percent_discarded(ps,'disc.csv')
-output_Validity_info_Segments(ps, auto_partition_low_quality_segments_flag = False, validity_method = 2, threshold_gaps_list = [100, 200, 300])
+output_Validity_info_Segments(ps, auto_partition_low_quality_segments_flag = False, validity_method = 2, threshold_gaps_list = [100, 200, 250, 300],output_file = "Seg_val.csv")
 output_Validity_info_Participants(ps, include_restored_samples =True, auto_partition_low_quality_segments_flag = False)
 
 
