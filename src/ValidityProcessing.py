@@ -73,7 +73,7 @@ from Participant import Participant
 
 def explore_validation_proportion_threshold_segments(participant_list, include_restored_samples = True, prune_length = None, 
                                           auto_partition_low_quality_segments = False):
-    """Explores different threshiold values for the proportion of valid samples method in terms of Segments for all Participant in the list
+    """Explores different threshiold values for the proportion of valid samples method in terms of Segments for all Participants in the list
     """
     
     seglen = 0
@@ -119,6 +119,8 @@ def explore_validation_proportion_threshold_segments(participant_list, include_r
 
 def explore_validation_time_gap_threshold_segments(participant_list, time_gap_list = [100, 200, 300, 400, 500, 1000, 2000], prune_length = None, 
                                           auto_partition_low_quality_segments = False):
+    """Explores different threshiold values for the invalid time gaps in the Segments for all Participants in the list
+    """
     
     seglen = 0
     segs = 0
@@ -156,7 +158,8 @@ def explore_validation_time_gap_threshold_segments(participant_list, time_gap_li
 
 def explore_validation_proportion_threshold_participants(participant_list, include_restored_samples =True, prune_length = None,
                    auto_partition_low_quality_segments = False):
-    
+    """Explores different threshiold values for the proportion of valid samples method for evaluating the validity of each Particiapnt in the list
+    """
     participants = []
     seglen = 0
     segs = 0
@@ -187,7 +190,7 @@ def explore_validation_proportion_threshold_participants(participant_list, inclu
     return participants
 
 def output_Validity_info_Participants(user_list, include_restored_samples, auto_partition_low_quality_segments_flag):
-    """ Validuty of users
+    """ Outputs the Validuty info for Participants for different Threshold values
     """
     pv = explore_validation_proportion_threshold_participants(participant_list=user_list, include_restored_samples = include_restored_samples, prune_length = None, 
                         auto_partition_low_quality_segments = auto_partition_low_quality_segments_flag)
@@ -214,7 +217,7 @@ def output_Validity_info_Participants(user_list, include_restored_samples, auto_
 
 
 def output_Validity_info_Segments(user_list, auto_partition_low_quality_segments_flag, validity_method, threshold_gaps_list = [], output_file= None):
-    """ Validuty info for Segments overall 
+    """ Outputs the Validuty info for Segments over all Participants for different Threshold values
     """
     if output_file:
         print "writing results to: " + output_file

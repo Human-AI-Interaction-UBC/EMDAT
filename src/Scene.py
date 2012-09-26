@@ -277,6 +277,7 @@ class Scene(Segment):
             self.features['meanpathdistance'] = mean(distances)
             self.features['sumpathdistance'] = sum(distances)
             self.features['stddevpathdistance'] = stddev(distances)
+            self.features['eyemovementvelocity'] = self.features['sumpathdistance']/self.length
             self.features['sumabspathangles'] = sum(abs_angles)
             self.features['meanabspathangles'] = mean(abs_angles)
             self.features['stddevabspathangles'] = stddev(abs_angles)
