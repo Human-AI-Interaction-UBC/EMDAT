@@ -3,13 +3,14 @@ UBC Eye Movement Data Analysis Toolkit
 
 Author: Nicholas FitzGerald - nicholas.fitzgerald@gmail.com
 Modified by: Samad Kardan
+             Oliver Schmid - oliver.schmd@gmail.com
 
 Basic data structures used in EMDAT
 """
 from warnings import warn
+
 class Datapoint():
     """
-
     A class that holds the information for one eye gaze data sample (one line of data logs) 
     
     Attributes:
@@ -18,8 +19,10 @@ class Datapoint():
     
         Please refer to the Tobii manual for the description of the rest of the attributes
     """
-    def __init__(self, data_point):
-        """Inits Datapoint class with a line of gaze data from "all-Data.tsv" file
+
+    def fromString(text):
+        """
+        Inits Datapoint class with a line of gaze data from "all-Data.tsv" file
         
         Args:
             data_point: a string containing one line read from an "All-Data.tsv" file.
@@ -27,46 +30,67 @@ class Datapoint():
         Yields:
             a Datapoint object
         """
-        #data_point = data_point.replace('\t\r\n','')#??
-        #print data_point.split('\t')
-        #print len(data_point.split('\t'))
-        [self.timestamp, self.datetimestamp, self.datetimestampstartoffset, self.number, self.gazepointxleft, self.gazepointyleft, self.camxleft, self.camyleft, self.distanceleft, self.pupilleft, self.validityleft, self.gazepointxright, self.gazepointyright, self.camxright, self.camyright, self.distanceright, self.pupilright, self.validityright, self.fixationindex, self.gazepointx, self.gazepointy, self.event, self.eventkey, self.data1, self.data2, self.descriptor, self.stimuliname, self.stimuliid, self.mediawidth, self.mediaheight, self.mediaposx, self.mediaposy, self.mappedfixationpointx, self.mappedfixationpointy, self.fixationduration, self.aoiids, self.aoinames, self.webgroupimage, self.mappedgazedatapointx, self.mappedgazedatapointy, self.microsecondtimestamp, self.absolutemicrosecondtimestamp,_] = data_point.split('\t')
+        datapoint = Datapoint(text.split('\t'))
 
-        self.timestamp = cast_int(self.timestamp)
-        self.number = cast_int(self.number)
-        self.validityleft = cast_int(self.validityleft)
-        self.validityright = cast_int(self.validityright)
-        self.fixationindex = cast_int(self.fixationindex)
-        self.gazepointx = cast_int(self.gazepointx)
-        self.gazepointy = cast_int(self.gazepointy)
-        self.stimuliid = cast_int(self.stimuliid)
-        self.mediawidth = cast_int(self.mediawidth)
-        self.mediaheight = cast_int(self.mediaheight)
-        self.mediaposx = cast_int(self.mediaposx)
-        self.mediaposy = cast_int(self.mediaposy)
-        self.mappedfixationpointx = cast_int(self.mappedfixationpointx)
-        self.mappedfixationpointy = cast_int(self.mappedfixationpointy)
-        self.fixationduration = cast_int(self.fixationduration)
-        #self.aoiids = cast_int(self.aoiids)#not int : it's comma seperated string of AOIs
-        self.mappedgazedatapointx = cast_int(self.mappedgazedatapointx)
-        self.mappedgazedatapointy = cast_int(self.mappedgazedatapointy)
-        self.microsecondtimestamp = cast_int(self.microsecondtimestamp)
-        self.absolutemicrosecondtimestamp = cast_int(self.absolutemicrosecondtimestamp)
+        # convert strings to number formats
+        datapoint.timestamp = cast_int(datapoint.timestamp)
+        # datapoint.datetimestamp already string
+        # datapoint.datetimestampstartoffset already string
+        datapoint.number = cast_int(datapoint.number)
+        datapoint.gazepointxleft = cast_float(datapoint.gazepointxleft)
+        datapoint.gazepointyleft = cast_float(datapoint.gazepointyleft)
+        datapoint.camxleft = cast_float(datapoint.camxleft)
+        datapoint.camyleft = cast_float(datapoint.camyleft)
+        datapoint.distanceleft = cast_float(datapoint.distanceleft)
+        datapoint.pupilleft = cast_float(datapoint.pupilleft)
         
-        self.gazepointxleft = cast_float(self.gazepointxleft)
-        self.gazepointyleft = cast_float(self.gazepointyleft)
-        self.camxleft = cast_float(self.camxleft)
-        self.camyleft = cast_float(self.camyleft)
-        self.distanceleft = cast_float(self.distanceleft)
-        self.pupilleft = cast_float(self.pupilleft)
-        self.gazepointyright = cast_float(self.gazepointyright)
-        self.camxright = cast_float(self.camxright)
-        self.camyright = cast_float(self.camyright)
-        self.distanceright = cast_float(self.distanceright)
-        self.pupilright = cast_float(self.pupilright)
+        datapoint.validityleft = cast_int(datapoint.validityleft)
+        datapoint.gazepointxright = cast_float(datapoint.gazepointxright)
+        datapoint.gazepointyright = cast_float(datapoint.gazepointyright)
+        datapoint.camxright = cast_float(datapoint.camxright)
+        datapoint.camyright = cast_float(datapoint.camyright)
+        datapoint.distanceright = cast_float(datapoint.distanceright)
+        datapoint.pupilright = cast_float(datapoint.pupilright)
+        datapoint.validityright = cast_int(datapoint.validityright)
+        datapoint.fixationindex = cast_int(datapoint.fixationindex)
+        datapoint.gazepointx = cast_int(datapoint.gazepointx)
+        
+        datapoint.gazepointy = cast_int(datapoint.gazepointy)
+        # datapoint.event already string
+        # datapoint.eventkey already string
+        # datapoint.data1 already string
+        # datapoint.data2 already string
+        # datapoint.descriptor already string
+        # datapoint.stimuliname already string
+        datapoint.stimuliid = cast_int(datapoint.stimuliid)
+        datapoint.mediawidth = cast_int(datapoint.mediawidth)
+        datapoint.mediaheight = cast_int(datapoint.mediaheight)
+        
+        datapoint.mediaposx = cast_int(datapoint.mediaposx)
+        datapoint.mediaposy = cast_int(datapoint.mediaposy)
+        datapoint.mappedfixationpointx = cast_int(datapoint.mappedfixationpointx)
+        datapoint.mappedfixationpointy = cast_int(datapoint.mappedfixationpointy)
+        datapoint.fixationduration = cast_int(datapoint.fixationduration)
+        # datapoint.aoiids already comma seperated string of AOIs
+        # datapoint.aoinames already string
+        # datapoint.webgroupimage already string
+        datapoint.mappedgazedatapointx = cast_int(datapoint.mappedgazedatapointx)
+        datapoint.mappedgazedatapointy = cast_int(datapoint.mappedgazedatapointy)
+        
+        datapoint.microsecondtimestamp = cast_int(datapoint.microsecondtimestamp)
+        datapoint.absolutemicrosecondtimestamp = cast_int(datapoint.absolutemicrosecondtimestamp)
+        return datapoint
+
+    def __init__(self, data):
+        [self.timestamp, self.datetimestamp, self.datetimestampstartoffset, self.number, self.gazepointxleft, self.gazepointyleft, self.camxleft, self.camyleft, 
+         self.distanceleft, self.pupilleft, self.validityleft, self.gazepointxright, self.gazepointyright, self.camxright, self.camyright, self.distanceright, 
+         self.pupilright, self.validityright, self.fixationindex, self.gazepointx, self.gazepointy, self.event, self.eventkey, self.data1, self.data2, self.descriptor, 
+         self.stimuliname, self.stimuliid, self.mediawidth, self.mediaheight, self.mediaposx, self.mediaposy, self.mappedfixationpointx, self.mappedfixationpointy, 
+         self.fixationduration, self.aoiids, self.aoinames, self.webgroupimage, self.mappedgazedatapointx, self.mappedgazedatapointy, self.microsecondtimestamp, 
+         self.absolutemicrosecondtimestamp,_] = data
         self.segid = None
-        #self.is_valid = (not self.camxleft == -1)
         self.is_valid = (self.validityright < 2 or self.validityleft < 2)
+
     def set_segid(self,segid):
         """Sets the "Segment" id for this Datapoint
         
@@ -74,6 +98,7 @@ class Datapoint():
             segid: a string containing the "Segment" id
         """
         self.segid = segid
+
     def get_segid(self):
         """Returns the "Segment" id for this Datapoint
             
@@ -87,8 +112,6 @@ class Datapoint():
             return self.segid
         raise Exception('The segid is accessed before setting the initial value in a datapoint!')
             
-                
-                    
 
 class Fixation():
     """
@@ -132,6 +155,7 @@ class Fixation():
             segid: a string containing the "Segment" id
         """
         self.segid = segid
+
     def get_segid(self):
         """Returns the "Segment" id for this Fixation
             
@@ -144,6 +168,7 @@ class Fixation():
         if self.segid != None:
             return self.segid
         raise Exception('The segid is accessed before setting the initial value in a fixation point!')
+
 
 class Event():
     """
@@ -167,7 +192,6 @@ class Event():
         self.eventKey = cast_int(self.eventKey)
 
 
-
 def cast_int(str):
     """a helper method for converting strings to their integer value
     
@@ -182,6 +206,7 @@ def cast_int(str):
     except ValueError:
         v = None
     return v
+
 
 def cast_float(str):
     """a helper method for converting strings to their float value
