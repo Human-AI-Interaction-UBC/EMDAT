@@ -9,6 +9,63 @@ Basic data structures used in EMDAT
 """
 from warnings import warn
 
+def datapoint_from_string(text):
+    """
+    Inits Datapoint class with a line of gaze data from "all-Data.tsv" file
+    
+    Args:
+        data_point: a string containing one line read from an "All-Data.tsv" file.
+        
+    Yields:
+        a Datapoint object
+    """
+    strings = text.split('\t')
+    # TODO use int() and float()
+    data = [cast_int(strings[0]), # timestamp
+            strings[1], # datetimestamp
+            strings[2], # datetimestampstartoffset
+            cast_int(strings[3]), # number
+            cast_float(strings[4]), # gazepointxleft
+            cast_float(strings[5]), # gazepointyleft
+            cast_float(strings[6]), # camxleft
+            cast_float(strings[7]), # camyleft
+            cast_float(strings[8]), # distanceleft
+            cast_float(strings[9]), # pupilleft
+            cast_int(strings[10]), # validityleft
+            cast_float(strings[11]), # gazepointxright
+            cast_float(strings[12]), # gazepointyright
+            cast_float(strings[13]), # camxright
+            cast_float(strings[14]), # camyright
+            cast_float(strings[15]), # distanceright
+            cast_float(strings[16]), # pupilright
+            cast_int(strings[17]), # validityright
+            cast_int(strings[18]), # fixationindex
+            cast_int(strings[19]), # gazepointx
+            cast_int(strings[20]), # gazepointy
+            strings[21], # event
+            strings[22], # eventkey
+            strings[23], # data1
+            strings[24], # data2
+            strings[25], # descriptor
+            strings[26], # stimuliname
+            cast_int(strings[27]), # stimuliid
+            cast_int(strings[28]), # mediawidth
+            cast_int(strings[29]), # mediaheight
+            cast_int(strings[30]), # mediaposx
+            cast_int(strings[31]), # mediaposy
+            cast_int(strings[32]), # mappedfixationpointx
+            cast_int(strings[33]), # mappedfixationpointy
+            cast_int(strings[34]), # fixationduration
+            strings[35], # aoiids
+            strings[36], # aoinames
+            strings[37], # webgroupimage
+            cast_int(strings[38]), # mappedgazedatapointx
+            cast_int(strings[39]), # mappedgazedatapointy
+            cast_int(strings[40]), # microsecondtimestamp
+            cast_int(strings[41]), # absolutemicrosecondtimestamp
+            None]
+    return Datapoint(data)
+
 class Datapoint():
     """
     A class that holds the information for one eye gaze data sample (one line of data logs) 
@@ -19,67 +76,6 @@ class Datapoint():
     
         Please refer to the Tobii manual for the description of the rest of the attributes
     """
-
-    def fromString(text):
-        """
-        Inits Datapoint class with a line of gaze data from "all-Data.tsv" file
-        
-        Args:
-            data_point: a string containing one line read from an "All-Data.tsv" file.
-            
-        Yields:
-            a Datapoint object
-        """
-        datapoint = Datapoint(text.split('\t'))
-
-        # convert strings to number formats
-        datapoint.timestamp = cast_int(datapoint.timestamp)
-        # datapoint.datetimestamp already string
-        # datapoint.datetimestampstartoffset already string
-        datapoint.number = cast_int(datapoint.number)
-        datapoint.gazepointxleft = cast_float(datapoint.gazepointxleft)
-        datapoint.gazepointyleft = cast_float(datapoint.gazepointyleft)
-        datapoint.camxleft = cast_float(datapoint.camxleft)
-        datapoint.camyleft = cast_float(datapoint.camyleft)
-        datapoint.distanceleft = cast_float(datapoint.distanceleft)
-        datapoint.pupilleft = cast_float(datapoint.pupilleft)
-        
-        datapoint.validityleft = cast_int(datapoint.validityleft)
-        datapoint.gazepointxright = cast_float(datapoint.gazepointxright)
-        datapoint.gazepointyright = cast_float(datapoint.gazepointyright)
-        datapoint.camxright = cast_float(datapoint.camxright)
-        datapoint.camyright = cast_float(datapoint.camyright)
-        datapoint.distanceright = cast_float(datapoint.distanceright)
-        datapoint.pupilright = cast_float(datapoint.pupilright)
-        datapoint.validityright = cast_int(datapoint.validityright)
-        datapoint.fixationindex = cast_int(datapoint.fixationindex)
-        datapoint.gazepointx = cast_int(datapoint.gazepointx)
-        
-        datapoint.gazepointy = cast_int(datapoint.gazepointy)
-        # datapoint.event already string
-        # datapoint.eventkey already string
-        # datapoint.data1 already string
-        # datapoint.data2 already string
-        # datapoint.descriptor already string
-        # datapoint.stimuliname already string
-        datapoint.stimuliid = cast_int(datapoint.stimuliid)
-        datapoint.mediawidth = cast_int(datapoint.mediawidth)
-        datapoint.mediaheight = cast_int(datapoint.mediaheight)
-        
-        datapoint.mediaposx = cast_int(datapoint.mediaposx)
-        datapoint.mediaposy = cast_int(datapoint.mediaposy)
-        datapoint.mappedfixationpointx = cast_int(datapoint.mappedfixationpointx)
-        datapoint.mappedfixationpointy = cast_int(datapoint.mappedfixationpointy)
-        datapoint.fixationduration = cast_int(datapoint.fixationduration)
-        # datapoint.aoiids already comma seperated string of AOIs
-        # datapoint.aoinames already string
-        # datapoint.webgroupimage already string
-        datapoint.mappedgazedatapointx = cast_int(datapoint.mappedgazedatapointx)
-        datapoint.mappedgazedatapointy = cast_int(datapoint.mappedgazedatapointy)
-        
-        datapoint.microsecondtimestamp = cast_int(datapoint.microsecondtimestamp)
-        datapoint.absolutemicrosecondtimestamp = cast_int(datapoint.absolutemicrosecondtimestamp)
-        return datapoint
 
     def __init__(self, data):
         [self.timestamp, self.datetimestamp, self.datetimestampstartoffset, self.number, self.gazepointxleft, self.gazepointyleft, self.camxleft, self.camyleft, 

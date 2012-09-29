@@ -60,7 +60,7 @@ class Participant():
         self.require_valid_segments = require_valid_segs
 
         
-    def is_valid(self,threshold=None):
+    def is_valid(self, method = None, threshold=None, ):
         """Determines if the samples for this Participant meets the validity threshold
         
         Args:
@@ -72,8 +72,16 @@ class Participant():
         """
         if threshold == None:
             return self.whole_scene.is_valid
-        else:
-            return self.whole_scene.proportion_valid_fix >= threshold
+        elif method == None:
+            method = params.VALIDITY_METHOD
+            
+        if method == 1:
+            return self.whole_scene.calc_validity1(threshold)
+        elif method == 2:
+            return self.whole_scene.calc_validity2(threshold)
+        elif method == 3:
+            return self.whole_scene.calc_validity3(threshold)
+
 
 
     def invalid_segments(self):
