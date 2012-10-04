@@ -20,39 +20,38 @@ def datapoint_from_string(text):
         a Datapoint object
     """
     strings = text.split('\t')
-    # TODO use int() and float()
-    data = [cast_int(strings[0]), # timestamp
+    data = [int(strings[0]), # timestamp
             strings[1], # datetimestamp
             strings[2], # datetimestampstartoffset
-            cast_int(strings[3]), # number
-            cast_float(strings[4]), # gazepointxleft
-            cast_float(strings[5]), # gazepointyleft
-            cast_float(strings[6]), # camxleft
-            cast_float(strings[7]), # camyleft
-            cast_float(strings[8]), # distanceleft
-            cast_float(strings[9]), # pupilleft
-            cast_int(strings[10]), # validityleft
-            cast_float(strings[11]), # gazepointxright
-            cast_float(strings[12]), # gazepointyright
-            cast_float(strings[13]), # camxright
-            cast_float(strings[14]), # camyright
-            cast_float(strings[15]), # distanceright
-            cast_float(strings[16]), # pupilright
-            cast_int(strings[17]), # validityright
+            int(strings[3]), # number
+            float(strings[4]), # gazepointxleft
+            float(strings[5]), # gazepointyleft
+            float(strings[6]), # camxleft
+            float(strings[7]), # camyleft
+            float(strings[8]), # distanceleft
+            float(strings[9]), # pupilleft
+            int(strings[10]), # validityleft
+            float(strings[11]), # gazepointxright
+            float(strings[12]), # gazepointyright
+            float(strings[13]), # camxright
+            float(strings[14]), # camyright
+            float(strings[15]), # distanceright
+            float(strings[16]), # pupilright
+            int(strings[17]), # validityright
             cast_int(strings[18]), # fixationindex
-            cast_int(strings[19]), # gazepointx
-            cast_int(strings[20]), # gazepointy
+            float(strings[19]), # gazepointx
+            float(strings[20]), # gazepointy
             strings[21], # event
             strings[22], # eventkey
             strings[23], # data1
             strings[24], # data2
             strings[25], # descriptor
             strings[26], # stimuliname
-            cast_int(strings[27]), # stimuliid
-            cast_int(strings[28]), # mediawidth
-            cast_int(strings[29]), # mediaheight
-            cast_int(strings[30]), # mediaposx
-            cast_int(strings[31]), # mediaposy
+            int(strings[27]), # stimuliid
+            int(strings[28]), # mediawidth
+            int(strings[29]), # mediaheight
+            int(strings[30]), # mediaposx
+            int(strings[31]), # mediaposy
             cast_int(strings[32]), # mappedfixationpointx
             cast_int(strings[33]), # mappedfixationpointy
             cast_int(strings[34]), # fixationduration
@@ -62,8 +61,7 @@ def datapoint_from_string(text):
             cast_int(strings[38]), # mappedgazedatapointx
             cast_int(strings[39]), # mappedgazedatapointy
             cast_int(strings[40]), # microsecondtimestamp
-            cast_int(strings[41]), # absolutemicrosecondtimestamp
-            None]
+            int(strings[41])] # absolutemicrosecondtimestamp
     return Datapoint(data)
 
 class Datapoint():
@@ -83,7 +81,7 @@ class Datapoint():
          self.pupilright, self.validityright, self.fixationindex, self.gazepointx, self.gazepointy, self.event, self.eventkey, self.data1, self.data2, self.descriptor, 
          self.stimuliname, self.stimuliid, self.mediawidth, self.mediaheight, self.mediaposx, self.mediaposy, self.mappedfixationpointx, self.mappedfixationpointy, 
          self.fixationduration, self.aoiids, self.aoinames, self.webgroupimage, self.mappedgazedatapointx, self.mappedgazedatapointy, self.microsecondtimestamp, 
-         self.absolutemicrosecondtimestamp,_] = data
+         self.absolutemicrosecondtimestamp] = data
         self.segid = None
         self.is_valid = (self.validityright < 2 or self.validityleft < 2)
 
@@ -107,7 +105,7 @@ class Datapoint():
         if self.segid != None:
             return self.segid
         raise Exception('The segid is accessed before setting the initial value in a datapoint!')
-            
+
 
 class Fixation():
     """
