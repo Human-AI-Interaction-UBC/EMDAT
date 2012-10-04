@@ -266,7 +266,7 @@ def read_aois_Tobii(aoifile):
 def read_aoilines(aoilines):
     """
     Args:
-        aoilines: Contents of a '.aoi' file
+        aoilines: List of lines from a '.aoi' file
 
     Returns:
         list of AOIs
@@ -303,6 +303,7 @@ def read_aoilines(aoilines):
         aoilist.append(aoi)
 
     return aoilist
+
 
 def read_segs(segfile):
     """Returns a dict with scid as the key and segments as value from a '.seg' file.
