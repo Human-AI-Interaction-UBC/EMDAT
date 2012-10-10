@@ -182,6 +182,7 @@ class Segment():
             fixation_data: The list of "Fixation"s which make up this Segment
             aois: a list of "AOI"s relevant to this Segment
         """
+        
         if len(aois) == 0:
             warn("no AOIs passed to segment:"+self.segid)
         active_aois=[]

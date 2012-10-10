@@ -39,7 +39,6 @@ class AOI():
         self.polyin = polyin
         self.polyout = polyout
         self.timeseq = timeseq
-        print "timeseq", timeseq
 #            self.partial = True
     def set_coordinates(self, polyin, polyout=[]):
         """Sets the coordiantes of the AOI
