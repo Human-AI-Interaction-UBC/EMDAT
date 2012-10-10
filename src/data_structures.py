@@ -9,17 +9,51 @@ Basic data structures used in EMDAT
 """
 from warnings import warn
 
-def datapoint_from_string(text):
+class Datapoint():
     """
-    Inits Datapoint class with a line of gaze data from "all-Data.tsv" file
+    A class that holds the information for one eye gaze data sample (one line of data logs) 
+    
+    Attributes:
+        segid: a string indicating the Segment that this Datapoint belongs to
+        is_valid: a boolean indicating whether this sample is valid
+    
+        Please refer to the Tobii manual for the description of the rest of the attributes
+    """
+
+    def __init__(self, tobii_line, data=None):
+        """
+        Initializes a Datapoint from either a line of gaze data from "all-Data.tsv"
+        or the equivalent data in array form.
+
+        Args:
+            tobii_line: a line of gaze data from "all-Data.tsv"
+            data: An already parsed line of Tobii data
+
+        Yields:
+            a Datapoint object
+        """
+        if data == None:
+            data = parse(tobii_line)
+        [self.timestamp, self.datetimestamp, self.datetimestampstartoffset, self.number, self.gazepointxleft, self.gazepointyleft, self.camxleft, self.camyleft, 
+         self.distanceleft, self.pupilleft, self.validityleft, self.gazepointxright, self.gazepointyright, self.camxright, self.camyright, self.distanceright, 
+         self.pupilright, self.validityright, self.fixationindex, self.gazepointx, self.gazepointy, self.event, self.eventkey, self.data1, self.data2, self.descriptor, 
+         self.stimuliname, self.stimuliid, self.mediawidth, self.mediaheight, self.mediaposx, self.mediaposy, self.mappedfixationpointx, self.mappedfixationpointy, 
+         self.fixationduration, self.aoiids, self.aoinames, self.webgroupimage, self.mappedgazedatapointx, self.mappedgazedatapointy, self.microsecondtimestamp, 
+         self.absolutemicrosecondtimestamp] = data
+        self.segid = None
+        self.is_valid = (self.validityright < 2 or self.validityleft < 2)
+
+def parse(tobii_line):
+    """
+    Parses a line of gaze data from "all-Data.tsv" file into array form
     
     Args:
-        data_point: a string containing one line read from an "All-Data.tsv" file.
+        tobii_line: a string containing one line read from an "All-Data.tsv" file.
         
     Yields:
-        a Datapoint object
+        an array of converted types
     """
-    strings = text.split('\t')
+    strings = tobii_line.split('\t')
     data = [int(strings[0]), # timestamp
             strings[1], # datetimestamp
             strings[2], # datetimestampstartoffset
@@ -62,28 +96,7 @@ def datapoint_from_string(text):
             cast_int(strings[39]), # mappedgazedatapointy
             cast_int(strings[40]), # microsecondtimestamp
             int(strings[41])] # absolutemicrosecondtimestamp
-    return Datapoint(data)
-
-class Datapoint():
-    """
-    A class that holds the information for one eye gaze data sample (one line of data logs) 
-    
-    Attributes:
-        segid: a string indicating the Segment that this Datapoint belongs to
-        is_valid: a boolean indicating whether this sample is valid
-    
-        Please refer to the Tobii manual for the description of the rest of the attributes
-    """
-
-    def __init__(self, data):
-        [self.timestamp, self.datetimestamp, self.datetimestampstartoffset, self.number, self.gazepointxleft, self.gazepointyleft, self.camxleft, self.camyleft, 
-         self.distanceleft, self.pupilleft, self.validityleft, self.gazepointxright, self.gazepointyright, self.camxright, self.camyright, self.distanceright, 
-         self.pupilright, self.validityright, self.fixationindex, self.gazepointx, self.gazepointy, self.event, self.eventkey, self.data1, self.data2, self.descriptor, 
-         self.stimuliname, self.stimuliid, self.mediawidth, self.mediaheight, self.mediaposx, self.mediaposy, self.mappedfixationpointx, self.mappedfixationpointy, 
-         self.fixationduration, self.aoiids, self.aoinames, self.webgroupimage, self.mappedgazedatapointx, self.mappedgazedatapointy, self.microsecondtimestamp, 
-         self.absolutemicrosecondtimestamp] = data
-        self.segid = None
-        self.is_valid = (self.validityright < 2 or self.validityleft < 2)
+    return data
 
     def set_segid(self,segid):
         """Sets the "Segment" id for this Datapoint
