@@ -36,8 +36,12 @@ class Recording():
             a Recording object
         """
         self.all_data = read_all_data(all_file)
+        if len(self.all_data)==0:
+            raise Exception("The file '"+all_file+"' has no samples!")
         self.fix_data = read_fixation_data(fixation_file, 
                                            media_offset = params.MEDIA_OFFSET)
+        if len(self.fix_data)==0:
+            raise Exception("The file '"+fixation_file+"' has no fixations!")
 
     def process_rec(self, segfile = None, scenelist = None,  aoifile = None, 
                     aoilist = None , prune_length = None, require_valid_segs = True, 
@@ -214,7 +218,7 @@ def read_all_data(all_file):
 
     alld = map(Datapoint, lines[(params.ALLDATAHEADERLINES+
                                  params.NUMBEROFEXTRAHEADERLINES):])
-    return filter(lambda x: x.number!=None,alld)
+    return filter(lambda x: x.is_None!=True,alld)
 
 
 def read_fixation_data(fixation_file, media_offset = (0,0)):

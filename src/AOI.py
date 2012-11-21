@@ -100,7 +100,8 @@ class AOI():
                     if (start>=intr[0] and end<=intr[1]):
                         ovelap_part=[]
                     else:
-                        print "partial:",start,end,":",intr[0],intr[1]
+                        if params.DEBUG:
+                            print "partial:",start,end,":",intr[0],intr[1]
                         ovstart = max(start,intr[0])
                         ovend  = min(end,intr[1])
                         ovelap_part = [ovstart,ovend]

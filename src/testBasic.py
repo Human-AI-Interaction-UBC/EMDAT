@@ -12,6 +12,14 @@ uids =      [61, 62]    # User ID that is used in the external logs (can be diff
 
 alogoffset =[ 3,  2]    # the time sifference between the eye tracker logs and the external log
 
+####### Testing error handling
+#ul =        [61, 62, 63]    # list of user recordings (files extracted for one participant from Tobii studio)
+#uids =      [61, 62, 63]    # User ID that is used in the external logs (can be different from above but there should be a 1-1 mapping)
+#
+#alogoffset =[ 3,  2, 2]    # the time sifference between the eye tracker logs and the external log
+
+
+
 ###### Read participants
 ps = read_participants_Basic(user_list = ul,pids = uids, log_time_offsets = alogoffset, datadir=params.EYELOGDATAFOLDER, 
                            prune_length = None, aoifile = "./sampledata/general.aoi",
