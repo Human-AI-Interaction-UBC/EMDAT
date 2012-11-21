@@ -57,35 +57,35 @@ def parse(tobii_line):
     data = [int(strings[0]), # timestamp
             strings[1], # datetimestamp
             strings[2], # datetimestampstartoffset
-            int(strings[3]), # number
-            float(strings[4]), # gazepointxleft
-            float(strings[5]), # gazepointyleft
-            float(strings[6]), # camxleft
-            float(strings[7]), # camyleft
-            float(strings[8]), # distanceleft
-            float(strings[9]), # pupilleft
-            int(strings[10]), # validityleft
-            float(strings[11]), # gazepointxright
-            float(strings[12]), # gazepointyright
-            float(strings[13]), # camxright
-            float(strings[14]), # camyright
-            float(strings[15]), # distanceright
-            float(strings[16]), # pupilright
-            int(strings[17]), # validityright
+            cast_int(strings[3]), # number
+            cast_float(strings[4]), # gazepointxleft
+            cast_float(strings[5]), # gazepointyleft
+            cast_float(strings[6]), # camxleft
+            cast_float(strings[7]), # camyleft
+            cast_float(strings[8]), # distanceleft
+            cast_float(strings[9]), # pupilleft
+            cast_int(strings[10]), # validityleft
+            cast_float(strings[11]), # gazepointxright
+            cast_float(strings[12]), # gazepointyright
+            cast_float(strings[13]), # camxright
+            cast_float(strings[14]), # camyright
+            cast_float(strings[15]), # distanceright
+            cast_float(strings[16]), # pupilright
+            cast_int(strings[17]), # validityright
             cast_int(strings[18]), # fixationindex
-            float(strings[19]), # gazepointx
-            float(strings[20]), # gazepointy
+            cast_float(strings[19]), # gazepointx
+            cast_float(strings[20]), # gazepointy
             strings[21], # event
             strings[22], # eventkey
             strings[23], # data1
             strings[24], # data2
             strings[25], # descriptor
             strings[26], # stimuliname
-            int(strings[27]), # stimuliid
-            int(strings[28]), # mediawidth
-            int(strings[29]), # mediaheight
-            int(strings[30]), # mediaposx
-            int(strings[31]), # mediaposy
+            cast_int(strings[27]), # stimuliid
+            cast_int(strings[28]), # mediawidth
+            cast_int(strings[29]), # mediaheight
+            cast_int(strings[30]), # mediaposx
+            cast_int(strings[31]), # mediaposy
             cast_int(strings[32]), # mappedfixationpointx
             cast_int(strings[33]), # mappedfixationpointy
             cast_int(strings[34]), # fixationduration
@@ -95,7 +95,7 @@ def parse(tobii_line):
             cast_int(strings[38]), # mappedgazedatapointx
             cast_int(strings[39]), # mappedgazedatapointy
             cast_int(strings[40]), # microsecondtimestamp
-            int(strings[41])] # absolutemicrosecondtimestamp
+            cast_int(strings[41])] # absolutemicrosecondtimestamp
     return data
 
     def set_segid(self,segid):
@@ -208,11 +208,16 @@ def cast_int(str):
     Returns:
         the integer value of the string given or None if not an integer
     """
-    try:
+    if str!="" and str!=None:
         v = int(str)
-    except ValueError:
+    else:
         v = None
     return v
+#    try:
+#        v = int(str)
+#    except ValueError:
+#        v = None
+#    return v
 
 
 def cast_float(str):
@@ -224,8 +229,13 @@ def cast_float(str):
     Returns:
         the float value of the string given or None if not a float
     """
-    try:
+    if str!="" and str!=None:
         v = float(str)
-    except ValueError:
+    else:
         v = None
     return v
+#    try:
+#        v = float(str)
+#    except ValueError:
+#        v = None
+#    return v
