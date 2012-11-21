@@ -50,14 +50,14 @@ aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum'
 aoinames = ['Top','Bottom','Graph','Toolbar']
 #list of the AOI names
 
-aoitransfrom = map(lambda x:'numtransfrom'+x, aoinames) 
+aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames) 
 #['numtransfromBottom','numtransfromGraph','numtransfromToolbar','numtransfromTop']
 #list of transition-based AOI features
 
 #aoitransto = ['numtranstoBottom','numtranstoGraph','numtranstoToolbar','numtranstoTop']
 
 
-aoiproportion = map(lambda x:'proptransfrom'+x, aoinames) 
+aoiproportion = map(lambda x:'proptransfrom_'+x, aoinames) 
 #['proptransfromBottom','proptransfromGraph','proptransfromToolbar','proptransfromTop']
 #list of transition-based AOI features
 
@@ -73,7 +73,6 @@ for aoin in aoinames:
     #aoifeaturelist.extend(map(lambda x:aoin+x, aoitransto))
     aoifeaturelist.extend(map(lambda x:aoin+'_'+x, aoiproportion))
     
-
 
 # Validity Threshold for segments
 VALID_PROP_THRESH = 0.85
