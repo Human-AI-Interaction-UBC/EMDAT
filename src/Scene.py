@@ -318,10 +318,11 @@ class Scene(Segment):
         self.aoi_data={}
         for seg in segments:
             for aid in seg.aoi_data.keys():
-                if aid in self.aoi_data:
-                    self.aoi_data[aid] = merge_aoistats(self.aoi_data[aid],seg.aoi_data[aid], self.features['length'],self.numfixations)
-                else:
-                    self.aoi_data[aid] = deepcopy(seg.aoi_data[aid])
+                if seg.aoi_data[aid].isActive:
+                    if aid in self.aoi_data:
+                        self.aoi_data[aid] = merge_aoistats(self.aoi_data[aid],seg.aoi_data[aid], self.features['length'],self.numfixations)
+                    else:
+                        self.aoi_data[aid] = deepcopy(seg.aoi_data[aid])
         
         firstsegaois = self.firstseg.aoi_data.keys()            
         for aid in self.aoi_data.keys():
