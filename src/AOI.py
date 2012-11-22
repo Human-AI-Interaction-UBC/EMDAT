@@ -13,6 +13,7 @@ map it to a target AOI object by passing it to the AOI_Stat constructor. The res
 will calculate all features related to the given AOI and store them for later reference 
 """
 from utils import *
+from warnings import warn
 
 
 
@@ -69,6 +70,8 @@ class AOI():
             for intr in self.timeseq:
                 if (start>=intr[0] and start<intr[1])or(end>intr[0] and end<=intr[1]):
                     return True
+                elif (start<intr[0] and start<intr[1])and(end>intr[0] and end>intr[1]):
+                    warn("Incorrect definition of Dynamic AOI and Segments, AOI info not calculated for AOI:"+self.aid)
             return False #not active
         else:
             return True #global AOI
@@ -106,6 +109,9 @@ class AOI():
                         ovend  = min(end,intr[1])
                         ovelap_part = [ovstart,ovend]
                     return True, ovelap_part
+                elif (start<intr[0] and start<intr[1])and(end>intr[0] and end>intr[1]):
+                    warn("Incorrect definition of Dynamic AOI and Segments, AOI info not calculated for AOI:"+self.aid)
+
             return False, [] #not active
         else:
             return True, [] #global AOI
@@ -136,7 +142,8 @@ class AOI_Stat():
         self.isActive = True
         
         if partition:
-            print "partition",partition
+            if params.DEBUG:
+                print "partition",partition
             _,st,en = get_chunk(seg_fixation_data, 0, partition[0],partition[1])
             fixation_data = seg_fixation_data[st:en]
             if params.DEBUG:

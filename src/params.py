@@ -47,7 +47,7 @@ aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum'
                   'proportiontime','longestfixation']#'timetofirstfixation','timetolastfixation',
 #list of general AOI features
 
-aoinames = ['Top','Bottom','Graph','Toolbar']
+aoinames = ['Top','Bottom','Graph','Toolbar','Test']
 #list of the AOI names
 
 aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames) 
