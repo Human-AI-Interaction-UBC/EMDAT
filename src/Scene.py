@@ -448,34 +448,38 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations):
                 
             
         #calculating the transitions to and from this AOI and other active AOIs at the moment
-        transition_aois = filter(lambda x: x.startswith(('numtransto_','numtransfrom_')),new_AOI_Stat.features.keys())
+        new_AOI_Stat_transition_aois = filter(lambda x: x.startswith(('numtransto_','numtransfrom_')),new_AOI_Stat.features.keys())
         if params.DEBUG:
-            print 'transition_aois',transition_aois
-        sumtransto = 0
-        sumtransfrom = 0
-        for feat in transition_aois:
+            print "segement's transition_aois",new_AOI_Stat_transition_aois
+            
+        maois.total_tans_to += new_AOI_Stat.total_tans_to       #updating the total number of transition to this AOI
+        maois.total_tans_from += new_AOI_Stat.total_tans_from   #updating the total number of transition from this AOI
+        for feat in new_AOI_Stat_transition_aois:
             if feat in maois.features:
                 maois.features[feat] += new_AOI_Stat.features[feat]
             else:
                 maois.features[feat] = new_AOI_Stat.features[feat]
-            if feat.startswith('numtransto_'):
-                sumtransto += maois.features[feat]
-            else:
-                sumtransfrom += maois.features[feat]
-        
-        for feat in transition_aois:
+#            if feat.startswith('numtransto_'):
+#                sumtransto += maois.features[feat]
+#            else:
+#                sumtransfrom += maois.features[feat]
+    
+    
+# updating the proportion tansition features based on new transitions to and from this AOI        
+        maois_transition_aois = filter(lambda x: x.startswith(('numtransto_','numtransfrom_')),maois.features.keys()) #all the transition features for this AOI should be aupdated even if they are not active for this segment
+        for feat in maois_transition_aois:
             if feat.startswith('numtransto_'):
                 aid = feat.lstrip('numtransto_')
-                if sumtransto > 0:
+                if maois.total_tans_to > 0:
 
-                    maois.features['proptransto_%s'%(aid)] = float(maois.features[feat]) / sumtransto
+                    maois.features['proptransto_%s'%(aid)] = float(maois.features[feat]) / maois.total_tans_to
                 else:
                     maois.features['proptransto_%s'%(aid)] = 0
             else:
                 aid = feat.lstrip('numtransfrom_')
-                if sumtransfrom > 0:
+                if maois.total_tans_from > 0:
                     
-                    maois.features['proptransto_%s'%(aid)] = float(maois.features[feat]) / sumtransfrom
+                    maois.features['proptransfrom_%s'%(aid)] = float(maois.features[feat]) / maois.total_tans_from
                 else:
                     maois.features['proptransfrom_%s'%(aid)] = 0
         ###endof trnsition calculation
