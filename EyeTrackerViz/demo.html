@@ -1,0 +1,37 @@
+<!-- Sparkline visualization that will serve as the basis for real-time visualization of eye-tracker data. -->
+
+<html>
+	<head>
+		<title>Sparkline demo with updating data</title>
+		<script src="d3.v3.min.js"></script>
+		<script src="sparklines.js"></script>
+	</head>
+	<body>
+
+	<p> Sparkline demo: </p>
+
+	<div id="EMDAT_Viz" class="sparkline" style="width:300px; height:60px;"></div>
+	<div id="EMDAT_Viz2" class="sparkline" style="width:300px; height:60px;"></div>
+	<button type="button" onclick="refresh()">Add data point.</button>
+
+	<script>
+		var data = [102, 25, 14, 103, 111, 84, 15, 120, 35, 110, 49, 99, 19, 59, 16, 17, 16];
+		var data2 = [80, 45, 74, 93,  85,  64, 35, 70,  45, 90,  55, 72, 38, 18, 28, 38, 62];
+		var spark = new Sparkline("EMDAT_Viz", data.slice(0,5), 10, 120, 10);
+		var spark2 = new Sparkline("EMDAT_Viz2", data.slice(0,5), 10, 120, 10);
+		var i = 5;
+		
+		function refresh()
+		{
+			if (i < data.length){
+				spark.addData([data[i]]);
+				spark2.addData([data2[i]]);
+				i++;
+			} else {
+				console.log("Out of data!");
+			}
+		}
+	</script>
+
+	</body>
+</html>
