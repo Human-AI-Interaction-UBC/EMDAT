@@ -255,8 +255,9 @@ class Scene(Segment):
         
         self.numfixations = sumfeat(segments, 'numfixations')
         self.features['numfixations'] = self.numfixations
-        if self.numfixations != totalfixations:
-            raise Exception('error in fixation count for scene:'+self.scid)
+        if prune_length == None:
+            if self.numfixations != totalfixations:
+                raise Exception('error in fixation count for scene:'+self.scid)
             #warn ('error in fixation count for scene:'+self.scid)
         self.features['fixationrate'] = float(self.numfixations) / self.length
         if self.numfixations > 0:
