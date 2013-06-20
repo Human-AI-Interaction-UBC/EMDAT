@@ -1,0 +1,74 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module utils</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>utils</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///C|/temp/skardan/workspace/python/emdat/src/utils.py">c:\temp\skardan\workspace\python\emdat\src\utils.py</a></font></td></tr></table>
+    <p><tt>UBC&nbsp;Eye&nbsp;Movement&nbsp;Data&nbsp;Analysys&nbsp;Toolkit<br>
+Created&nbsp;on&nbsp;2011-08-25<br>
+&nbsp;<br>
+@author:&nbsp;skardan<br>
+&nbsp;<br>
+Commonly&nbsp;used&nbsp;helper&nbsp;methods</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="params.html">params</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-get_chunk"><strong>get_chunk</strong></a>(data, ind, start, end)</dt><dd><tt>Returns&nbsp;index&nbsp;of&nbsp;first&nbsp;and&nbsp;last&nbsp;records&nbsp;in&nbsp;data&nbsp;that&nbsp;fall&nbsp;within&nbsp;a&nbsp;time&nbsp;interval&nbsp;(start-end)&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;a&nbsp;list&nbsp;of&nbsp;subsequent&nbsp;Fixations&nbsp;or&nbsp;Datapoints<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ind:&nbsp;an&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;starting&nbsp;index&nbsp;in&nbsp;data&nbsp;for&nbsp;search,&nbsp;if&nbsp;not&nbsp;known&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;should&nbsp;be&nbsp;set&nbsp;to&nbsp;zero.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;start:&nbsp;an&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;start&nbsp;of&nbsp;interval&nbsp;in&nbsp;milliseconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;end:&nbsp;an&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;end&nbsp;of&nbsp;interval&nbsp;in&nbsp;milliseconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;curr_ind:&nbsp;an&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;next&nbsp;record&nbsp;for&nbsp;search.&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;is&nbsp;useful&nbsp;if&nbsp;you&nbsp;are&nbsp;performing&nbsp;a&nbsp;series&nbsp;searches&nbsp;in&nbsp;a&nbsp;sequential&nbsp;manner.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;method&nbsp;can&nbsp;start&nbsp;the&nbsp;next&nbsp;search&nbsp;from&nbsp;this&nbsp;index&nbsp;instead&nbsp;of&nbsp;beginning&nbsp;of&nbsp;the&nbsp;list.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;start_ind:&nbsp;an&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;first&nbsp;record&nbsp;in&nbsp;the&nbsp;list&nbsp;that&nbsp;falls&nbsp;within<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;given&nbsp;time&nbsp;interval<br>
+&nbsp;&nbsp;&nbsp;&nbsp;end_ind:&nbsp;an&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;index&nbsp;of&nbsp;last&nbsp;record&nbsp;in&nbsp;the&nbsp;list&nbsp;that&nbsp;falls&nbsp;within<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;given&nbsp;time&nbsp;interval</tt></dd></dl>
+ <dl><dt><a name="-mean"><strong>mean</strong></a>(data)</dt><dd><tt>Returns&nbsp;the&nbsp;average&nbsp;of&nbsp;a&nbsp;list&nbsp;of&nbsp;numbers<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;a&nbsp;list&nbsp;of&nbsp;numbers<br>
+&nbsp;<br>
+returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;float&nbsp;that&nbsp;is&nbsp;the&nbsp;average&nbsp;of&nbsp;the&nbsp;list&nbsp;of&nbsp;numbers</tt></dd></dl>
+ <dl><dt><a name="-point_inside_polygon"><strong>point_inside_polygon</strong></a>(x, y, poly)</dt><dd><tt>Determines&nbsp;if&nbsp;a&nbsp;point&nbsp;is&nbsp;inside&nbsp;a&nbsp;given&nbsp;polygon&nbsp;or&nbsp;not<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;algorithm&nbsp;is&nbsp;called&nbsp;"Ray&nbsp;Casting&nbsp;Method".<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;poly:&nbsp;is&nbsp;a&nbsp;list&nbsp;of&nbsp;(x,y)&nbsp;pairs&nbsp;defining&nbsp;the&nbsp;polgon&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;True&nbsp;or&nbsp;False.</tt></dd></dl>
+ <dl><dt><a name="-stddev"><strong>stddev</strong></a>(data)</dt><dd><tt>Returns&nbsp;the&nbsp;standard&nbsp;deviation&nbsp;of&nbsp;a&nbsp;list&nbsp;of&nbsp;numbers<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;a&nbsp;list&nbsp;of&nbsp;numbers<br>
+&nbsp;<br>
+returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;float&nbsp;that&nbsp;is&nbsp;the&nbsp;std&nbsp;deviation&nbsp;of&nbsp;the&nbsp;list&nbsp;of&nbsp;numbers&nbsp;or&nbsp;NAN&nbsp;if&nbsp;it&nbsp;is&nbsp;undefined</tt></dd></dl>
+</td></tr></table>
+</body></html>
