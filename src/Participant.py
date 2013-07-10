@@ -136,11 +136,11 @@ class Participant():
         first = True
         for sc in self.scenes:
             if not sc.is_valid and require_valid:
-                print "User %s:Scene %s dropped because of 'require_valid'" %(self.id,sc.scid)
+                print "User %s:Scene %s dropped because of 'require_valid'" %(self.pid,sc.scid)
                 continue
             sc_feats = []
             if id_prefix:
-                sc_feats.append(self.id)
+                sc_feats.append(self.pid)
             sc_feats.append(sc.scid)
             fnames, fvals = sc.get_features(featurelist = featurelist,
                                            aoifeaturelist = aoifeaturelist, 
@@ -206,7 +206,7 @@ class Participant():
                     out+= st.rjust(leng)
                 return out,leng
  
-        print  "PID:",self.id
+        print  "PID:",self.pid
         
         for seg in self.segments:
             featnames = []
@@ -278,7 +278,7 @@ def export_features_all(participants, featurelist = None, aoifeaturelist = None,
     if participants:
         for p in participants:
             if not(p.is_valid()):
-                print "user",p.id,"was not valid"
+                print "user",p.pid,"was not valid"
                 continue
             fnames, fvals = p.export_features(featurelist=featurelist, aoifeaturelist=aoifeaturelist, 
                                               aoifeaturelabels = aoifeaturelabels,
