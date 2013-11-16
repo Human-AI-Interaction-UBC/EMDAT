@@ -40,4 +40,4 @@ output_Validity_info_Participants(ps, include_restored_samples =True, auto_parti
 print
 aoi_feat_names = (map(lambda x:"Test"+'_'+x, params.aoigeneralfeat))
 print "exporting:", params.featurelist, "\n", aoi_feat_names
-write_features_tsv(ps, './outputfolder/smaple_features.tsv',featurelist = params.featurelist, aoifeaturelabels=aoi_feat_names, id_prefix = False)
+write_features_tsv(ps, './outputfolder/sample_features.tsv',featurelist = params.featurelist, aoifeaturelabels=aoi_feat_names, id_prefix = False)
