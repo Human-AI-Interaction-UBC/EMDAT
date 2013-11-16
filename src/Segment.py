@@ -103,6 +103,27 @@ class Segment():
 #            f.set_segid(segid)
         self.features['numfixations'] = self.numfixations
         self.features['fixationrate'] = float(self.numfixations) / self.length
+        
+        """ calculate pupil dilation features (no rest pupil size adjustments yet)""" 
+        
+        pupil_data = filter(lambda x: x.pupilsize != -1, all_data)
+        if len(pupil_data) > 0:
+            pupilsizes = map(lambda x: x.pupilsize, pupil_data)
+            self.features["meanpupilsize"] = mean(pupilsizes)
+            self.features["stddevpupilsize"] = stddev(pupilsizes)
+            self.features["maxpupilsize"] = max(pupilsizes)
+            self.features["minpupilsize"] = min(pupilsizes)
+            self.features["startpupilsize"] = pupilsizes[0]
+            self.features["endpupilsize"] = pupilsizes[-1]
+        else:
+            self.features["meanpupilsize"] = 0
+            self.features["stddevpupilsize"] = 0
+            self.features["maxpupilsize"] = 0
+            self.features["minpupilsize"] = 0
+            self.features["startpupilsize"] = 0
+            self.features["endpupilsize"] = 0
+        """ end pupil """
+        
         if self.numfixations > 0:
             self.fixation_start = fixation_data[0].timestamp
             self.fixation_end = fixation_data[-1].timestamp
