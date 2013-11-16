@@ -105,7 +105,11 @@ class Segment():
         self.features['fixationrate'] = float(self.numfixations) / self.length
         
         """ calculate pupil dilation features (no rest pupil size adjustments yet)""" 
-        
+        # check if pupil sizes are available for all missing points
+        pupil_invalid_data = filter(lambda x: x.pupilsize == -1 and x.gazepointxleft > 0, all_data)
+        if len(pupil_invalid_data) > 0:
+            raise Exception("Pupil size is unavailable for a valid data sample. Number of missing points: " + str(len(pupil_invalid_data)))
+        #get all datapoints where pupil size is available
         pupil_data = filter(lambda x: x.pupilsize != -1, all_data)
         if len(pupil_data) > 0:
             pupilsizes = map(lambda x: x.pupilsize, pupil_data)
