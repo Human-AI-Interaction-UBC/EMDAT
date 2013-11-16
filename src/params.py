@@ -6,11 +6,13 @@ Module that contains all global parameters. Values of parameters are specific to
 Author: skardan
 
 """
-
-EYELOGDATAFOLDER = "./sampledata"
+DIR = "C:/Users/bondaria/Documents/UAI/GENOVA/PupilDilation/src/"
+#EYELOGDATAFOLDER = "./sampledata"
+EYELOGDATAFOLDER = DIR + "sampledata"
 # the folder that has the files exported from Tobii
 
-EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
+#EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
+EXTERNALLOGDATAFOLDER = DIR + "sampledata/external logs"
 # the folder that has the external log files
 
 NUMBEROFEXTRAHEADERLINES = 8 
@@ -41,6 +43,9 @@ MEDIA_OFFSET = (0, 0)
 featurelist = ['numsegments','length','numfixations','fixationrate','meanabspathangles',
                'meanfixationduration','meanpathdistance','meanrelpathangles','stddevabspathangles',
                'stddevfixationduration','stddevpathdistance','stddevrelpathangles']#'numsamples','sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
+                #'meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'
+#add pupil dilation 
+featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'])
 # list of non-AOI feature names 
 
 aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum',
@@ -118,3 +123,6 @@ NONTEMP_FEATURES_SEG = ['meanfixationduration', 'stddevfixationduration',
 
 NONTEMP_FEATURES_AOI = ['longestfixation', 'proportionnum', 'proportiontime',
 'proptransto', 'proptransfrom']
+
+""" list of features related based on pupil dilation """
+NONTEMP_FEATUES_PUPIL = ['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize']

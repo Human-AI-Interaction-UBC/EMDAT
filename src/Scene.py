@@ -295,6 +295,28 @@ class Scene(Segment):
             self.features['sumrelpathangles'] = 0
             self.features['meanrelpathangles']= 0
             self.features['stddevrelpathangles'] = 0
+        
+        """ calculate pupil dilation features (no rest pupil size adjustments yet)""" 
+        
+        self.numpupilsizes = sumfeat(segments,'numpupilsizes')
+        self.adjvalidpupilsizes = mergevalues(segments, 'adjvalidpupilsizes')
+        if self.numpupilsizes > 0:
+            self.features['meanpupilsize'] = weightedmeanfeat(segments, 'numpupilsizes', "features['meanpupilsize']")
+            self.features['stddevpupilsize'] = stddev(self.adjvalidpupilsizes)
+            self.features['maxpupilsize'] = maxfeat(segments, "features['maxpupilsize']")
+            self.features['minpupilsize'] = minfeat(segments, "features['minpupilsize']")
+            self.features['startpupilsize'] = segments[0].features['startpupilsize']
+            self.features['endpupilsize'] = segments[-1].features['endpupilsize']
+        else:
+            self.features['meanpupilsize'] = 0
+            self.features['stddevpupilsize'] = 0
+            self.features['maxpupilsize'] = 0
+            self.features['minpupilsize'] = 0
+            self.features['startpupilsize'] = 0
+            self.features['endpupilsize'] = 0
+
+        """end """
+        
         self.has_aois = False
         if aoilist:
             self.set_aois(segments, aoilist)
@@ -564,4 +586,22 @@ def maxfeat(obj_list, feat):
         val = eval('obj.'+feat)
         if max < val:
             max = val
-    return max          
+    return max   
+  
+def mergevalues(obj_list, field):
+    """a helper method that merges lists of values stored in field 
+    
+    Args:
+    
+        obj_list: a list of objects
+        
+        field: name of a field that contains a list of values (string)
+    
+    Returns:
+        a list formed by merging corresponding lists from collection of subjects
+    """
+    mergedlist = []
+    for obj in obj_list:
+        mergedlist.extend(eval('obj.'+ field))
+    return mergedlist
+    
