@@ -35,6 +35,7 @@ class Datapoint():
         if data == None:
             data = parse(tobii_line)
         if data:
+            #assign read values to fields of Datapoint 
             [self.timestamp, self.datetimestamp, self.datetimestampstartoffset, self.number, self.gazepointxleft, self.gazepointyleft, self.camxleft, self.camyleft, 
              self.distanceleft, self.pupilleft, self.validityleft, self.gazepointxright, self.gazepointyright, self.camxright, self.camyright, self.distanceright, 
              self.pupilright, self.validityright, self.fixationindex, self.gazepointx, self.gazepointy, self.event, self.eventkey, self.data1, self.data2, self.descriptor, 
@@ -45,12 +46,33 @@ class Datapoint():
                 self.is_None = False
                 self.segid = None
                 self.is_valid = (self.validityright < 2 or self.validityleft < 2)
+                self.pupilsize = self.calculate_pupil_size()
             else:
                 self.is_None = True
         else:
             self.is_None = True
-
-
+    
+    def calculate_pupil_size(self):
+        """
+        Calculates pupil size for a datapoint based on values for left and right pupils
+        
+        Args:
+        
+        Yields:
+            averaged pupil size 
+        """
+        # if pupil sizes for both eyes are available: calculate average
+        if (self.pupilleft != -1) and (self.pupilright != -1):
+            pupilsize = (self.pupilleft + self.pupilright) / 2.0
+        #if both pupil sizes are unavailable return -1
+        elif (self.pupilleft == -1) and (self.pupilright == -1):
+            #print "Attention: pupil size is not valid!"
+            pupilsize = -1
+        else:
+            #if only one pupil size is available - use it as final pupil size
+            pupilsize = max(self.pupilleft, self.pupilright)
+        return pupilsize
+    
 def parse(tobii_line):
     """
     Parses a line of gaze data from "all-Data.tsv" file into array form
