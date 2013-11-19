@@ -28,7 +28,7 @@ class BasicParticipant(Participant):
             
             eventfile: a string containing the name of the "Event-Data.tsv" file for this participant
             
-            datafile: a string containing the name of the "all-Data.tsv" file for this participant
+            datafile: a string containing the name of the "All-Data.tsv" file for this participant
             
             fixfile: a string containing the name of the "Fixation-Data.tsv" file for this participant
             
@@ -37,11 +37,11 @@ class BasicParticipant(Participant):
             log_time_offset: If not None, an integer indicating the time offset between the 
                 external log file and eye tracking logs
             
-            aoifile: If not None, a string conatining the name of the '.aoi' file 
+            aoifile: If not None, a string containing the name of the '.aoi' file 
                 with definitions of the "AOI"s.
             
             prune_length: If not None, an integer that specifies the time 
-                interval (in ms) from the begining of each Segment in which
+                interval (in ms) from the beginning of each Segment in which
                 samples are considered in calculations.  This can be used if, 
                 for example, you only wish to consider data in the first 
                 1000 ms of each Segment. In this case (prune_length = 1000),
@@ -71,6 +71,7 @@ class BasicParticipant(Participant):
             aois = Recording.read_aois_Tobii(aoifile)
         else:
             aois = None
+        
         self.features['numofsegments']= self.numofsegments
         
         self.segments, self.scenes = rec.process_rec(scenelist = scenelist,aoilist = aois,prune_length = prune_length, require_valid_segs = require_valid_segs, 
@@ -81,13 +82,54 @@ class BasicParticipant(Participant):
         
 
                
-def read_participants_Basic(datadir, user_list ,pids, prune_length = None, aoifile = None, log_time_offsets=None, 
-                          require_valid_segs = True, auto_partition_low_quality_segments = False):
+def read_participants_Basic(datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets=None, 
+                          require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None):
+    """Generates list of Participant objects. Relevant information is read from input files
     
+    Args:
+        datadir: directory with user data (including "All-Data.tsv", "Fixation-Data.tsv", "Event-Data.tsv" files) 
+        for all participants
+        
+        user_list: list of user recordings (files extracted for one participant from Tobii studio)
+        
+        pids: User ID that is used in the external logs (can be different from above but there should be a 1-1 mapping)
+        
+        prune_length: If not None, an integer that specifies the time 
+            interval (in ms) from the beginning of each Segment in which
+            samples are considered in calculations.  This can be used if, 
+            for example, you only wish to consider data in the first 
+            1000 ms of each Segment. In this case (prune_length = 1000),
+            all data beyond the first 1000ms of the start of the "Segment"s
+            will be disregarded.
+        
+        aoifile: If not None, a string containing the name of the '.aoi' file 
+            with definitions of the "AOI"s.
+        
+        log_time_offset: If not None, an integer indicating the time offset between the 
+            external log file and eye tracking logs
+    
+        require_valid_segs: a boolean determining whether invalid "Segment"s
+            will be ignored when calculating the features or not. default = True 
+        
+        auto_partition_low_quality_segments: a boolean indicating whether EMDAT should 
+            split the "Segment"s which have low sample quality, into two new 
+            sub "Segment"s discarding the largest gap of invalid samples.
+        
+        rpsfile: If not None, a string containing the name of the '.tsv' file 
+            with rest pupil sizes for all scenes and for each user. 
+        
+    Returns:
+        a list Participant objects
+    """
     participants = []
     if log_time_offsets == None:    #setting the default offset which is 1 sec
         log_time_offsets = [1]*len(pids) 
-        
+    
+    if rpsfile != None:
+        rpsvalues = read_rest_pupil_sizes(rpsfile)
+    else:
+        rpsvalues = None
+    
     for rec,pid,offset in zip(user_list,pids,log_time_offsets):
         print "pid:", pid
         if rec<10:
@@ -144,3 +186,37 @@ def read_events(evfile):
         lines = f.readlines()
 
     return map(Event, lines[(params.EVENTSHEADERLINES+params.NUMBEROFEXTRAHEADERLINES):])
+
+def read_rest_pupil_sizes(rpsfile):
+    """
+    Returns a dictionary of rest pupil sizes for all scenes.
+    The input file has the following format:
+        pid\t<scene name 1>\t<scene name 2>....\n
+        <pid 1>\t<rest pupil size 1>\t<rest pupil size 2>
+
+    Args:
+        rpsfile: a string containing the name of the '.tsv' file 
+            with rest pupil sizes for all partiicpants and all scenes. 
+    
+    Returns:
+        a dictionary of rest pupil sizes
+    
+    """
+    with open(rpsfile, 'r') as f:
+        lines = f.readlines()
+    rpsdic = {}
+    import re
+    scenelist = re.findall('\w+', lines[0])
+    for line in lines[1:]:
+        linelist = re.findall('\w+', line)
+        pid = linelist[0]
+        rpsdic[pid] = {}
+        for scene, rpsvalue in zip(scenelist[1:], linelist[1:]):
+            rpsdic[pid][scene] = rpsvalue
+    
+    return rpsdic
+            
+        
+    #raise Exception("Calling read_rest_pupil_sizes: this function is not implemented yet")
+
+    return None
