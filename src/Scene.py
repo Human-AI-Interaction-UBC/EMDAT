@@ -55,7 +55,7 @@ class Scene(Segment):
 
                 
     def __init__(self, scid, seglist, all_data, fixation_data, Segments = None, aoilist = None,
-                  prune_length= None, require_valid = True, auto_partition = False):
+                  prune_length= None, require_valid = True, auto_partition = False, rest_pupil_size = 0):
         """
         Args:
             scid: A string containing the id of the Scene.
@@ -87,12 +87,15 @@ class Scene(Segment):
                 EMDAT should automatically split the "Segment"s which have low sample quality
                 into two new ssub "Segment"s discarding the largest invalid sample gap in 
                 the "Segment". default = False
+            
+            rest_pupil_size: rest pupil size for the current scene
+            
         Yields:
             a Scene object
         """ 
         
         ########################################
-        def partition_segement(new_seg, seg_start,seg_end):
+        def partition_segement(new_seg, seg_start, seg_end, rest_pupil_size):
             """ A helper method for splitting a Segment object into new Segments and removing gaps of invalid samples
             
             One way to deal with a low quality Segment is to find the gaps of invalid samples within its "Datapoint"s and 
@@ -111,6 +114,8 @@ class Scene(Segment):
                 
                 seg_end: An integer showing the end time of the segment in milliseconds 
             
+                rest_pupil_size: rest pupil size for the current scene
+                
             Returns:
                 subsegments: a list of newly generated "Segment"s
                 
@@ -136,7 +141,7 @@ class Scene(Segment):
                 if fix_end - fix_start>0:
                     try:
                         new_sub_seg = Segment(segid+"_"+str(sub_segid), all_data[all_start:all_end],
-                                      fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length)
+                                      fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size)
                     except  Exception as e:
                         warn(str(e))
                         if params.DEBUG:
@@ -156,7 +161,7 @@ class Scene(Segment):
             if fix_end - fix_start>0: #add the last sub_seg
                 try:
                     new_sub_seg = Segment(segid, all_data[all_start:all_end],
-                                      fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length)
+                                      fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size)
                 except  Exception as e:
                     warn(str(e))
                     if params.DEBUG:
@@ -185,7 +190,7 @@ class Scene(Segment):
                 if fix_end - fix_start>0:
                     try:
                         new_seg = Segment(segid, all_data[all_start:all_end],
-                                          fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length)
+                                          fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size)
                     except  Exception as e:
                         warn(str(e))
                         if params.DEBUG:
@@ -196,7 +201,7 @@ class Scene(Segment):
                     continue
                 
                 if (new_seg.largest_data_gap > params.MAX_SEG_TIMEGAP) and auto_partition: #low quality segment that needs to be partitioned!
-                    new_segs, samp_inds, fix_inds = partition_segement(new_seg, start, end) 
+                    new_segs, samp_inds, fix_inds = partition_segement(new_seg, start, end, rest_pupil_size) 
                     for nseg,samp,fix in zip(new_segs, samp_inds, fix_inds):
                             if nseg.length > params.MINSEGSIZE:
                                 nseg.set_indices(samp[0],samp[1],fix[0],fix[1])

@@ -49,7 +49,7 @@ class Segment():
         has_aois: A boolean indicating if this Segment has AOI features calculated for it
         
     """
-    def __init__(self, segid, all_data, fixation_data, aois = None, prune_length = None):
+    def __init__(self, segid, all_data, fixation_data, aois = None, prune_length = None, rest_pupil_size = 0):
         """
         Args:
             segid: A string containing the id of the Segment.
@@ -105,7 +105,7 @@ class Segment():
         self.features['fixationrate'] = float(self.numfixations) / self.length
         
         """ calculate pupil dilation features (no rest pupil size adjustments yet)""" 
-        self.rest_pupil_size = 2 #!!! must be changed when reading from file is available 
+        self.rest_pupil_size = rest_pupil_size  
         # check if pupil sizes are available for all missing points
         pupil_invalid_data = filter(lambda x: x.pupilsize == -1 and x.gazepointxleft > 0, all_data)
         if len(pupil_invalid_data) > 0:

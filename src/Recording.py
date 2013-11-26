@@ -45,7 +45,7 @@ class Recording():
 
     def process_rec(self, segfile = None, scenelist = None,  aoifile = None, 
                     aoilist = None , prune_length = None, require_valid_segs = True, 
-                    auto_partition_low_quality_segments = False):
+                    auto_partition_low_quality_segments = False, rpsdata = None):
         """Processes the data for one recording (i.e, one complete experiment session)
         
                 
@@ -80,6 +80,8 @@ class Recording():
                 EMDAT should automatically split the "Segment"s which have low sample quality
                 into two new sub "Segment"s discarding the largest invalid sample gap in 
                 the "Segment". default = False
+                
+            rpsdata: a dictionary with rest pupil sizes: (scene name is a key, rest pupil size is a value)
         Returns:
             a list of Scene objects for this Recording
             a list of Segment objects for this recording. This is an aggregated list
@@ -108,10 +110,19 @@ class Recording():
             if params.DEBUG:
                 print "len(all_data)",len(self.all_data)
             try:
+                #get rest pupil size data
+                if rpsdata != None:
+                    if scid in rpsdata.keys():
+                        scrpsdata = rpsdata[scid]
+                    else: 
+                        scrpsdata = 0
+                        raise Exception("Scene ID is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
+                else:
+                    scrpsdata = 0
                 newSc = Scene(scid, sc, self.all_data,self.fix_data, aoilist=aoilist, 
                               prune_length=prune_length, 
                               require_valid = require_valid_segs,
-                              auto_partition = auto_partition_low_quality_segments)               
+                              auto_partition = auto_partition_low_quality_segments, rest_pupil_size = scrpsdata)               
             except Exception as e:
                 warn(str(e))
                 newSc = None 

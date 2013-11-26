@@ -19,7 +19,7 @@ class Participant():
     """
 
     def __init__(self, pid, eventfile, datafile, fixfile, segfile, log_time_offset = None, aoifile = None, prune_length= None, 
-                 require_valid_segs = True, auto_partition_low_quality_segments = False):
+                 require_valid_segs = True, auto_partition_low_quality_segments = False, rpsdata = None):
         """Inits BasicParticipant class
         Args:
             pid: Participant id
@@ -52,6 +52,8 @@ class Participant():
             auto_partition_low_quality_segments: a boolean indicating whether EMDAT should 
                 split the "Segment"s which have low sample quality, into two new 
                 sub "Segment"s discarding the largest gap of invalid samples.
+            
+            rpsdata: rest pupil sizes for all scenes if available
             
         Yields:
             a Participant object

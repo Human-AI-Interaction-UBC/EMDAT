@@ -21,7 +21,7 @@ class BasicParticipant(Participant):
     placeholder methods in the Participant class for a basic project
     """
     def __init__(self, pid, eventfile, datafile, fixfile, segfile, log_time_offset = None, aoifile = None, prune_length= None, 
-                 require_valid_segs = True, auto_partition_low_quality_segments = False):
+                 require_valid_segs = True, auto_partition_low_quality_segments = False, rpsdata = None):
         """Inits BasicParticipant class
         Args:
             pid: Participant id
@@ -52,13 +52,15 @@ class BasicParticipant(Participant):
                 split the "Segment"s which have low sample quality, into two new 
                 sub "Segment"s discarding the largest gap of invalid samples.
             
+            rpsdata: rest pupil sizes for all scenes if available
+            
         Yields:
             a BasicParticipant object
         """
         
 
         Participant.__init__(self, pid, eventfile, datafile, fixfile, segfile, log_time_offset, aoifile, prune_length, 
-                 require_valid_segs, auto_partition_low_quality_segments)   #calling the Participan's constructor
+                 require_valid_segs, auto_partition_low_quality_segments, rpsdata)   #calling the Participan's constructor
         
         print "reading the files"
         self.features={}
@@ -75,8 +77,8 @@ class BasicParticipant(Participant):
         self.features['numofsegments']= self.numofsegments
         
         self.segments, self.scenes = rec.process_rec(scenelist = scenelist,aoilist = aois,prune_length = prune_length, require_valid_segs = require_valid_segs, 
-                                                     auto_partition_low_quality_segments = auto_partition_low_quality_segments)
-        
+                                                     auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = rpsdata)
+        Segments = self.segments
         self.whole_scene = Scene('P'+str(pid),[],rec.all_data,rec.fix_data, Segments = self.segments, aoilist = aois,prune_length = prune_length, require_valid = require_valid_segs )
         self.scenes.insert(0,self.whole_scene)
         
@@ -125,13 +127,18 @@ def read_participants_Basic(datadir, user_list, pids, prune_length = None, aoifi
     if log_time_offsets == None:    #setting the default offset which is 1 sec
         log_time_offsets = [1]*len(pids) 
     
-    if rpsfile != None:
-        rpsvalues = read_rest_pupil_sizes(rpsfile)
-    else:
-        rpsvalues = None
+    # read rest pupil sizes (rpsvalues) from rpsfile
+    rpsdata = read_rest_pupil_sizes(rpsfile)
     
     for rec,pid,offset in zip(user_list,pids,log_time_offsets):
         print "pid:", pid
+        
+        #extract pupil sizes for the current user. Set to None if not available
+        if rpsdata != None:
+            currpsdata = rpsdata[pid]
+        else:
+            currpsdata = None
+        
         if rec<10:
             allfile = datadir+'/P0'+str(rec)+'-All-Data.tsv'
             fixfile = datadir+'/P0'+str(rec)+'-Fixation-Data.tsv'
@@ -147,7 +154,7 @@ def read_participants_Basic(datadir, user_list, pids, prune_length = None, aoifi
         if os.path.exists(allfile):
             p = BasicParticipant(rec, evefile, allfile, fixfile, segfile, log_time_offset = offset, 
                                 aoifile=aoifile, prune_length = prune_length, require_valid_segs = require_valid_segs,
-                                auto_partition_low_quality_segments = auto_partition_low_quality_segments)
+                                auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = currpsdata)
             participants.append(p)
         else:
             print "Error reading participant files for: "+pid
@@ -189,7 +196,7 @@ def read_events(evfile):
 
 def read_rest_pupil_sizes(rpsfile):
     """
-    Returns a dictionary of rest pupil sizes for all scenes.
+    Returns a dictionary of rest pupil sizes for all scenes if rpsfile is provided. None otherwise
     The input file has the following format:
         pid\t<scene name 1>\t<scene name 2>....\n
         <pid 1>\t<rest pupil size 1>\t<rest pupil size 2>
@@ -199,24 +206,26 @@ def read_rest_pupil_sizes(rpsfile):
             with rest pupil sizes for all partiicpants and all scenes. 
     
     Returns:
-        a dictionary of rest pupil sizes
+        a dictionary of rest pupil sizes. None otherwise
     
     """
-    with open(rpsfile, 'r') as f:
-        lines = f.readlines()
-    rpsdic = {}
-    import re
-    scenelist = re.findall('\w+', lines[0])
-    for line in lines[1:]:
-        linelist = re.findall('\w+', line)
-        pid = linelist[0]
-        rpsdic[pid] = {}
-        for scene, rpsvalue in zip(scenelist[1:], linelist[1:]):
-            rpsdic[pid][scene] = rpsvalue
-    
-    return rpsdic
-            
+    if rpsfile != None:
+        with open(rpsfile, 'r') as f:
+            lines = f.readlines()
+        rpsdic = {}
+        import re
+        scenelist = re.findall('\w+', lines[0])
+        for line in lines[1:]:
+            linelist = re.findall('\w+', line)
+            pid = cast_int(linelist[0])
+            if pid == None: #if casting didn't work
+                pid = linelist[0]
+            rpsdic[pid] = {}
+            for scene, rpsvalue in zip(scenelist[1:], linelist[1:]):
+                rpsdic[pid][scene] = cast_int(rpsvalue)
         
-    #raise Exception("Calling read_rest_pupil_sizes: this function is not implemented yet")
+        return rpsdic
+    else:
+        return None
 
-    return None
+    
