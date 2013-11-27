@@ -114,10 +114,14 @@ class Segment():
         #pupilsizes = map(lambda x: x.pupilsize, all_data)
         #get all datapoints where pupil size is available
         valid_pupil_data = filter(lambda x: x.pupilsize != -1, all_data) 
+        
         #number of valid pupil sizes
         self.numpupilsizes = len(valid_pupil_data) 
-        if self.numpupilsizes > 0:
+        if self.numpupilsizes > 0: #check if the current segment has pupil data available
             self.adjvalidpupilsizes = map(lambda x: x.pupilsize - self.rest_pupil_size, valid_pupil_data)
+            
+            self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, x.pupilsize - self.rest_pupil_size], valid_pupil_data) 
+            
             self.features['meanpupilsize'] = mean(self.adjvalidpupilsizes)
             self.features['stddevpupilsize'] = stddev(self.adjvalidpupilsizes)
             self.features['maxpupilsize'] = max(self.adjvalidpupilsizes)
@@ -125,6 +129,8 @@ class Segment():
             self.features['startpupilsize'] = self.adjvalidpupilsizes[0]
             self.features['endpupilsize'] = self.adjvalidpupilsizes[-1]
         else:
+            self.adjvalidpupilsizes = []
+            self.adjvalpupilsizes_time = []
             self.features['meanpupilsize'] = 0
             self.features['stddevpupilsize'] = 0
             self.features['maxpupilsize'] = 0

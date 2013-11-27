@@ -114,8 +114,6 @@ DEBUG = False
 #DEBUG = True
 #Enable/disable verbose mode which prints out more information for debugging purposes
 
-
-
 #Predefined lists of features that are not calculated using time
 NONTEMP_FEATURES_SEG = ['meanfixationduration', 'stddevfixationduration',
 'fixationrate', 'meanpathdistance', 'stddevpathdistance', 'meanabspathangles', 'stddevabspathangles',

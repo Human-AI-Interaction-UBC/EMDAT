@@ -229,3 +229,65 @@ def read_rest_pupil_sizes(rpsfile):
         return None
 
     
+    
+def plot_pupil_dilation_all(participants, outdir, scene):
+    """
+    Plots adjusted pupil dilations to 
+    
+    Args:
+        participants: collection of Participant objects
+        
+        outdir: directory where files should be exported
+        
+        scene: name of scene to be exported  
+    
+    Returns:
+    
+    """
+    lines = []
+    for participant in participants:
+        lines = export_pupil_dilation_from_scene(participant, scene, separator = "\t")
+        with open(outdir + "pupildata" + "_" + str(participant.pid) + "_" + str(scene) + ".tsv", "w") as fout:
+            if lines is not None:
+                for line in lines:
+                    fout.write(line)
+            else:
+                fout.write("There is no scene " + str(scene) + " in the participant " + str(participant.pid) + " record ")
+    
+
+def export_pupil_dilation_from_scene(participant, scene, separator = "\t"):
+    """
+    Exports pupil dilation information from  pupilinfo_for_export for a scene of a participant
+    
+    Args:
+        participant: a Participant object 
+        
+        scene: name of scene to be exported
+    
+    Returns:
+        a collection of lines to be written in the file
+    """
+    lines = []
+    for sc in participant.scenes:
+        if sc.scid == scene:
+            lines.append("timestamp\tpupil size\tadjusted pupil size\n")
+            for el in sc.pupilinfo_for_export:
+                lines.append(list_to_string(el, "\t"))
+            return lines
+
+    return None
+
+def list_to_string(list, separator = "\t"):
+    """
+    Converts a list of values to a string using SEPARATOR for joints
+    
+    Args:
+        list: a list of values to be converted to a string 
+        
+        separator:  a separator to be used for joints
+    
+    Returns:
+        a string 
+        
+    """
+    return separator.join(map(str, list))+ "\n"

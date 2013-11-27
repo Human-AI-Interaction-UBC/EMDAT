@@ -305,7 +305,8 @@ class Scene(Segment):
         
         self.numpupilsizes = sumfeat(segments,'numpupilsizes')
         self.adjvalidpupilsizes = mergevalues(segments, 'adjvalidpupilsizes')
-        if self.numpupilsizes > 0:
+        if self.numpupilsizes > 0: # check if scene has any pupil data
+            self.pupilinfo_for_export = mergevalues(segments, 'pupilinfo_for_export') 
             self.features['meanpupilsize'] = weightedmeanfeat(segments, 'numpupilsizes', "features['meanpupilsize']")
             self.features['stddevpupilsize'] = stddev(self.adjvalidpupilsizes)
             self.features['maxpupilsize'] = maxfeat(segments, "features['maxpupilsize']")
@@ -313,6 +314,7 @@ class Scene(Segment):
             self.features['startpupilsize'] = segments[0].features['startpupilsize']
             self.features['endpupilsize'] = segments[-1].features['endpupilsize']
         else:
+            self.pupilinfo_for_export = [] 
             self.features['meanpupilsize'] = 0
             self.features['stddevpupilsize'] = 0
             self.features['maxpupilsize'] = 0

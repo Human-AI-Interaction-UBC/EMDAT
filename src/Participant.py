@@ -354,3 +354,4 @@ def read_events(evfile):
         lines = f.readlines()
 
     return map(Event, lines[(params.EVENTSHEADERLINES+params.NUMBEROFEXTRAHEADERLINES):])
+
