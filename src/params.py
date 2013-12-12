@@ -6,13 +6,12 @@ Module that contains all global parameters. Values of parameters are specific to
 Author: skardan
 
 """
-DIR = "C:/Users/bondaria/Documents/UAI/GENOVA/PupilDilation/src/"
-#EYELOGDATAFOLDER = "./sampledata"
-EYELOGDATAFOLDER = DIR + "sampledata"
+
+
+EYELOGDATAFOLDER = "./sampledata"
 # the folder that has the files exported from Tobii
 
-#EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
-EXTERNALLOGDATAFOLDER = DIR + "sampledata/external logs"
+EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
 # the folder that has the external log files
 
 NUMBEROFEXTRAHEADERLINES = 8 

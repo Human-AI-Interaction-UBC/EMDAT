@@ -25,7 +25,8 @@ ps = read_participants_Basic(user_list = ul,pids = uids, log_time_offsets = alog
                            prune_length = None, 
                            aoifile = "./sampledata/general.aoi",
 #                           aoifile = "./sampledata/Dynamic_1.aoi",
-                           require_valid_segs = False, auto_partition_low_quality_segments = True)
+                           require_valid_segs = False, auto_partition_low_quality_segments = True,
+                           rpsfile = "./sampledata/all_rest_pupil_sizes.tsv")
 print
 ######
 
@@ -41,3 +42,8 @@ print
 aoi_feat_names = (map(lambda x:"Test"+'_'+x, params.aoigeneralfeat))
 print "exporting:", params.featurelist, "\n", aoi_feat_names
 write_features_tsv(ps, './outputfolder/sample_features.tsv',featurelist = params.featurelist, aoifeaturelabels=aoi_feat_names, id_prefix = False)
+
+#### Export pupil dilations for each scene to a separate file
+print "exporting: pupil dilatoin trends" 
+plot_pupil_dilation_all(ps, params.DIR + 'outputfolder\\pupilsizes\\', "problem1")
+plot_pupil_dilation_all(ps, params.DIR + 'outputfolder\\pupilsizes\\', "problem2")
