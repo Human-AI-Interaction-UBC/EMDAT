@@ -119,7 +119,11 @@ class Segment():
         self.numpupilsizes = len(valid_pupil_data) 
         if self.numpupilsizes > 0: #check if the current segment has pupil data available
             self.adjvalidpupilsizes = map(lambda x: x.pupilsize - self.rest_pupil_size, valid_pupil_data)
-            
+            """
+            #PCPS adjustment [Iqbal et al., 2005]
+            self.adjvalidpupilsizes = map(lambda x: (x.pupilsize - self.rest_pupil_size)/ (1.0 * self.rest_pupil_size), valid_pupil_data)
+            #for APCPS use self.features['meanpupilsize'] with PCPS adjustment
+            """
             self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, x.pupilsize - self.rest_pupil_size], valid_pupil_data) 
             
             self.features['meanpupilsize'] = mean(self.adjvalidpupilsizes)
