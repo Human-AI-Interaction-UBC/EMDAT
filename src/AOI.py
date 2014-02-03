@@ -226,8 +226,8 @@ class AOI_Stat():
                 self.features['proptransfrom_%s'%(aid)] = float(val) / sumtransfrom
             else:
                 self.features['proptransfrom_%s'%(aid)] = 0
-        self.total_tans_to = sumtransto
-        self.total_tans_from = sumtransfrom
+        self.total_trans_to = sumtransto
+        self.total_trans_from = sumtransfrom
         ###endof trnsition calculation
 
 

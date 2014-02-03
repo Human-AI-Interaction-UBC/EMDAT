@@ -47,7 +47,7 @@ class Datapoint():
                 self.segid = None
                 self.is_valid = (self.validityright < 2 or self.validityleft < 2)
                 self.pupilsize = self.calculate_pupil_size()
-				self.distance = self.calculate_distance()
+                self.distance = self.calculate_distance()
             else:
                 self.is_None = True
         else:
@@ -73,9 +73,9 @@ class Datapoint():
             #if only one pupil size is available - use it as final pupil size
             pupilsize = max(self.pupilleft, self.pupilright)
         return pupilsize
-		
-	def calculate_distance(self):
-		# if pupil sizes for both eyes are available: calculate average
+        
+    def calculate_distance(self):
+        # if pupil sizes for both eyes are available: calculate average
         if (self.distanceleft != -1) and (self.distanceright != -1):
             distance = (self.distanceleft + self.distanceright) / 2.0
         #if both pupil sizes are unavailable return -1

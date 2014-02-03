@@ -323,6 +323,27 @@ class Scene(Segment):
             self.features['endpupilsize'] = 0
 
         """end """
+
+        """ calculate distance features""" 
+        
+        self.numdistances = sumfeat(segments,'numdistances')
+        self.distances_from_screen = mergevalues(segments, 'distances_from_screen')
+        if self.numdistances > 0: # check if scene has any pupil data
+            self.features['meandistance'] = weightedmeanfeat(segments, 'numdistances', "features['meandistance']")
+            self.features['stddevpupilsize'] = stddev(self.distances_from_screen)
+            self.features['maxpupilsize'] = maxfeat(segments, "features['maxdistance']")
+            self.features['minpupilsize'] = minfeat(segments, "features['mindistance']")
+            self.features['startpupilsize'] = segments[0].features['startdistance']
+            self.features['endpupilsize'] = segments[-1].features['enddistance']
+        else:
+            self.features['meanpupilsize'] = 0
+            self.features['stddevpupilsize'] = 0
+            self.features['maxpupilsize'] = 0
+            self.features['minpupilsize'] = 0
+            self.features['startpupilsize'] = 0
+            self.features['endpupilsize'] = 0
+
+        """end """
         
         self.has_aois = False
         if aoilist:
@@ -482,8 +503,8 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations):
         if params.DEBUG:
             print "segement's transition_aois",new_AOI_Stat_transition_aois
             
-        maois.total_tans_to += new_AOI_Stat.total_tans_to       #updating the total number of transition to this AOI
-        maois.total_tans_from += new_AOI_Stat.total_tans_from   #updating the total number of transition from this AOI
+        maois.total_trans_to += new_AOI_Stat.total_trans_to       #updating the total number of transition to this AOI
+        maois.total_trans_from += new_AOI_Stat.total_trans_from   #updating the total number of transition from this AOI
         for feat in new_AOI_Stat_transition_aois:
             if feat in maois.features:
                 maois.features[feat] += new_AOI_Stat.features[feat]
@@ -500,16 +521,16 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations):
         for feat in maois_transition_aois:
             if feat.startswith('numtransto_'):
                 aid = feat.lstrip('numtransto_')
-                if maois.total_tans_to > 0:
+                if maois.total_trans_to > 0:
 
-                    maois.features['proptransto_%s'%(aid)] = float(maois.features[feat]) / maois.total_tans_to
+                    maois.features['proptransto_%s'%(aid)] = float(maois.features[feat]) / maois.total_trans_to
                 else:
                     maois.features['proptransto_%s'%(aid)] = 0
             else:
                 aid = feat.lstrip('numtransfrom_')
-                if maois.total_tans_from > 0:
+                if maois.total_trans_from > 0:
                     
-                    maois.features['proptransfrom_%s'%(aid)] = float(maois.features[feat]) / maois.total_tans_from
+                    maois.features['proptransfrom_%s'%(aid)] = float(maois.features[feat]) / maois.total_trans_from
                 else:
                     maois.features['proptransfrom_%s'%(aid)] = 0
         ###endof trnsition calculation

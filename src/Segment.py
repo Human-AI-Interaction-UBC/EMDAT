@@ -142,21 +142,27 @@ class Segment():
             self.features['startpupilsize'] = 0
             self.features['endpupilsize'] = 0
         """ end pupil """
-		
-		""" calculate distance from screen features""" 
+        
+        """ calculate distance from screen features""" 
+        
+        # check if pupil sizes are available for all missing points
+        invalid_distance_data = filter(lambda x: x.distance == -1 and x.gazepointxleft >= 0, all_data)
+        if len(invalid_distance_data) > 0:
+            raise Exception("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
+ 
         #get all datapoints where distance is available
         valid_distance_data = filter(lambda x: x.distance != -1, all_data) 
         
         #number of valid pupil sizes
         self.numdistances = len(valid_distance_data) 
         if self.numdistances > 0: #check if the current segment has pupil data available
-            distances = map(lambda x: x.distance, valid_distance_data)
-            self.features['meandistance'] = mean(distances)
-            self.features['stddistance'] = stddev(distances)
-            self.features['maxdistance'] = max(distances)
-            self.features['mindistance'] = min(distances)
-            self.features['startdistance'] = distances[0]
-            self.features['enddistance'] = distances[-1]
+            self.distances_from_screen = map(lambda x: x.distance, valid_distance_data)
+            self.features['meandistance'] = mean(self.distances_from_screen)
+            self.features['stddistance'] = stddev(self.distances_from_screen)
+            self.features['maxdistance'] = max(self.distances_from_screen)
+            self.features['mindistance'] = min(self.distances_from_screen)
+            self.features['startdistance'] = self.distances_from_screen[0]
+            self.features['enddistance'] = self.distances_from_screen[-1]
         else:
             self.features['meandistance'] = 0
             self.features['stddistance'] = 0
