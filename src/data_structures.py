@@ -47,6 +47,7 @@ class Datapoint():
                 self.segid = None
                 self.is_valid = (self.validityright < 2 or self.validityleft < 2)
                 self.pupilsize = self.calculate_pupil_size()
+				self.distance = self.calculate_distance()
             else:
                 self.is_None = True
         else:
