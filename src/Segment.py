@@ -142,6 +142,29 @@ class Segment():
             self.features['startpupilsize'] = 0
             self.features['endpupilsize'] = 0
         """ end pupil """
+		
+		""" calculate distance from screen features""" 
+        #get all datapoints where distance is available
+        valid_distance_data = filter(lambda x: x.distance != -1, all_data) 
+        
+        #number of valid pupil sizes
+        self.numdistances = len(valid_distance_data) 
+        if self.numdistances > 0: #check if the current segment has pupil data available
+            distances = map(lambda x: x.distance, valid_distance_data)
+            self.features['meandistance'] = mean(distances)
+            self.features['stddistance'] = stddev(distances)
+            self.features['maxdistance'] = max(distances)
+            self.features['mindistance'] = min(distances)
+            self.features['startdistance'] = distances[0]
+            self.features['enddistance'] = distances[-1]
+        else:
+            self.features['meandistance'] = 0
+            self.features['stddistance'] = 0
+            self.features['maxdistance'] = 0
+            self.features['mindistance'] = 0
+            self.features['startdistance'] = 0
+            self.features['enddistance'] = 0
+        """ end distance """
         
         if self.numfixations > 0:
             self.fixation_start = fixation_data[0].timestamp
