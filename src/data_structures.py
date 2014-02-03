@@ -73,6 +73,19 @@ class Datapoint():
             #if only one pupil size is available - use it as final pupil size
             pupilsize = max(self.pupilleft, self.pupilright)
         return pupilsize
+		
+	def calculate_distance(self):
+		# if pupil sizes for both eyes are available: calculate average
+        if (self.distanceleft != -1) and (self.distanceright != -1):
+            distance = (self.distanceleft + self.distanceright) / 2.0
+        #if both pupil sizes are unavailable return -1
+        elif (self.distanceleft == -1) and (self.distanceright == -1):
+            #print "Attention: pupil size is not valid!"
+            distance = -1
+        else:
+            #if only one pupil size is available - use it as final pupil size
+            distance = max(self.distanceleft, self.distanceright)
+        return distance
     
 def parse(tobii_line):
     """
