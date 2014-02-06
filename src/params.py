@@ -43,12 +43,12 @@ featurelist = ['numsegments','length','numfixations','fixationrate','meanabspath
                'meanfixationduration','meanpathdistance','meanrelpathangles','stddevabspathangles',
                'stddevfixationduration','stddevpathdistance','stddevrelpathangles']#'numsamples','sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
                 #'meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'
-				#'meandistance', 'stddistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'
+				#'meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'
 #add pupil dilation 
 featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'])
 
 #add distance from screen
-featurelist.extend(['meandistance', 'stddistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
+featurelist.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
 
 # list of non-AOI feature names 
 
@@ -130,4 +130,4 @@ NONTEMP_FEATURES_AOI = ['longestfixation', 'proportionnum', 'proportiontime',
 NONTEMP_FEATUES_PUPIL = ['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize']
 
 #list of features related to the participant's distance from the screen (in mm)
-NONTEMP_FEATURES_DISTANCE = ['meandistance', 'stddistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance']
+NONTEMP_FEATURES_DISTANCE = ['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance']

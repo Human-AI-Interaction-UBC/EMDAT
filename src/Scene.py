@@ -330,18 +330,18 @@ class Scene(Segment):
         self.distances_from_screen = mergevalues(segments, 'distances_from_screen')
         if self.numdistances > 0: # check if scene has any pupil data
             self.features['meandistance'] = weightedmeanfeat(segments, 'numdistances', "features['meandistance']")
-            self.features['stddevpupilsize'] = stddev(self.distances_from_screen)
-            self.features['maxpupilsize'] = maxfeat(segments, "features['maxdistance']")
-            self.features['minpupilsize'] = minfeat(segments, "features['mindistance']")
-            self.features['startpupilsize'] = segments[0].features['startdistance']
-            self.features['endpupilsize'] = segments[-1].features['enddistance']
+            self.features['stddevdistance'] = stddev(self.distances_from_screen)
+            self.features['maxdistance'] = maxfeat(segments, "features['maxdistance']")
+            self.features['mindistance'] = minfeat(segments, "features['mindistance']")
+            self.features['startdistance'] = segments[0].features['startdistance']
+            self.features['enddistance'] = segments[-1].features['enddistance']
         else:
-            self.features['meanpupilsize'] = 0
-            self.features['stddevpupilsize'] = 0
-            self.features['maxpupilsize'] = 0
-            self.features['minpupilsize'] = 0
-            self.features['startpupilsize'] = 0
-            self.features['endpupilsize'] = 0
+            self.features['meandistance'] = 0
+            self.features['stddevdistance'] = 0
+            self.features['maxdistance'] = 0
+            self.features['mindistance'] = 0
+            self.features['startdistance'] = 0
+            self.features['enddistance'] = 0
 
         """end """
         

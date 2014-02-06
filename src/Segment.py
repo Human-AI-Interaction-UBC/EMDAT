@@ -158,14 +158,14 @@ class Segment():
         if self.numdistances > 0: #check if the current segment has pupil data available
             self.distances_from_screen = map(lambda x: x.distance, valid_distance_data)
             self.features['meandistance'] = mean(self.distances_from_screen)
-            self.features['stddistance'] = stddev(self.distances_from_screen)
+            self.features['stddevdistance'] = stddev(self.distances_from_screen)
             self.features['maxdistance'] = max(self.distances_from_screen)
             self.features['mindistance'] = min(self.distances_from_screen)
             self.features['startdistance'] = self.distances_from_screen[0]
             self.features['enddistance'] = self.distances_from_screen[-1]
         else:
             self.features['meandistance'] = 0
-            self.features['stddistance'] = 0
+            self.features['stddevdistance'] = 0
             self.features['maxdistance'] = 0
             self.features['mindistance'] = 0
             self.features['startdistance'] = 0
