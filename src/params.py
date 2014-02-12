@@ -8,7 +8,8 @@ Author: skardan
 """
 
 
-EYELOGDATAFOLDER = "./sampledata"
+#EYELOGDATAFOLDER = "./sampledata"
+EYELOGDATAFOLDER = "C:\\Users\\Natasha\\Dropbox\\Research\\Code\\data"
 # the folder that has the files exported from Tobii
 
 EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
@@ -19,11 +20,11 @@ NUMBEROFEXTRAHEADERLINES = 8
 #this is specific to study and is based on the number of variables defined in Tobii
 # studio for the experiment
 
-FIXATIONHEADERLINES = 19
+FIXATIONHEADERLINES = 20
 #number of lines at the beginning of the 'Fixation-Data' files exported from Tobii before 
 #the actual data 
 
-ALLDATAHEADERLINES = 26
+ALLDATAHEADERLINES = 25
 #number of lines at the beginning of the 'All-Data' files exported from Tobii before 
 #the actual data 
 
@@ -31,7 +32,7 @@ EVENTSHEADERLINES = 19
 #number of lines at the beginning of the 'Event-Data' files exported from Tobii before 
 #the actual data 
 
-ACTIONHEADERLINES = 0
+ACTIONHEADERLINES = 8
 #number of lines at the beginning of the external log files before the actual data 
 
 MEDIA_OFFSET = (0, 0)   
@@ -41,22 +42,23 @@ MEDIA_OFFSET = (0, 0)
 
 featurelist = ['numsegments','length','numfixations','fixationrate','meanabspathangles',
                'meanfixationduration','meanpathdistance','meanrelpathangles','stddevabspathangles',
-               'stddevfixationduration','stddevpathdistance','stddevrelpathangles']#'numsamples','sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
+               'stddevfixationduration', 'stddevpathdistance', 'stddevrelpathangles'] #'numsamples','sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
                 #'meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'
 				#'meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'
 #add pupil dilation 
-featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'])
+#featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'])
 
 #add distance from screen
-featurelist.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
+#featurelist.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
 
 # list of non-AOI feature names 
 
 aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum',
-                  'proportiontime','longestfixation']#'timetofirstfixation','timetolastfixation',
+                  'proportiontime','longestfixation', 'timetofirstfixation','timetolastfixation']
 #list of general AOI features
 
-aoinames = ['Top','Bottom','Graph','Toolbar','Test']
+aoinames = ['Goals', 'LearningTools', 'Clock', 'Content']
+#aoinames = ['LearningStrategiesPalette','TableOfContents','OverallLearningGoal','Subgoals','Agent','ImageContent','TextContent']#,'Clock']
 #list of the AOI names
 
 aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames) 

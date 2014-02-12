@@ -11,7 +11,7 @@ import params
 from Scene import Scene
 import Recording
 
-
+import MetaTutorFunctionality as aux 
 
 class Participant():
     """
@@ -62,7 +62,7 @@ class Participant():
         self.require_valid_segments = require_valid_segs
 
         
-    def is_valid(self, method = None, threshold=None, ):
+    def is_valid(self,threshold=None):
         """Determines if the samples for this Participant meets the validity threshold
         
         Args:
@@ -74,15 +74,8 @@ class Participant():
         """
         if threshold == None:
             return self.whole_scene.is_valid
-        elif method == None:
-            method = params.VALIDITY_METHOD
-            
-        if method == 1:
-            return self.whole_scene.calc_validity1(threshold)
-        elif method == 2:
-            return self.whole_scene.calc_validity2(threshold)
-        elif method == 3:
-            return self.whole_scene.calc_validity3(threshold)
+        else:
+            return self.whole_scene.proportion_valid_fix >= threshold
 
 
 
@@ -144,13 +137,48 @@ class Participant():
             if id_prefix:
                 sc_feats.append(self.pid)
             sc_feats.append(sc.scid)
+            #Daria: fix for recalculating TextContent and ImageContent features
+            #if sc.scid == "main":
+			#NATASHA: THIS NEEDS TO BE CHANGED BACK
+            #aux.MergeToXContent (sc, "TextContent", "NormalTextContent", "TextContentRestrictedInput")
+            #aux.MergeToXContent (sc, "ImageContent", "NormalImageContent", "ImageContentRestrictedInput")
+            aux.MergeToXContent (sc, "Content", "NormalContent", "ContentRestrictedInput")
+            #aux.MinorTextImageFix(sc)
+            aux.FixFromForAllAOIs(sc)
+                    
             fnames, fvals = sc.get_features(featurelist = featurelist,
                                            aoifeaturelist = aoifeaturelist, 
                                            aoifeaturelabels = aoifeaturelabels)
-            if first: featnames += fnames
-            sc_feats += fvals
+            temp = sc_feats[:]
+            if first: 
+                featnames += fnames
+                for el in fvals:
+                    temp.append(el)
+            #Daria
+            else:
+                for name in fnames: #loop over all feature names for the current participant
+                    if name not in featnames: # if new feature detected add add it to the feature names set
+                        featnames.append(name)
+                for feat in featnames:
+                    if feat not in ['Part_id', 'Sc_id']:
+                        if feat in fnames: 
+                            temp.append(fvals[fnames.index(feat)])
+                        else:
+                            temp.append(-1)
+                #Daria
+            
+            #sc_feats += fvals
             first = False
-            data.append(sc_feats)            
+            
+            #Daria
+            #in the current project we are considering one scene
+            #thus we want only features for scene "main" to be printed
+            #
+            
+            #if (sc.scid=="main"):
+                #print "adding new scene " + sc.scid
+            data.append(temp)
+            
 
         return featnames, data
 
@@ -285,15 +313,82 @@ def export_features_all(participants, featurelist = None, aoifeaturelist = None,
             fnames, fvals = p.export_features(featurelist=featurelist, aoifeaturelist=aoifeaturelist, 
                                               aoifeaturelabels = aoifeaturelabels,
                                               id_prefix=id_prefix, require_valid = require_valid)
-            featnames = fnames
-            data += fvals
+            '''
+            # Daria: bug - the order of names of calculated features varies
+            # between participants. The following code takes care of this issue
+            #print fnames
+            #print len(fnames)
+            #print fvals
+            #print len(fvals)
+            temp = []
+            sc_temp = [] #temp variable to store features for one scene
+            if (featnames != fnames):
+                if (featnames == []): # if featnames are empty
+                    featnames = fnames[:]
+                    temp = fvals[:]
+                else:
+                    if len(featnames)<len(fnames): # if new participant has more features
+                        for name in fnames: #loop over all feature names for the current participant
+                            if name not in featnames: # if new feature detected add add it to the feature names set
+                                featnames.append(name)
+                    for sc_fvals in fvals:
+                        sc_temp = [] #temp variable to store features for one scene
+                        for feat in featnames:
+                            if feat in fnames:
+                                sc_temp.append(sc_fvals[fnames.index(feat)])
+                            else:
+                                sc_temp.append(-1)
+                        temp.append(sc_temp)
+            data += temp 
+            '''
+            # Daria end# Daria: bug - the order of names of calculated features varies
+            # between participants. The following code takes care of this issue
+            print fnames
+            print len(fnames)
+            print fvals
+            print len(fvals)
+            print "for each scene"
+            for el in fvals:
+                print el
+                print len(el)
+            temp = []
+            sc_temp = [] #temp variable to store features for one scene
+            if (featnames != fnames) and (fnames != None) and (fnames!= []):
+                if (featnames == []): # if featnames are empty
+                    featnames = fnames[:]
+                    temp = fvals[:]
+                else:
+                    if len(featnames)<len(fnames): # if new participant has more features
+                        for name in fnames: #loop over all feature names for the current participant
+                            if name not in featnames: # if new feature detected add add it to the feature names set
+                                featnames.append(name)
+                    for sc_fvals in fvals:
+                        sc_temp = [] #temp variable to store features for one scene
+                        for feat in featnames:
+                            if feat in fnames:
+                                if fnames.index(feat)>len(sc_fvals)-1:
+                                    sc_temp.append(-3)
+                                    print feat
+                                else: 
+                                    sc_temp.append(sc_fvals[fnames.index(feat)])
+                            else:
+                                sc_temp.append(-1)
+                        temp.append(sc_temp)
+            if (featnames == fnames):
+                temp = fvals[:]
+            data += temp 
+            # Daria end
+            
+            #featnames = fnames
+            
+            #data += fvals
     else:
         raise NameError('No participants were passed to the function')
     
     return featnames, data
 
 def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist =  None, 
-                       aoifeaturelabels=None, id_prefix = False):
+                       aoifeaturelabels=None, id_prefix = False, list_of_scenes = None):
     """Returns feature names and their values for a list of "Participant"s in a tsv-format file
     
     This method writes to a multi-line tab separated values (tsv) file with the first 
@@ -324,8 +419,18 @@ def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist
     
     with open(outfile, 'w') as f:
         f.write(string.join(fnames, '\t') + '\n')
-        for l in fvals:
-            f.write(string.join(map(str, l), '\t') + '\n')
+        if list_of_scenes is None:
+            for l in fvals:
+                f.write(string.join(map(str, l), '\t') + '\n')
+        else:
+            print list_of_scenes
+            for l in fvals:
+                if (l[0] in list_of_scenes) or (l[1] in list_of_scenes):
+                    print l
+                    f.write(string.join(map(str, l), '\t') + '\n')#print only main
+            
+
+    return fnames
 
 def partition(segfile):
     """

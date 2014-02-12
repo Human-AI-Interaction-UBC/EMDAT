@@ -229,7 +229,22 @@ class AOI_Stat():
         self.total_trans_to = sumtransto
         self.total_trans_from = sumtransfrom
         ###endof trnsition calculation
-
+        #Daria: auxiliary features
+        #needed for merging TextNormal and TextRestrictedInput
+        self.features['sumtransfrom']=sumtransfrom #sum of transitions from all other AOIs to the current
+        self.features['sumtransto']=sumtransto #sum of transitions to all other AOIs from the current
+        
+        self.features['fixationsonscreen']= len(fixation_data)#total number of fixations on screen when aoi was active
+        if self.isActive: 
+            self.features['proportionnum_dynamic'] = self.features['proportionnum']
+            if (partition is not None) and (partition != []):#if partition is performed, we are looking for time interval when AOI was active
+                self.features['timeonscreen'] = partition[1]-partition[0] # duration of AOI being available during the current segment
+                self.features['proportiontime_dynamic'] = float(totaltimespent)/(partition[1]-partition[0])
+                #print self.aoi.aid + ": duration of partitioned AOI is " + str(partition[1]-partition[0])
+            else:
+                self.features['timeonscreen'] = endtime - starttime
+                self.features['proportiontime_dynamic'] = float(totaltimespent)/(endtime-starttime)
+                
 
     def get_features(self, featurelist = None):
         """Returns the list of names and values of features for this AOI_Stat object
