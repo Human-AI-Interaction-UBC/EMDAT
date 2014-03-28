@@ -6,9 +6,7 @@ Created on 2012-08-23
 
 import sys
 
-time_chunk = 2 #amount of interaction time in minutes
 window = "Window1"
-username = "admin"
 	
 if len(sys.argv) >= 2:
     window = sys.argv[1]
@@ -18,7 +16,7 @@ if len(sys.argv) >= 3:
 
 
 import sys
-sys.path.append("C:\\Users\\" + username + "\\Dropbox\\Research\\Code\\EMDATDaria")
+sys.path.append("./")
 
 import MetaTutorPartNatasha
 from MetaTutorPartNatasha import read_participants_Basic
@@ -31,13 +29,13 @@ from Participant import export_features_all, write_features_tsv
 #from EMDAT_local.params import *
 
 import os
-DIR = 'C:\\Users\\' + username + '\\Dropbox\\Research\\Code\\data\\'
-SEGDIR = DIR + "WindowedEVSEGs\\" + window + "\\" #NEEDS TO BE CHANGED BASED ON CURRENT TEST
-AOIDIR = DIR + "AOIs\\CompressedAOIs\\"
-outputLocation = 'C:\\Users\\' + username + '\\Dropbox\\Research\\Code\\output\\CompressedAOIs\\' + window + '\\' #NEEDS TO BE CHANGED
+DIR = '../../data/'
+SEGDIR = DIR + "SEGs/" 	#/" + window + "/"
+AOIDIR = DIR + "AOIs/"
+outputLocation = "../../" # + window + '/' 
 
 listing = os.listdir(SEGDIR)
-listing = filter(lambda y: y[-5:] == '.segs', listing) #????
+listing = filter(lambda y: y[-5:] == '.segs', listing)
 
 list_of_participants = []
 for l in listing:
