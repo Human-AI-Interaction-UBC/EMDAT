@@ -126,7 +126,7 @@ def FixFromForAllAOIs(scene):
         print aoiname
         
         #NATASHA: THIS NEEDS TO BE CHANGED BACK:
-        """
+        
         #fix transitions related to TextContent area
         if scene.aoi_data[aoiname].features.has_key("numtransto_NormalTextContent"):
             if scene.aoi_data[aoiname].features.has_key("numtransto_TextContentRestrictedInput"):
@@ -166,9 +166,9 @@ def FixFromForAllAOIs(scene):
                 scene.aoi_data[aoiname].features["numtransfrom_ImageContent"]=scene.aoi_data[aoiname].features["numtransfrom_ImageContentRestrictedInput"]
                 scene.aoi_data[aoiname].features["proptransto_ImageContent"]=scene.aoi_data[aoiname].features["proptransto_ImageContentRestrictedInput"]
                 scene.aoi_data[aoiname].features["proptransfrom_ImageContent"]=scene.aoi_data[aoiname].features["proptransfrom_ImageContentRestrictedInput"]
-        """
         
-        #fix transitions related to Content area
+        
+        """#fix transitions related to Content area
         if scene.aoi_data[aoiname].features.has_key("numtransto_NormalContent"):
             if scene.aoi_data[aoiname].features.has_key("numtransto_ContentRestrictedInput"):
                 
@@ -186,4 +186,4 @@ def FixFromForAllAOIs(scene):
                 scene.aoi_data[aoiname].features["numtransto_Content"]=scene.aoi_data[aoiname].features["numtransto_ContentRestrictedInput"]
                 scene.aoi_data[aoiname].features["numtransfrom_Content"]=scene.aoi_data[aoiname].features["numtransfrom_ContentRestrictedInput"]
                 scene.aoi_data[aoiname].features["proptransto_Content"]=scene.aoi_data[aoiname].features["proptransto_ContentRestrictedInput"]
-                scene.aoi_data[aoiname].features["proptransfrom_Content"]=scene.aoi_data[aoiname].features["proptransfrom_ContentRestrictedInput"]
+                scene.aoi_data[aoiname].features["proptransfrom_Content"]=scene.aoi_data[aoiname].features["proptransfrom_ContentRestrictedInput"]"""

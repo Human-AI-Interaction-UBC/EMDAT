@@ -139,10 +139,9 @@ class Participant():
             sc_feats.append(sc.scid)
             #Daria: fix for recalculating TextContent and ImageContent features
             #if sc.scid == "main":
-			#NATASHA: THIS NEEDS TO BE CHANGED BACK
-            #aux.MergeToXContent (sc, "TextContent", "NormalTextContent", "TextContentRestrictedInput")
-            #aux.MergeToXContent (sc, "ImageContent", "NormalImageContent", "ImageContentRestrictedInput")
-            aux.MergeToXContent (sc, "Content", "NormalContent", "ContentRestrictedInput")
+            aux.MergeToXContent (sc, "TextContent", "NormalTextContent", "TextContentRestrictedInput")
+            aux.MergeToXContent (sc, "ImageContent", "NormalImageContent", "ImageContentRestrictedInput")
+            #aux.MergeToXContent (sc, "Content", "NormalContent", "ContentRestrictedInput")
             #aux.MinorTextImageFix(sc)
             aux.FixFromForAllAOIs(sc)
                     
