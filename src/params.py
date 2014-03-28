@@ -7,6 +7,29 @@ Author: skardan
 
 """
 
+featurelist = ['numfixations','fixationrate','meanabspathangles',
+               'meanfixationduration','meanpathdistance','meanrelpathangles','stddevabspathangles',
+               'stddevfixationduration', 'stddevpathdistance', 'stddevrelpathangles']
+			   #'meandistance', 'stddevdistance', 'maxdistance', 'mindistance'] DISTANCE FEATURES
+			   #'numsegments', 'length', 'numsamples','sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
+                #'meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'
+				#'meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'
+				
+#add pupil dilation 
+#featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'])
+
+#add distance from screen
+#featurelist.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
+
+
+# list of non-AOI feature names 
+aoigeneralfeat = ['fixationrate','numfixations','proportionnum',
+                  'proportiontime','longestfixation', 'timetofirstfixation','timetolastfixation']
+				  #'totaltimespent'
+
+#list of the AOI names
+aoinames = ['LearningStrategiesPalette','TableOfContents','OverallLearningGoal','Subgoals','Agent','ImageContent','TextContent']#,'Clock']
+
 
 #EYELOGDATAFOLDER = "./sampledata"
 EYELOGDATAFOLDER = "C:\\Users\\Natasha\\Dropbox\\Research\\Code\\data"
@@ -39,33 +62,6 @@ MEDIA_OFFSET = (0, 0)
 # the coordinates of the top left corner of the window
 # showing the interface under study. (0,0) if the interface was
 # in full screen (default value)
-
-featurelist = ['numfixations','fixationrate','meanabspathangles',
-               'meanfixationduration','meanpathdistance','meanrelpathangles','stddevabspathangles',
-               'stddevfixationduration', 'stddevpathdistance', 'stddevrelpathangles',
-			   'meandistance', 'stddevdistance', 'maxdistance', 'mindistance'] #ADDED DISTANCE FEATURES
-			   #'numsamples','sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
-                #'meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'
-				#'meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'
-"""MY OLD FEATURES featurelist = ['numsegments','length','numfixations','fixationrate','meanabspathangles',
-               'meanfixationduration','meanpathdistance','meanrelpathangles','stddevabspathangles',
-               'stddevfixationduration', 'stddevpathdistance', 'stddevrelpathangles']"""
-#add pupil dilation 
-#featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'])
-
-#add distance from screen
-#featurelist.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
-
-# list of non-AOI feature names 
-
-aoigeneralfeat = ['fixationrate','numfixations','proportionnum',
-                  'proportiontime','longestfixation', 'timetofirstfixation','timetolastfixation']
-"""MY OLD FEATURES: aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum',
-                  'proportiontime','longestfixation', 'timetofirstfixation','timetolastfixation']"""
-#list of general AOI features
-
-aoinames = ['LearningStrategiesPalette','TableOfContents','OverallLearningGoal','Subgoals','Agent','ImageContent','TextContent']#,'Clock']
-#list of the AOI names
 
 aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames) 
 #['numtransfromBottom','numtransfromGraph','numtransfromToolbar','numtransfromTop']
