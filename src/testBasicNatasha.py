@@ -32,7 +32,7 @@ import os
 DIR = '../../data/'
 SEGDIR = DIR + "SEGs/" 	#/" + window + "/"
 AOIDIR = DIR + "AOIs/"
-outputLocation = "../../" # + window + '/' 
+outputLocation = "../../EMDAToutput/" # + window + '/' 
 
 listing = os.listdir(SEGDIR)
 listing = filter(lambda y: y[-5:] == '.segs', listing)
