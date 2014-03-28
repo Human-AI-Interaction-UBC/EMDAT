@@ -5,17 +5,20 @@ Created on 2012-08-23
 '''
 
 import sys
+import os
 
 window = "Window1"
-	
 if len(sys.argv) >= 2:
     window = sys.argv[1]
 
-if len(sys.argv) >= 3:
-	username = sys.argv[2]
+#CHOOSE THE INPUT AND OUTPUT DIRECTORIES FOR YOUR DATA AND RESULTS
+DIR = '../../data/'
+SEGDIR = DIR + "SEGs/" 	
+AOIDIR = DIR + "AOIs/"
+outputLocation = "../../EMDAToutput/" 
+	
 
 
-import sys
 sys.path.append("./")
 
 import MetaTutorPartNatasha
@@ -27,12 +30,6 @@ from Participant import export_features_all, write_features_tsv
 #from EMDAT_local.MetaTutorPart import *
 #from EMDAT_local.Participant import export_features_all, write_features_tsv
 #from EMDAT_local.params import *
-
-import os
-DIR = '../../data/'
-SEGDIR = DIR + "SEGs/" 	#/" + window + "/"
-AOIDIR = DIR + "AOIs/"
-outputLocation = "../../EMDAToutput/" # + window + '/' 
 
 listing = os.listdir(SEGDIR)
 listing = filter(lambda y: y[-5:] == '.segs', listing)
