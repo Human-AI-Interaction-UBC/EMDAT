@@ -381,7 +381,41 @@ class Scene(Segment):
                 self.aoi_data[aid].features['timetofirstfixation'] = deepcopy(self.firstseg.aoi_data[aid].features['timetofirstfixation'])
             else:
                 self.aoi_data[aid].features['timetofirstfixation'] = float('inf')
+        
+        #Daria: fixing transitions calculations for the whole scene - the proportion was wrong so far
+        
+        for aid in self.aoi_data.keys():
+            if self.aoi_data[aid].isActive:
+                transition_aois = filter(lambda x: x.startswith(('numtransto_','numtransfrom_')),self.aoi_data[aid].features.keys())
+                print transition_aois
+                if params.DEBUG:
+                    print 'Scene transition_aois',transition_aois
+                sumtransto = 0
+                sumtransfrom = 0
+                for feat in transition_aois:
+                    if feat.startswith('numtransto_'):
+                        sumtransto += self.aoi_data[aid].features[feat]
+                    else:
+                        sumtransfrom += self.aoi_data[aid].features[feat]
                 
+                for feat in transition_aois:
+                    if feat.startswith('numtransto_'):
+                        aid0 = feat.lstrip('numtransto_')
+                        if sumtransto > 0:
+        
+                            self.aoi_data[aid].features['proptransto_%s'%(aid0)] = float(self.aoi_data[aid].features[feat]) / sumtransto
+                        else:
+                            self.aoi_data[aid].features['proptransto_%s'%(aid0)] = 0
+                    else:
+                        aid0 = feat.lstrip('numtransfrom_')
+                        if sumtransfrom > 0:
+                            
+                            self.aoi_data[aid].features['proptransfrom_%s'%(aid0)] = float(self.aoi_data[aid].features[feat]) / sumtransfrom
+                        else:
+                            self.aoi_data[aid].features['proptransfrom_%s'%(aid0)] = 0
+
+                self.aoi_data[aid].features['sumtransfrom']=sumtransfrom
+        
         #maois.features['averagetimetofirstfixation'] = ?
         #maois.features['averagettimetolastfixation'] = ?
             self.has_aois = True
@@ -488,7 +522,7 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations):
         maois = main_AOI_Stat
         maois.features['numfixations'] += new_AOI_Stat.features['numfixations']
         maois.features['longestfixation'] = max(maois.features['longestfixation'],new_AOI_Stat.features['longestfixation'])
-        maois.features['totaltimespent'] += + new_AOI_Stat.features['totaltimespent'] 
+        maois.features['totaltimespent'] += new_AOI_Stat.features['totaltimespent'] 
         maois.features['proportiontime'] = float(maois.features['totaltimespent'])/total_time
         maois.features['proportionnum'] = float(maois.features['numfixations'])/total_numfixations
         if maois.features['totaltimespent']>0: 
@@ -499,41 +533,54 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations):
                 
             
         #calculating the transitions to and from this AOI and other active AOIs at the moment
-        new_AOI_Stat_transition_aois = filter(lambda x: x.startswith(('numtransto_','numtransfrom_')),new_AOI_Stat.features.keys())
+        transition_aois = filter(lambda x: x.startswith(('numtransto_','numtransfrom_')),new_AOI_Stat.features.keys())
         if params.DEBUG:
-            print "segement's transition_aois",new_AOI_Stat_transition_aois
-            
-        maois.total_trans_to += new_AOI_Stat.total_trans_to       #updating the total number of transition to this AOI
-        maois.total_trans_from += new_AOI_Stat.total_trans_from   #updating the total number of transition from this AOI
-        for feat in new_AOI_Stat_transition_aois:
+            print 'transition_aois',transition_aois
+        sumtransto = 0
+        sumtransfrom = 0
+        for feat in transition_aois:
             if feat in maois.features:
                 maois.features[feat] += new_AOI_Stat.features[feat]
             else:
                 maois.features[feat] = new_AOI_Stat.features[feat]
-#            if feat.startswith('numtransto_'):
-#                sumtransto += maois.features[feat]
-#            else:
-#                sumtransfrom += maois.features[feat]
-    
-    
-# updating the proportion tansition features based on new transitions to and from this AOI        
-        maois_transition_aois = filter(lambda x: x.startswith(('numtransto_','numtransfrom_')),maois.features.keys()) #all the transition features for this AOI should be aupdated even if they are not active for this segment
-        for feat in maois_transition_aois:
+            if feat.startswith('numtransto_'):
+                sumtransto += maois.features[feat]
+            else:
+                sumtransfrom += maois.features[feat]
+        
+        for feat in transition_aois:
             if feat.startswith('numtransto_'):
                 aid = feat.lstrip('numtransto_')
-                if maois.total_trans_to > 0:
+                if sumtransto > 0:
 
-                    maois.features['proptransto_%s'%(aid)] = float(maois.features[feat]) / maois.total_trans_to
+                    maois.features['proptransto_%s'%(aid)] = float(maois.features[feat]) / sumtransto
                 else:
                     maois.features['proptransto_%s'%(aid)] = 0
             else:
                 aid = feat.lstrip('numtransfrom_')
-                if maois.total_trans_from > 0:
+                if sumtransfrom > 0:
                     
-                    maois.features['proptransfrom_%s'%(aid)] = float(maois.features[feat]) / maois.total_trans_from
+                    maois.features['proptransfrom_%s'%(aid)] = float(maois.features[feat]) / sumtransfrom
                 else:
                     maois.features['proptransfrom_%s'%(aid)] = 0
         ###endof trnsition calculation
+        #Daria: this code is needed for MetaTutor project
+        #print "AOI: " + maois.aoi.aid + ": "
+        if not maois.features.has_key('timeonscreen'):
+            maois.features['timeonscreen'] = 0
+        if not maois.features.has_key('fixationsonscreen'):
+            maois.features['fixationsonscreen'] = 0
+        maois.features['sumtransfrom'] = sumtransfrom
+        maois.features['timeonscreen'] +=new_AOI_Stat.features['timeonscreen'] 
+        maois.features['fixationsonscreen'] += new_AOI_Stat.features['fixationsonscreen']
+        maois.features['proportiontime_dynamic'] = float(maois.features['totaltimespent'])/ maois.features['timeonscreen']
+        if maois.features['fixationsonscreen']>0:
+            maois.features['proportionnum_dynamic'] = float(maois.features['numfixations'])/ maois.features['fixationsonscreen']
+        else:
+            maois.features['proportionnum_dynamic'] = 0
+            print "Scene without fixations!"
+        #proportiontime_dynamic and proportionnum_dynamic corresponds to proportion of time 
+        #!!!!!!
         return maois
 
 def weightedmeanfeat(obj_list, totalfeat,ratefeat):
