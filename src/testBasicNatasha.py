@@ -24,12 +24,7 @@ sys.path.append("./")
 import MetaTutorPartNatasha
 from MetaTutorPartNatasha import read_participants_Basic
 import params
-#from Participant import export_features_all, write_features_tsv
 from Participant import export_features_all, write_features_tsv
-
-#from EMDAT_local.MetaTutorPart import *
-#from EMDAT_local.Participant import export_features_all, write_features_tsv
-#from EMDAT_local.params import *
 
 listing = os.listdir(SEGDIR)
 listing = filter(lambda y: y[-5:] == '.segs', listing)
@@ -52,19 +47,11 @@ list_of_participants = ['MT208PN41005', 'MT208PN41008', 'MT208PN41009', 'MT208PN
 print list_of_participants
 
 ###### Read participants
-#aoidir-directory where where all AOI-files are located. Changed from initial "aoifile" since MetaTutor has dynamic AOIs
 ps = read_participants_Basic(DIR, SEGDIR, list_of_participants, prune_length = None, aoidir = AOIDIR, log_time_offsets=None, 
                           require_valid_segs = True, auto_partition_low_quality_segments = True)
-#ps = read_participants_Basic(DIR, SEGDIR, list_of_participants, prune_length = None, aoidir = None, log_time_offsets=None, 
-#                          require_valid_segs = True, auto_partition_low_quality_segments = True)
-######
 
-##### WRITE features to file
-
-
-#fnames = write_features_tsv(ps, 'D:\\Studies\\UAI\\EMDAT-full\\McGill\\MetaTutor2.0\\outputfolder\\validity-check-full-length.tsv',featurelist = params.featurelist, aoifeaturelabels=params.aoifeaturelist, id_prefix = True, list_of_scenes = ["main"])
+###### Write participants
 fnames = write_features_tsv(ps, outputLocation + 'features.tsv',featurelist = params.featurelist, aoifeaturelabels=params.aoifeaturelist, id_prefix = True) # removed last paraM: list_of_scenes = ["main"])
-#CHANGE BASED ON TEST
 validityfile = outputLocation + "validity.tsv"
 NUMDIGITS = 7
 with open(validityfile, 'w') as f:
@@ -84,13 +71,3 @@ with open(listoffeatures, 'w') as ff:
         line = "@attribute\t"+el+"\tnumeric\n"
         ff.write(line)
 ff.close()
- 
-#with open(validityfile, 'w') as f:
-#    line = 'Scene id' +'\t'+ 'Participant validity' + '\t' + 'Fix-based prop'+ '\t' + 'Proportion' +'\n'
-#    f.write(line)
-#    for p in ps:
-#        for sc in p.scenes:
-#            line = sc.scid+ '\t'+ str(round(sc.largest_data_gap, NUMDIGITS)) + '\t' + str(round(sc.proportion_valid_fix, NUMDIGITS))+ '\t' + str(round(sc.proportion_valid, NUMDIGITS)) +'\n'
-#            f.write(line)
-      
-
