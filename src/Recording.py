@@ -116,7 +116,9 @@ class Recording():
                         scrpsdata = rpsdata[scid]
                     else: 
                         scrpsdata = 0
-                        raise Exception("Scene ID is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
+                        print "Scene ID "+scid+" is not in the dictionary with rest pupil sizes. rpsdata is set to 0" #modified
+                        print rpsdata.keys()
+                        #raise #modified						
                 else:
                     scrpsdata = 0
                 newSc = Scene(scid, sc, self.all_data,self.fix_data, aoilist=aoilist, 
@@ -248,6 +250,9 @@ def read_fixation_data(fixation_file, media_offset = (0,0)):
     with open(fixation_file, 'r') as f:
         lines = f.readlines()
 
+    #for line in lines:
+    #    if len(line.split('\t')) < 6:
+    #        print line
     return map(lambda x: Fixation(x, media_offset=media_offset), 
                lines[params.FIXATIONHEADERLINES:])
 
@@ -317,6 +322,7 @@ def read_aoilines(aoilines):
         aoi = AOI(last_aid, polyin, [], [])
         aoilist.append(aoi)
 
+    #print aoilist
     return aoilist
 
 

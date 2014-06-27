@@ -279,7 +279,7 @@ def export_features_all(participants, featurelist = None, aoifeaturelist = None,
     featnames = []
     if participants:
         for p in participants:
-            if not(p.is_valid()):
+            if not(p.is_valid()) and require_valid:
                 print "user",p.pid,"was not valid"
                 continue
             fnames, fvals = p.export_features(featurelist=featurelist, aoifeaturelist=aoifeaturelist, 

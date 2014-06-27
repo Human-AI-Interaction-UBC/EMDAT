@@ -323,10 +323,30 @@ class Scene(Segment):
             self.features['endpupilsize'] = 0
 
         """end """
+        self.numdistances = sumfeat(segments,'numdistances') #Distance
+        self.distances_from_screen = mergevalues(segments, 'distances_from_screen')
+        if self.numdistances > 0: # check if scene has any pupil data
+            self.features['meandistance'] = weightedmeanfeat(segments, 'numdistances', "features['meandistance']")
+            self.features['stddevdistance'] = stddev(self.distances_from_screen)
+            self.features['maxdistance'] = maxfeat(segments, "features['maxdistance']")
+            self.features['mindistance'] = minfeat(segments, "features['mindistance']")
+            self.features['startdistance'] = segments[0].features['startdistance']
+            self.features['enddistance'] = segments[-1].features['enddistance']
+        else:
+            self.features['meandistance'] = 0
+            self.features['stddevdistance'] = 0
+            self.features['maxdistance'] = 0
+            self.features['mindistance'] = 0
+            self.features['startdistance'] = 0
+            self.features['enddistance'] = 0
+
+        """end """
         
         self.has_aois = False
         if aoilist:
             self.set_aois(segments, aoilist)
+        
+        self.features['aoisequence'] = self.merge_aoisequences(segments)
             
     def getid(self):
         """Returns the scid for this Scene
@@ -447,7 +467,19 @@ class Scene(Segment):
                 lastx=x
                 lasty=y
 
-        return rel_angles   
+        return rel_angles
+		
+    def merge_aoisequences(self, segments):
+        """returns the AOI sequence merged from the AOI sequences in the "Segment"s
+        Args:
+            segments: a list of "Segment"s which belong to this Scene.
+        Returns:
+            a list of AOI names that correspond to the sequence of "Fixation"s in this Scene
+        """
+        sequence = []
+        for seg in segments:
+            sequence.extend(seg.features['aoisequence'])
+        return sequence
 
 def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations):
         """a helper method that updates the AOI_Stat object of this Scene with a new AOI_Stat object

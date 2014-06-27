@@ -10,7 +10,7 @@ import params
 import geometry
 from AOI import *
 from warnings import warn
-
+from AOI import AOI, _fixation_inside_aoi
 
 
 class Segment():
@@ -142,6 +142,35 @@ class Segment():
             self.features['startpupilsize'] = 0
             self.features['endpupilsize'] = 0
         """ end pupil """
+		
+        """ calculate distance from screen features""" #distance
+                   
+        # check if pupil sizes are available for all missing points
+        invalid_distance_data = filter(lambda x: x.distance == -1 and x.gazepointxleft >= 0, all_data)
+        if len(invalid_distance_data) > 0:
+            warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
+            
+        #get all datapoints where distance is available
+        valid_distance_data = filter(lambda x: x.distance != -1, all_data) 
+        
+        #number of valid pupil sizes
+        self.numdistances = len(valid_distance_data) 
+        if self.numdistances > 0: #check if the current segment has pupil data available
+            self.distances_from_screen = map(lambda x: x.distance, valid_distance_data)
+            self.features['meandistance'] = mean(self.distances_from_screen)
+            self.features['stddevdistance'] = stddev(self.distances_from_screen)
+            self.features['maxdistance'] = max(self.distances_from_screen)
+            self.features['mindistance'] = min(self.distances_from_screen)
+            self.features['startdistance'] = self.distances_from_screen[0]
+            self.features['enddistance'] = self.distances_from_screen[-1]
+        else:
+            self.features['meandistance'] = 0
+            self.features['stddevdistance'] = 0
+            self.features['maxdistance'] = 0
+            self.features['mindistance'] = 0
+            self.features['startdistance'] = 0
+            self.features['enddistance'] = 0
+        """ end distance """
         
         if self.numfixations > 0:
             self.fixation_start = fixation_data[0].timestamp
@@ -185,6 +214,14 @@ class Segment():
         self.has_aois = False
         if aois:
             self.set_aois(aois,fixation_data)
+            self.features['aoisequence'] = self.generate_aoi_sequence(fixation_data, aois)
+#        print "===========================SEQUENCE======================"+segid
+#        for fix in fixation_data:
+#            for aoi in aois:
+#                if _fixation_inside_aoi(fix, aoi.polyin, aoi.polyout) and aoi.is_active(fix.timestamp, fix.timestamp) :
+#                    print aoi.aid+" "
+#		
+#        print "===========================endSEQUENCE======================"
     def set_indices(self,sample_st,sample_end,fix_st,fix_end):
         """Sets the index features
         
@@ -459,6 +496,20 @@ class Segment():
             if d.stimuliname != '':
                 num += 1
         return num
+		
+    def generate_aoi_sequence(self, fixdata, aois):
+        """returns the sequence of AOI's where "Fixation"s occurred 
+        Args:
+            fixdata: a list of "Fixation"s
+        Returns:
+            a list of AOI names that correspond to the sequence of "Fixation" locations
+        """
+        sequence = []
+        for fix in fixdata:
+            for aoi in aois:
+                if _fixation_inside_aoi(fix, aoi.polyin, aoi.polyout) and aoi.is_active(fix.timestamp, fix.timestamp) :
+                    sequence.append(aoi.aid)
+        return sequence
     
     def getid(self):
         """Returns the segid for this Segment
@@ -496,7 +547,7 @@ class Segment():
                 if name in self.features.keys():
                     featnames.append(name)
                 else:
-                    raise Exception('Segement %s has no such feature: %s'%(self.getid(),name))
+                    raise Exception('Segment %s has no such feature: %s'%(self.getid(),name))
 
         featnames.sort()
 
@@ -520,8 +571,13 @@ class Segment():
                 else:                   #a list of features for each AIO was given
                     anames, avals = aoi.get_features(aoifeaturelist)
                     anames = map(lambda x: '%s_%s'%(aid, x), anames)
+
+#                    print anames
                     featnames += anames
+#                    print "lala "+aid+" n"
+#                    print featnames
                     featvals += avals
+#                    print featvals
 
         return featnames, featvals
     

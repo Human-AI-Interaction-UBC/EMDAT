@@ -42,15 +42,21 @@ MEDIA_OFFSET = (0, 0)
 featurelist = ['numsegments','length','numfixations','fixationrate','meanabspathangles',
                'meanfixationduration','meanpathdistance','meanrelpathangles','stddevabspathangles',
                'stddevfixationduration','stddevpathdistance','stddevrelpathangles']#'numsamples','sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
-                #'meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'
+
 #add pupil dilation 
 featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'])
-# list of non-AOI feature names 
 
+#add distance from screen
+featurelist.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
+
+# list of non-AOI feature names
+aoisequencefeat = ['aoisequence']
+
+# AOI sequence feature
 aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum',
                   'proportiontime','longestfixation']#'timetofirstfixation','timetolastfixation',
-#list of general AOI features
 
+#list of general AOI features
 aoinames = ['Top','Bottom','Graph','Toolbar','Test']
 #list of the AOI names
 
@@ -96,7 +102,7 @@ any gap larger than MAX_SEG_TIMEGAP left in the data.
 VALIDITY_METHOD = 3 #1: porportion; 2:time gap; 3: porportion with (valid + restored) samples
 """
 Methods 1 and 3 use VALID_PROP_THRESH and method 2 uses VALID_TIME_THRESH as validity threshold
- 
+
 Restored samples are the samples which are not valid but they are part of a Fixation.
 The idea is that if the user was looking at a certain point and then we loose the eye data for 
 a short period of time and afterwards the user is looking at the same point we can assume that user
@@ -123,3 +129,6 @@ NONTEMP_FEATURES_AOI = ['longestfixation', 'proportionnum', 'proportiontime',
 
 """ list of features related based on pupil dilation """
 NONTEMP_FEATUES_PUPIL = ['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize']
+
+#list of features related to the participant's distance from the screen (in mm)
+NONTEMP_FEATURES_DISTANCE = ['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance']

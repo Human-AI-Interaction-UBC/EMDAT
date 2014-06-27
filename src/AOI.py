@@ -269,6 +269,7 @@ class AOI_Stat():
         featnames.sort()
 
         featvals = map(lambda x: self.features[x], featnames)
+#        print featnames
 
         return featnames, featvals
 
