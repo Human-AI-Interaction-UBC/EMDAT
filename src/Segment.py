@@ -215,13 +215,7 @@ class Segment():
         if aois:
             self.set_aois(aois,fixation_data)
             self.features['aoisequence'] = self.generate_aoi_sequence(fixation_data, aois)
-#        print "===========================SEQUENCE======================"+segid
-#        for fix in fixation_data:
-#            for aoi in aois:
-#                if _fixation_inside_aoi(fix, aoi.polyin, aoi.polyout) and aoi.is_active(fix.timestamp, fix.timestamp) :
-#                    print aoi.aid+" "
-#		
-#        print "===========================endSEQUENCE======================"
+
     def set_indices(self,sample_st,sample_end,fix_st,fix_end):
         """Sets the index features
         
@@ -572,12 +566,9 @@ class Segment():
                     anames, avals = aoi.get_features(aoifeaturelist)
                     anames = map(lambda x: '%s_%s'%(aid, x), anames)
 
-#                    print anames
                     featnames += anames
-#                    print "lala "+aid+" n"
-#                    print featnames
                     featvals += avals
-#                    print featvals
+
 
         return featnames, featvals
     
