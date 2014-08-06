@@ -45,7 +45,7 @@ class Recording():
 
     def process_rec(self, segfile = None, scenelist = None,  aoifile = None, 
                     aoilist = None , prune_length = None, require_valid_segs = True, 
-                    auto_partition_low_quality_segments = False, rpsdata = None):
+                    auto_partition_low_quality_segments = False, rpsdata = None, export_pupilinfo = False):
         """Processes the data for one recording (i.e, one complete experiment session)
         
                 
@@ -121,13 +121,13 @@ class Recording():
                             raise Exception("Scene ID "+scid+" is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
                         else:
                             print "Scene ID "+scid+" is not in the dictionary with rest pupil sizes. rpsdata is set to 0"
-                            pass			
+                            pass
                 else:
                     scrpsdata = 0
                 newSc = Scene(scid, sc, self.all_data,self.fix_data, aoilist=aoilist, 
                               prune_length=prune_length, 
                               require_valid = require_valid_segs,
-                              auto_partition = auto_partition_low_quality_segments, rest_pupil_size = scrpsdata)               
+                              auto_partition = auto_partition_low_quality_segments, rest_pupil_size = scrpsdata, export_pupilinfo=export_pupilinfo)               
             except Exception as e:
                 warn(str(e))
                 newSc = None 

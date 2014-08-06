@@ -49,7 +49,7 @@ class Segment():
         has_aois: A boolean indicating if this Segment has AOI features calculated for it
         
     """
-    def __init__(self, segid, all_data, fixation_data, aois = None, prune_length = None, rest_pupil_size = 0):
+    def __init__(self, segid, all_data, fixation_data, aois = None, prune_length = None, rest_pupil_size = 0, export_pupilinfo = False):
         """
         Args:
             segid: A string containing the id of the Segment.
@@ -124,7 +124,8 @@ class Segment():
             self.adjvalidpupilsizes = map(lambda x: (x.pupilsize - self.rest_pupil_size)/ (1.0 * self.rest_pupil_size), valid_pupil_data)
             #for APCPS use self.features['meanpupilsize'] with PCPS adjustment
             """
-            self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, x.pupilsize - self.rest_pupil_size], valid_pupil_data) 
+            if export_pupilinfo:
+                self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, x.pupilsize - self.rest_pupil_size], valid_pupil_data) 
             
             self.features['meanpupilsize'] = mean(self.adjvalidpupilsizes)
             self.features['stddevpupilsize'] = stddev(self.adjvalidpupilsizes)
@@ -134,7 +135,6 @@ class Segment():
             self.features['endpupilsize'] = self.adjvalidpupilsizes[-1]
         else:
             self.adjvalidpupilsizes = []
-            self.adjvalpupilsizes_time = []
             self.features['meanpupilsize'] = 0
             self.features['stddevpupilsize'] = 0
             self.features['maxpupilsize'] = 0
@@ -142,7 +142,7 @@ class Segment():
             self.features['startpupilsize'] = 0
             self.features['endpupilsize'] = 0
         """ end pupil """
-		
+
         """ calculate distance from screen features""" #distance
                    
         # check if pupil sizes are available for all missing points
@@ -477,7 +477,7 @@ class Segment():
 
     def calc_num_samples(self, all_data):
         """Returns the number of samples in the Segment
-        
+
         Args:
             all_data: a list of "Datapoint"s which make up this Segment.
             
@@ -490,7 +490,7 @@ class Segment():
             if d.stimuliname != '':
                 num += 1
         return num
-		
+
     def generate_aoi_sequence(self, fixdata, aois):
         """returns the sequence of AOI's where "Fixation"s occurred 
         Args:

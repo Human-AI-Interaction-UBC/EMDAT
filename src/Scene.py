@@ -55,7 +55,7 @@ class Scene(Segment):
 
                 
     def __init__(self, scid, seglist, all_data, fixation_data, Segments = None, aoilist = None,
-                  prune_length= None, require_valid = True, auto_partition = False, rest_pupil_size = 0):
+                  prune_length= None, require_valid = True, auto_partition = False, rest_pupil_size = 0, export_pupilinfo = False):
         """
         Args:
             scid: A string containing the id of the Scene.
@@ -95,7 +95,7 @@ class Scene(Segment):
         """ 
         
         ########################################
-        def partition_segement(new_seg, seg_start, seg_end, rest_pupil_size):
+        def partition_segment(new_seg, seg_start, seg_end, rest_pupil_size, export_pupilinfo):
             """ A helper method for splitting a Segment object into new Segments and removing gaps of invalid samples
             
             One way to deal with a low quality Segment is to find the gaps of invalid samples within its "Datapoint"s and 
@@ -141,7 +141,7 @@ class Scene(Segment):
                 if fix_end - fix_start>0:
                     try:
                         new_sub_seg = Segment(segid+"_"+str(sub_segid), all_data[all_start:all_end],
-                                      fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size)
+                                      fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size, export_pupilinfo=export_pupilinfo)
                     except  Exception as e:
                         warn(str(e))
                         if params.DEBUG:
@@ -161,7 +161,7 @@ class Scene(Segment):
             if fix_end - fix_start>0: #add the last sub_seg
                 try:
                     new_sub_seg = Segment(segid, all_data[all_start:all_end],
-                                      fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size)
+                                      fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size, export_pupilinfo=export_pupilinfo)
                 except  Exception as e:
                     warn(str(e))
                     if params.DEBUG:
@@ -190,7 +190,7 @@ class Scene(Segment):
                 if fix_end - fix_start>0:
                     try:
                         new_seg = Segment(segid, all_data[all_start:all_end],
-                                          fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size)
+                                          fixation_data[fix_start:fix_end], aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size, export_pupilinfo=export_pupilinfo)
                     except  Exception as e:
                         warn(str(e))
                         if params.DEBUG:
@@ -201,7 +201,7 @@ class Scene(Segment):
                     continue
                 
                 if (new_seg.largest_data_gap > params.MAX_SEG_TIMEGAP) and auto_partition: #low quality segment that needs to be partitioned!
-                    new_segs, samp_inds, fix_inds = partition_segement(new_seg, start, end, rest_pupil_size) 
+                    new_segs, samp_inds, fix_inds = partition_segment(new_seg, start, end, rest_pupil_size, export_pupilinfo=export_pupilinfo) 
                     for nseg,samp,fix in zip(new_segs, samp_inds, fix_inds):
                             if nseg.length > params.MINSEGSIZE:
                                 nseg.set_indices(samp[0],samp[1],fix[0],fix[1])
@@ -306,7 +306,8 @@ class Scene(Segment):
         self.numpupilsizes = sumfeat(segments,'numpupilsizes')
         self.adjvalidpupilsizes = mergevalues(segments, 'adjvalidpupilsizes')
         if self.numpupilsizes > 0: # check if scene has any pupil data
-            self.pupilinfo_for_export = mergevalues(segments, 'pupilinfo_for_export') 
+            if export_pupilinfo:
+                self.pupilinfo_for_export = mergevalues(segments, 'pupilinfo_for_export') 
             self.features['meanpupilsize'] = weightedmeanfeat(segments, 'numpupilsizes', "features['meanpupilsize']")
             self.features['stddevpupilsize'] = stddev(self.adjvalidpupilsizes)
             self.features['maxpupilsize'] = maxfeat(segments, "features['maxpupilsize']")
@@ -323,6 +324,7 @@ class Scene(Segment):
             self.features['endpupilsize'] = 0
 
         """end """
+
         self.numdistances = sumfeat(segments,'numdistances') #Distance
         self.distances_from_screen = mergevalues(segments, 'distances_from_screen')
         if self.numdistances > 0: # check if scene has any pupil data
@@ -339,7 +341,6 @@ class Scene(Segment):
             self.features['mindistance'] = 0
             self.features['startdistance'] = 0
             self.features['enddistance'] = 0
-
         """end """
         
         self.has_aois = False
@@ -468,7 +469,7 @@ class Scene(Segment):
                 lasty=y
 
         return rel_angles
-		
+
     def merge_aoisequences(self, segments):
         """returns the AOI sequence merged from the AOI sequences in the "Segment"s
         Args:
@@ -480,6 +481,13 @@ class Scene(Segment):
         for seg in segments:
             sequence.extend(seg.features['aoisequence'])
         return sequence
+
+    def clean_memory(self):
+        for seg in self.segments:
+            seg.adjvalidpupilsizes = []
+            seg.distances_from_screen = []
+        self.adjvalidpupilsizes = []
+        self.distances_from_screen = []
 
 def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations):
         """a helper method that updates the AOI_Stat object of this Scene with a new AOI_Stat object

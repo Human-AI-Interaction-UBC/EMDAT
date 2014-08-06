@@ -47,6 +47,6 @@ write_features_tsv(ps, './outputfolder/sample_features.tsv',featurelist = params
 write_features_tsv(ps, './outputfolder/sample_sequences.tsv',featurelist = params.aoisequencefeat, aoifeaturelist=aoi_feat_names, id_prefix = False)
 
 #### Export pupil dilations for each scene to a separate file
-print "--pupil dilation trends" 
-plot_pupil_dilation_all(ps, './outputfolder/pupilsizes/', "problem1")
-plot_pupil_dilation_all(ps, './outputfolder/pupilsizes/', "problem2")
+#print "--pupil dilation trends" 
+#plot_pupil_dilation_all(ps, './outputfolder/pupilsizes/', "problem1")
+#plot_pupil_dilation_all(ps, './outputfolder/pupilsizes/', "problem2")

@@ -21,7 +21,7 @@ class BasicParticipant(Participant):
     placeholder methods in the Participant class for a basic project
     """
     def __init__(self, pid, eventfile, datafile, fixfile, segfile, log_time_offset = None, aoifile = None, prune_length= None, 
-                 require_valid_segs = True, auto_partition_low_quality_segments = False, rpsdata = None):
+                 require_valid_segs = True, auto_partition_low_quality_segments = False, rpsdata = None, export_pupilinfo = False):
         """Inits BasicParticipant class
         Args:
             pid: Participant id
@@ -77,11 +77,13 @@ class BasicParticipant(Participant):
         self.features['numofsegments']= self.numofsegments
         
         self.segments, self.scenes = rec.process_rec(scenelist = scenelist,aoilist = aois,prune_length = prune_length, require_valid_segs = require_valid_segs, 
-                                                     auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = rpsdata)
+                                                     auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = rpsdata, export_pupilinfo=export_pupilinfo)
         Segments = self.segments
-        self.whole_scene = Scene('P'+str(pid),[],rec.all_data,rec.fix_data, Segments = self.segments, aoilist = aois,prune_length = prune_length, require_valid = require_valid_segs )
+        self.whole_scene = Scene('P'+str(pid),[],rec.all_data,rec.fix_data, Segments = self.segments, aoilist = aois,prune_length = prune_length, require_valid = require_valid_segs, export_pupilinfo=export_pupilinfo )
         self.scenes.insert(0,self.whole_scene)
-        
+
+        for sc in self.scenes:
+            sc.clean_memory()
 
                
 def read_participants_Basic(datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets=None, 
