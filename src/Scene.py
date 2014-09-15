@@ -185,6 +185,8 @@ class Scene(Segment):
 #            print "seglist",seglist
             for (segid, start, end) in seglist:
                 print "segid, start, end:",segid, start, end
+                if prune_length != None:
+				    end = min(end, start+prune_length)
                 _, all_start, all_end = get_chunk(all_data, 0, start, end)
                 _, fix_start, fix_end = get_chunk(fixation_data, 0, start, end)
                 if fix_end - fix_start>0:
