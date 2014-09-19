@@ -115,7 +115,7 @@ def chunks(l, n):
         return l2
 
 def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets=None, 
-                          require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None, trial_orders=None, export_pupilinfo = False):
+                          require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None, export_pupilinfo = False):
     """Generates list of Participant objects in parallel computing. Relevant information is read from input files
     
     Args:
