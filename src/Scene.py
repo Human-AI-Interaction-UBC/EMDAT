@@ -288,18 +288,23 @@ class Scene(Segment):
             self.features['eyemovementvelocity'] = self.features['sumpathdistance']/self.length
             self.features['sumabspathangles'] = sum(abs_angles)
             self.features['meanabspathangles'] = mean(abs_angles)
+            self.features['abspathanglesrate'] = sum(abs_angles)/self.length
             self.features['stddevabspathangles'] = stddev(abs_angles)
             self.features['sumrelpathangles'] = sum(rel_angles)
+            self.features['relpathanglesrate'] = sum(rel_angles)/self.length
             self.features['meanrelpathangles'] = mean(rel_angles)
             self.features['stddevrelpathangles'] = stddev(rel_angles)
         else:
             self.features['meanpathdistance'] = 0
             self.features['sumpathdistance'] = 0
             self.features['stddevpathdistance'] = 0
+            self.features['eyemovementvelocity'] = 0
             self.features['sumabspathangles'] = 0
+            self.features['abspathanglesrate'] = 0
             self.features['meanabspathangles']= 0
             self.features['stddevabspathangles']= 0
             self.features['sumrelpathangles'] = 0
+            self.features['relpathanglesrate'] = 0
             self.features['meanrelpathangles']= 0
             self.features['stddevrelpathangles'] = 0
         

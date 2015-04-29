@@ -41,7 +41,9 @@ MEDIA_OFFSET = (0, 0)
 
 featurelist = ['numsegments','length','numfixations','fixationrate','meanabspathangles',
                'meanfixationduration','meanpathdistance','meanrelpathangles','stddevabspathangles',
-               'stddevfixationduration','stddevpathdistance','stddevrelpathangles']#'numsamples','sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
+               'stddevfixationduration','stddevpathdistance','stddevrelpathangles',
+			   'eyemovementvelocity', 'abspathanglesrate', 'relpathanglesrate',
+			   'sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']#'numsamples']
 
 #add pupil dilation 
 featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'])
