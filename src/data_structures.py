@@ -231,9 +231,17 @@ class Event():
     
     Please refer to the Tobii manual for the description of the attributes
     """
-    def __init__(self, eventstr):
+    def __init__(self, eventstr, media_offset = (0, 0)):
         """Inits Event class with a line of gaze data from an "Event-Data.tsv" file
-        
+			Format:
+			ScreenRecStarted|8192
+			ScreenRecStopped|16384 
+			URLStart|512|||URL/website name 
+			URLEnd|024|||URL/website name
+			KeyPress|4|ASCII code for key pressed||Key name
+			LeftMouseClick|1|X mouse coordinate|Y mouse coordinate
+			RightMouseClick|2|X mouse coordinate|Y mouse coordinate
+			LogData|0|Log name|Logging comment 
         Args:
             eventstr: a string containing one line read from an "Event-Data.tsv" file
             
@@ -245,6 +253,34 @@ class Event():
         [self.timestamp, self.event, self.eventKey, self.data1, self.data2,self.descriptor,_] = eventstr.split('\t')
         self.timestamp = cast_int(self.timestamp)
         self.eventKey = cast_int(self.eventKey)
+        if self.event == "LeftMouseClick" or self.event == "RightMouseClick":
+            (media_offset_x, media_offset_y) = media_offset
+            self.data1 = cast_int(self.data1) - media_offset_x
+            self.data2 = cast_int(self.data2) - media_offset_y
+        elif self.event == "KeyPress":
+            self.data1 = cast_int(self.data1)
+        self.segid = None
+		
+    def set_segid(self,segid):
+        """Sets the "Segment" id for this Event
+        
+        Args:
+            segid: a string containing the "Segment" id
+        """
+        self.segid = segid
+
+    def get_segid(self):
+        """Returns the "Segment" id for this Event
+            
+        Returns:
+            a string containing the "Segment" id
+            
+        Raises:
+            Exception: if the segid is not set before reading it an Exception will be thrown
+        """
+        if self.segid != None:
+            return self.segid
+        raise Exception('The segid is accessed before setting the initial value in a fixation point!')
 
 
 def cast_int(str):

@@ -19,7 +19,7 @@ from utils import *
 
 
 class Recording():
-    def __init__(self, all_file, fixation_file, media_offset = (0,0)):
+    def __init__(self, all_file, fixation_file, event_file=None, media_offset = (0,0)):
         """
         Args:
             all_file: a string containing the filename of the 'All-Data.tsv' 
@@ -38,10 +38,18 @@ class Recording():
         self.all_data = read_all_data(all_file)
         if len(self.all_data)==0:
             raise Exception("The file '"+all_file+"' has no samples!")
-        self.fix_data = read_fixation_data(fixation_file, 
-                                           media_offset = params.MEDIA_OFFSET)
+
+        self.fix_data = read_fixation_data(fixation_file, media_offset = params.MEDIA_OFFSET)
         if len(self.fix_data)==0:
             raise Exception("The file '"+fixation_file+"' has no fixations!")
+
+        if event_file != None:
+            self.event_data = read_event_data(event_file, media_offset = params.MEDIA_OFFSET)
+            if len(self.event_data)==0:
+                raise Exception("The file '"+event_file+"' has no events!")
+        else:
+                self.event_data = None
+
 
     def process_rec(self, segfile = None, scenelist = None,  aoifile = None, 
                     aoilist = None , prune_length = None, require_valid_segs = True, 
@@ -124,7 +132,7 @@ class Recording():
                             pass
                 else:
                     scrpsdata = 0
-                newSc = Scene(scid, sc, self.all_data,self.fix_data, aoilist=aoilist, 
+                newSc = Scene(scid, sc, self.all_data,self.fix_data, event_data = self.event_data, aoilist=aoilist, 
                               prune_length=prune_length, 
                               require_valid = require_valid_segs,
                               auto_partition = auto_partition_low_quality_segments, rest_pupil_size = scrpsdata, export_pupilinfo=export_pupilinfo)               
@@ -255,6 +263,26 @@ def read_fixation_data(fixation_file, media_offset = (0,0)):
 
     return map(lambda x: Fixation(x, media_offset=media_offset), 
                lines[params.FIXATIONHEADERLINES:])
+
+def read_event_data(event_file, media_offset = (0,0)):
+    """Returns a list of "Event"s read from an "Event-Data" file. 
+
+    Args:
+        event_file: A string containing the name of the 'Event-Data.tsv' file output by the
+            Tobii software.
+        media_offset: the coordinates of the top left corner of the window
+                showing the interface under study. (0,0) if the interface was
+                in full screen (default value) 
+    Returns:
+        a list of "Event"s
+    """
+
+    with open(event_file, 'r') as f:
+        lines = f.readlines()
+
+    return map(lambda x: Event(x, media_offset=media_offset), 
+               lines[params.EVENTSHEADERLINES:])
+
 
 def read_aois_Tobii(aoifile):
     """Returns a list of "AOI"s read from a '.aoi' file.

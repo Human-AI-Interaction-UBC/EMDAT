@@ -49,7 +49,7 @@ class Segment():
         has_aois: A boolean indicating if this Segment has AOI features calculated for it
         
     """
-    def __init__(self, segid, all_data, fixation_data, aois = None, prune_length = None, rest_pupil_size = 0, export_pupilinfo = False):
+    def __init__(self, segid, all_data, fixation_data, event_data = None, aois = None, prune_length = None, rest_pupil_size = 0, export_pupilinfo = False):
         """
         Args:
             segid: A string containing the id of the Segment.
@@ -89,10 +89,10 @@ class Segment():
         self.validity3 = self.calc_validity3()
         self.is_valid = self.get_validity()
         if prune_length:
-            all_data = filter(lambda x: x.timestamp <= self.start +
-            prune_length, all_data)
-            fixation_data = filter(lambda x: x.timestamp <= self.start +
-            prune_length, fixation_data)
+            all_data = filter(lambda x: x.timestamp <= self.start + prune_length, all_data)
+            fixation_data = filter(lambda x: x.timestamp <= self.start + prune_length, fixation_data)
+            if  event_data != None:   
+                event_data = filter(lambda x: x.timestamp <= self.start + prune_length, event_data)
         self.end = all_data[-1].timestamp
         self.length = self.end - self.start
         self.features['length'] = self.end - self.start
@@ -216,12 +216,46 @@ class Segment():
             self.features['relpathanglesrate'] = 0
             self.features['meanrelpathangles']= 0
             self.features['stddevrelpathangles'] = 0
+			
+        if event_data != None:
+            (leftc, rightc, doublec, keyp) = generate_event_lists(event_data)
+			
+            self.numevents = len(leftc)+len(rightc)+len(doublec)+len(keyp)
+            self.features['numevents'] = self.numevents
+			
+            self.features['numleftclic'] = len(leftc)
+            self.features['numrightclic'] = len(rightc)
+            self.features['numdoubleclic'] = len(doublec)
+            self.features['numkeypressed'] = len(keyp)
+            self.features['leftclicrate'] = float(len(leftc))/self.length
+            self.features['rightclicrate'] = float(len(rightc))/self.length
+            self.features['doubleclicrate'] = float(len(doublec))/self.length
+            self.features['keypressedrate'] = float(len(keyp))/self.length
+            self.features['timetofirstleftclic'] = leftc[0].timestamp if len(leftc) > 0 else -1
+            self.features['timetofirstrightclic'] = rightc[0].timestamp if len(rightc) > 0 else -1
+            self.features['timetofirstdoubleclic'] = doublec[0].timestamp if len(doublec) > 0 else -1
+            self.features['timetofirstkeypressed'] = keyp[0].timestamp if len(keyp) > 0 else -1
+        else:
+            self.features['numevents'] = 0
+            self.features['numleftclic'] = 0
+            self.features['numrightclic'] = 0
+            self.features['numdoubleclic'] = 0
+            self.features['numkeypressed'] = 0
+            self.features['leftclicrate'] = 0
+            self.features['rightclicrate'] = 0
+            self.features['doubleclicrate'] = 0
+            self.features['keypressedrate'] = 0
+            self.features['timetofirstleftclic'] = -1
+            self.features['timetofirstrightclic'] = -1
+            self.features['timetofirstdoubleclic'] = -1
+            self.features['timetofirstkeypressed'] = -1
+
         self.has_aois = False
         if aois:
-            self.set_aois(aois,fixation_data)
+            self.set_aois(aois,fixation_data, event_data)
             self.features['aoisequence'] = self.generate_aoi_sequence(fixation_data, aois)
 
-    def set_indices(self,sample_st,sample_end,fix_st,fix_end):
+    def set_indices(self,sample_st,sample_end,fix_st,fix_end,event_st=None,event_end=None):
         """Sets the index features
         
         Args:
@@ -234,6 +268,8 @@ class Segment():
         self.sample_end_ind = sample_end
         self.fixation_start_ind = fix_st
         self.fixation_end_ind = fix_end
+        self.event_start_ind = event_st
+        self.event_end_ind = event_end
 
     def get_indices(self):
         """Returns the index features
@@ -248,10 +284,10 @@ class Segment():
             Exception: An exception is thrown if the values are read before initialization
         """
         if self.sample_start_ind != None:
-            return self.sample_start_ind, self.sample_end_ind, self.fixation_start_ind, self.fixation_end_ind 
+            return self.sample_start_ind, self.sample_end_ind, self.fixation_start_ind, self.fixation_end_ind, self.event_start_ind, self.event_end_ind
         raise Exception ('The indices values are accessed before setting the initial value in segement:'+self.segid+'!')
 
-    def set_aois(self, aois, fixation_data):
+    def set_aois(self, aois, fixation_data, event_data = None):
         """Sets the relevant "AOI"s for this Segment
         
         Args:
@@ -271,7 +307,7 @@ class Segment():
             warn(msg)
         self.aoi_data = {}
         for aoi in active_aois:
-            aoistat = AOI_Stat(aoi, fixation_data, self.start, self.end, active_aois)
+            aoistat = AOI_Stat(aoi, fixation_data, self.start, self.end, active_aois, event_data)
             self.aoi_data[aoi.aid] = aoistat
             self.has_aois = True
 

@@ -64,7 +64,7 @@ class BasicParticipant(Participant):
         
         print "reading the files"
         self.features={}
-        rec = Recording.Recording(datafile, fixfile, params.MEDIA_OFFSET)
+        rec = Recording.Recording(datafile, fixfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
         print "Done!"
         
         scenelist,self.numofsegments = partition_Basic(segfile)
@@ -79,7 +79,7 @@ class BasicParticipant(Participant):
         self.segments, self.scenes = rec.process_rec(scenelist = scenelist,aoilist = aois,prune_length = prune_length, require_valid_segs = require_valid_segs, 
                                                      auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = rpsdata, export_pupilinfo=export_pupilinfo)
         Segments = self.segments
-        self.whole_scene = Scene('P'+str(pid),[],rec.all_data,rec.fix_data, Segments = self.segments, aoilist = aois,prune_length = prune_length, require_valid = require_valid_segs, export_pupilinfo=export_pupilinfo )
+        self.whole_scene = Scene('P'+str(pid),[],rec.all_data,rec.fix_data, event_data = rec.event_data, Segments = self.segments, aoilist = aois,prune_length = prune_length, require_valid = require_valid_segs, export_pupilinfo=export_pupilinfo )
         self.scenes.insert(0,self.whole_scene)
 
         for sc in self.scenes:

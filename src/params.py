@@ -27,7 +27,7 @@ ALLDATAHEADERLINES = 26
 #number of lines at the beginning of the 'All-Data' files exported from Tobii before 
 #the actual data 
 
-EVENTSHEADERLINES = 19
+EVENTSHEADERLINES = 28
 #number of lines at the beginning of the 'Event-Data' files exported from Tobii before 
 #the actual data 
 
@@ -51,12 +51,18 @@ featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupi
 #add distance from screen
 featurelist.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
 
+#add events
+featurelist.extend(['numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'numkeypressed', 'leftclicrate', 'rightclicrate', 'doubleclicrate', 'keypressedrate', 
+               'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic', 'timetofirstkeypressed'])
+
 # list of non-AOI feature names
 aoisequencefeat = ['aoisequence']
 
 # AOI sequence feature
 aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum',
-                  'proportiontime','longestfixation']#'timetofirstfixation','timetolastfixation',
+                  'proportiontime','longestfixation', 'timetofirstfixation','timetolastfixation',
+				  'numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'leftclicrate', 'rightclicrate', 'doubleclicrate',
+                  'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic']
 
 #list of general AOI features
 aoinames = ['Top','Bottom','Graph','Toolbar','Test']

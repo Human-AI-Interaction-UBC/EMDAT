@@ -121,7 +121,7 @@ class AOI_Stat():
     """Methods of AOI_Stat calculate and store all features related to the given AOI object
     """
 
-    def __init__(self,aoi,seg_fixation_data, starttime, endtime, active_aois):
+    def __init__(self,aoi,seg_fixation_data, starttime, endtime, active_aois, seg_event_data=None):
         """Inits AOI_Stat class
         
         Args:
@@ -146,14 +146,24 @@ class AOI_Stat():
                 print "partition",partition
             _,st,en = get_chunk(seg_fixation_data, 0, partition[0],partition[1])
             fixation_data = seg_fixation_data[st:en]
+            if seg_event_data != None:
+                _,st,en = get_chunk(seg_event_data, 0, intr[0],intr[1])
+                event_data += seg_event_data[st:en]
             if params.DEBUG:
                 print "len(seg_fixation_data)",seg_fixation_data
                 print "len(fixation_data)",fixation_data
         else:  #global AOI (alaways active)
             fixation_data = seg_fixation_data 
-        fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i],self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
+            if seg_event_data != None:
+                event_data = seg_event_data 
 
+        fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i],self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
         fixations = map(lambda i: fixation_data[i], fixation_indices)
+
+        if seg_event_data != None:
+            event_indices = filter(lambda i: _event_inside_aoi(event_data[i],self.aoi.polyin, self.aoi.polyout), range(len(event_data)))
+            events = map(lambda i: event_data[i], event_indices)
+            (leftc, rightc, doublec, _) = generate_event_lists(events)
     
         self.features = {}
 
@@ -165,8 +175,9 @@ class AOI_Stat():
         self.features['proportionnum'] = 0
         totaltimespent = sum(map(lambda x: x.fixationduration, fixations))
         self.features['totaltimespent'] = totaltimespent 
+        length = endtime - starttime
         
-        self.features['proportiontime'] = float(totaltimespent)/(endtime - starttime)
+        self.features['proportiontime'] = float(totaltimespent)/length
         if numfixations > 0:
             self.features['longestfixation'] = max(map(lambda x: x.fixationduration,
             fixations))
@@ -181,8 +192,19 @@ class AOI_Stat():
             self.features['proportionnum'] = 0
             self.features['fixationrate'] = 0
                 
+        if seg_event_data != None:
+            self.features['numevents'] = len(events)
+            self.features['numleftclic'] = len(leftc)
+            self.features['numrightclic'] = len(rightc)
+            self.features['numdoubleclic'] = len(doublec)
+            self.features['leftclicrate'] = float(len(leftc))/length if length>0 else 0
+            self.features['rightclicrate'] = float(len(rightc))/length if length>0 else 0
+            self.features['doubleclicrate'] = float(len(doublec))/length if length>0 else 0
+            self.features['timetofirstleftclic'] = leftc[0].timestamp - starttime if len(leftc) > 0 else -1
+            self.features['timetofirstrightclic'] = rightc[0].timestamp - starttime if len(rightc) > 0 else -1
+            self.features['timetofirstdoubleclic'] = doublec[0].timestamp - starttime if len(doublec) > 0 else -1
                 
-            
+
         #calculating the transitions to and from this AOI and other active AOIs at the moment
         for aoi in active_aois:
             aid = aoi.aid
@@ -302,3 +324,20 @@ def _fixation_inside_aoi(fixation, polyin, polyout):
     fixation.mappedfixationpointy, polyin) and not point_inside_polygon(fixation.mappedfixationpointx,
     fixation.mappedfixationpointy, polyout)     
          
+def _event_inside_aoi(event, polyin, polyout):
+    """Helper function that checks if an event (mouse clic) object is inside the AOI described by external polygon polyin and the internal polygon polyout.
+    
+    Event object is inside AOI if it is inside polyin but outside polyout
+    
+    Args:
+        event: An Event object
+        polyin: the external polygon in form of a list of (x,y) tuples
+        polyout: the internal polygon in form of a list of (x,y) tuples
+    
+    Returns: 
+        A boolean for whether the Fixation is inside the AOI or not
+    """
+    if event.event == "LeftMouseClick" or event.event == "RightMouseClick": #keep only mouse clics
+        return point_inside_polygon(event.data1, event.data2, polyin) and not point_inside_polygon(event.data1, event.data2, polyout)     
+    else:
+        return False
