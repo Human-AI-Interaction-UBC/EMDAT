@@ -47,7 +47,7 @@ class Recording:
             raise Exception("The file '" + fixation_file + "' has no fixations!")
 
         if event_file is not None:
-            self.event_data = read_event_data(event_file, media_offset=params.MEDIA_OFFSET)
+            self.event_data = self.read_event_data(event_file, media_offset=params.MEDIA_OFFSET)
             if len(self.event_data) == 0:
                 raise Exception("The file '" + event_file + "' has no events!")
         else:
@@ -61,6 +61,11 @@ class Recording:
     @staticmethod
     @abstractmethod
     def read_fixation_data(fixation_file, media_offset=(0, 0)):
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def read_event_data(event_file, media_offset=(0, 0)):
         pass
 
     def process_rec(self, segfile=None, scenelist=None, aoifile=None,
@@ -299,25 +304,38 @@ class TobiiRecording(Recording):
 
         return all_fixation
 
+    @staticmethod
+    def read_event_data(event_file, media_offset=(0, 0)):
+        """Returns a list of "Event"s read from an "Event-Data" file.
 
-def read_event_data(event_file, media_offset = (0,0)):
-    """Returns a list of "Event"s read from an "Event-Data" file. 
+        Args:
+            event_file: A string containing the name of the 'Event-Data.tsv' file output by the
+                Tobii software.
+            media_offset: the coordinates of the top left corner of the window
+                    showing the interface under study. (0,0) if the interface was
+                    in full screen (default value)
+        Returns:
+            a list of "Event"s
+        """
 
-    Args:
-        event_file: A string containing the name of the 'Event-Data.tsv' file output by the
-            Tobii software.
-        media_offset: the coordinates of the top left corner of the window
-                showing the interface under study. (0,0) if the interface was
-                in full screen (default value) 
-    Returns:
-        a list of "Event"s
-    """
+        all_event = []
+        with open(event_file, 'r') as f:
+            for _ in xrange(params.EVENTSHEADERLINES - 2):
+                next(f)
+            reader = csv.DictReader(f, delimiter='\t')
+            for row in reader:
+                data = {"timestamp": cast_int(row["Timestamp"]),
+                        "event": row["Event"],
+                        "event_key": cast_int(row["EventKey"])}
+                if data["event"] == "LeftMouseClick" or data["event"] == "RightMouseClick":
+                    data.update({"x_coord": cast_int(row["Data1"]), "y_coord": cast_int(row["Data2"])})
+                elif data["event"] == "KeyPress":
+                    data.update({"key_code": cast_int(row["Data1"]), "key_name": row["Descriptor"]})
+                elif data["event"] == "LogData":
+                    data.update({"description": row["Data1"]})
+                all_event.append(Event(data, media_offset))
 
-    with open(event_file, 'r') as f:
-        lines = f.readlines()
-
-    return map(lambda x: Event(x, media_offset=media_offset),
-               lines[params.EVENTSHEADERLINES:])
+        return all_event
 
 
 def read_aois_Tobii(aoifile):
