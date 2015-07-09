@@ -6,7 +6,7 @@ Created on 2012-08-23
 """
 
 from data_structures import *
-import Recording
+from Recording import TobiiRecording
 params=__import__('params')
 from Participant import *
 from AOI import AOI
@@ -64,7 +64,7 @@ class BasicParticipant(Participant):
         
         print "reading the files"
         self.features={}
-        rec = Recording.Recording(datafile, fixfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
+        rec = TobiiRecording(datafile, fixfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
         print "Done!"
         
         scenelist,self.numofsegments = partition_Basic(segfile)
