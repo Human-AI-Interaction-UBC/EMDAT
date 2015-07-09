@@ -42,7 +42,7 @@ class Recording:
         if len(self.all_data) == 0:
             raise Exception("The file '" + all_file + "' has no samples!")
 
-        self.fix_data = read_fixation_data(fixation_file, media_offset=params.MEDIA_OFFSET)
+        self.fix_data = self.read_fixation_data(fixation_file, media_offset=params.MEDIA_OFFSET)
         if len(self.fix_data) == 0:
             raise Exception("The file '" + fixation_file + "' has no fixations!")
 
@@ -56,6 +56,11 @@ class Recording:
     @staticmethod
     @abstractmethod
     def read_all_data(all_file):
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def read_fixation_data(fixation_file, media_offset=(0, 0)):
         pass
 
     def process_rec(self, segfile=None, scenelist=None, aoifile=None,
@@ -265,25 +270,35 @@ class TobiiRecording(Recording):
 
         return all_data
 
+    @staticmethod
+    def read_fixation_data(fixation_file, media_offset=(0, 0)):
+        """Returns a list of "Fixation"s read from an "Fixation-Data" file.
 
-def read_fixation_data(fixation_file, media_offset=(0, 0)):
-    """Returns a list of "Fixation"s read from an "Fixation-Data" file. 
+        Args:
+            fixation_file: A string containing the name of the 'Fixation-Data.tsv' file output by the
+                Tobii software.
+            media_offset: the coordinates of the top left corner of the window
+                    showing the interface under study. (0,0) if the interface was
+                    in full screen (default value)
+        Returns:
+            a list of "Fixation"s
+        """
 
-    Args:
-        fixation_file: A string containing the name of the 'Fixation-Data.tsv' file output by the
-            Tobii software.
-        media_offset: the coordinates of the top left corner of the window
-                showing the interface under study. (0,0) if the interface was
-                in full screen (default value) 
-    Returns:
-        a list of "Fixation"s
-    """
+        all_fixation = []
+        with open(fixation_file, 'r') as f:
+            for _ in xrange(params.FIXATIONHEADERLINES - 1):
+                next(f)
+            reader = csv.DictReader(f, delimiter='\t')
+            for row in reader:
+                data = {"fixationindex": cast_int(row["FixationIndex"]),
+                        "timestamp": cast_int(row["Timestamp"]),
+                        "fixationduration": cast_int(row["FixationDuration"]),
+                        "fixationpointx": cast_int(row["MappedFixationPointX"]),
+                        "fixationpointy": cast_int(row["MappedFixationPointY"])}
+                all_fixation.append(Fixation(data, media_offset))
 
-    with open(fixation_file, 'r') as f:
-        lines = f.readlines()
+        return all_fixation
 
-    return map(lambda x: Fixation(x, media_offset=media_offset),
-               lines[params.FIXATIONHEADERLINES:])
 
 def read_event_data(event_file, media_offset = (0,0)):
     """Returns a list of "Event"s read from an "Event-Data" file. 

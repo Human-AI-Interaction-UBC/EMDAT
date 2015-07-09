@@ -43,21 +43,19 @@ class Datapoint:
         self.segid = None
 
 
-class Fixation():
+class Fixation:
     """
-    A class that holds the information for one Fixation representing one line in a "Fixation-Data.tsv" file
+    A class that holds the information for one Fixation
     
     Attributes:
-        segid: a string indicating the Segment that this Datapoint belongs to
-    
-        Please refer to the Tobii manual for the description of the rest of the attributes
+        segid: a string indicating the Segment to which this Datapoint belongs
     """
 
-    def __init__(self, fix_point, media_offset = (0, 0)):
-        """Inits Fixation class with a line of gaze data from a "Fixation-Data.tsv" file
+    def __init__(self, data, media_offset = (0, 0)):
+        """Initializes a Fixation with attributes
         
         Args:
-            fix_point: a string containing one line read from a "Fixation-Data.tsv" file        
+            data: a dictionary containing attributes of a fixation
             media_offset: the coordinates of the top left corner of the window
                 showing the interface under study. (0,0) if the interface was
                 in full screen (default value)
@@ -66,19 +64,24 @@ class Fixation():
             a Fixation object
         """
 
-        #fix_point = fix_point.replace('\t\r\n','')
-        [self.fixationindex, self.timestamp, self.fixationduration, self.mappedfixationpointx, self.mappedfixationpointy,_] = fix_point.split('\t')
-        self.fixationindex = cast_int(self.fixationindex)
-        self.timestamp = cast_int(self.timestamp)
-        self.fixationduration = cast_int(self.fixationduration)
-        if self.fixationduration == 0:
-            warn("A zero duration Fixation!")
-        (media_offset_x, media_offset_y) = media_offset
-        self.mappedfixationpointx = cast_int(self.mappedfixationpointx) - media_offset_x
-        self.mappedfixationpointy = cast_int(self.mappedfixationpointy) - media_offset_y
+        self.fixationindex = data.get("fixationindex", None)
+        self.timestamp = data.get("timestamp", None)
+        self.fixationduration = data.get("fixationduration", None)
+        self.mappedfixationpointx = data.get("fixationpointx", None)
+        self.mappedfixationpointy = data.get("fixationpointy", None)
         self.segid = None
 
-    def set_segid(self,segid):
+        if self.fixationduration == 0:
+            warn("A zero duration fixation.")
+
+        if self.mappedfixationpointx is None or self.mappedfixationpointx is None:
+            warn("A fixation with invalid coordinates")
+        else:
+            (media_offset_x, media_offset_y) = media_offset
+            self.mappedfixationpointx -= media_offset_x
+            self.mappedfixationpointy -= media_offset_y
+
+    def set_segid(self, segid):
         """Sets the "Segment" id for this Fixation
         
         Args:
@@ -95,9 +98,9 @@ class Fixation():
         Raises:
             Exception: if the segid is not set before reading it an Exception will be thrown
         """
-        if self.segid != None:
+        if self.segid is not None:
             return self.segid
-        raise Exception('The segid is accessed before setting the initial value in a fixation point!')
+        raise Exception('The segid is accessed before setting the initial value in a fixation point.')
 
 
 class Event():
