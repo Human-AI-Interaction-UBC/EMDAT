@@ -559,7 +559,7 @@ class Scene(Segment):
         """
         sequence = []
         for seg in segments:
-            sequence.extend(seg.features['aoisequence'])
+            sequence.extend(seg.features.get('aoisequence', []))
         return sequence
 
     def clean_memory(self):
