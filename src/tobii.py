@@ -1,18 +1,17 @@
-from Recording import Recording
+import Recording
 from data_structures import Datapoint, Fixation, Event
 import csv
 import utils
 import params
 
 
-class TobiiRecording(Recording):
-    @staticmethod
-    def read_all_data(all_file):
+class TobiiRecording(Recording.Recording):
+    def read_all_data(self, all_file):
         """Returns a list of "Datapoint"s read from an "All-Data" file.
 
         Args:
-            all_file:A string containing the name of the 'All-Data.tsv' file output by the
-                Tobii software.
+            all_file:A string containing the name of the 'All-Data.tsv' file output by the Tobii software.
+
         Returns:
             a list of "Datapoint"s
         """
@@ -39,16 +38,12 @@ class TobiiRecording(Recording):
 
         return all_data
 
-    @staticmethod
-    def read_fixation_data(fixation_file, media_offset=(0, 0)):
+    def read_fixation_data(self, fixation_file):
         """Returns a list of "Fixation"s read from an "Fixation-Data" file.
 
         Args:
-            fixation_file: A string containing the name of the 'Fixation-Data.tsv' file output by the
-                Tobii software.
-            media_offset: the coordinates of the top left corner of the window
-                    showing the interface under study. (0,0) if the interface was
-                    in full screen (default value)
+            fixation_file: A string containing the name of the 'Fixation-Data.tsv' file output by the Tobii software.
+
         Returns:
             a list of "Fixation"s
         """
@@ -64,20 +59,16 @@ class TobiiRecording(Recording):
                         "fixationduration": utils.cast_int(row["FixationDuration"]),
                         "fixationpointx": utils.cast_int(row["MappedFixationPointX"]),
                         "fixationpointy": utils.cast_int(row["MappedFixationPointY"])}
-                all_fixation.append(Fixation(data, media_offset))
+                all_fixation.append(Fixation(data, self.media_offset))
 
         return all_fixation
 
-    @staticmethod
-    def read_event_data(event_file, media_offset=(0, 0)):
+    def read_event_data(self, event_file):
         """Returns a list of "Event"s read from an "Event-Data" file.
 
         Args:
-            event_file: A string containing the name of the 'Event-Data.tsv' file output by the
-                Tobii software.
-            media_offset: the coordinates of the top left corner of the window
-                    showing the interface under study. (0,0) if the interface was
-                    in full screen (default value)
+            event_file: A string containing the name of the 'Event-Data.tsv' file output by the Tobii software.
+
         Returns:
             a list of "Event"s
         """
@@ -97,6 +88,6 @@ class TobiiRecording(Recording):
                     data.update({"key_code": utils.cast_int(row["Data1"]), "key_name": row["Descriptor"]})
                 elif data["event"] == "LogData":
                     data.update({"description": row["Data1"]})
-                all_event.append(Event(data, media_offset))
+                all_event.append(Event(data, self.media_offset))
 
         return all_event

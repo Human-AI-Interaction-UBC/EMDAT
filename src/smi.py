@@ -1,13 +1,12 @@
-from Recording import Recording
+import Recording
 from data_structures import Datapoint, Fixation, Event
 import utils
 import csv
 import params
 
 
-class SMIRecording(Recording):
-    @staticmethod
-    def read_all_data(all_file):
+class SMIRecording(Recording.Recording):
+    def read_all_data(self, all_file):
         all_data = []
         with open(all_file, 'r') as f:
             reader = csv.DictReader(f)
@@ -27,8 +26,7 @@ class SMIRecording(Recording):
 
         return all_data
 
-    @staticmethod
-    def read_fixation_data(fixation_file, media_offset=(0, 0)):
+    def read_fixation_data(self, fixation_file):
         all_fixation = []
         with open(fixation_file, 'r') as f:
             for i in xrange(params.EVENTS_FIRST_DATA_LINE - 1):
@@ -45,12 +43,11 @@ class SMIRecording(Recording):
                         "fixationduration": utils.cast_int(row["Duration"]),
                         "fixationpointx": utils.cast_float(row["Location X"]),
                         "fixationpointy": utils.cast_float(row["Location Y"])}
-                all_fixation.append(Fixation(data, media_offset))
+                all_fixation.append(Fixation(data, self.media_offset))
 
         return all_fixation
 
-    @staticmethod
-    def read_event_data(event_file, media_offset=(0, 0)):
+    def read_event_data(self, event_file):
         all_event = []
         with open(event_file, 'r') as f:
             for i in xrange(params.EVENTS_FIRST_DATA_LINE - 1):
@@ -75,7 +72,7 @@ class SMIRecording(Recording):
                                  "y_coord": utils.cast_int(descriptions[5].split("=")[1])})
                 elif event_type == "UE-keypress":
                     data.update({"event": "KeyPress", "key_name": descriptions[3]})
-                all_event.append(Event(data, media_offset))
+                all_event.append(Event(data, self.media_offset))
 
         return all_event
 
