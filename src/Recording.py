@@ -56,16 +56,44 @@ class Recording:
     @staticmethod
     @abstractmethod
     def read_all_data(all_file):
+
+        """ Read the data file that contains all gaze points.
+
+        :param all_file: path to file that contains all gaze points
+        :type all_file: string
+        :return: a list of Datapoints
+        :rtype: list[Datapoint]
+        """
         pass
 
     @staticmethod
     @abstractmethod
     def read_fixation_data(fixation_file, media_offset=(0, 0)):
+        """ Read the data file that contains all fixations.
+
+        :param fixation_file :path to file that contains all gaze points
+        :param media_offset: the coordinates of the top left corner of the window
+                showing the interface under study. (0,0) if the interface was
+                in full screen (default value).
+        :type fixation_file: string
+        :return: a list of Fixations
+        :rtype: list[Fixation]
+        """
         pass
 
     @staticmethod
     @abstractmethod
     def read_event_data(event_file, media_offset=(0, 0)):
+        """ Read the data file that contains all events.
+
+        :param event_file :path to file that contains all events
+        :param media_offset: the coordinates of the top left corner of the window
+                showing the interface under study. (0,0) if the interface was
+                in full screen (default value).
+        :type event_file: string
+        :return: a list of Events
+        :rtype: list[Event]
+        """
         pass
 
     def process_rec(self, segfile=None, scenelist=None, aoifile=None,
@@ -113,13 +141,13 @@ class Recording:
         """
 
         if segfile is not None:
-            scenelist = read_segs(segfile)
+            scenelist = self.read_segs(segfile)
             print "Done reading the segments!"
         elif scenelist is None:
             print "Error in scene file"
 
         if aoifile is not None:
-            aoilist = read_aois_Tobii(aoifile)
+            aoilist = self.read_aois_Tobii(aoifile)
             print "Done reading the AOIs!"
         elif aoilist is None:
             aoilist = []
@@ -239,189 +267,112 @@ class Recording:
 #                                           prune_length=prune_length))
 #        return ret
 
-
-
-class TobiiRecording(Recording):
     @staticmethod
-    def read_all_data(all_file):
-        """Returns a list of "Datapoint"s read from an "All-Data" file.
+    def read_aois_Tobii(aoifile):
+        """Returns a list of "AOI"s read from a '.aoi' file.
+
+        The '.aoi' files have pairs of lines of the form:
+        aoiname[tab]point1x,point1y[tab]point2x,point2y[tab]...[new line]
+        #[tab]start1,end1[tab]...[new line]
+
+        The first line determines name of the AOI and the coordinates of each vertex of
+        the polygon that determines the boundaries of the AOI.
+        The second line which starts with a '#' is optional and determines the time
+        intervals when the AOI is active. If the second line does not exist the AOI will
+        be active throughout the whole session (global AOI).
+        *Note: If the AOIs are exported from Tobii software the '.aoi' file will only have the
+        first line for each AOI and you need to override this method to generate AOIs that are
+        active only at certain times (non-global AOI).
 
         Args:
-            all_file:A string containing the name of the 'All-Data.tsv' file output by the
-                Tobii software.
-        Returns:
-            a list of "Datapoint"s
-        """
-        all_data = []
-        with open(all_file, 'r') as f:
-            for _ in xrange(params.ALLDATAHEADERLINES + params.NUMBEROFEXTRAHEADERLINES - 1):
-                next(f)
-            reader = csv.DictReader(f, delimiter="\t")
-            for row in reader:
-                if not row["Number"]:  # ignore invalid data point
-                    continue
-                pupil_left = cast_float(row["PupilLeft"], -1)
-                pupil_right = cast_float(row["PupilRight"], -1)
-                distance_left = cast_float(row["DistanceLeft"], -1)
-                distance_right = cast_float(row["DistanceRight"], -1)
-                data = {"timestamp": cast_int(row["Timestamp"]),
-                        "pupilsize": get_pupil_size(pupil_left, pupil_right),
-                        "distance": get_distance(distance_left, distance_right),
-                        "is_valid": cast_int(row["ValidityRight"]) < 2 or cast_int(row["ValidityLeft"]) < 2,
-                        "stimuliname": row["StimuliName"],
-                        "fixationindex": cast_int(row["FixationIndex"]),
-                        "gazepointxleft": cast_float(row["GazePointXLeft"])}
-                all_data.append(Datapoint(data))
+            aoifile: A string containing the name of the '.aoi' file
 
-        return all_data
+        Returns:
+            a list of "AOI"s
+        """
+        with open(aoifile, 'r') as f:
+            aoilines = f.readlines()
+
+        return Recording.read_aoilines(aoilines)
 
     @staticmethod
-    def read_fixation_data(fixation_file, media_offset=(0, 0)):
-        """Returns a list of "Fixation"s read from an "Fixation-Data" file.
-
-        Args:
-            fixation_file: A string containing the name of the 'Fixation-Data.tsv' file output by the
-                Tobii software.
-            media_offset: the coordinates of the top left corner of the window
-                    showing the interface under study. (0,0) if the interface was
-                    in full screen (default value)
-        Returns:
-            a list of "Fixation"s
+    def read_aoilines(aoilines):
         """
-
-        all_fixation = []
-        with open(fixation_file, 'r') as f:
-            for _ in xrange(params.FIXATIONHEADERLINES - 1):
-                next(f)
-            reader = csv.DictReader(f, delimiter='\t')
-            for row in reader:
-                data = {"fixationindex": cast_int(row["FixationIndex"]),
-                        "timestamp": cast_int(row["Timestamp"]),
-                        "fixationduration": cast_int(row["FixationDuration"]),
-                        "fixationpointx": cast_int(row["MappedFixationPointX"]),
-                        "fixationpointy": cast_int(row["MappedFixationPointY"])}
-                all_fixation.append(Fixation(data, media_offset))
-
-        return all_fixation
-
-    @staticmethod
-    def read_event_data(event_file, media_offset=(0, 0)):
-        """Returns a list of "Event"s read from an "Event-Data" file.
-
         Args:
-            event_file: A string containing the name of the 'Event-Data.tsv' file output by the
-                Tobii software.
-            media_offset: the coordinates of the top left corner of the window
-                    showing the interface under study. (0,0) if the interface was
-                    in full screen (default value)
+            aoilines: List of lines from a '.aoi' file
+
         Returns:
-            a list of "Event"s
+            list of AOIs
         """
+        aoilist = []
+        polyin = []
+        last_aid = ''
 
-        all_event = []
-        with open(event_file, 'r') as f:
-            for _ in xrange(params.EVENTSHEADERLINES - 2):
-                next(f)
-            reader = csv.DictReader(f, delimiter='\t')
-            for row in reader:
-                data = {"timestamp": cast_int(row["Timestamp"]),
-                        "event": row["Event"],
-                        "event_key": cast_int(row["EventKey"])}
-                if data["event"] == "LeftMouseClick" or data["event"] == "RightMouseClick":
-                    data.update({"x_coord": cast_int(row["Data1"]), "y_coord": cast_int(row["Data2"])})
-                elif data["event"] == "KeyPress":
-                    data.update({"key_code": cast_int(row["Data1"]), "key_name": row["Descriptor"]})
-                elif data["event"] == "LogData":
-                    data.update({"description": row["Data1"]})
-                all_event.append(Event(data, media_offset))
+        for line in aoilines:
+            chunks = line.strip().split('\t')
+            if chunks[0].startswith('#'): # second line
+                if polyin:
+                    seq = []
+                    for v in chunks[1:]:
+                        seq.append((eval(v)))
 
-        return all_event
-
-
-def read_aois_Tobii(aoifile):
-    """Returns a list of "AOI"s read from a '.aoi' file.
-    
-    The '.aoi' files have pairs of lines of the form:
-    aoiname[tab]point1x,point1y[tab]point2x,point2y[tab]...[new line]
-    #[tab]start1,end1[tab]...[new line]
-    
-    The first line determines name of the AOI and the coordinates of each vertex of 
-    the polygon that determines the boundaries of the AOI.
-    The second line which starts with a '#' is optional and determines the time
-    intervals when the AOI is active. If the second line does not exist the AOI will
-    be active throughout the whole session (global AOI). 
-    *Note: If the AOIs are exported from Tobii software the '.aoi' file will only have the 
-    first line for each AOI and you need to override this method to generate AOIs that are
-    active only at certain times (non-global AOI). 
-
-    Args:
-        aoifile: A string containing the name of the '.aoi' file
-        
-    Returns:
-        a list of "AOI"s
-    """
-    with open(aoifile, 'r') as f:
-        aoilines = f.readlines()
-
-    return read_aoilines(aoilines)
-
-def read_aoilines(aoilines):
-    """
-    Args:
-        aoilines: List of lines from a '.aoi' file
-
-    Returns:
-        list of AOIs
-    """
-    aoilist = []
-    polyin = []
-    last_aid = ''
-
-    for line in aoilines:
-        chunks = line.strip().split('\t')
-        if chunks[0].startswith('#'): # second line
-            if polyin:
-                seq = []
-                for v in chunks[1:]:
-                    seq.append((eval(v)))
-
-                aoi = AOI(last_aid, polyin, [], seq)
-                aoilist.append(aoi)
-                polyin = []
+                    aoi = AOI(last_aid, polyin, [], seq)
+                    aoilist.append(aoi)
+                    polyin = []
+                else:
+                    raise Exception('error in the AOI file')
             else:
-                raise Exception('error in the AOI file')
-        else:
-            if polyin: # global AOI
-                aoi = AOI(last_aid, polyin, [], [])
-                aoilist.append(aoi)
-                polyin = []
+                if polyin: # global AOI
+                    aoi = AOI(last_aid, polyin, [], [])
+                    aoilist.append(aoi)
+                    polyin = []
 
-            last_aid = chunks[0] # first line
-            for v in chunks[1:]:
-                polyin.append((eval(v)))
+                last_aid = chunks[0] # first line
+                for v in chunks[1:]:
+                    polyin.append((eval(v)))
 
-    if polyin: # last (global) AOI
-        aoi = AOI(last_aid, polyin, [], [])
-        aoilist.append(aoi)
+        if polyin: # last (global) AOI
+            aoi = AOI(last_aid, polyin, [], [])
+            aoilist.append(aoi)
 
-    return aoilist
+        return aoilist
+
+    @staticmethod
+    def get_pupil_size(pupilleft, pupilright):
+        if pupilleft is None and pupilright is None:
+            return -1
+        if pupilleft is None:
+            return pupilright
+        if pupilright is None:
+            return pupilleft
+        return (pupilleft + pupilright) / 2.0
+
+    @staticmethod
+    def get_distance(distanceleft, distanceright):
+        if distanceleft is None and distanceright is None:
+            return -1
+        if distanceleft is None:
+            return distanceright
+        if distanceright is None:
+            return distanceleft
+        return (distanceleft + distanceright) / 2.0
 
 
 def read_segs(segfile):
     """Returns a dict with scid as the key and segments as value from a '.seg' file.
-    
+
     A '.seg' file consists of a set of lines with the following format:
     scene_name[\t]segment_name[\t]start_time[\t]end_time[\n]
-    
+
     scene_name is the id of the Scene that this Segment belongs to,
     segment_name is the id of the Segement,
     and start_time and end_time determines the time interval for the Segment
 
     Args:
         segfile: A string containing the name of the '.seg' file
-        
+
     Returns:
-        a dict with scid as the key and segments as value 
+        a dict with scid as the key and segments as value
     """
     scenes = {}
     with open(segfile, 'r') as f:
@@ -435,58 +386,3 @@ def read_segs(segfile):
         else:
             scenes[l[0]]=[(l[1], int(l[2]), int(l[3]) )]
     return scenes
-
-def get_pupil_size(pupilleft, pupilright):
-    if pupilleft is None and pupilright is None:
-        return -1
-    if pupilleft is None:
-        return pupilright
-    if pupilright is None:
-        return pupilleft
-    return (pupilleft + pupilright) / 2.0
-
-
-def get_distance(distanceleft, distanceright):
-    if distanceleft is None and distanceright is None:
-        return -1
-    if distanceleft is None:
-        return distanceright
-    if distanceright is None:
-        return distanceleft
-    return (distanceleft + distanceright) / 2.0
-
-
-def cast_float(string, invalid_value=None):
-    """a helper method for converting strings to their float value
-
-    Args:
-        str: a string containing a number
-
-    Returns:
-        the float value of the string given or None if not a float
-    """
-    try:
-        string_as_float = float(string)
-        if string_as_float == invalid_value:
-            return None
-    except ValueError:
-        return None
-    return string_as_float
-
-
-def cast_int(string, invalid_value=None):
-    """a helper method for converting strings to their integer value
-
-    Args:
-        str: a string containing a number
-
-    Returns:
-        the integer value of the string given or None if not an integer
-    """
-    try:
-        string_as_int = int(string)
-        if string_as_int == invalid_value:
-            return None
-    except ValueError:
-        return None
-    return string_as_int
