@@ -9,32 +9,43 @@ Author: skardan
 
 
 EYELOGDATAFOLDER = "./sampledata"
-# the folder that has the files exported from Tobii
+# the folder that has the files exported from eye trackers
 
 EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
 # the folder that has the external log files
 
-NUMBEROFEXTRAHEADERLINES = 8 
-#number of extra lines at the beginning of the files exported from Tobii 
-#this is specific to study and is based on the number of variables defined in Tobii
-# studio for the experiment
+EYETRACKERTYPE = "Tobii"
+# EYETRACKERTYPE = "SMI"
+
+# Tobii-specific parameters
+
+NUMBEROFEXTRAHEADERLINES = 8
+# number of extra lines at the beginning of the files exported from Tobii
+# this is specific to study and is based on the number of variables defined in Tobii studio for the experiment
 
 FIXATIONHEADERLINES = 19
-#number of lines at the beginning of the 'Fixation-Data' files exported from Tobii before 
-#the actual data 
+# number of lines at the beginning of the 'Fixation-Data' files exported from Tobii before the actual data
 
 ALLDATAHEADERLINES = 26
-#number of lines at the beginning of the 'All-Data' files exported from Tobii before 
-#the actual data 
+# number of lines at the beginning of the 'All-Data' files exported from Tobii before the actual data
 
-EVENTSHEADERLINES = 28
-#number of lines at the beginning of the 'Event-Data' files exported from Tobii before 
-#the actual data 
+EVENTSHEADERLINES = 27
+# number of lines at the beginning of the 'Event-Data' files exported from Tobii before the actual data
 
 ACTIONHEADERLINES = 0
-#number of lines at the beginning of the external log files before the actual data 
+# number of lines at the beginning of the external log files before the actual data
 
-MEDIA_OFFSET = (0, 0)   
+# SMI-specific parameters
+
+EVENTS_FIRST_DATA_LINE = 22  # the line number of the first data row in Events file
+
+FIXATION_HEADER_LINE = 11  # the line number of the row that contains the table header for fixations
+
+USER_EVENT_HEADER_LINE = 20  # the line number of the row that contains the table header for user events
+
+# General parameters
+
+MEDIA_OFFSET = (0, 0)
 # the coordinates of the top left corner of the window
 # showing the interface under study. (0,0) if the interface was
 # in full screen (default value)

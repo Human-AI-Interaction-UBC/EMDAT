@@ -6,7 +6,8 @@ Created on 2012-08-23
 """
 
 from data_structures import *
-import Recording
+from tobii import TobiiRecording
+from smi import SMIRecording
 params=__import__('params')
 from Participant import *
 from AOI import AOI
@@ -64,7 +65,13 @@ class BasicParticipant(Participant):
         
         print "reading the files"
         self.features={}
-        rec = Recording.Recording(datafile, fixfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
+        if params.EYETRACKERTYPE == "Tobii":
+            rec = TobiiRecording(datafile, fixfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
+        elif params.EYETRACKERTYPE == "SMI":
+            rec = SMIRecording(datafile, fixfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
+        else:
+            raise Exception("Unknown eye tracker type.")
+
         print "Done!"
         
         scenelist,self.numofsegments = partition_Basic(segfile)
@@ -140,17 +147,23 @@ def read_participants_Basic(datadir, user_list, pids, prune_length = None, aoifi
             currpsdata = rpsdata[pid]
         else:
             currpsdata = None
-        
-        if rec<10:
-            allfile = datadir+'/P0'+str(rec)+'-All-Data.tsv'
-            fixfile = datadir+'/P0'+str(rec)+'-Fixation-Data.tsv'
-            evefile = datadir+'/P0'+str(rec)+'-Event-Data.tsv'
-            segfile = datadir+'/P0'+str(rec)+'.seg'
-        else:
-            allfile = datadir+'/P'+str(rec)+'-All-Data.tsv'
-            fixfile = datadir+'/P'+str(rec)+'-Fixation-Data.tsv'
-            evefile = datadir+'/P'+str(rec)+'-Event-Data.tsv'
-            segfile = datadir+'/P'+str(rec)+'.seg'
+
+        if params.EYETRACKERTYPE == "Tobii":
+            if rec<10:
+                allfile = datadir+'/P0'+str(rec)+'-All-Data.tsv'
+                fixfile = datadir+'/P0'+str(rec)+'-Fixation-Data.tsv'
+                evefile = datadir+'/P0'+str(rec)+'-Event-Data.tsv'
+                segfile = datadir+'/P0'+str(rec)+'.seg'
+            else:
+                allfile = datadir+'/P'+str(rec)+'-All-Data.tsv'
+                fixfile = datadir+'/P'+str(rec)+'-Fixation-Data.tsv'
+                evefile = datadir+'/P'+str(rec)+'-Event-Data.tsv'
+                segfile = datadir+'/P'+str(rec)+'.seg'
+        elif params.EYETRACKERTYPE == "SMI":
+            allfile = "{dir}/SMI_Sample_{rec}_Samples.txt".format(dir=datadir, rec=rec)
+            fixfile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
+            evefile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
+            segfile = "{dir}/SMI_Sample_{rec}.seg".format(dir=datadir, rec=rec)
         print allfile
         import os.path
         if os.path.exists(allfile):

@@ -9,7 +9,8 @@ Basic data structures used in EMDAT
 """
 from warnings import warn
 
-class Datapoint():
+
+class Datapoint:
     """
     A class that holds the information for one eye gaze data sample (one line of data logs) 
     
@@ -20,7 +21,7 @@ class Datapoint():
         Please refer to the Tobii manual for the description of the rest of the attributes
     """
 
-    def __init__(self, tobii_line, data=None):
+    def __init__(self, data):
         """
         Initializes a Datapoint from either a line of gaze data from "all-Data.tsv"
         or the equivalent data in array form.
@@ -32,157 +33,29 @@ class Datapoint():
         Yields:
             a Datapoint object
         """
-        if data == None:
-            data = parse(tobii_line)
-        if data:
-            #assign read values to fields of Datapoint 
-            [self.timestamp, self.datetimestamp, self.datetimestampstartoffset, self.number, self.gazepointxleft, self.gazepointyleft, self.camxleft, self.camyleft, 
-             self.distanceleft, self.pupilleft, self.validityleft, self.gazepointxright, self.gazepointyright, self.camxright, self.camyright, self.distanceright, 
-             self.pupilright, self.validityright, self.fixationindex, self.gazepointx, self.gazepointy, self.event, self.eventkey, self.data1, self.data2, self.descriptor, 
-             self.stimuliname, self.stimuliid, self.mediawidth, self.mediaheight, self.mediaposx, self.mediaposy, self.mappedfixationpointx, self.mappedfixationpointy, 
-             self.fixationduration, self.aoiids, self.aoinames, self.webgroupimage, self.mappedgazedatapointx, self.mappedgazedatapointy, self.microsecondtimestamp, 
-             self.absolutemicrosecondtimestamp] = data
-            if self.number != None:
-                self.is_None = False
-                self.segid = None
-                self.is_valid = (self.validityright < 2 or self.validityleft < 2)
-                self.pupilsize = self.calculate_pupil_size()
-                self.distance = self.calculate_distance()
-            else:
-                self.is_None = True
-        else:
-            self.is_None = True
-    
-    def calculate_pupil_size(self):
-        """
-        Calculates pupil size for a datapoint based on values for left and right pupils
-        
-        Args:
-        
-        Yields:
-            averaged pupil size 
-        """
-        # if pupil sizes for both eyes are available: calculate average
-        if (self.pupilleft != -1) and (self.pupilright != -1):
-            pupilsize = (self.pupilleft + self.pupilright) / 2.0
-        #if both pupil sizes are unavailable return -1
-        elif (self.pupilleft == -1) and (self.pupilright == -1):
-            #print "Attention: pupil size is not valid!"
-            pupilsize = -1
-        else:
-            #if only one pupil size is available - use it as final pupil size
-            pupilsize = max(self.pupilleft, self.pupilright)
-        return pupilsize
+        self.timestamp = data.get("timestamp", None)
+        self.pupilsize = data.get("pupilsize", None)
+        self.distance = data.get("distance", None)
+        self.is_valid = data.get("is_valid", None)
+        self.stimuliname = data.get("stimuliname", None)
+        self.fixationindex = data.get("fixationindex", None)
+        self.gazepointxleft = data.get("gazepointxleft", None)
+        self.segid = None
 
-    def calculate_distance(self): #distance
-        # if pupil sizes for both eyes are available: calculate average
-        if (self.distanceleft != -1) and (self.distanceright != -1):
-            distance = (self.distanceleft + self.distanceright) / 2.0
-        #if both pupil sizes are unavailable return -1
-        elif (self.distanceleft == -1) and (self.distanceright == -1):
-            #print "Attention: pupil size is not valid!"
-            distance = -1
-        else:
-            #if only one pupil size is available - use it as final pupil size
-            distance = max(self.distanceleft, self.distanceright)
-        return distance
-    
-def parse(tobii_line):
+
+class Fixation:
     """
-    Parses a line of gaze data from "all-Data.tsv" file into array form
-    
-    Args:
-        tobii_line: a string containing one line read from an "All-Data.tsv" file.
-        
-    Yields:
-        an array of converted types
-    """
-    strings = tobii_line.split('\t')
-    try:
-        data = [int(strings[0]), # timestamp
-                strings[1], # datetimestamp
-                strings[2], # datetimestampstartoffset
-                cast_int(strings[3]), # number
-                cast_float(strings[4]), # gazepointxleft
-                cast_float(strings[5]), # gazepointyleft
-                cast_float(strings[6]), # camxleft
-                cast_float(strings[7]), # camyleft
-                cast_float(strings[8]), # distanceleft
-                cast_float(strings[9]), # pupilleft
-                cast_int(strings[10]), # validityleft
-                cast_float(strings[11]), # gazepointxright
-                cast_float(strings[12]), # gazepointyright
-                cast_float(strings[13]), # camxright
-                cast_float(strings[14]), # camyright
-                cast_float(strings[15]), # distanceright
-                cast_float(strings[16]), # pupilright
-                cast_int(strings[17]), # validityright
-                cast_int(strings[18]), # fixationindex
-                cast_float(strings[19]), # gazepointx
-                cast_float(strings[20]), # gazepointy
-                strings[21], # event
-                strings[22], # eventkey
-                strings[23], # data1
-                strings[24], # data2
-                strings[25], # descriptor
-                strings[26], # stimuliname
-                cast_int(strings[27]), # stimuliid
-                cast_int(strings[28]), # mediawidth
-                cast_int(strings[29]), # mediaheight
-                cast_int(strings[30]), # mediaposx
-                cast_int(strings[31]), # mediaposy
-                cast_int(strings[32]), # mappedfixationpointx
-                cast_int(strings[33]), # mappedfixationpointy
-                cast_int(strings[34]), # fixationduration
-                strings[35], # aoiids
-                strings[36], # aoinames
-                strings[37], # webgroupimage
-                cast_int(strings[38]), # mappedgazedatapointx
-                cast_int(strings[39]), # mappedgazedatapointy
-                cast_int(strings[40]), # microsecondtimestamp
-                cast_int(strings[41])] # absolutemicrosecondtimestamp
-    except ValueError:
-        data = None
-
-    return data
-
-    def set_segid(self,segid):
-        """Sets the "Segment" id for this Datapoint
-        
-        Args:
-            segid: a string containing the "Segment" id
-        """
-        self.segid = segid
-
-    def get_segid(self):
-        """Returns the "Segment" id for this Datapoint
-            
-        Returns:
-            a string containing the "Segment" id
-            
-        Raises:
-            Exception: if the segid is not set before reading it an Exception will be thrown
-        """
-        if self.segid != None:
-            return self.segid
-        raise Exception('The segid is accessed before setting the initial value in a datapoint!')
-
-
-class Fixation():
-    """
-    A class that holds the information for one Fixation representing one line in a "Fixation-Data.tsv" file
+    A class that holds the information for one Fixation
     
     Attributes:
-        segid: a string indicating the Segment that this Datapoint belongs to
-    
-        Please refer to the Tobii manual for the description of the rest of the attributes
+        segid: a string indicating the Segment to which this Datapoint belongs
     """
 
-    def __init__(self, fix_point, media_offset = (0, 0)):
-        """Inits Fixation class with a line of gaze data from a "Fixation-Data.tsv" file
+    def __init__(self, data, media_offset = (0, 0)):
+        """Initializes a Fixation with attributes
         
         Args:
-            fix_point: a string containing one line read from a "Fixation-Data.tsv" file        
+            data: a dictionary containing attributes of a fixation
             media_offset: the coordinates of the top left corner of the window
                 showing the interface under study. (0,0) if the interface was
                 in full screen (default value)
@@ -191,19 +64,24 @@ class Fixation():
             a Fixation object
         """
 
-        #fix_point = fix_point.replace('\t\r\n','')
-        [self.fixationindex, self.timestamp, self.fixationduration, self.mappedfixationpointx, self.mappedfixationpointy,_] = fix_point.split('\t')
-        self.fixationindex = cast_int(self.fixationindex)
-        self.timestamp = cast_int(self.timestamp)
-        self.fixationduration = cast_int(self.fixationduration)
-        if self.fixationduration == 0:
-            warn("A zero duration Fixation!")
-        (media_offset_x, media_offset_y) = media_offset
-        self.mappedfixationpointx = cast_int(self.mappedfixationpointx) - media_offset_x
-        self.mappedfixationpointy = cast_int(self.mappedfixationpointy) - media_offset_y
+        self.fixationindex = data.get("fixationindex", None)
+        self.timestamp = data.get("timestamp", None)
+        self.fixationduration = data.get("fixationduration", None)
+        self.mappedfixationpointx = data.get("fixationpointx", None)
+        self.mappedfixationpointy = data.get("fixationpointy", None)
         self.segid = None
-        
-    def set_segid(self,segid):
+
+        if self.fixationduration == 0:
+            warn("A zero duration fixation.")
+
+        if self.mappedfixationpointx is None or self.mappedfixationpointx is None:
+            warn("A fixation with invalid coordinates")
+        else:
+            (media_offset_x, media_offset_y) = media_offset
+            self.mappedfixationpointx -= media_offset_x
+            self.mappedfixationpointy -= media_offset_y
+
+    def set_segid(self, segid):
         """Sets the "Segment" id for this Fixation
         
         Args:
@@ -220,48 +98,45 @@ class Fixation():
         Raises:
             Exception: if the segid is not set before reading it an Exception will be thrown
         """
-        if self.segid != None:
+        if self.segid is not None:
             return self.segid
-        raise Exception('The segid is accessed before setting the initial value in a fixation point!')
+        raise Exception('The segid is accessed before setting the initial value in a fixation point.')
 
 
-class Event():
+class Event:
     """
-    A class that holds the information for one Event representing one line in the an "Event-Data.tsv" file
-    
-    Please refer to the Tobii manual for the description of the attributes
+    A class that holds the information for one Event
     """
-    def __init__(self, eventstr, media_offset = (0, 0)):
-        """Inits Event class with a line of gaze data from an "Event-Data.tsv" file
-			Format:
-			ScreenRecStarted|8192
-			ScreenRecStopped|16384 
-			URLStart|512|||URL/website name 
-			URLEnd|024|||URL/website name
-			KeyPress|4|ASCII code for key pressed||Key name
-			LeftMouseClick|1|X mouse coordinate|Y mouse coordinate
-			RightMouseClick|2|X mouse coordinate|Y mouse coordinate
-			LogData|0|Log name|Logging comment 
+    def __init__(self, data, media_offset=(0, 0)):
+        """Initializes an Event with attributes
+
         Args:
-            eventstr: a string containing one line read from an "Event-Data.tsv" file
+            data: a dictionary containing attributes of an event.
             
         Yields:
             an Event object
         """
-        #Timestamp    Event    EventKey    Data1    Data2    Descriptor
-        #print eventstr.split('\t')
-        [self.timestamp, self.event, self.eventKey, self.data1, self.data2,self.descriptor,_] = eventstr.split('\t')
-        self.timestamp = cast_int(self.timestamp)
-        self.eventKey = cast_int(self.eventKey)
+
+        self.timestamp = data.get("timestamp", None)
+        self.event = data.get("event", None)
+        self.eventKey = data.get("event_key", None)
+        self.x_coord = data.get("x_coord", None)
+        self.y_coord = data.get("y_coord", None)
+        self.key_code = data.get("key_code", None)
+        self.key_name = data.get("key_name", None)
+        self.description = data.get("description", None)
+        self.segid = None
+
         if self.event == "LeftMouseClick" or self.event == "RightMouseClick":
             (media_offset_x, media_offset_y) = media_offset
-            self.data1 = cast_int(self.data1) - media_offset_x
-            self.data2 = cast_int(self.data2) - media_offset_y
+            self.x_coord -= media_offset_x
+            self.y_coord -= media_offset_y
+            self.data1 = self.x_coord
+            self.data2 = self.y_coord
         elif self.event == "KeyPress":
-            self.data1 = cast_int(self.data1)
-        self.segid = None
-		
-    def set_segid(self,segid):
+            self.data1 = self.key_code
+
+    def set_segid(self, segid):
         """Sets the "Segment" id for this Event
         
         Args:
@@ -278,17 +153,17 @@ class Event():
         Raises:
             Exception: if the segid is not set before reading it an Exception will be thrown
         """
-        if self.segid != None:
+        if self.segid is not None:
             return self.segid
-        raise Exception('The segid is accessed before setting the initial value in a fixation point!')
+        raise Exception('The segid is accessed before setting the initial value in an event.')
 
 
 def cast_int(str):
     """a helper method for converting strings to their integer value
-    
+
     Args:
         str: a string containing a number
-    
+
     Returns:
         the integer value of the string given or None if not an integer
     """
@@ -297,29 +172,3 @@ def cast_int(str):
     except:
         v = None
     return v
-#    try:
-#        v = int(str)
-#    except ValueError:
-#        v = None
-#    return v
-
-
-def cast_float(str):
-    """a helper method for converting strings to their float value
-    
-    Args:
-        str: a string containing a number
-    
-    Returns:
-        the float value of the string given or None if not a float
-    """
-    if str!="" and str!=None:
-        v = float(str)
-    else:
-        v = None
-    return v
-#    try:
-#        v = float(str)
-#    except ValueError:
-#        v = None
-#    return v

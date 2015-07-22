@@ -181,3 +181,39 @@ def generate_event_lists(event_data):
             rightc.append(e)
 
     return (leftc, rightc, doublec, keyp)
+
+
+def cast_float(string, invalid_value=None):
+    """a helper method for converting strings to their float value
+
+    Args:
+        str: a string containing a number
+
+    Returns:
+        the float value of the string given or None if not a float
+    """
+    try:
+        string_as_float = float(string)
+        if string_as_float == invalid_value:
+            return None
+    except ValueError:
+        return None
+    return string_as_float
+
+
+def cast_int(string, invalid_value=None):
+    """a helper method for converting strings to their integer value
+
+    Args:
+        str: a string containing a number
+
+    Returns:
+        the integer value of the string given or None if not an integer
+    """
+    try:
+        string_as_int = int(string)
+        if string_as_int == invalid_value:
+            return None
+    except ValueError:
+        return None
+    return string_as_int
