@@ -76,8 +76,8 @@ class BasicParticipant(Participant):
         
         scenelist,self.numofsegments = partition_Basic(segfile)
         print "partition done!"
-        if aoifile != None:
-            aois = Recording.read_aois_Tobii(aoifile)
+        if aoifile is not None:
+            aois = Recording.read_aois(aoifile)
         else:
             aois = None
         
