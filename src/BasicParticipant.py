@@ -7,7 +7,10 @@ Created on 2012-08-23
 
 from data_structures import *
 from TobiiRecording import TobiiRecording
+<<<<<<< HEAD
 from TobiiV3Recording import TobiiV3Recording
+=======
+>>>>>>> 13909c2e22b245a81cdfc92e27548e265aaf1efb
 from SMIRecording import SMIRecording
 params=__import__('params')
 from Participant import *
