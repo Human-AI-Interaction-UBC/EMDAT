@@ -6,8 +6,9 @@ Created on 2012-08-23
 """
 
 from data_structures import *
-from tobii import TobiiRecording
-from smi import SMIRecording
+from TobiiRecording import TobiiRecording
+from TobiiV3Recording import TobiiV3Recording
+from SMIRecording import SMIRecording
 params=__import__('params')
 from Participant import *
 from AOI import AOI
@@ -67,6 +68,8 @@ class BasicParticipant(Participant):
         self.features={}
         if params.EYETRACKERTYPE == "Tobii":
             rec = TobiiRecording(datafile, fixfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
+        elif params.EYETRACKERTYPE == "TobiiV3":
+            rec = TobiiV3Recording(datafile, fixfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
         elif params.EYETRACKERTYPE == "SMI":
             rec = SMIRecording(datafile, fixfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
         else:
@@ -76,8 +79,8 @@ class BasicParticipant(Participant):
         
         scenelist,self.numofsegments = partition_Basic(segfile)
         print "partition done!"
-        if aoifile != None:
-            aois = Recording.read_aois_Tobii(aoifile)
+        if aoifile is not None:
+            aois = Recording.read_aois(aoifile)
         else:
             aois = None
         
@@ -159,6 +162,11 @@ def read_participants_Basic(datadir, user_list, pids, prune_length = None, aoifi
                 fixfile = datadir+'/P'+str(rec)+'-Fixation-Data.tsv'
                 evefile = datadir+'/P'+str(rec)+'-Event-Data.tsv'
                 segfile = datadir+'/P'+str(rec)+'.seg'
+        elif params.EYETRACKERTYPE == "TobiiV3":
+            allfile = "{dir}/P0{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
+            fixfile = "{dir}/P0{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
+            evefile = "{dir}/P0{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
+            segfile = "{dir}/TobiiV3_Sample_0{rec}.seg".format(dir=datadir, rec=rec)
         elif params.EYETRACKERTYPE == "SMI":
             allfile = "{dir}/SMI_Sample_{rec}_Samples.txt".format(dir=datadir, rec=rec)
             fixfile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
@@ -172,7 +180,7 @@ def read_participants_Basic(datadir, user_list, pids, prune_length = None, aoifi
                                 auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = currpsdata)
             participants.append(p)
         else:
-            print "Error reading participant files for: "+pid
+            print "Error reading participant files for: "+str(pid)
     return participants
 
 def partition_Basic(segfile):

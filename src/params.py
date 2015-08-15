@@ -15,7 +15,8 @@ EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
 # the folder that has the external log files
 
 EYETRACKERTYPE = "Tobii"
-# EYETRACKERTYPE = "SMI"
+#EYETRACKERTYPE = "TobiiV3"
+#EYETRACKERTYPE = "SMI"
 
 # Tobii-specific parameters
 

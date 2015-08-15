@@ -75,7 +75,7 @@ class Fixation:
             warn("A zero duration fixation.")
 
         if self.mappedfixationpointx is None or self.mappedfixationpointx is None:
-            warn("A fixation with invalid coordinates")
+            warn("A fixation with invalid coordinates. Fix="+str(self.fixationindex))
         else:
             (media_offset_x, media_offset_y) = media_offset
             self.mappedfixationpointx -= media_offset_x
