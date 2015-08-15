@@ -6,7 +6,7 @@ Created on 2012-08-23
 """
 
 from data_structures import *
-from tobii import TobiiRecording
+from TobiiRecording import TobiiRecording
 from SMIRecording import SMIRecording
 params=__import__('params')
 from Participant import *
