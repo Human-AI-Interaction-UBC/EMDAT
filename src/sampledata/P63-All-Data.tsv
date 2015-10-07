@@ -1,0 +1,44 @@
+System Properties:
+Operating System:	 Microsoft Windows NT 5.1.2600 Service Pack 2
+System User Name:	 skardan
+Machine Name:	 PISA
+
+Data properties:
+
+Recording name:	 Rec 62
+Recording date:	 27/09/2011
+Recording time:	 5:05:34 PM
+Recording resolution:	 1280 x 1024
+
+Export date:	 18/10/2011
+Export time:	 11:42:57 AM
+
+Participant:	 P106
+Participant properties:
+
+Glasses:	 glasses
+Previous Experience with the CSP Applet:	 None
+322:	 Not Taken
+Hand:	 right
+221:	 Complete
+Previous Experience with AISpace:	 None
+Sex:	 m
+
+Filter settings:
+
+Eye: Average
+Validity: Normal
+Fixation filter: Tobii fixation filter
+Fixation radius: 35
+
+Timestamp	DateTimeStamp	DateTimeStampStartOffset	Number	GazePointXLeft	GazePointYLeft	CamXLeft	CamYLeft	DistanceLeft	PupilLeft	ValidityLeft	GazePointXRight	GazePointYRight	CamXRight	CamYRight	DistanceRight	PupilRight	ValidityRight	FixationIndex	GazePointX	GazePointY	Event	EventKey	Data1	Data2	Descriptor	StimuliName	StimuliID	MediaWidth	MediaHeight	MediaPosX	MediaPosY	MappedFixationPointX	MappedFixationPointY	FixationDuration	AoiIds	AoiNames	WebGroupImage	MappedGazeDataPointX	MappedGazeDataPointY	MicroSecondTimestamp	AbsoluteMicroSecondTimestamp	
+0																					ScreenRecStarted	8192	0	0																		
+19782																					LeftMouseClick	1	52	76																		
+606995	17:15:40.995	00:10:06.994	36443	-1280	-1024	-1	-1	-1	-1	4	-1280	-1024	-1	-1	-1	-1	4		0	0						ScreenRec	0	1280	1024	0	0				0	Content		0	0	606994606	619570546123	
+607011	17:15:41.011	00:10:07.011	36444	-1280	-1024	-1	-1	-1	-1	4	-1280	-1024	-1	-1	-1	-1	4		0	0						ScreenRec	0	1280	1024	0	0				0	Content		0	0	607011232	619570562749	
+607028	17:15:41.028	00:10:07.027	36445	-1280	-1024	-1	-1	-1	-1	4	-1280	-1024	-1	-1	-1	-1	4		0	0						ScreenRec	0	1280	1024	0	0				0	Content		0	0	607027853	619570579370	
+607044	17:15:41.044	00:10:07.044	36446	-1280	-1024	-1	-1	-1	-1	4	-1280	-1024	-1	-1	-1	-1	4		0	0						ScreenRec	0	1280	1024	0	0				0	Content		0	0	607044478	619570595995	
+607061	17:15:41.061	00:10:07.061	36447	-1280	-1024	-1	-1	-1	-1	4	-1280	-1024	-1	-1	-1	-1	4		0	0						ScreenRec	0	1280	1024	0	0				0	Content		0	0	607061165	619570612682	
+607078	17:15:41.078	00:10:07.077	36448	-1280	-1024	-1	-1	-1	-1	4	-1280	-1024	-1	-1	-1	-1	4		0	0						ScreenRec	0	1280	1024	0	0				0	Content		0	0	607077834	619570629351	
+607095	17:15:41.095	00:10:07.094	36449	-1280	-1024	-1	-1	-1	-1	4	-1280	-1024	-1	-1	-1	-1	4		0	0						ScreenRec	0	1280	1024	0	0				0	Content		0	0	607094507	619570646024	
+607111	17:15:41.111	00:10:07.111	36450	-1280	-1024	-1	-1	-1	-1	4	-1280	-1024	-1	-1	-1	-1	4		0	0						ScreenRec	0	1280	1024	0	0				0	Content		0	0	607111175	619570662692	

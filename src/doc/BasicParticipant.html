@@ -1,0 +1,190 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module BasicParticipant</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>BasicParticipant</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///C|/temp/skardan/workspace/python/emdat/src/basicparticipant.py">c:\temp\skardan\workspace\python\emdat\src\basicparticipant.py</a></font></td></tr></table>
+    <p><tt>UBC&nbsp;Eye&nbsp;Movement&nbsp;Data&nbsp;Analysys&nbsp;Toolkit<br>
+Created&nbsp;on&nbsp;2012-08-23<br>
+&nbsp;<br>
+@author:&nbsp;skardan</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="Participant.html">Participant</a><br>
+</td><td width="25%" valign=top><a href="Recording.html">Recording</a><br>
+</td><td width="25%" valign=top><a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="params.html">params</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="Participant.html#Participant">Participant.Participant</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="BasicParticipant.html#Participant_Basic">Participant_Basic</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Participant_Basic">class <strong>Participant_Basic</strong></a>(<a href="Participant.html#Participant">Participant.Participant</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;is&nbsp;a&nbsp;sample&nbsp;child&nbsp;class&nbsp;based&nbsp;on&nbsp;the&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;class&nbsp;that&nbsp;implements&nbsp;all&nbsp;the&nbsp;<br>
+placeholder&nbsp;methods&nbsp;in&nbsp;the&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;class&nbsp;for&nbsp;a&nbsp;basic&nbsp;project<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Participant_Basic-__init__"><strong>__init__</strong></a>(self, pid, eventfile, datafile, fixfile, segfile, log_time_offset<font color="#909090">=None</font>, aoifile<font color="#909090">=None</font>, prune_length<font color="#909090">=None</font>, require_valid_segs<font color="#909090">=True</font>, auto_partition_low_quality_segments<font color="#909090">=False</font>)</dt><dd><tt>Inits&nbsp;<a href="#Participant_Basic">Participant_Basic</a>&nbsp;class<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pid:&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;eventfile:&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;"Event-Data.tsv"&nbsp;file&nbsp;for&nbsp;this&nbsp;participant<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;datafile:&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;"all-Data.tsv"&nbsp;file&nbsp;for&nbsp;this&nbsp;participant<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixfile:&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;"Fixation-Data.tsv"&nbsp;file&nbsp;for&nbsp;this&nbsp;participant<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;segfile:&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;'.seg'&nbsp;file&nbsp;for&nbsp;this&nbsp;participant<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;log_time_offset:&nbsp;If&nbsp;not&nbsp;None,&nbsp;an&nbsp;integer&nbsp;indicating&nbsp;the&nbsp;time&nbsp;offset&nbsp;between&nbsp;the&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;external&nbsp;log&nbsp;file&nbsp;and&nbsp;eye&nbsp;tracking&nbsp;logs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoifile:&nbsp;If&nbsp;not&nbsp;None,&nbsp;a&nbsp;string&nbsp;conatining&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;'.aoi'&nbsp;file&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;definitions&nbsp;of&nbsp;the&nbsp;"AOI"s.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;prune_length:&nbsp;If&nbsp;not&nbsp;None,&nbsp;an&nbsp;integer&nbsp;that&nbsp;specifies&nbsp;the&nbsp;time&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;interval&nbsp;(in&nbsp;ms)&nbsp;from&nbsp;the&nbsp;begining&nbsp;of&nbsp;each&nbsp;Segment&nbsp;in&nbsp;which<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;samples&nbsp;are&nbsp;considered&nbsp;in&nbsp;calculations.&nbsp;&nbsp;This&nbsp;can&nbsp;be&nbsp;used&nbsp;if,&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;example,&nbsp;you&nbsp;only&nbsp;wish&nbsp;to&nbsp;consider&nbsp;data&nbsp;in&nbsp;the&nbsp;first&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1000&nbsp;ms&nbsp;of&nbsp;each&nbsp;Segment.&nbsp;In&nbsp;this&nbsp;case&nbsp;(prune_length&nbsp;=&nbsp;1000),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;all&nbsp;data&nbsp;beyond&nbsp;the&nbsp;first&nbsp;1000ms&nbsp;of&nbsp;the&nbsp;start&nbsp;of&nbsp;the&nbsp;"Segment"s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;disregarded.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;auto_partition_low_quality_segments:&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;EMDAT&nbsp;should&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;split&nbsp;the&nbsp;"Segment"s&nbsp;which&nbsp;have&nbsp;low&nbsp;sample&nbsp;quality,&nbsp;into&nbsp;two&nbsp;new&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sub&nbsp;"Segment"s&nbsp;discarding&nbsp;the&nbsp;largest&nbsp;gap&nbsp;of&nbsp;invalid&nbsp;samples.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Yields:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;object</tt></dd></dl>
+
+<dl><dt><a name="Participant_Basic-is_valid"><strong>is_valid</strong></a>(self, threshold<font color="#909090">=None</font>)</dt><dd><tt>Determines&nbsp;if&nbsp;the&nbsp;samples&nbsp;for&nbsp;this&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;meets&nbsp;the&nbsp;validity&nbsp;threshold<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;threshold:&nbsp;if&nbsp;not&nbsp;None,&nbsp;the&nbsp;threshold&nbsp;value&nbsp;that&nbsp;should&nbsp;be&nbsp;used&nbsp;for&nbsp;the&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validity&nbsp;criterion<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;True&nbsp;or&nbsp;False</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="Participant.html#Participant">Participant.Participant</a>:<br>
+<dl><dt><a name="Participant_Basic-export_features"><strong>export_features</strong></a>(self, featurelist<font color="#909090">=None</font>, aoifeaturelist<font color="#909090">=None</font>, aoifeaturelabels<font color="#909090">=None</font>, id_prefix<font color="#909090">=False</font>, require_valid<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;feature&nbsp;names&nbsp;and&nbsp;their&nbsp;values&nbsp;for&nbsp;this&nbsp;<a href="Participant.html#Participant">Participant</a><br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featurelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;strings&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;features&nbsp;to&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returned<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoifeaturelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;features&nbsp;to&nbsp;be&nbsp;returned&nbsp;for&nbsp;each&nbsp;of&nbsp;the&nbsp;"AOI"s.&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoifeaturelabels:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;AOI&nbsp;related&nbsp;features&nbsp;to&nbsp;be&nbsp;returned.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*Note:&nbsp;while&nbsp;aoifeaturelist&nbsp;is&nbsp;a&nbsp;subset&nbsp;of&nbsp;features&nbsp;that&nbsp;will&nbsp;be&nbsp;returned&nbsp;for&nbsp;all&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"AOI"s,&nbsp;aoifeaturelabels&nbsp;contains&nbsp;the&nbsp;exact&nbsp;AOI&nbsp;feature&nbsp;name,&nbsp;i.e.,&nbsp;a&nbsp;feature<br>
+&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;the&nbsp;form:&nbsp;[AOI&nbsp;name]_[feature&nbsp;name]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;For&nbsp;example&nbsp;for&nbsp;an&nbsp;AOI&nbsp;called&nbsp;'graph',&nbsp;aoifeaturelabels&nbsp;may&nbsp;contain&nbsp;'graph_fixationrate'&nbsp;&nbsp;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;id_prefix:&nbsp;a&nbsp;boolean&nbsp;determining&nbsp;if&nbsp;the&nbsp;method&nbsp;should&nbsp;also&nbsp;export&nbsp;the&nbsp;participant&nbsp;id&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;require_valid:&nbsp;a&nbsp;boolean&nbsp;determining&nbsp;if&nbsp;only&nbsp;valid&nbsp;segments&nbsp;should&nbsp;be&nbsp;used&nbsp;when<br>
+&nbsp;&nbsp;&nbsp;&nbsp;calculating&nbsp;the&nbsp;features.&nbsp;default&nbsp;=&nbsp;True<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featnames:&nbsp;a&nbsp;list&nbsp;of&nbsp;feature&nbsp;names&nbsp;sorted&nbsp;alphabetically<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featvals:&nbsp;a&nbsp;corresponding&nbsp;list&nbsp;of&nbsp;feature&nbsp;values<br>
+&nbsp;&nbsp;&nbsp;&nbsp;e.g.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featnames&nbsp;=&nbsp;['fixationrate',&nbsp;'length',&nbsp;'meanabspathangles']<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featvals&nbsp;&nbsp;=&nbsp;[0.00268522882294',&nbsp;'1529851',&nbsp;'1.60354714212']</tt></dd></dl>
+
+<dl><dt><a name="Participant_Basic-export_features_tsv"><strong>export_features_tsv</strong></a>(self, featurelist<font color="#909090">=None</font>, aoifeaturelist<font color="#909090">=None</font>, id_prefix<font color="#909090">=False</font>, require_valid<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;feature&nbsp;names&nbsp;and&nbsp;their&nbsp;values&nbsp;for&nbsp;this&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;in&nbsp;a&nbsp;tab&nbsp;separated&nbsp;format<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;featurelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;strings&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;features&nbsp;to&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returned<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aoifeaturelist:&nbsp;if&nbsp;not&nbsp;None,&nbsp;a&nbsp;list&nbsp;of&nbsp;features&nbsp;to&nbsp;be&nbsp;returned&nbsp;for&nbsp;each&nbsp;of&nbsp;the&nbsp;"AOI"s.&nbsp;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;id_prefix:&nbsp;a&nbsp;boolean&nbsp;determining&nbsp;if&nbsp;the&nbsp;method&nbsp;should&nbsp;also&nbsp;export&nbsp;the&nbsp;participant&nbsp;id.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;require_valid:&nbsp;a&nbsp;boolean&nbsp;determining&nbsp;if&nbsp;only&nbsp;valid&nbsp;segments&nbsp;should&nbsp;be&nbsp;used&nbsp;when<br>
+&nbsp;&nbsp;&nbsp;&nbsp;calculating&nbsp;the&nbsp;features.&nbsp;default&nbsp;=&nbsp;True<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;two-line&nbsp;string&nbsp;with&nbsp;the&nbsp;first&nbsp;line&nbsp;having&nbsp;the&nbsp;feature&nbsp;names&nbsp;sorted&nbsp;alphabetically<br>
+&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;separated&nbsp;by&nbsp;a&nbsp;tab&nbsp;'/t',&nbsp;and&nbsp;the&nbsp;second&nbsp;line&nbsp;containing&nbsp;the&nbsp;corresponding&nbsp;values<br>
+&nbsp;&nbsp;&nbsp;&nbsp;separated&nbsp;by&nbsp;a&nbsp;tab&nbsp;'/t'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;For&nbsp;example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fixationrate&nbsp;&nbsp;&nbsp;&nbsp;length&nbsp;&nbsp;&nbsp;&nbsp;meanabspathangles<br>
+&nbsp;&nbsp;&nbsp;&nbsp;0.00268522882294&nbsp;&nbsp;&nbsp;&nbsp;1529851&nbsp;&nbsp;&nbsp;&nbsp;1.60354714212</tt></dd></dl>
+
+<dl><dt><a name="Participant_Basic-invalid_segments"><strong>invalid_segments</strong></a>(self)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;invalid&nbsp;segments&nbsp;in&nbsp;this&nbsp;particiapnt's&nbsp;eye&nbsp;gaze&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;"Segment&nbsp;ids"&nbsp;of&nbsp;invalid&nbsp;Segments&nbsp;in&nbsp;this&nbsp;particiapnt's&nbsp;eye&nbsp;gaze&nbsp;data</tt></dd></dl>
+
+<dl><dt><a name="Participant_Basic-print_"><strong>print_</strong></a>(self)</dt><dd><tt>Outputs&nbsp;all&nbsp;feature&nbsp;names&nbsp;and&nbsp;their&nbsp;values&nbsp;for&nbsp;this&nbsp;<a href="Participant.html#Participant">Participant</a>&nbsp;to&nbsp;the&nbsp;console</tt></dd></dl>
+
+<dl><dt><a name="Participant_Basic-valid_segments"><strong>valid_segments</strong></a>(self)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;valid&nbsp;segments&nbsp;in&nbsp;this&nbsp;particiapnt's&nbsp;eye&nbsp;gaze&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;"Segment&nbsp;ids"&nbsp;of&nbsp;invalid&nbsp;Segments&nbsp;in&nbsp;this&nbsp;particiapnt's&nbsp;eye&nbsp;gaze&nbsp;data</tt></dd></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-ceil"><strong>ceil</strong></a>(...)</dt><dd><tt><a href="#-ceil">ceil</a>(x)<br>
+&nbsp;<br>
+Return&nbsp;the&nbsp;ceiling&nbsp;of&nbsp;x&nbsp;as&nbsp;a&nbsp;float.<br>
+This&nbsp;is&nbsp;the&nbsp;smallest&nbsp;integral&nbsp;value&nbsp;&gt;=&nbsp;x.</tt></dd></dl>
+ <dl><dt><a name="-floor"><strong>floor</strong></a>(...)</dt><dd><tt><a href="#-floor">floor</a>(x)<br>
+&nbsp;<br>
+Return&nbsp;the&nbsp;floor&nbsp;of&nbsp;x&nbsp;as&nbsp;a&nbsp;float.<br>
+This&nbsp;is&nbsp;the&nbsp;largest&nbsp;integral&nbsp;value&nbsp;&lt;=&nbsp;x.</tt></dd></dl>
+ <dl><dt><a name="-partition_Basic"><strong>partition_Basic</strong></a>(segfile)</dt><dd><tt>Generates&nbsp;the&nbsp;scenelist&nbsp;based&nbsp;on&nbsp;a&nbsp;.seg&nbsp;file<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;segfile:&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;'.seg'&nbsp;file<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;dict&nbsp;with&nbsp;scid&nbsp;as&nbsp;the&nbsp;key&nbsp;and&nbsp;tuples&nbsp;of&nbsp;(segid,&nbsp;start&nbsp;,&nbsp;end)&nbsp;for&nbsp;segments&nbsp;that&nbsp;belong&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;that&nbsp;scene&nbsp;as&nbsp;value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;an&nbsp;integer&nbsp;determining&nbsp;the&nbsp;number&nbsp;of&nbsp;segments</tt></dd></dl>
+ <dl><dt><a name="-read_events"><strong>read_events</strong></a>(evfile)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;Event&nbsp;objects&nbsp;read&nbsp;from&nbsp;an&nbsp;'Event-Data.tsv'&nbsp;file.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;evfile:&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;'Event-Data.tsv'&nbsp;file&nbsp;exported&nbsp;by&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tobii&nbsp;software<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;Event&nbsp;objects</tt></dd></dl>
+ <dl><dt><a name="-read_participants_Basic"><strong>read_participants_Basic</strong></a>(datadir, user_list, pids, prune_length<font color="#909090">=None</font>, aoifile<font color="#909090">=None</font>, log_time_offsets<font color="#909090">=None</font>, require_valid_segs<font color="#909090">=True</font>, auto_partition_low_quality_segments<font color="#909090">=False</font>)</dt></dl>
+</td></tr></table>
+</body></html>
