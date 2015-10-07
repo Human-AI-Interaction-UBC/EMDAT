@@ -7,46 +7,76 @@ Author: skardan
 
 """
 
+
 EYELOGDATAFOLDER = "./sampledata"
-# the folder that has the files exported from Tobii
+# the folder that has the files exported from eye trackers
 
 EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
 # the folder that has the external log files
 
-NUMBEROFEXTRAHEADERLINES = 8 
-#number of extra lines at the beginning of the files exported from Tobii 
-#this is specific to study and is based on the number of variables defined in Tobii
-# studio for the experiment
+EYETRACKERTYPE = "Tobii"
+#EYETRACKERTYPE = "TobiiV3"
+#EYETRACKERTYPE = "SMI"
+
+# Tobii-specific parameters
+
+NUMBEROFEXTRAHEADERLINES = 8
+# number of extra lines at the beginning of the files exported from Tobii
+# this is specific to study and is based on the number of variables defined in Tobii studio for the experiment
 
 FIXATIONHEADERLINES = 19
-#number of lines at the beginning of the 'Fixation-Data' files exported from Tobii before 
-#the actual data 
+# number of lines at the beginning of the 'Fixation-Data' files exported from Tobii before the actual data
 
 ALLDATAHEADERLINES = 26
-#number of lines at the beginning of the 'All-Data' files exported from Tobii before 
-#the actual data 
+# number of lines at the beginning of the 'All-Data' files exported from Tobii before the actual data
 
-EVENTSHEADERLINES = 19
-#number of lines at the beginning of the 'Event-Data' files exported from Tobii before 
-#the actual data 
+EVENTSHEADERLINES = 27
+# number of lines at the beginning of the 'Event-Data' files exported from Tobii before the actual data
 
 ACTIONHEADERLINES = 0
-#number of lines at the beginning of the external log files before the actual data 
+# number of lines at the beginning of the external log files before the actual data
 
-MEDIA_OFFSET = (0, 0)   
+# SMI-specific parameters
+
+EVENTS_FIRST_DATA_LINE = 22  # the line number of the first data row in Events file
+
+FIXATION_HEADER_LINE = 11  # the line number of the row that contains the table header for fixations
+
+USER_EVENT_HEADER_LINE = 20  # the line number of the row that contains the table header for user events
+
+# General parameters
+
+MEDIA_OFFSET = (0, 0)
 # the coordinates of the top left corner of the window
 # showing the interface under study. (0,0) if the interface was
 # in full screen (default value)
 
 featurelist = ['numsegments','length','numfixations','fixationrate','meanabspathangles',
                'meanfixationduration','meanpathdistance','meanrelpathangles','stddevabspathangles',
-               'stddevfixationduration','stddevpathdistance','stddevrelpathangles']#'numsamples','sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
-# list of non-AOI feature names 
+               'stddevfixationduration','stddevpathdistance','stddevrelpathangles',
+			   'eyemovementvelocity', 'abspathanglesrate', 'relpathanglesrate',
+			   'sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']#'numsamples']
 
+#add pupil dilation 
+featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'])
+
+#add distance from screen
+featurelist.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
+
+#add events
+featurelist.extend(['numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'numkeypressed', 'leftclicrate', 'rightclicrate', 'doubleclicrate', 'keypressedrate', 
+               'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic', 'timetofirstkeypressed'])
+
+# list of non-AOI feature names
+aoisequencefeat = ['aoisequence']
+
+# AOI sequence feature
 aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum',
-                  'proportiontime','longestfixation']#'timetofirstfixation','timetolastfixation',
-#list of general AOI features
+                  'proportiontime','longestfixation', 'timetofirstfixation','timetolastfixation',
+				  'numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'leftclicrate', 'rightclicrate', 'doubleclicrate',
+                  'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic']
 
+#list of general AOI features
 aoinames = ['Top','Bottom','Graph','Toolbar','Test']
 #list of the AOI names
 
@@ -92,7 +122,7 @@ any gap larger than MAX_SEG_TIMEGAP left in the data.
 VALIDITY_METHOD = 3 #1: porportion; 2:time gap; 3: porportion with (valid + restored) samples
 """
 Methods 1 and 3 use VALID_PROP_THRESH and method 2 uses VALID_TIME_THRESH as validity threshold
- 
+
 Restored samples are the samples which are not valid but they are part of a Fixation.
 The idea is that if the user was looking at a certain point and then we loose the eye data for 
 a short period of time and afterwards the user is looking at the same point we can assume that user
@@ -109,8 +139,6 @@ DEBUG = False
 #DEBUG = True
 #Enable/disable verbose mode which prints out more information for debugging purposes
 
-
-
 #Predefined lists of features that are not calculated using time
 NONTEMP_FEATURES_SEG = ['meanfixationduration', 'stddevfixationduration',
 'fixationrate', 'meanpathdistance', 'stddevpathdistance', 'meanabspathangles', 'stddevabspathangles',
@@ -118,3 +146,9 @@ NONTEMP_FEATURES_SEG = ['meanfixationduration', 'stddevfixationduration',
 
 NONTEMP_FEATURES_AOI = ['longestfixation', 'proportionnum', 'proportiontime',
 'proptransto', 'proptransfrom']
+
+""" list of features related based on pupil dilation """
+NONTEMP_FEATUES_PUPIL = ['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize']
+
+#list of features related to the participant's distance from the screen (in mm)
+NONTEMP_FEATURES_DISTANCE = ['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance']

@@ -10,7 +10,7 @@ import params
 import geometry
 from AOI import *
 from warnings import warn
-
+from AOI import AOI, _fixation_inside_aoi
 
 
 class Segment():
@@ -49,7 +49,7 @@ class Segment():
         has_aois: A boolean indicating if this Segment has AOI features calculated for it
         
     """
-    def __init__(self, segid, all_data, fixation_data, aois = None, prune_length = None):
+    def __init__(self, segid, all_data, fixation_data, event_data = None, aois = None, prune_length = None, rest_pupil_size = 0, export_pupilinfo = False):
         """
         Args:
             segid: A string containing the id of the Segment.
@@ -89,10 +89,10 @@ class Segment():
         self.validity3 = self.calc_validity3()
         self.is_valid = self.get_validity()
         if prune_length:
-            all_data = filter(lambda x: x.timestamp <= self.start +
-            prune_length, all_data)
-            fixation_data = filter(lambda x: x.timestamp <= self.start +
-            prune_length, fixation_data)
+            all_data = filter(lambda x: x.timestamp <= self.start + prune_length, all_data)
+            fixation_data = filter(lambda x: x.timestamp <= self.start + prune_length, fixation_data)
+            if  event_data != None:   
+                event_data = filter(lambda x: x.timestamp <= self.start + prune_length, event_data)
         self.end = all_data[-1].timestamp
         self.length = self.end - self.start
         self.features['length'] = self.end - self.start
@@ -103,6 +103,75 @@ class Segment():
 #            f.set_segid(segid)
         self.features['numfixations'] = self.numfixations
         self.features['fixationrate'] = float(self.numfixations) / self.length
+        
+        """ calculate pupil dilation features (no rest pupil size adjustments yet)""" 
+        self.rest_pupil_size = rest_pupil_size  
+        # check if pupil sizes are available for all missing points
+        pupil_invalid_data = filter(lambda x: x.pupilsize == -1 and x.gazepointxleft > 0, all_data)
+        if len(pupil_invalid_data) > 0:
+            raise Exception("Pupil size is unavailable for a valid data sample. Number of missing points: " + str(len(pupil_invalid_data)))
+        #get all pupil sizes (valid + invalid)
+        #pupilsizes = map(lambda x: x.pupilsize, all_data)
+        #get all datapoints where pupil size is available
+        valid_pupil_data = filter(lambda x: x.pupilsize != -1, all_data) 
+        
+        #number of valid pupil sizes
+        self.numpupilsizes = len(valid_pupil_data) 
+        if self.numpupilsizes > 0: #check if the current segment has pupil data available
+            self.adjvalidpupilsizes = map(lambda x: x.pupilsize - self.rest_pupil_size, valid_pupil_data)
+            """
+            #PCPS adjustment [Iqbal et al., 2005]
+            self.adjvalidpupilsizes = map(lambda x: (x.pupilsize - self.rest_pupil_size)/ (1.0 * self.rest_pupil_size), valid_pupil_data)
+            #for APCPS use self.features['meanpupilsize'] with PCPS adjustment
+            """
+            if export_pupilinfo:
+                self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, x.pupilsize - self.rest_pupil_size], valid_pupil_data) 
+            
+            self.features['meanpupilsize'] = mean(self.adjvalidpupilsizes)
+            self.features['stddevpupilsize'] = stddev(self.adjvalidpupilsizes)
+            self.features['maxpupilsize'] = max(self.adjvalidpupilsizes)
+            self.features['minpupilsize'] = min(self.adjvalidpupilsizes)
+            self.features['startpupilsize'] = self.adjvalidpupilsizes[0]
+            self.features['endpupilsize'] = self.adjvalidpupilsizes[-1]
+        else:
+            self.adjvalidpupilsizes = []
+            self.features['meanpupilsize'] = 0
+            self.features['stddevpupilsize'] = 0
+            self.features['maxpupilsize'] = 0
+            self.features['minpupilsize'] = 0
+            self.features['startpupilsize'] = 0
+            self.features['endpupilsize'] = 0
+        """ end pupil """
+
+        """ calculate distance from screen features""" #distance
+                   
+        # check if pupil sizes are available for all missing points
+        invalid_distance_data = filter(lambda x: x.distance == -1 and x.gazepointxleft >= 0, all_data)
+        if len(invalid_distance_data) > 0:
+            warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
+            
+        #get all datapoints where distance is available
+        valid_distance_data = filter(lambda x: x.distance != -1, all_data) 
+        
+        #number of valid pupil sizes
+        self.numdistances = len(valid_distance_data) 
+        if self.numdistances > 0: #check if the current segment has pupil data available
+            self.distances_from_screen = map(lambda x: x.distance, valid_distance_data)
+            self.features['meandistance'] = mean(self.distances_from_screen)
+            self.features['stddevdistance'] = stddev(self.distances_from_screen)
+            self.features['maxdistance'] = max(self.distances_from_screen)
+            self.features['mindistance'] = min(self.distances_from_screen)
+            self.features['startdistance'] = self.distances_from_screen[0]
+            self.features['enddistance'] = self.distances_from_screen[-1]
+        else:
+            self.features['meandistance'] = 0
+            self.features['stddevdistance'] = 0
+            self.features['maxdistance'] = 0
+            self.features['mindistance'] = 0
+            self.features['startdistance'] = 0
+            self.features['enddistance'] = 0
+        """ end distance """
+        
         if self.numfixations > 0:
             self.fixation_start = fixation_data[0].timestamp
             self.fixation_end = fixation_data[-1].timestamp
@@ -127,25 +196,66 @@ class Segment():
             self.features['stddevpathdistance'] = stddev(distances)
             self.features['eyemovementvelocity'] = self.features['sumpathdistance']/self.length
             self.features['sumabspathangles'] = sum(abs_angles)
+            self.features['abspathanglesrate'] = sum(abs_angles)/self.length
             self.features['meanabspathangles'] = mean(abs_angles)
             self.features['stddevabspathangles'] = stddev(abs_angles)
             self.features['sumrelpathangles'] = sum(rel_angles)
+            self.features['relpathanglesrate'] = sum(rel_angles)/self.length
             self.features['meanrelpathangles'] = mean(rel_angles)
             self.features['stddevrelpathangles'] = stddev(rel_angles)
         else:
             self.features['meanpathdistance'] = 0
             self.features['sumpathdistance'] = 0
             self.features['stddevpathdistance'] = 0
+            self.features['eyemovementvelocity'] = 0
             self.features['sumabspathangles'] = 0
+            self.features['abspathanglesrate'] = 0
             self.features['meanabspathangles']= 0
             self.features['stddevabspathangles']= 0
             self.features['sumrelpathangles'] = 0
+            self.features['relpathanglesrate'] = 0
             self.features['meanrelpathangles']= 0
             self.features['stddevrelpathangles'] = 0
+			
+        if event_data != None:
+            (leftc, rightc, doublec, keyp) = generate_event_lists(event_data)
+			
+            self.numevents = len(leftc)+len(rightc)+len(doublec)+len(keyp)
+            self.features['numevents'] = self.numevents
+			
+            self.features['numleftclic'] = len(leftc)
+            self.features['numrightclic'] = len(rightc)
+            self.features['numdoubleclic'] = len(doublec)
+            self.features['numkeypressed'] = len(keyp)
+            self.features['leftclicrate'] = float(len(leftc))/self.length
+            self.features['rightclicrate'] = float(len(rightc))/self.length
+            self.features['doubleclicrate'] = float(len(doublec))/self.length
+            self.features['keypressedrate'] = float(len(keyp))/self.length
+            self.features['timetofirstleftclic'] = leftc[0].timestamp if len(leftc) > 0 else -1
+            self.features['timetofirstrightclic'] = rightc[0].timestamp if len(rightc) > 0 else -1
+            self.features['timetofirstdoubleclic'] = doublec[0].timestamp if len(doublec) > 0 else -1
+            self.features['timetofirstkeypressed'] = keyp[0].timestamp if len(keyp) > 0 else -1
+        else:
+            self.features['numevents'] = 0
+            self.features['numleftclic'] = 0
+            self.features['numrightclic'] = 0
+            self.features['numdoubleclic'] = 0
+            self.features['numkeypressed'] = 0
+            self.features['leftclicrate'] = 0
+            self.features['rightclicrate'] = 0
+            self.features['doubleclicrate'] = 0
+            self.features['keypressedrate'] = 0
+            self.features['timetofirstleftclic'] = -1
+            self.features['timetofirstrightclic'] = -1
+            self.features['timetofirstdoubleclic'] = -1
+            self.features['timetofirstkeypressed'] = -1
+
         self.has_aois = False
         if aois:
-            self.set_aois(aois,fixation_data)
-    def set_indices(self,sample_st,sample_end,fix_st,fix_end):
+            self.set_aois(aois,fixation_data, event_data)
+            self.features['aoisequence'] = self.generate_aoi_sequence(fixation_data, aois)
+
+    def set_indices(self,sample_st,sample_end,fix_st,fix_end,event_st=None,event_end=None):
         """Sets the index features
         
         Args:
@@ -158,6 +268,8 @@ class Segment():
         self.sample_end_ind = sample_end
         self.fixation_start_ind = fix_st
         self.fixation_end_ind = fix_end
+        self.event_start_ind = event_st
+        self.event_end_ind = event_end
 
     def get_indices(self):
         """Returns the index features
@@ -172,10 +284,10 @@ class Segment():
             Exception: An exception is thrown if the values are read before initialization
         """
         if self.sample_start_ind != None:
-            return self.sample_start_ind, self.sample_end_ind, self.fixation_start_ind, self.fixation_end_ind 
+            return self.sample_start_ind, self.sample_end_ind, self.fixation_start_ind, self.fixation_end_ind, self.event_start_ind, self.event_end_ind
         raise Exception ('The indices values are accessed before setting the initial value in segement:'+self.segid+'!')
 
-    def set_aois(self, aois, fixation_data):
+    def set_aois(self, aois, fixation_data, event_data = None):
         """Sets the relevant "AOI"s for this Segment
         
         Args:
@@ -195,7 +307,7 @@ class Segment():
             warn(msg)
         self.aoi_data = {}
         for aoi in active_aois:
-            aoistat = AOI_Stat(aoi, fixation_data, self.start, self.end, active_aois)
+            aoistat = AOI_Stat(aoi, fixation_data, self.start, self.end, active_aois, event_data)
             self.aoi_data[aoi.aid] = aoistat
             self.has_aois = True
 
@@ -406,7 +518,7 @@ class Segment():
 
     def calc_num_samples(self, all_data):
         """Returns the number of samples in the Segment
-        
+
         Args:
             all_data: a list of "Datapoint"s which make up this Segment.
             
@@ -419,6 +531,20 @@ class Segment():
             if d.stimuliname != '':
                 num += 1
         return num
+
+    def generate_aoi_sequence(self, fixdata, aois):
+        """returns the sequence of AOI's where "Fixation"s occurred 
+        Args:
+            fixdata: a list of "Fixation"s
+        Returns:
+            a list of AOI names that correspond to the sequence of "Fixation" locations
+        """
+        sequence = []
+        for fix in fixdata:
+            for aoi in aois:
+                if _fixation_inside_aoi(fix, aoi.polyin, aoi.polyout) and aoi.is_active(fix.timestamp, fix.timestamp) :
+                    sequence.append(aoi.aid)
+        return sequence
     
     def getid(self):
         """Returns the segid for this Segment
@@ -456,7 +582,7 @@ class Segment():
                 if name in self.features.keys():
                     featnames.append(name)
                 else:
-                    raise Exception('Segement %s has no such feature: %s'%(self.getid(),name))
+                    raise Exception('Segment %s has no such feature: %s'%(self.getid(),name))
 
         featnames.sort()
 
@@ -480,8 +606,10 @@ class Segment():
                 else:                   #a list of features for each AIO was given
                     anames, avals = aoi.get_features(aoifeaturelist)
                     anames = map(lambda x: '%s_%s'%(aid, x), anames)
+
                     featnames += anames
                     featvals += avals
+
 
         return featnames, featvals
     

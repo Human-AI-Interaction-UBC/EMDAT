@@ -146,3 +146,74 @@ def mean(data):
     if len(data)==0:
         return 0
     return sum(data) / float(len(data))
+
+
+def generate_event_lists(event_data):
+    """Returns separate list per type of events. Format:
+    Args:
+        event_data: a list of "Event"s
+    Returns:
+        lists of left clics, right clics, double clics and keys pressed
+    """
+    leftc = []
+    rightc = []
+    doublec = []
+    keyp = []
+    double_clic_current = False
+    time_prev_clic = -10000
+    x_prev_clic = -10000
+    y_prev_clic = -10000
+    for e in event_data:
+        if e.event == "KeyPress":
+            keyp.append(e)
+        elif e.event == "LeftMouseClick":
+            if double_clic_current and (e.timestamp - time_prev_clic) <= 700 and (e.data1-x_prev_clic)<=10 and (e.data2-y_prev_clic)<=10: #We define here a a double clic as two clics in no more than 700ms in a same area
+                doublec.append(e)
+                double_clic_current = False
+                leftc.pop()
+            else: #no double clic
+                leftc.append(e)
+                double_clic_current = True
+                time_prev_clic = e.timestamp
+                x_prev_clic = e.data1
+                y_prev_clic = e.data2
+        elif e.event == "RightMouseClick":
+            rightc.append(e)
+
+    return (leftc, rightc, doublec, keyp)
+
+
+def cast_float(string, invalid_value=None):
+    """a helper method for converting strings to their float value
+
+    Args:
+        str: a string containing a number
+
+    Returns:
+        the float value of the string given or None if not a float
+    """
+    try:
+        string_as_float = float(string)
+        if string_as_float == invalid_value:
+            return None
+    except ValueError:
+        return None
+    return string_as_float
+
+
+def cast_int(string, invalid_value=None):
+    """a helper method for converting strings to their integer value
+
+    Args:
+        str: a string containing a number
+
+    Returns:
+        the integer value of the string given or None if not an integer
+    """
+    try:
+        string_as_int = int(string)
+        if string_as_int == invalid_value:
+            return None
+    except ValueError:
+        return None
+    return string_as_int
