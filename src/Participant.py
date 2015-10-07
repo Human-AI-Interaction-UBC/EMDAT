@@ -19,11 +19,7 @@ class Participant():
     """
 
     def __init__(self, pid, eventfile, datafile, fixfile, segfile, log_time_offset = None, aoifile = None, prune_length= None, 
-<<<<<<< HEAD
-                 require_valid_segs = True, auto_partition_low_quality_segments = False):
-=======
                  require_valid_segs = True, auto_partition_low_quality_segments = False, rpsdata = None):
->>>>>>> ATUAV/master
         """Inits BasicParticipant class
         Args:
             pid: Participant id
@@ -57,11 +53,8 @@ class Participant():
                 split the "Segment"s which have low sample quality, into two new 
                 sub "Segment"s discarding the largest gap of invalid samples.
             
-<<<<<<< HEAD
-=======
             rpsdata: rest pupil sizes for all scenes if available
             
->>>>>>> ATUAV/master
         Yields:
             a Participant object
         """
@@ -145,19 +138,11 @@ class Participant():
         first = True
         for sc in self.scenes:
             if not sc.is_valid and require_valid:
-<<<<<<< HEAD
-                print "User %s:Scene %s dropped because of 'require_valid'" %(self.id,sc.scid)
-                continue
-            sc_feats = []
-            if id_prefix:
-                sc_feats.append(self.id)
-=======
                 print "User %s:Scene %s dropped because of 'require_valid'" %(self.pid,sc.scid)
                 continue
             sc_feats = []
             if id_prefix:
                 sc_feats.append(self.pid)
->>>>>>> ATUAV/master
             sc_feats.append(sc.scid)
             fnames, fvals = sc.get_features(featurelist = featurelist,
                                            aoifeaturelist = aoifeaturelist, 
@@ -223,11 +208,7 @@ class Participant():
                     out+= st.rjust(leng)
                 return out,leng
  
-<<<<<<< HEAD
-        print  "PID:",self.id
-=======
         print  "PID:",self.pid
->>>>>>> ATUAV/master
         
         for seg in self.segments:
             featnames = []
@@ -298,13 +279,8 @@ def export_features_all(participants, featurelist = None, aoifeaturelist = None,
     featnames = []
     if participants:
         for p in participants:
-<<<<<<< HEAD
-            if not(p.is_valid()):
-                print "user",p.id,"was not valid"
-=======
             if not(p.is_valid()) and require_valid:
                 print "user",p.pid,"was not valid"
->>>>>>> ATUAV/master
                 continue
             fnames, fvals = p.export_features(featurelist=featurelist, aoifeaturelist=aoifeaturelist, 
                                               aoifeaturelabels = aoifeaturelabels,
@@ -378,7 +354,4 @@ def read_events(evfile):
         lines = f.readlines()
 
     return map(Event, lines[(params.EVENTSHEADERLINES+params.NUMBEROFEXTRAHEADERLINES):])
-<<<<<<< HEAD
-=======
 
->>>>>>> ATUAV/master
