@@ -260,6 +260,7 @@ class Scene(Segment):
         sample_list = []
         totalfixations = 0
         firstsegtime = float('infinity')
+        endsegtime = float(0)
         firstseg = None 
         for seg in segments:
             sample_st,sample_end,fix_start,fix_end,event_st,event_end = seg.get_indices()
@@ -274,8 +275,12 @@ class Scene(Segment):
             if seg.start < firstsegtime:
                 firstsegtime = seg.start
                 firstseg = seg
-        
+            if seg.end > endsegtime:
+                endsegtime = seg.end
+                endseg = seg
+				
         self.firstseg = firstseg
+        self.endseg = endseg
         self.scid = scid
         self.features = {}
         self.largest_data_gap = maxfeat(self.segments,'largest_data_gap')   #self.segments is used to calculate validity of the scenes instead of segments which is only valid segments
@@ -356,8 +361,8 @@ class Scene(Segment):
             self.features['stddevpupilsize'] = stddev(self.adjvalidpupilsizes)
             self.features['maxpupilsize'] = maxfeat(segments, "features['maxpupilsize']")
             self.features['minpupilsize'] = minfeat(segments, "features['minpupilsize']")
-            self.features['startpupilsize'] = segments[0].features['startpupilsize']
-            self.features['endpupilsize'] = segments[-1].features['endpupilsize']
+            self.features['startpupilsize'] = self.firstseg.features['startpupilsize']
+            self.features['endpupilsize'] = self.endseg.features['endpupilsize']
         else:
             self.pupilinfo_for_export = [] 
             self.features['meanpupilsize'] = 0
@@ -375,8 +380,8 @@ class Scene(Segment):
             self.features['stddevdistance'] = stddev(self.distances_from_screen)
             self.features['maxdistance'] = maxfeat(segments, "features['maxdistance']")
             self.features['mindistance'] = minfeat(segments, "features['mindistance']")
-            self.features['startdistance'] = segments[0].features['startdistance']
-            self.features['enddistance'] = segments[-1].features['enddistance']
+            self.features['startdistance'] = self.firstseg.features['startdistance']
+            self.features['enddistance'] = self.endseg.features['enddistance']
         else:
             self.features['meandistance'] = 0
             self.features['stddevdistance'] = 0
@@ -396,10 +401,10 @@ class Scene(Segment):
             self.features['rightclicrate'] = float(self.features['numrightclic'])/self.length
             self.features['doubleclicrate'] = float(self.features['numdoubleclic'])/self.length
             self.features['keypressedrate'] = float(self.features['numkeypressed'])/self.length
-            self.features['timetofirstleftclic'] = segments[0].features['timetofirstleftclic']
-            self.features['timetofirstrightclic'] = segments[0].features['timetofirstrightclic']
-            self.features['timetofirstdoubleclic'] = segments[0].features['timetofirstdoubleclic']
-            self.features['timetofirstkeypressed'] = segments[0].features['timetofirstkeypressed']
+            self.features['timetofirstleftclic'] = self.firstseg.features['timetofirstleftclic']
+            self.features['timetofirstrightclic'] = self.firstseg.features['timetofirstrightclic']
+            self.features['timetofirstdoubleclic'] = self.firstseg.features['timetofirstdoubleclic']
+            self.features['timetofirstkeypressed'] = self.firstseg.features['timetofirstkeypressed']
         else:
             self.features['numevents'] = 0
             self.features['numleftclic'] = 0

@@ -88,8 +88,9 @@ class BasicParticipant(Participant):
         
         self.segments, self.scenes = rec.process_rec(scenelist = scenelist,aoilist = aois,prune_length = prune_length, require_valid_segs = require_valid_segs, 
                                                      auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = rpsdata, export_pupilinfo=export_pupilinfo)
-        Segments = self.segments
-        self.whole_scene = Scene('P'+str(pid),[],rec.all_data,rec.fix_data, event_data = rec.event_data, Segments = self.segments, aoilist = aois,prune_length = prune_length, require_valid = require_valid_segs, export_pupilinfo=export_pupilinfo )
+        
+        all_segs = sorted(self.segments, key=lambda x: x.start)
+        self.whole_scene = Scene('P'+str(pid),[],rec.all_data,rec.fix_data, event_data = rec.event_data, Segments = all_segs, aoilist = aois,prune_length = prune_length, require_valid = require_valid_segs, export_pupilinfo=export_pupilinfo )
         self.scenes.insert(0,self.whole_scene)
 
         for sc in self.scenes:
