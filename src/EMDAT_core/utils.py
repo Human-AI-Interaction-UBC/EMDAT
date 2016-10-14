@@ -1,11 +1,13 @@
 """
-UBC Eye Movement Data Analysys Toolkit
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
 Created on 2011-08-25
 
-@author: skardan
+Commonly used helper methods.
 
-Commonly used helper methods
+Authors: Samad Kardan (creator), Sebastien Lalle. 
+Institution: The University of British Columbia.
 """
+
 from data_structures import Fixation
 import params
 import math
@@ -133,7 +135,8 @@ def stddev(data):
         return float('nan')
     m = mean(data)
     return math.sqrt(sum(map(lambda x: (x-m)**2, data))/float(len(data)-1))
-    
+   
+  
 def mean(data):
     """Returns the average of a list of numbers
     
@@ -146,7 +149,6 @@ def mean(data):
     if len(data)==0:
         return 0
     return sum(data) / float(len(data))
-
 
 def generate_event_lists(event_data):
     """Returns separate list per type of events. Format:
@@ -217,3 +219,18 @@ def cast_int(string, invalid_value=None):
     except ValueError:
         return None
     return string_as_int
+
+def list_to_string(list, separator = "\t"):
+    """
+    Converts a list of values to a string using SEPARATOR for joints
+    
+    Args:
+        list: a list of values to be converted to a string 
+        
+        separator:  a separator to be used for joints
+    
+    Returns:
+        a string 
+        
+    """
+    return separator.join(map(str, list))+ "\n"

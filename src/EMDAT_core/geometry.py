@@ -1,12 +1,12 @@
 """
-UBC Eye Movement Data Analysis Toolkit
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
 
-$$$Daria: contains auxiliary functions for math calculations performed within EMDAT
+Basic geometrical helper functions.
 
-Author: Nicholas FitzGerald - nicholas.fitzgerald@gmail.com
-
-Basic geometrical helper functions
+Authors: Nicholas FitzGerald (creator), Daria Bondareva, Sebastien Lalle. 
+Institution: The University of British Columbia.
 """
+
 import os, sys, math, random
 
 

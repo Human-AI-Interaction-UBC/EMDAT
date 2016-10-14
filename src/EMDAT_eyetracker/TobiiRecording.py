@@ -1,11 +1,21 @@
-import Recording
-from data_structures import Datapoint, Fixation, Event
+"""
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+Created on 2015-08-15
+
+Class to read Tobii data (exported with Tobii Studio version 1x and 2x). See sample data in the "sampledata" folder.
+
+Authors: Mike Wu (creator), Sebastien Lalle. 
+Institution: The University of British Columbia.
+"""
+
+from EMDAT_core.Recording import *
+from EMDAT_core.data_structures import Datapoint, Fixation, Saccade, Event
+from EMDAT_core.utils import *
 import csv
-import utils
 import params
 
 
-class TobiiRecording(Recording.Recording):
+class TobiiRecording(Recording):
     def read_all_data(self, all_file):
         """Returns a list of "Datapoint"s read from an "All-Data" file.
 
@@ -20,21 +30,30 @@ class TobiiRecording(Recording.Recording):
             for _ in xrange(params.ALLDATAHEADERLINES + params.NUMBEROFEXTRAHEADERLINES - 1):
                 next(f)
             reader = csv.DictReader(f, delimiter="\t")
+            last_pupil_left = -1
+            last_pupil_right = -1
+            last_time = -1
+			
             for row in reader:
                 if not row["Number"]:  # ignore invalid data point
                     continue
-                pupil_left = utils.cast_float(row["PupilLeft"], -1)
-                pupil_right = utils.cast_float(row["PupilRight"], -1)
-                distance_left = utils.cast_float(row["DistanceLeft"], -1)
-                distance_right = utils.cast_float(row["DistanceRight"], -1)
-                data = {"timestamp": utils.cast_int(row["Timestamp"]),
-                        "pupilsize": Recording.get_pupil_size(pupil_left, pupil_right),
-                        "distance": Recording.get_distance(distance_left, distance_right),
-                        "is_valid": utils.cast_int(row["ValidityRight"]) < 2 or utils.cast_int(row["ValidityLeft"]) < 2,
+                pupil_left = cast_float(row["PupilLeft"], -1)
+                pupil_right = cast_float(row["PupilRight"], -1)
+                distance_left = cast_float(row["DistanceLeft"], -1)
+                distance_right = cast_float(row["DistanceRight"], -1)
+                timestamp = cast_int(row["Timestamp"])
+                data = {"timestamp": timestamp,
+                        "pupilsize": get_pupil_size(pupil_left, pupil_right),
+                        "pupilvelocity": get_pupil_velocity(last_pupil_left, last_pupil_right, pupil_left, pupil_right, (timestamp-last_time) ),
+                        "distance": get_distance(distance_left, distance_right),
+                        "is_valid": cast_int(row["ValidityRight"]) < 2 or cast_int(row["ValidityLeft"]) < 2,
                         "stimuliname": row["StimuliName"],
-                        "fixationindex": utils.cast_int(row["FixationIndex"]),
-                        "gazepointxleft": utils.cast_float(row["GazePointXLeft"])}
+                        "fixationindex": cast_int(row["FixationIndex"]),
+                        "gazepointxleft": cast_float(row["GazePointXLeft"])}
                 all_data.append(Datapoint(data))
+                last_pupil_left = pupil_left
+                last_pupil_right = pupil_right
+                last_time = timestamp
 
         return all_data
 
@@ -54,11 +73,11 @@ class TobiiRecording(Recording.Recording):
                 next(f)
             reader = csv.DictReader(f, delimiter='\t')
             for row in reader:
-                data = {"fixationindex": utils.cast_int(row["FixationIndex"]),
-                        "timestamp": utils.cast_int(row["Timestamp"]),
-                        "fixationduration": utils.cast_int(row["FixationDuration"]),
-                        "fixationpointx": utils.cast_int(row["MappedFixationPointX"]),
-                        "fixationpointy": utils.cast_int(row["MappedFixationPointY"])}
+                data = {"fixationindex": cast_int(row["FixationIndex"]),
+                        "timestamp": cast_int(row["Timestamp"]),
+                        "fixationduration": cast_int(row["FixationDuration"]),
+                        "fixationpointx": cast_int(row["MappedFixationPointX"]),
+                        "fixationpointy": cast_int(row["MappedFixationPointY"])}
                 all_fixation.append(Fixation(data, self.media_offset))
 
         return all_fixation
@@ -79,15 +98,20 @@ class TobiiRecording(Recording.Recording):
                 next(f)
             reader = csv.DictReader(f, delimiter='\t')
             for row in reader:
-                data = {"timestamp": utils.cast_int(row["Timestamp"]),
+                data = {"timestamp": cast_int(row["Timestamp"]),
                         "event": row["Event"],
-                        "event_key": utils.cast_int(row["EventKey"])}
+                        "event_key": cast_int(row["EventKey"])}
                 if data["event"] == "LeftMouseClick" or data["event"] == "RightMouseClick":
-                    data.update({"x_coord": utils.cast_int(row["Data1"]), "y_coord": utils.cast_int(row["Data2"])})
+                    data.update({"x_coord": cast_int(row["Data1"]), "y_coord": cast_int(row["Data2"])})
                 elif data["event"] == "KeyPress":
-                    data.update({"key_code": utils.cast_int(row["Data1"]), "key_name": row["Descriptor"]})
+                    data.update({"key_code": cast_int(row["Data1"]), "key_name": row["Descriptor"]})
                 elif data["event"] == "LogData":
                     data.update({"description": row["Data1"]})
                 all_event.append(Event(data, self.media_offset))
 
         return all_event
+		
+    def read_saccade_data(self, saccade_file):
+        """ no saccade in data exported from Tobii Studio V1-V2
+        """
+        pass

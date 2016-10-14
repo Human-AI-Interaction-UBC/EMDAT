@@ -1,16 +1,19 @@
 """
-UBC Eye Movement Data Analysis Toolkit
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
 Generic Participant Class
 Created on 2011-09-25
 
-@author: skardan
-"""
-import string
-from data_structures import *
-import params
-from Scene import Scene
-import Recording
+Generic class to handle eye tracking and events data for one Participant in the experiment.
 
+@author: Samad Kardan (creator), Sebastien Lalle
+Institution: The University of British Columbia.
+"""
+
+import string
+import params
+from data_structures import *
+from Scene import Scene
+from Recording import *
 
 
 class Participant():
@@ -18,7 +21,7 @@ class Participant():
     A class that holds the information for one Participant in the experiment
     """
 
-    def __init__(self, pid, eventfile, datafile, fixfile, segfile, log_time_offset = None, aoifile = None, prune_length= None, 
+    def __init__(self, pid, eventfile, datafile, fixfile, segfile, saccfile, log_time_offset = None, aoifile = None, prune_length= None, 
                  require_valid_segs = True, auto_partition_low_quality_segments = False, rpsdata = None):
         """Inits BasicParticipant class
         Args:
@@ -84,8 +87,6 @@ class Participant():
         elif method == 3:
             return self.whole_scene.calc_validity3(threshold)
 
-
-
     def invalid_segments(self):
         """Returns a list of invalid segments in this particiapnt's eye gaze data
             
@@ -104,7 +105,7 @@ class Participant():
 
 
     def export_features(self, featurelist=None, aoifeaturelist=None, aoifeaturelabels = None,
-                        id_prefix = False, require_valid = True):
+                        id_prefix = True, require_valid = True):
         """Returns feature names and their values for this Participant
         
         Args:
@@ -138,7 +139,7 @@ class Participant():
         first = True
         for sc in self.scenes:
             if not sc.is_valid and require_valid:
-                print "User %s:Scene %s dropped because of 'require_valid'" %(self.pid,sc.scid)
+                warn( "User %s:Scene %s dropped because of 'require_valid'" %(self.pid,sc.scid) )
                 continue
             sc_feats = []
             if id_prefix:
@@ -150,7 +151,7 @@ class Participant():
             if first: featnames += fnames
             sc_feats += fvals
             first = False
-            data.append(sc_feats)            
+            data.append(sc_feats)      
 
         return featnames, data
 
@@ -237,6 +238,39 @@ class Participant():
             o,l= format_list(featnames)
             print o
             print format_list(sc_feats,l)
+			
+			
+    def write_raw_data(self, filename_all, filename_fix, filename_sac, filename_ev):
+        f_all = open(filename_all, 'wb')
+        f_fix = open(filename_fix, 'wb')
+        f_sac = open(filename_sac, 'wb')
+        f_ev = open(filename_ev, 'wb')
+        sep='\t'
+        f_all.write("scene"+sep+"timestamp"+sep+"rawpupilsize"+sep+"pupilvelocity"+sep+"headdistance"+sep+"is_valid"+sep+"stimuliname"+sep+
+		"fixationindex"+"\n")
+	
+        f_fix.write("scene"+sep+"fixationindex"+sep+"timestamp"+sep+"fixationduration"+sep+"mappedfixationpointx"+sep+"mappedfixationpointy"+"\n")
+        
+        f_sac.write("scene"+sep+"saccadeindex"+sep+"timestamp"+sep+"saccadeduration"+sep+"saccadedistance"+sep+"saccadespeed"+sep+"saccadeacceleration"+sep+
+		"saccadestartpointx"+sep+"saccadestartpointy"+sep+"saccadeendpointx"+sep+"saccadeendpointy"+sep+"saccadequality"+"\n")
+		
+        f_ev.write("scene"+sep+"timestamp"+sep+"event"+sep+"event_key"+sep+"x_coord"+sep+"y_coord"+sep+"key_code"+sep+"key_name"+sep+"description"+sep+"\n")
+
+		
+        for sc in self.scenes:
+            for sg in sc.segments:
+
+                for ad in sg.all_data:
+                    f_all.write(str(sc.scid)+str(sg.segid)+sep+ad.get_string()+'\n')
+                for af in sg.fixation_data:
+                    f_fix.write(str(sc.scid)+str(sg.segid)+sep+af.get_string()+'\n')
+                for asa in sg.saccade_data:
+                    f_sac.write(str(sc.scid)+str(sg.segid)+sep+asa.get_string()+'\n')
+                for ae in sg.event_data:
+                    f_ev.write(str(sc.scid)+str(sg.segid)+sep+ae.get_string()+'\n')
+					
+        f_all.close()
+        f_fix.close()
     
 
 def read_participants(segsdir, datadir, prune_length = None, aoifile = None):
@@ -246,9 +280,10 @@ def read_participants(segsdir, datadir, prune_length = None, aoifile = None):
     participants = []
     raise Exception("You should override the default Participant.read_participants method!")
     return participants
-
+	
+	
 def export_features_all(participants, featurelist = None, aoifeaturelist = None, aoifeaturelabels=None,
-                         id_prefix = False, require_valid = True):
+                         id_prefix = True, require_valid = True):
     """Returns feature names and their values for a list of "Participant"s
     
     Args:
@@ -280,7 +315,7 @@ def export_features_all(participants, featurelist = None, aoifeaturelist = None,
     if participants:
         for p in participants:
             if not(p.is_valid()) and require_valid:
-                print "user",p.pid,"was not valid"
+                warn( "User " + str(p.pid) + " was not valid." )
                 continue
             fnames, fvals = p.export_features(featurelist=featurelist, aoifeaturelist=aoifeaturelist, 
                                               aoifeaturelabels = aoifeaturelabels,
@@ -292,8 +327,9 @@ def export_features_all(participants, featurelist = None, aoifeaturelist = None,
     
     return featnames, data
 
+	
 def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist =  None, 
-                       aoifeaturelabels=None, id_prefix = False):
+                       aoifeaturelabels=None, id_prefix = True):
     """Returns feature names and their values for a list of "Participant"s in a tsv-format file
     
     This method writes to a multi-line tab separated values (tsv) file with the first 
@@ -327,19 +363,32 @@ def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist
         for l in fvals:
             f.write(string.join(map(str, l), '\t') + '\n')
 
+			
 def partition(segfile):
+    """Generates the scenelist based on a .seg file
+    
+    Args:
+        segfile: a string containing the name of the '.seg' file
+    
+    Returns:
+        a dict with scid as the key and tuples of (segid, start , end) for segments that belong to
+            that scene as value
+        an integer determining the number of segments
     """
-    Placeholder for a method that generates the scenes based on some external log files and/or 'Event-Data.tsv" files
-    """
-    raise Exception("You should override the default Participant.partition method!")
-    return
+    scenelist = read_segs(segfile)
+    segcount = 0
+    for l in scenelist.itervalues():
+        segcount += len(l)
+    return scenelist, segcount 
 
+	
 def test_validity():
     """
     Placeholder for a method that tests the quality of the eye data for each Participant
     """
     return
 
+	
 def read_events(evfile):
     """Returns a list of Event objects read from an 'Event-Data.tsv' file.
 
@@ -354,4 +403,52 @@ def read_events(evfile):
         lines = f.readlines()
 
     return map(Event, lines[(params.EVENTSHEADERLINES+params.NUMBEROFEXTRAHEADERLINES):])
+	
+	
+def plot_pupil_dilation_all(participants, outdir, scene):
+    """
+    Plots adjusted pupil dilations to 
+    
+    Args:
+        participants: collection of Participant objects
+        
+        outdir: directory where files should be exported
+        
+        scene: name of scene to be exported  
+    
+    Returns:
+    
+    """
+    lines = []
+    for participant in participants:
+        lines = export_pupil_dilation_from_scene(participant, scene, separator = "\t")
+        with open(outdir + "pupildata" + "_" + str(participant.pid) + "_" + str(scene) + ".tsv", "w") as fout:
+            if lines is not None:
+                for line in lines:
+                    fout.write(line)
+            else:
+                fout.write("There is no scene " + str(scene) + " in the participant " + str(participant.pid) + " record ")
+    
+
+def export_pupil_dilation_from_scene(participant, scene, separator = "\t"):
+    """
+    Exports pupil dilation information from  pupilinfo_for_export for a scene of a participant
+    
+    Args:
+        participant: a Participant object 
+        
+        scene: name of scene to be exported
+    
+    Returns:
+        a collection of lines to be written in the file
+    """
+    lines = []
+    for sc in participant.scenes:
+        if sc.scid == scene:
+            lines.append("timestamp\tpupil size\tadjusted pupil size\n")
+            for el in sc.pupilinfo_for_export:
+                lines.append(list_to_string(el, "\t"))
+            return lines
+
+    return None
 

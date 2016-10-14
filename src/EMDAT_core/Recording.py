@@ -1,14 +1,12 @@
 """
-UBC Eye Movement Data Analysis Toolkit
-Recording class
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+Created on 2011-09-30
 
-Author: Nicholas FitzGerald - nicholas.fitzgerald@gmail.com
-Modified by: Samad Kardan to a general class independent of the study
-Modified by: Mike Wu to an abstract class to be extended for each type of eye tracker
-
-Class to hold all the data from one recording (i.e, one complete experiment session)
+Regcording class: hold all the data from one recording (i.e, one complete experiment session)
 for one participant
 
+Authors: Nicholas FitzGerald (creator), Samad Kardan, Sebastien Lalle, Mike Wu. 
+Institution: The University of British Columbia.
 """
 
 from abc import ABCMeta, abstractmethod
@@ -21,7 +19,7 @@ from utils import *
 class Recording:
     __metaclass__ = ABCMeta
 
-    def __init__(self, all_file, fixation_file, event_file=None, media_offset=(0, 0)):
+    def __init__(self, all_file, fixation_file, saccade_file=None, event_file=None, media_offset=(0, 0)):
         """
         :param all_file: path to file that contains all gaze points
         :param fixation_file :path to file that contains all gaze points
@@ -38,6 +36,22 @@ class Recording:
         self.fix_data = self.read_fixation_data(fixation_file)
         if len(self.fix_data) == 0:
             raise Exception("The file '" + fixation_file + "' has no fixations!")
+			
+        if saccade_file is not None:
+            self.sac_data = self.read_saccade_data(saccade_file)
+            if len(self.sac_data) == 0:
+                raise Exception("The file '" + saccade_file + "' has no saccades!")
+				
+			##### temp code ################
+            tempname = saccade_file.replace("/", "_").replace(".", "")
+            f = open("C:\\Python27\\Code\\temp\\output_saccade_temp_"+tempname+".txt", "w")
+            f.write("index,timestamp,duration,distance,speed,acceleration,startpointx,startpointy,endpointx,endpointy,quality\n")
+            for s in self.sac_data:
+                f.write(str(s.saccadeindex)+","+str(s.timestamp)+","+str(s.saccadeduration)+","+str(s.saccadedistance)+","+str(s.saccadespeed)+","+str(s.saccadeacceleration)
+						+","+str(s.saccadestartpointx)+","+str(s.saccadestartpointy)+","+str(s.saccadeendpointx)+","+str(s.saccadeendpointy)+","+str(s.saccadequality)+"\n")
+            f.close()
+        else:
+            self.sac_data = None
 
         if event_file is not None:
             self.event_data = self.read_event_data(event_file)
@@ -60,9 +74,19 @@ class Recording:
     def read_fixation_data(self, fixation_file):
         """ Read the data file that contains all fixations.
 
-        :param fixation_file :path to file that contains all gaze points
+        :param fixation_file :path to file that contains all fixations points
         :return: a list of Fixations
         :rtype: list[Fixation]
+        """
+        pass
+		
+    @abstractmethod
+    def read_saccade_data(self, saccade_file):
+        """ Read the data file that contains all saccades.
+
+        :param saccade_file :path to file that contains all saccade_file points
+        :return: a list of Saccades
+        :rtype: list[Saccade]
         """
         pass
 
@@ -122,21 +146,24 @@ class Recording:
 
         if segfile is not None:
             scenelist = read_segs(segfile)
-            print "Done reading the segments!"
+            if params.VERBOSE != "QUIET":
+                print "Done reading the segments!"
         elif scenelist is None:
-            print "Error in scene file"
+            print "Error in scene file."
 
         if aoifile is not None:
             aoilist = read_aois(aoifile)
-            print "Done reading the AOIs!"
+            if params.VERBOSE != "QUIET":
+                print "Done reading the AOIs!"
         elif aoilist is None:
             aoilist = []
-            print "No AOIs defined!"
+            print "Warning: No AOIs defined!"
 
         scenes = []
         for scid, sc in scenelist.iteritems():
-            print "Preparing scene:" + str(scid)
-            if params.DEBUG:
+            if params.VERBOSE != "QUIET":
+                print "Preparing scene:" + str(scid)
+            if params.DEBUG or params.VERBOSE == "VERBOSE":
                 print "len(all_data)", len(self.all_data)
             try:
                 # get rest pupil size data
@@ -145,16 +172,15 @@ class Recording:
                         scrpsdata = rpsdata[scid]
                     else:
                         scrpsdata = 0
-                        print rpsdata.keys()
                         if params.DEBUG:
-                            raise Exception(
-                                "Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
+                            print rpsdata.keys()
+                            raise Exception("Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
                         else:
-                            print "Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0"
+                            print "Warning: Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0"
                             pass
                 else:
                     scrpsdata = 0
-                new_scene = Scene(scid, sc, self.all_data, self.fix_data, event_data=self.event_data, aoilist=aoilist,
+                new_scene = Scene(scid, sc, self.all_data, self.fix_data, saccade_data = self.sac_data, event_data=self.event_data, aoilist=aoilist,
                                   prune_length=prune_length,
                                   require_valid=require_valid_segs,
                                   auto_partition=auto_partition_low_quality_segments, rest_pupil_size=scrpsdata,
@@ -172,6 +198,13 @@ class Recording:
         for sc in scenes:
             segs.extend(sc.segments)
         return segs, scenes
+        
+		
+    def clean_memory(self):
+        self.all_data = []
+        self.fix_data = []
+        self.sac_data = []
+        self.event_data = []
 
 
 def read_segs(segfile):
@@ -181,7 +214,7 @@ def read_segs(segfile):
     scene_name[\t]segment_name[\t]start_time[\t]end_time[\n]
 
     scene_name is the id of the Scene that this Segment belongs to,
-    segment_name is the id of the Segement,
+    segment_name is the id of the Segment,
     and start_time and end_time determines the time interval for the Segment
 
     Args:
@@ -274,6 +307,41 @@ def read_aoilines(aoilines):
     return aoilist
 
 
+def read_rest_pupil_sizes(rpsfile):
+    """
+    Returns a dictionary of rest pupil sizes for all scenes if rpsfile is provided. None otherwise
+    The input file has the following format:
+        pid\t<scene name 1>\t<scene name 2>....\n
+        <pid 1>\t<rest pupil size 1>\t<rest pupil size 2>
+
+    Args:
+        rpsfile: a string containing the name of the '.tsv' file 
+            with rest pupil sizes for all partiicpants and all scenes. 
+    
+    Returns:
+        a dictionary of rest pupil sizes. None otherwise
+    
+    """
+    if rpsfile != None:
+        with open(rpsfile, 'r') as f:
+            lines = f.readlines()
+        rpsdic = {}
+        import re
+        scenelist = re.findall('\w+', lines[0])
+        for line in lines[1:]:
+            linelist = re.findall('\w+', line)
+            pid = cast_int(linelist[0])
+            if pid == None: #if casting didn't work
+                pid = linelist[0]
+            rpsdic[pid] = {}
+            for scene, rpsvalue in zip(scenelist[1:], linelist[1:]):
+                rpsdic[pid][scene] = cast_int(rpsvalue)
+        
+        return rpsdic
+    else:
+        return None
+		
+	
 def get_pupil_size(pupilleft, pupilright):
     if pupilleft is None and pupilright is None:
         return -1
@@ -283,7 +351,17 @@ def get_pupil_size(pupilleft, pupilright):
         return pupilleft
     return (pupilleft + pupilright) / 2.0
 
+	
+def get_pupil_velocity(last_pupilleft, last_pupilright, pupilleft, pupilright, time):
+    if (last_pupilleft is None or pupilleft is None) and (last_pupilright is None or pupilright is None):
+        return -1
+    if (last_pupilleft is None or pupilleft is None):
+        return abs(pupilright - last_pupilright) / time
+    if (last_pupilright is None or pupilright is None):
+        return abs(pupilleft - last_pupilleft) / time
+    return abs( (pupilleft + pupilright) / 2 - (last_pupilleft + last_pupilright) / 2 ) / time
 
+	
 def get_distance(distanceleft, distanceright):
     if distanceleft is None and distanceright is None:
         return -1
@@ -292,3 +370,35 @@ def get_distance(distanceleft, distanceright):
     if distanceright is None:
         return distanceleft
     return (distanceleft + distanceright) / 2.0
+	
+	
+def get_saccade_distance(saccade_gaze_points):
+    distance = 0.0
+    try:
+        for i in range(0, len(saccade_gaze_points)-1):
+            (timestamp1, point1x, point1y) = saccade_gaze_points[i]
+            (timestamp2, point2x, point2y) = saccade_gaze_points[i+1]
+            distance += float(math.sqrt( float(math.pow(point1x - point2x, 2) + math.pow(point1y - point2y, 2)) ))
+    except Exception as e:
+        warn(str(e))
+
+    return (distance)
+	
+	
+def get_saccade_acceleration(saccade_gaze_points):
+    mean_accel = 0
+    prev_temp_speed = 0 #initial speed = 0
+    try:
+	    for i in range(0, len(saccade_gaze_points)-1):
+	        (timestamp1, point1x, point1y) = saccade_gaze_points[i]
+	        (timestamp2, point2x, point2y) = saccade_gaze_points[i+1]
+	        if i+1 == len(saccade_gaze_points)-1:
+	            temp_speed = 0
+	        else:
+	            temp_speed = math.sqrt(math.pow(point1x - point2x, 2) + math.pow(point1y - point2y, 2))
+	        mean_accel += (temp_speed-prev_temp_speed) / (timestamp2-timestamp1)
+	        prev_temp_speed = temp_speed
+		#last gaze point
+    except Exception as e:
+	    warn(str(e))
+    return (mean_accel / (float(len(saccade_gaze_points)-1)) )

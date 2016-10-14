@@ -1,94 +1,34 @@
 """
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
 Created on 2012-09-05
 
-@author: skardan
+Functions to examine data, segments and scene quality.
+
+Authors: Samad Kardan (creator), Sebastien Lalle. 
+Institution: The University of British Columbia.
 """
 from Participant import Participant
-#def explore_validation_threshold_segments(datadir, prune_length = None, user_list = xrange(7,38),
-#                  auto_partition_low_quality_segments = False):
-#    
-#    participants = []
-#    pid = 55
-#    seglen = 0
-#    segs = 0
-#    for rec in user_list:
-#        print "pid:", pid
-#        if rec<10:
-#            allfile = datadir+'/Rec 0'+str(rec)+'-All-Data.tsv'
-#            fixfile = datadir+'/Rec 0'+str(rec)+'-Fixation-Data.tsv'
-#            evefile = datadir+'/Rec 0'+str(rec)+'-Event-Data.tsv'
-#        else:
-#            allfile = datadir+'/Rec '+str(rec)+'-All-Data.tsv'
-#            fixfile = datadir+'/Rec '+str(rec)+'-Fixation-Data.tsv'
-#            evefile = datadir+'/Rec '+str(rec)+'-Event-Data.tsv'
-#        print allfile
-#        import os.path
-#        if os.path.exists(allfile):
-#            p = Participant(pid, evefile, allfile, fixfile, aoifiles=None, prune_length = prune_length,
-#                                require_valid_segs = False,
-#                                auto_partition_low_quality_segments = auto_partition_low_quality_segments)
-#            tvalidity = []
-#            
-#            for seg in p.segments:
-#                seglen += seg.completion_time
-#            segs += len(p.segments)
-#
-##            for tresh in range(1,100,1):##proportion
-##                invc = 0
-##                invsegs=[]
-##                for seg in segments:
-##                    if seg.calc_validity1(tresh/100.0) == False:
-##                        invc +=1
-##            for tresh in range(1,21,1):##prop-gap
-##                invc = 0
-##                invsegs=[]
-##                for seg in segments:
-##                    if seg.calc_validity2(tresh*seg.completion_time/100.0) == False:
-##                        invc +=1                        
-##            for tresh in range(1,20000,100):##time-gap
-##                invc = 0
-##                invsegs=[]
-##                for seg in segments:
-##                    if seg.calc_validity2(tresh) == False:
-##                        invc +=1
-#
-#            for tresh in range(1,102,1):##proportion Fixation
-#                invc = 0
-#                invsegs=[]
-#                for seg in p.segments:
-#                    if seg.calc_validity3(tresh/100.0) == False:
-#                        invc +=1                        
-#                        invsegs.append(seg.segid)
-#                        
-#                if len(invsegs)>0:
-#                    print "seg:",invsegs 
-#                        
-#                tvalidity.append((tresh, invc))
-#            participants.append( (pid,tvalidity, len(p.segments) ) )
-#            print ( (tvalidity, len(p.segments)) )
-#           
-#        pid += 1
-#        print "average seg len",seglen/float(segs)
-#    return participants
+import params
 
 def explore_validation_proportion_threshold_segments(participant_list, include_restored_samples = True, prune_length = None, 
                                           auto_partition_low_quality_segments = False):
-    """Explores different threshiold values for the proportion of valid samples method in terms of Segments for all Participants in the list
+    """Explores different threshold values for the proportion of valid samples method in terms of Segments for all Participants in the list
     """
     
     seglen = 0
     segs = 0
     participants = []
     for p in participant_list:
-        print "pid:", p.pid
+        if params.VERBOSE != "QUIET":
+            print "Data validation for participant ", p.pid
         if p.require_valid_segments == True:
-            raise Exception("explore_validation_threshold_segments should be called with a list of Participants with require_valid_segments = False")
-            
+            raise Exception("Error: explore_validation_threshold_segments should be called with a list of Participants with require_valid_segments = False")
         
         tvalidity = []
         
         for seg in p.segments:
             seglen += seg.completion_time
+			
         segs += len(p.segments)
         if include_restored_samples == False:
             for tresh in range(1,102,1):    ##proportion
@@ -97,24 +37,28 @@ def explore_validation_proportion_threshold_segments(participant_list, include_r
                 for seg in p.segments:
                     if seg.calc_validity1(tresh/100.0) == False:
                         invc +=1
-
+                        invsegs.append(seg.segid)
         else:
             for tresh in range(1,102,1):    ##proportion with restored samples from Fixations
                 invc = 0
                 invsegs=[]
                 for seg in p.segments:
                     if seg.calc_validity3(tresh/100.0) == False:
-                        invc +=1                        
+                        invc +=1
                         invsegs.append(seg.segid)
                         
                 if len(invsegs)>0:
-                    print "seg:",invsegs 
+                    if params.VERBOSE != "QUIET":
+                        print str(invc)+ " invalid segments (out of "+str(len(p.segments))+" for participant "+ str(p.pid) +" at threshold "+str(tresh) 
+                    if params.DEBUG or params.VERBOSE == "VERBOSE":
+                        print "List of invalid segments:",invsegs 
                         
                 tvalidity.append((tresh, invc))
         participants.append( (p.pid,tvalidity, len(p.segments) ) )
-        print ( (tvalidity, len(p.segments)) )
+        #print ( (tvalidity, len(p.segments)) )
        
-    print "average seg len",seglen/float(segs)
+    if params.DEBUG or params.VERBOSE == "VERBOSE":
+        print "Average seg len",seglen/float(segs)
     return participants
 
 def explore_validation_time_gap_threshold_segments(participant_list, time_gap_list = [100, 200, 300, 400, 500, 1000, 2000], prune_length = None, 
@@ -126,11 +70,9 @@ def explore_validation_time_gap_threshold_segments(participant_list, time_gap_li
     segs = 0
     participants = []
     for p in participant_list:
-        print "pid:", p.pid
         if p.require_valid_segments == True:
             raise Exception("explore_validation_threshold_segments should be called with a list of Participants with require_valid_segments = False")
-            
-        
+
         tvalidity = []
         
         for seg in p.segments:
@@ -146,13 +88,17 @@ def explore_validation_time_gap_threshold_segments(participant_list, time_gap_li
                     invc +=1
 
             if len(invsegs)>0:
-                print "seg:",invsegs 
+                if params.VERBOSE != "QUIET":
+                    print str(invc)+ " invalid segments (out of "+str(len(p.segments))+" for participant "+ str(p.pid) +" at threshold "+str(tresh) 
+                if params.DEBUG or params.VERBOSE == "VERBOSE":
+                    print "List of invalid segments:",invsegs 
                     
             tvalidity.append((tresh, invc))
         participants.append( (p.pid,tvalidity, len(p.segments) ) )
-        print ( (tvalidity, len(p.segments)) )
-       
-    print "average seg len",seglen/float(segs)
+        #print ( (tvalidity, len(p.segments)) )
+		
+    if params.DEBUG or params.VERBOSE == "VERBOSE":
+        print "average seg len",seglen/float(segs)
     return participants
 
 
@@ -164,7 +110,6 @@ def explore_validation_proportion_threshold_participants(participant_list, inclu
     seglen = 0
     segs = 0
     for p in participant_list:
-        print "pid:", p.pid
         tvalidity = []
             
         for seg in p.segments:
@@ -184,7 +129,7 @@ def explore_validation_proportion_threshold_participants(participant_list, inclu
                     invc +=1                        
                 tvalidity.append((tresh, invc))
 
-        participants.append( (p.pid,tvalidity, len(p.segments) ) )
+        participants.append( (p.pid, tvalidity, len(p.segments) ) )
         print ( (tvalidity, len(p.segments)) )
                  
     return participants
@@ -217,7 +162,7 @@ def output_Validity_info_Participants(user_list, include_restored_samples, auto_
 
 
 def output_Validity_info_Segments(user_list, auto_partition_low_quality_segments_flag, validity_method, threshold_gaps_list = [], output_file= None):
-    """ Outputs the Validuty info for Segments over all Participants for different Threshold values
+    """ Outputs the Validity info for Segments over all Participants for different Threshold values
     """
     if output_file:
         print "writing results to: " + output_file
@@ -314,41 +259,8 @@ def output_Validity_info_Segments(user_list, auto_partition_low_quality_segments
                         usr.append(0)
                     
                 print threshold_gaps_list[gap_index],":",inv_seg,"/",totalseg,", users with invalid Segment:",inv_user,":",usr        
-##################
 
 
-
-########### PRINT scence validity
-#print
-#actionids = [1    ,2    ,3    ,4    ,9    ,10    ,11]
-#print '\t',repr(actionids).strip('[').rstrip(']').replace(',','\t')
-#for p in ps:
-#    validscs = map(lambda x:x.scid, filter(lambda x:x.is_valid,p.scenes))
-#    output = map(lambda x:int(x in validscs),actionids)
-#    print p.id,'\t',(repr(output)).strip('[').rstrip(']').replace(',','\t')
-#print
-#for p in ps:
-#    existingscs = filter(lambda x:x.scid in actionids,p.scenes)
-#    exscdic = {}
-#    for sc in existingscs:
-#        exscdic[sc.scid] = sc
-#        
-#    def retnumberofsegs(dic,acid):
-#        if acid in dic.keys():
-#            return dic[acid].features['numsegments']
-#        else:
-#            return 0
-#    output = map(lambda x:retnumberofsegs(exscdic,x),actionids)
-#    print p.id,'\t',(repr(output)).strip('[').rstrip(']').replace(',','\t')    
-
-
-###### PRINT invalid segements 
-#for p in ps:
-#    ##p.print_()
-#    print p.id
-#    print p.invalid_segments()
-#    print p.valid_segments() 
-    
 def output_percent_discarded(participant_list, output_file= None):
     """percent of data Discarded due to validity
     """

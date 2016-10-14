@@ -1,101 +1,119 @@
 """
-UBC Eye Movement Data Analysis Toolkit
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
 
 Module that contains all global parameters. Values of parameters are specific to the project.
 
-Author: skardan
-
+@author: Samad Kardan (creator), Sebastien Lalle
+Institution: The University of British Columbia.
 """
 
 
-EYELOGDATAFOLDER = "./sampledata"
+# ####################### Eye tracker type and path ##############################################################
+
 # the folder that has the files exported from eye trackers
+EYELOGDATAFOLDER = "./sampledata"
 
-EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
 # the folder that has the external log files
+EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
 
-EYETRACKERTYPE = "Tobii"
-#EYETRACKERTYPE = "TobiiV3"
-#EYETRACKERTYPE = "SMI"
+# the eye tracker and/or software used to collect and export the data
+#EYETRACKERTYPE = "Tobii" #Tobii Studio version 1x and 2x
+EYETRACKERTYPE = "TobiiV3" #Tobii Studio version 3x
+#EYETRACKERTYPE = "SMI" # SMI/BeGaze
 
-# Tobii-specific parameters
 
-NUMBEROFEXTRAHEADERLINES = 8
+# ####################### Eye tracker specific parameters ##############################################################
+
 # number of extra lines at the beginning of the files exported from Tobii
 # this is specific to study and is based on the number of variables defined in Tobii studio for the experiment
+NUMBEROFEXTRAHEADERLINES = 8
 
-FIXATIONHEADERLINES = 19
 # number of lines at the beginning of the 'Fixation-Data' files exported from Tobii before the actual data
+FIXATIONHEADERLINES = 19
 
-ALLDATAHEADERLINES = 26
 # number of lines at the beginning of the 'All-Data' files exported from Tobii before the actual data
+ALLDATAHEADERLINES = 26
 
-EVENTSHEADERLINES = 27
 # number of lines at the beginning of the 'Event-Data' files exported from Tobii before the actual data
+EVENTSHEADERLINES = 27
 
-ACTIONHEADERLINES = 0
 # number of lines at the beginning of the external log files before the actual data
+ACTIONHEADERLINES = 0
 
-# SMI-specific parameters
+# ### SMI-specific parameters
+# the line number of the first data row in Events file
+EVENTS_FIRST_DATA_LINE = 22  
 
-EVENTS_FIRST_DATA_LINE = 22  # the line number of the first data row in Events file
+# the line number of the row that contains the table header for fixations
+FIXATION_HEADER_LINE = 11  
 
-FIXATION_HEADER_LINE = 11  # the line number of the row that contains the table header for fixations
+# the line number of the row that contains the table header for fixations
+SACCADE_HEADER_LINE = 14  
 
-USER_EVENT_HEADER_LINE = 20  # the line number of the row that contains the table header for user events
+# the line number of the row that contains the table header for user events
+USER_EVENT_HEADER_LINE = 20
 
-# General parameters
+# the line number of the first data row in Raw file
+RAW_HEADER_LINE = 1
 
+#L or R for using left/right eye event when averaging both eyes measures is not possible
+MONOCULAR_EYE = "L" 
+
+
+
+# ####################### Features generation ##############################################################
+
+# the coordinates of the top left corner of the window showing the interface under study. 
+# (0,0) if the interface was in full screen (default value).
 MEDIA_OFFSET = (0, 0)
-# the coordinates of the top left corner of the window
-# showing the interface under study. (0,0) if the interface was
-# in full screen (default value)
 
-featurelist = ['numsegments','length','numfixations','fixationrate','meanabspathangles',
+
+#Overall gaze features to generate and export 
+featurelist = ['numsegments','length','numsamples','numfixations','fixationrate','meanabspathangles',
                'meanfixationduration','meanpathdistance','meanrelpathangles','stddevabspathangles',
                'stddevfixationduration','stddevpathdistance','stddevrelpathangles',
 			   'eyemovementvelocity', 'abspathanglesrate', 'relpathanglesrate',
-			   'sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']#'numsamples']
+			   'sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
 
-#add pupil dilation 
-featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize'])
+# Pupil features to generate and export
+featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize',
+               'meanpupilvelocity', 'stddevpupilvelocity', 'maxpupilvelocity', 'minpupilvelocity'])
 
-#add distance from screen
+# Head distance features to generate and export
 featurelist.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
 
-#add events
+# Saccade features to generate and export
+featurelist.extend(['numsaccades', 'sumsaccadedistance', 'meansaccadedistance', 'stddevsaccadedistance', 'longestsaccadedistance',
+               'sumsaccadeduration','meansaccadeduration', 'stddevsaccadeduration', 'longestsaccadeduration', 
+               'meansaccadespeed', 'stddevsaccadespeed','minsaccadespeed', 'maxsaccadespeed',
+			   'fixationsaccadetimeratio'])
+
+# Events features to generate and export
 featurelist.extend(['numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'numkeypressed', 'leftclicrate', 'rightclicrate', 'doubleclicrate', 'keypressedrate', 
                'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic', 'timetofirstkeypressed'])
 
-# list of non-AOI feature names
+# Generate AOI-sequence
 aoisequencefeat = ['aoisequence']
 
-# AOI sequence feature
+# AOI features to generate and export
 aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum',
-                  'proportiontime','longestfixation', 'timetofirstfixation','timetolastfixation',
+                  'proportiontime','longestfixation', 'meanfixationduration', 'stddevfixationduration', 'timetofirstfixation','timetolastfixation',
 				  'numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'leftclicrate', 'rightclicrate', 'doubleclicrate',
                   'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic']
 
-#list of general AOI features
-aoinames = ['Top','Bottom','Graph','Toolbar','Test']
 #list of the AOI names
+aoinames = ['Top','Bottom','Graph','Toolbar']
 
+#list of transition-based AOI features (count)
 aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames) 
-#['numtransfromBottom','numtransfromGraph','numtransfromToolbar','numtransfromTop']
-#list of transition-based AOI features
+#aoitransto = map(lambda x:'numtransto_'+x, aoinames) 
 
-#aoitransto = ['numtranstoBottom','numtranstoGraph','numtranstoToolbar','numtranstoTop']
-
-
+#list of transition-based AOI features (proportion)
 aoiproportion = map(lambda x:'proptransfrom_'+x, aoinames) 
-#['proptransfromBottom','proptransfromGraph','proptransfromToolbar','proptransfromTop']
-#list of transition-based AOI features
-
-##,'_proptransto_Bottom','_proptransto_Graph','_proptransto_Toolbar','_proptransto_Top']
+#aoitransto = map(lambda x:'proptransto_'+x, aoinames) 
 
 
-
-#generating a list of all AOI-based features
+# Generating a list of all AOI-based features (including transitions)
 aoifeaturelist =[]
 for aoin in aoinames:
     aoifeaturelist.extend(map(lambda x:aoin+'_'+x, aoigeneralfeat))
@@ -104,23 +122,14 @@ for aoin in aoinames:
     aoifeaturelist.extend(map(lambda x:aoin+'_'+x, aoiproportion))
     
 
-# Validity Threshold for segments
-VALID_PROP_THRESH = 0.85
-#the minimum proportion of valid samples for a Segment or Scene to be considered valid
+# ####################### Data processing, restoration and validation ##############################################################
 
-VALID_TIME_THRESH = 3000
-#the maximum gap size (ms) allowable in samples for a Segment or Scene to be considered valid
+"""
+Validity method to control for data quality:
+ 1 = Proportion of valid gaze samples
+ 2 = No gap size abvoe a given threshold
+ 3 =  Proportion of valid gaze samples (including restored samples, see below)
 
-MAX_SEG_TIMEGAP = 300 #maximum gap size (ms) allowable in a segment with auto-partition option
-"""
-Auto-partition option is when EMDAT automatically splits the "Segment"s which have low sample 
-quality, into two new sub "Segment"s discarding the largest gap of invalid samples for 
-a "Segment". EMDAT will continue to perform the splitting on the Segments until there is not
-any gap larger than MAX_SEG_TIMEGAP left in the data.
-"""
-
-VALIDITY_METHOD = 3 #1: porportion; 2:time gap; 3: porportion with (valid + restored) samples
-"""
 Methods 1 and 3 use VALID_PROP_THRESH and method 2 uses VALID_TIME_THRESH as validity threshold
 
 Restored samples are the samples which are not valid but they are part of a Fixation.
@@ -128,27 +137,49 @@ The idea is that if the user was looking at a certain point and then we loose th
 a short period of time and afterwards the user is looking at the same point we can assume that user
 was looking at that same point during that period. 
 """
+VALIDITY_METHOD = 3 
 
-MINSEGSIZE = 300 #minimum segment size in ms that is considered meaningful for this experiment
+# Validity Threshold for segments (the minimum proportion of valid samples for a Segment or Scene to be considered valid)
+VALID_PROP_THRESH = 0.8
 
-INCLUDE_HALF_FIXATIONS = False
+#the maximum gap size (ms) allowable in samples for a Segment or Scene to be considered valid
+VALID_TIME_THRESH = 3000
+
+
+"""
+Maximum gap size (ms) allowable in a segment with auto-partition option
+
+Auto-partition option is when EMDAT automatically splits the "Segment"s which have low sample 
+quality, into two new sub "Segment"s discarding the largest gap of invalid samples for 
+a "Segment". EMDAT will continue to perform the splitting on the Segments until there is not
+any gap larger than MAX_SEG_TIMEGAP left in the data.
+"""
+MAX_SEG_TIMEGAP = 300 
+
+
+#proportion of valid gaze samples required per saccade. If less than 1, missing gaze sample will be extrapolated.
+VALID_SAMPLES_PROP_SACCADE = 1
+
+#minimum segment size in ms that is considered meaningful for this experiment
+MINSEGSIZE = 0 
+
 #A boolean value determining if a Fixation extends between two consecutive Segments, should it be 
 #included in those Segments or not
+INCLUDE_HALF_FIXATIONS = False
 
-DEBUG = False
+#Pupil adjustment to minimize the pupil size differences among individual users, if Rest Pupil Size (RPS) is provided. Possible values:
+#PUPIL_ADJUSTMENT = None 		#no adjustment; 
+PUPIL_ADJUSTMENT = "rpscenter"	#Rps-centering (substraction of the rps from the raw pupil size)
+#PUPIL_ADJUSTMENT = "PCPS" 		#Normalization of pupil size based on the rsp following [Iqbal et al., 2005, doi>10.1145/1054972.1055016]
+
+
+# ####################### Verbose/Debug mode ##############################################################
+
+#Enable/disable debug mode. In debug mode warnings are treated as errors, and the verbosity level is automatically set to "VERBOSE" (see below)
 #DEBUG = True
-#Enable/disable verbose mode which prints out more information for debugging purposes
+DEBUG = False
 
-#Predefined lists of features that are not calculated using time
-NONTEMP_FEATURES_SEG = ['meanfixationduration', 'stddevfixationduration',
-'fixationrate', 'meanpathdistance', 'stddevpathdistance', 'meanabspathangles', 'stddevabspathangles',
-'meanrelpathangles', 'stddevabspathangles'] 
-
-NONTEMP_FEATURES_AOI = ['longestfixation', 'proportionnum', 'proportiontime',
-'proptransto', 'proptransfrom']
-
-""" list of features related based on pupil dilation """
-NONTEMP_FEATUES_PUPIL = ['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize']
-
-#list of features related to the participant's distance from the screen (in mm)
-NONTEMP_FEATURES_DISTANCE = ['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance']
+#Verbosity level 
+#VERBOSE = "QUIET"		#prints nothing except errors and warnings
+VERBOSE = "NORMAL"		#prints essential information
+#VERBOSE = "VERBOSE"	#prints information useful for debugging

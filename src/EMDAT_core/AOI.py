@@ -1,9 +1,7 @@
 """
-UBC Eye Movement Data Analysis Toolkit
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
 The Generic Area of Interest Classes
 Created on 2011-08-26
-
-@author: skardan
 
 In EMDAT, the bounderies of an Area of Interest (AOI) is defined as a polygon on the screen. You can 
 optionally define a second polygone inside the first polygone to be excluded from an AOI.
@@ -11,11 +9,14 @@ An AOI can be always active (a global AOI) or can be active during certain time 
 In order to calculate the features for an AOI instance, you need to create an AOI_Stat instance and
 map it to a target AOI object by passing it to the AOI_Stat constructor. The resulting AOI_Stat
 will calculate all features related to the given AOI and store them for later reference 
+
+
+Authors: Samad Kardan (creator), Sebastien Lalle. 
+Institution: The University of British Columbia.
 """
+
 from utils import *
 from warnings import warn
-
-
 
 
 class AOI():
@@ -41,6 +42,7 @@ class AOI():
         self.polyout = polyout
         self.timeseq = timeseq
 #            self.partial = True
+
     def set_coordinates(self, polyin, polyout=[]):
         """Sets the coordiantes of the AOI
         
@@ -94,25 +96,24 @@ class AOI():
         #if (end - start)== 0:
         if start == -1:
             return False, []
-        if params.DEBUG:
+        if params.DEBUG or params.VERBOSE == "VERBOSE":
             print "in:",self.aid
         ovelap_part = []
+        is_active = False
         if self.timeseq:
             for intr in self.timeseq:
-                if (start>=intr[0] and start<intr[1])or(end>intr[0] and end<=intr[1]):
-                    if (start>=intr[0] and end<=intr[1]):
-                        ovelap_part=[]
-                    else:
-                        if params.DEBUG:
+                if (start>=intr[0] and end<=intr[1]):
+                    return True, [] #active during the whole interval
+                else:
+                    if start<=intr[1] and end>=intr[0]:
+                        if params.DEBUG or params.VERBOSE == "VERBOSE":
                             print "partial:",start,end,":",intr[0],intr[1]
                         ovstart = max(start,intr[0])
                         ovend  = min(end,intr[1])
-                        ovelap_part = [ovstart,ovend]
-                    return True, ovelap_part
-                elif (start<intr[0] and start<intr[1])and(end>intr[0] and end>intr[1]):
-                    warn("Incorrect definition of Dynamic AOI and Segments, AOI info not calculated for AOI:"+self.aid)
+                        ovelap_part.append( (ovstart,ovend) )
+                        is_active = True
 
-            return False, [] #not active
+            return is_active, ovelap_part #partially or not active
         else:
             return True, [] #global AOI
     
@@ -136,36 +137,78 @@ class AOI_Stat():
         """
         self.aoi = aoi
         self.isActive, partition = self.aoi.is_active_partition(starttime, endtime)
-        self.aoi
+		
+        #init features        
+        self.features = {}
+        self.starttime = -1
+        self.features['numfixations'] = 0
+        self.features['longestfixation'] = -1
+        self.features['meanfixationduration'] = -1
+        self.features['stddevfixationduration'] = -1
+        self.features['timetofirstfixation'] = -1
+        self.features['timetolastfixation'] = -1
+        self.features['proportionnum'] = 0
+        self.features['proportiontime'] = 0
+        self.features['fixationrate'] = 0
+        self.features['totaltimespent'] = 0
+        self.features['totaltimespent'] = 0
+        self.features['totaltimespent'] = 0
+        self.features['numevents'] = 0
+        self.features['numleftclic'] = 0
+        self.features['numrightclic'] = 0
+        self.features['numdoubleclic'] = 0
+        self.features['leftclicrate'] = 0
+        self.features['rightclicrate'] = 0
+        self.features['doubleclicrate'] = 0
+        self.features['timetofirstleftclic'] = -1
+        self.features['timetofirstrightclic'] = -1
+        self.features['timetofirstdoubleclic'] = -1
+        self.features['timetolastleftclic'] = -1
+        self.features['timetolastrightclic'] = -1
+        self.features['timetolastdoubleclic'] = -1
+        self.total_tans_to = 0
+        self.total_tans_from = 0
+        self.squaredsumfixationduration = 0
+        for aoi in active_aois:
+            aid = aoi.aid
+            self.features['numtransto_%s'%(aid)] =0
+            self.features['numtransfrom_%s'%(aid)] = 0
+            self.features['proptransto_%s'%(aid)] = 0
+            self.features['proptransfrom_%s'%(aid)] = 0	
+	
         if not(self.isActive):
             return
-        self.isActive = True
+			
+        fixation_data = []
+        event_data = []
         
         if partition:
-            if params.DEBUG:
+            if params.DEBUG or params.VERBOSE == "VERBOSE":
                 print "partition",partition
-            _,st,en = get_chunk(seg_fixation_data, 0, partition[0],partition[1])
-            fixation_data = seg_fixation_data[st:en]
-            if seg_event_data != None:
-                _,st,en = get_chunk(seg_event_data, 0, intr[0],intr[1])
-                event_data += seg_event_data[st:en]
-            if params.DEBUG:
+            for intr in partition:
+                if starttime <= intr[1] and endtime >= intr[0]: 
+                    _,st,en = get_chunk(seg_fixation_data, 0, intr[0],intr[1])
+                    fixation_data += seg_fixation_data[st:en]
+                    if seg_event_data != None:
+                        _,st,en = get_chunk(seg_event_data, 0, intr[0],intr[1])
+                        event_data += seg_event_data[st:en]
+            if params.DEBUG or params.VERBOSE == "VERBOSE":
                 print "len(seg_fixation_data)",seg_fixation_data
                 print "len(fixation_data)",fixation_data
         else:  #global AOI (alaways active)
-            fixation_data = seg_fixation_data 
+            fixation_data = seg_fixation_data
             if seg_event_data != None:
                 event_data = seg_event_data 
-
-        fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i],self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
+        
+		fixation_indices = []
+        fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i], self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
         fixations = map(lambda i: fixation_data[i], fixation_indices)
 
         if seg_event_data != None:
             event_indices = filter(lambda i: _event_inside_aoi(event_data[i],self.aoi.polyin, self.aoi.polyout), range(len(event_data)))
             events = map(lambda i: event_data[i], event_indices)
             (leftc, rightc, doublec, _) = generate_event_lists(events)
-    
-        self.features = {}
+
 
         numfixations = len(fixations)
         self.features['numfixations'] = numfixations
@@ -173,24 +216,21 @@ class AOI_Stat():
         self.features['timetofirstfixation'] = -1
         self.features['timetolastfixation'] = -1
         self.features['proportionnum'] = 0
+        self.starttime = starttime
         totaltimespent = sum(map(lambda x: x.fixationduration, fixations))
         self.features['totaltimespent'] = totaltimespent 
         length = endtime - starttime
         
         self.features['proportiontime'] = float(totaltimespent)/length
         if numfixations > 0:
-            self.features['longestfixation'] = max(map(lambda x: x.fixationduration,
-            fixations))
+            self.features['longestfixation'] = max(map(lambda x: x.fixationduration, fixations))
+            self.features['meanfixationduration'] = mean(map(lambda x: float(x.fixationduration), fixations))
+            self.features['stddevfixationduration'] = stddev(map(lambda x: float(x.fixationduration), fixations))
             self.features['timetofirstfixation'] = fixations[0].timestamp - starttime
             self.features['timetolastfixation'] = fixations[-1].timestamp - starttime
             self.features['proportionnum'] = float(numfixations)/len(fixation_data)
             self.features['fixationrate'] = numfixations / float(totaltimespent)
-        else:
-            self.features['longestfixation'] = 0
-            self.features['timetofirstfixation'] = 0
-            self.features['timetolastfixation'] = 0
-            self.features['proportionnum'] = 0
-            self.features['fixationrate'] = 0
+            self.squaredsumfixationduration = sum(map(lambda x: float(x.fixationduration) ** 2, fixations)) #to compute stddev over all segments in a scene
                 
         if seg_event_data != None:
             self.features['numevents'] = len(events)
@@ -220,7 +260,7 @@ class AOI_Stat():
                     polyin = aoi.polyin
                     polyout = aoi.polyout
                     key = 'numtransfrom_%s'%(aid)
-                    #self.features[key] = 0 #????? Samad
+
                     if _fixation_inside_aoi(fixation_data[i-1], polyin, polyout):
                         self.features[key] += 1
                         sumtransfrom += 1
@@ -230,7 +270,7 @@ class AOI_Stat():
                     polyin = aoi.polyin
                     polyout = aoi.polyout
                     key = 'numtransto_%s'%(aid)
-                    #self.features[key] = 0 #????? Samad
+
                     if _fixation_inside_aoi(fixation_data[i+1], polyin, polyout):
                         self.features[key] += 1
                         sumtransto += 1
@@ -285,8 +325,7 @@ class AOI_Stat():
                 elif name in self.features.keys():
                     featnames.append(name)
                 else:
-                    raise Exception('AOI %s has no such feature: %s'%(self.aoi.aid,
-                    name))
+                    raise Exception('AOI %s has no such feature: %s'%(self.aoi.aid, name))
 
         featnames.sort()
 
@@ -297,7 +336,6 @@ class AOI_Stat():
 
     def print_(self):
         """Prints the list of features and their values for this AOI_Stat object
-     
         """
 
         print  "AOI ID:",self.aoi.aid

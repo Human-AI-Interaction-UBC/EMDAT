@@ -1,4 +1,6 @@
 '''
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+
 Wrapper for composite AOIs (AOIs defined as a set of polygons).
 Created on 2014-5-25
 

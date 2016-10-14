@@ -1,11 +1,14 @@
 """
-UBC Eye Movement Data Analysis Toolkit
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
 Created on 2011-08-26
 
-@author: skardan
+Segment class: smallest unit of aggregated eye data samples that has conceptual meaning.
+A segment is alwawys assigned to a scene.
 
-
+Authors: Samad Kardan (creator), Sebastien Lalle. 
+Institution: The University of British Columbia.
 """
+
 import params
 import geometry
 from AOI import *
@@ -30,7 +33,7 @@ class Segment():
         sample_start_ind: An integer indicating the index of the first Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data) 
         sample_end_ind: An integer indicating the index of the last Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data)
         fixation_start_ind: An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
-        fixation_end_ind: An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
+        fixation_end_ind: An integer indicating the index of the last Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
         numfixations: An integer indicating the number of "Fixation"s in this Segment
         time_gaps: a list of tuples of the form (start, end) indicating the start and end of the gaps of invalid samples in the Segement's samples
         largest_data_gap: An integer indicating the length of largest invalid gap for this Segment in milliseconds
@@ -49,7 +52,7 @@ class Segment():
         has_aois: A boolean indicating if this Segment has AOI features calculated for it
         
     """
-    def __init__(self, segid, all_data, fixation_data, event_data = None, aois = None, prune_length = None, rest_pupil_size = 0, export_pupilinfo = False):
+    def __init__(self, segid, all_data, fixation_data, saccade_data = None, event_data = None, aois = None, prune_length = None, rest_pupil_size = 0, export_pupilinfo = False):
         """
         Args:
             segid: A string containing the id of the Segment.
@@ -57,6 +60,10 @@ class Segment():
             all_data: a list of "Datapoint"s which make up this Segment.
             
             fixation_data: a list of "Fixation"s which make up this Segment.
+			
+            saccade_data: a list of "Saccade"s which make up this Segment (None if no saccades).
+			
+            event_data: a list of "Event"s which make up this Segment (None if no events).
             
             aois: a list of "AOI"s relevant to this Segment.
          
@@ -64,19 +71,24 @@ class Segment():
                 samples are considered in calculations.  This can be used if, for example, you only wish to consider data in the first 
                 1000 ms of each segment. In this case (prune_length = 1000), all data beyond the first 1000ms of the start of the segments
                 will be disregarded.
+				
+            rest_pupil_size: rest pupil size for this segment, used to adjust pupil size.
+			
+            export_pupilinfo: True to export raw pupil data in EMDAT output (False by default).
                 
         Yields:
             a Segment object
         """
         self.segid = segid
-        #self.alldata = all_data
+        #self.all_data = all_data
+        #self.fixation_data = fixation_data
+        #self.saccade_data = saccade_data
+        #self.event_data = event_data
         self.features = {}
         self.completion_time = all_data[-1].timestamp - all_data[0].timestamp
         if self.completion_time == 0:
             raise Exception("Zero length segment")
-#            self.completion_time = 16 #length of one sample with 60Hz sampling rate (ms)
-#        for d in all_data:
-#            d.set_segid(segid)
+
         self.features['completion_time'] = self.completion_time
         self.start = all_data[0].timestamp
         self.numfixations = len(fixation_data)
@@ -88,59 +100,78 @@ class Segment():
         self.validity2 = self.calc_validity2()
         self.validity3 = self.calc_validity3()
         self.is_valid = self.get_validity()
+		
         if prune_length:
             all_data = filter(lambda x: x.timestamp <= self.start + prune_length, all_data)
             fixation_data = filter(lambda x: x.timestamp <= self.start + prune_length, fixation_data)
-            if  event_data != None:   
+            if event_data != None:   
                 event_data = filter(lambda x: x.timestamp <= self.start + prune_length, event_data)
+            if saccade_data != None:   
+                saccade_data = filter(lambda x: x.timestamp <= self.start + prune_length, saccade_data)
+				
         self.end = all_data[-1].timestamp
         self.length = self.end - self.start
         self.features['length'] = self.end - self.start
         self.numsamples = self.calc_num_samples(all_data)
         self.features['numsamples'] = self.numsamples
         self.numfixations = len(fixation_data)
-#        for f in fixation_data:
-#            f.set_segid(segid)
         self.features['numfixations'] = self.numfixations
         self.features['fixationrate'] = float(self.numfixations) / self.length
         
         """ calculate pupil dilation features (no rest pupil size adjustments yet)""" 
-        self.rest_pupil_size = rest_pupil_size  
         # check if pupil sizes are available for all missing points
         pupil_invalid_data = filter(lambda x: x.pupilsize == -1 and x.gazepointxleft > 0, all_data)
         if len(pupil_invalid_data) > 0:
-            raise Exception("Pupil size is unavailable for a valid data sample. Number of missing points: " + str(len(pupil_invalid_data)))
-        #get all pupil sizes (valid + invalid)
+            if params.DEBUG:
+                raise Exception("Pupil size is unavailable for a valid data sample. Number of missing points: " + str(len(pupil_invalid_data)))
+            else:
+                warn("Pupil size is unavailable for a valid data sample. Number of missing points: " + str(len(pupil_invalid_data)) )
+        
+		#get all pupil sizes (valid + invalid)
         #pupilsizes = map(lambda x: x.pupilsize, all_data)
         #get all datapoints where pupil size is available
         valid_pupil_data = filter(lambda x: x.pupilsize != -1, all_data) 
+        valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, all_data) 
         
         #number of valid pupil sizes
+        self.features['meanpupilsize'] = -1
+        self.features['stddevpupilsize'] = -1
+        self.features['maxpupilsize'] = -1
+        self.features['minpupilsize'] = -1
+        self.features['startpupilsize'] = -1
+        self.features['endpupilsize'] = -1
+        self.features['meanpupilvelocity'] = -1
+        self.features['stddevpupilvelocity'] = -1
+        self.features['maxpupilvelocity'] = -1
+        self.features['minpupilvelocity'] = -1
         self.numpupilsizes = len(valid_pupil_data) 
+        self.numpupilvelocity = len(valid_pupil_velocity) 
+		
         if self.numpupilsizes > 0: #check if the current segment has pupil data available
-            self.adjvalidpupilsizes = map(lambda x: x.pupilsize - self.rest_pupil_size, valid_pupil_data)
-            """
-            #PCPS adjustment [Iqbal et al., 2005]
-            self.adjvalidpupilsizes = map(lambda x: (x.pupilsize - self.rest_pupil_size)/ (1.0 * self.rest_pupil_size), valid_pupil_data)
-            #for APCPS use self.features['meanpupilsize'] with PCPS adjustment
-            """
+            if params.PUPIL_ADJUSTMENT == "rpscenter":
+                adjvalidpupilsizes = map(lambda x: x.pupilsize - rest_pupil_size, valid_pupil_data)
+            elif params.PUPIL_ADJUSTMENT == "PCPS":
+                adjvalidpupilsizes = map(lambda x: (x.pupilsize - rest_pupil_size) / (1.0 * rest_pupil_size), valid_pupil_data)
+            else:
+                adjvalidpupilsizes = map(lambda x: x.pupilsize, valid_pupil_data)#valid_pupil_data
+				
+            valid_pupil_velocity = map(lambda x: x.pupilvelocity, valid_pupil_velocity)#valid_pupil_data
+			
             if export_pupilinfo:
-                self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, x.pupilsize - self.rest_pupil_size], valid_pupil_data) 
+                self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, rest_pupil_size], valid_pupil_data) 
             
-            self.features['meanpupilsize'] = mean(self.adjvalidpupilsizes)
-            self.features['stddevpupilsize'] = stddev(self.adjvalidpupilsizes)
-            self.features['maxpupilsize'] = max(self.adjvalidpupilsizes)
-            self.features['minpupilsize'] = min(self.adjvalidpupilsizes)
-            self.features['startpupilsize'] = self.adjvalidpupilsizes[0]
-            self.features['endpupilsize'] = self.adjvalidpupilsizes[-1]
-        else:
-            self.adjvalidpupilsizes = []
-            self.features['meanpupilsize'] = 0
-            self.features['stddevpupilsize'] = 0
-            self.features['maxpupilsize'] = 0
-            self.features['minpupilsize'] = 0
-            self.features['startpupilsize'] = 0
-            self.features['endpupilsize'] = 0
+            self.features['meanpupilsize'] = mean(adjvalidpupilsizes)
+            self.features['stddevpupilsize'] = stddev(adjvalidpupilsizes)
+            self.features['maxpupilsize'] = max(adjvalidpupilsizes)
+            self.features['minpupilsize'] = min(adjvalidpupilsizes)
+            self.features['startpupilsize'] = adjvalidpupilsizes[0]
+            self.features['endpupilsize'] = adjvalidpupilsizes[-1]
+            
+            if len(valid_pupil_velocity) > 0:
+                self.features['meanpupilvelocity'] = mean(valid_pupil_velocity)
+                self.features['stddevpupilvelocity'] = stddev(valid_pupil_velocity)
+                self.features['maxpupilvelocity'] = max(valid_pupil_velocity)
+                self.features['minpupilvelocity'] = min(valid_pupil_velocity)
         """ end pupil """
 
         """ calculate distance from screen features""" #distance
@@ -156,22 +187,23 @@ class Segment():
         #number of valid pupil sizes
         self.numdistances = len(valid_distance_data) 
         if self.numdistances > 0: #check if the current segment has pupil data available
-            self.distances_from_screen = map(lambda x: x.distance, valid_distance_data)
-            self.features['meandistance'] = mean(self.distances_from_screen)
-            self.features['stddevdistance'] = stddev(self.distances_from_screen)
-            self.features['maxdistance'] = max(self.distances_from_screen)
-            self.features['mindistance'] = min(self.distances_from_screen)
-            self.features['startdistance'] = self.distances_from_screen[0]
-            self.features['enddistance'] = self.distances_from_screen[-1]
+            distances_from_screen = map(lambda x: x.distance, valid_distance_data)
+            self.features['meandistance'] = mean(distances_from_screen)
+            self.features['stddevdistance'] = stddev(distances_from_screen)
+            self.features['maxdistance'] = max(distances_from_screen)
+            self.features['mindistance'] = min(distances_from_screen)
+            self.features['startdistance'] = distances_from_screen[0]
+            self.features['enddistance'] = distances_from_screen[-1]
         else:
-            self.features['meandistance'] = 0
-            self.features['stddevdistance'] = 0
-            self.features['maxdistance'] = 0
-            self.features['mindistance'] = 0
-            self.features['startdistance'] = 0
-            self.features['enddistance'] = 0
+            self.features['meandistance'] = -1
+            self.features['stddevdistance'] = -1
+            self.features['maxdistance'] = -1
+            self.features['mindistance'] = -1
+            self.features['startdistance'] = -1
+            self.features['enddistance'] = -1
         """ end distance """
         
+        """ calculate fixations, angles and path features""" 
         if self.numfixations > 0:
             self.fixation_start = fixation_data[0].timestamp
             self.fixation_end = fixation_data[-1].timestamp
@@ -185,11 +217,14 @@ class Segment():
         else:
             self.fixation_start = -1
             self.fixation_end = -1            
-            self.features['meanfixationduration'] = 0
-            self.features['stddevfixationduration'] = 0
-            self.features['sumfixationduration'] = 0
-            self.features['fixationrate'] = 0
-            distances = []
+            self.features['meanfixationduration'] = -1
+            self.features['stddevfixationduration'] = -1
+            self.features['sumfixationduration'] = -1
+            self.features['fixationrate'] = -1
+			
+        self.numdistances = len(distances)
+        self.numabsangles = len(abs_angles)
+        self.numrelangles = len(rel_angles)
         if len(distances) > 0:
             self.features['meanpathdistance'] = mean(distances)
             self.features['sumpathdistance'] = sum(distances)
@@ -204,25 +239,60 @@ class Segment():
             self.features['meanrelpathangles'] = mean(rel_angles)
             self.features['stddevrelpathangles'] = stddev(rel_angles)
         else:
-            self.features['meanpathdistance'] = 0
-            self.features['sumpathdistance'] = 0
-            self.features['stddevpathdistance'] = 0
-            self.features['eyemovementvelocity'] = 0
-            self.features['sumabspathangles'] = 0
-            self.features['abspathanglesrate'] = 0
-            self.features['meanabspathangles']= 0
-            self.features['stddevabspathangles']= 0
-            self.features['sumrelpathangles'] = 0
-            self.features['relpathanglesrate'] = 0
-            self.features['meanrelpathangles']= 0
-            self.features['stddevrelpathangles'] = 0
+            self.features['meanpathdistance'] = -1
+            self.features['sumpathdistance'] = -1
+            self.features['stddevpathdistance'] = -1
+            self.features['eyemovementvelocity'] = -1
+            self.features['sumabspathangles'] = -1
+            self.features['abspathanglesrate'] = -1
+            self.features['meanabspathangles'] = -1
+            self.features['stddevabspathangles'] = -1
+            self.features['sumrelpathangles'] = -1
+            self.features['relpathanglesrate'] = -1
+            self.features['meanrelpathangles'] = -1
+            self.features['stddevrelpathangles'] = -1
+        """ end fixations, angles, path """
 			
+        """ calculate saccades features if available """
+        if saccade_data != None:
+            self.numsaccades = len(saccade_data)
+            self.features['numsaccades'] = self.numsaccades
+            self.features['sumsaccadedistance'] = sum(map(lambda x: float(x.saccadedistance), saccade_data))
+            self.features['meansaccadedistance'] = mean(map(lambda x: float(x.saccadedistance), saccade_data))
+            self.features['stddevsaccadedistance'] = stddev(map(lambda x: float(x.saccadedistance), saccade_data))
+            self.features['longestsaccadedistance'] = max(map(lambda x: float(x.saccadedistance), saccade_data))
+            self.features['sumsaccadeduration'] = sum(map(lambda x: float(x.saccadeduration), saccade_data))
+            self.features['meansaccadeduration'] = mean(map(lambda x: float(x.saccadeduration), saccade_data))
+            self.features['stddevsaccadeduration'] = stddev(map(lambda x: float(x.saccadeduration), saccade_data))
+            self.features['longestsaccadeduration'] = max(map(lambda x: float(x.saccadeduration), saccade_data))
+            self.features['meansaccadespeed'] = mean(map(lambda x: float(x.saccadespeed), saccade_data))
+            self.features['stddevsaccadespeed'] = stddev(map(lambda x: float(x.saccadespeed), saccade_data))	
+            self.features['maxsaccadespeed'] = max(map(lambda x: float(x.saccadespeed), saccade_data))	
+            self.features['minsaccadespeed'] = min(map(lambda x: float(x.saccadespeed), saccade_data))	
+            self.features['fixationsaccadetimeratio'] = float(self.features['sumfixationduration']) / self.features['sumsaccadeduration']
+        else:
+            self.features['numsaccades'] = 0
+            self.features['sumsaccadedistance'] = -1
+            self.features['meansaccadedistance'] = -1
+            self.features['stddevsaccadedistance'] = -1
+            self.features['longestsaccadedistance'] = -1
+            self.features['sumsaccadeduration'] = -1
+            self.features['meansaccadeduration'] = -1
+            self.features['stddevsaccadeduration'] = -1
+            self.features['longestsaccadeduration'] = -1
+            self.features['meansaccadespeed'] = -1
+            self.features['stddevsaccadespeed'] = -1
+            self.features['maxsaccadespeed'] = -1
+            self.features['minsaccadespeed'] = -1
+            self.features['fixationsaccadetimeratio'] = -1
+        """ end saccade """
+		
+        """ calculate event features (if available) """
         if event_data != None:
             (leftc, rightc, doublec, keyp) = generate_event_lists(event_data)
 			
             self.numevents = len(leftc)+len(rightc)+len(doublec)+len(keyp)
             self.features['numevents'] = self.numevents
-			
             self.features['numleftclic'] = len(leftc)
             self.features['numrightclic'] = len(rightc)
             self.features['numdoubleclic'] = len(doublec)
@@ -241,33 +311,43 @@ class Segment():
             self.features['numrightclic'] = 0
             self.features['numdoubleclic'] = 0
             self.features['numkeypressed'] = 0
-            self.features['leftclicrate'] = 0
-            self.features['rightclicrate'] = 0
-            self.features['doubleclicrate'] = 0
-            self.features['keypressedrate'] = 0
+            self.features['leftclicrate'] = -1
+            self.features['rightclicrate'] -1
+            self.features['doubleclicrate'] = -1
+            self.features['keypressedrate'] = -1
             self.features['timetofirstleftclic'] = -1
             self.features['timetofirstrightclic'] = -1
             self.features['timetofirstdoubleclic'] = -1
             self.features['timetofirstkeypressed'] = -1
-
+        """ end event """
+		
+        """ calculate AOIs features """
         self.has_aois = False
         if aois:
-            self.set_aois(aois,fixation_data, event_data)
+            self.set_aois(aois, fixation_data, event_data)
             self.features['aoisequence'] = self.generate_aoi_sequence(fixation_data, aois)
+        """ end AOIs """
 
-    def set_indices(self,sample_st,sample_end,fix_st,fix_end,event_st=None,event_end=None):
+		
+    def set_indices(self,sample_st,sample_end,fix_st,fix_end,sac_st=None,sac_end=None,event_st=None,event_end=None):
         """Sets the index features
         
         Args:
             sample_st: An integer indicating the index of the first Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data) 
             sample_end: An integer indicating the index of the last Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data)
             fix_st: An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
-            fix_st: An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)        
+            fix_end: An integer indicating the index of the last Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)        
+            sac_st: An integer indicating the index of the first Saccade for this Segment in the Participant's list of all "Saccade"s (saccade_data)
+            sac_end: An integer indicating the index of the last Saccade for this Segment in the Participant's list of all "Saccade"s (saccade_data)     
+            event_st: An integer indicating the index of the first Event for this Segment in the Participant's list of all "Event"s (event_data)
+            event_end: An integer indicating the index of the last Event for this Segment in the Participant's list of all "Event"s (event_data)     
         """
         self.sample_start_ind = sample_st
         self.sample_end_ind = sample_end
         self.fixation_start_ind = fix_st
         self.fixation_end_ind = fix_end
+        self.saccade_start_ind = sac_st
+        self.saccade_end_ind = sac_end
         self.event_start_ind = event_st
         self.event_end_ind = event_end
 
@@ -278,13 +358,16 @@ class Segment():
             An integer indicating the index of the first Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data) 
             An integer indicating the index of the last Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data)
             An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
-            An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)   
-            
+            An integer indicating the index of the last Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)   
+            An integer indicating the index of the first Saccade for this Segment in the Participant's list of all "Saccade"s (saccade_data). None if no saccade.
+            An integer indicating the index of the last Saccade for this Segment in the Participant's list of all "Saccade"s (saccade_data). None if no saccade.
+            An integer indicating the index of the first Event for this Segment in the Participant's list of all "Event"s (event_data). None if no saccade.
+            An integer indicating the index of the last Event for this Segment in the Participant's list of all "Event"s (event_data). None if no saccade.
         Raises:
             Exception: An exception is thrown if the values are read before initialization
         """
         if self.sample_start_ind != None:
-            return self.sample_start_ind, self.sample_end_ind, self.fixation_start_ind, self.fixation_end_ind, self.event_start_ind, self.event_end_ind
+            return self.sample_start_ind, self.sample_end_ind, self.fixation_start_ind, self.fixation_end_ind, self.saccade_start_ind, self.saccade_end_ind, self.event_start_ind, self.event_end_ind
         raise Exception ('The indices values are accessed before setting the initial value in segement:'+self.segid+'!')
 
     def set_aois(self, aois, fixation_data, event_data = None):
@@ -296,20 +379,23 @@ class Segment():
         """
         
         if len(aois) == 0:
-            warn("no AOIs passed to segment:"+self.segid)
+            warn("No AOIs passed to segment:"+self.segid)
         active_aois=[]
+        self.aoi_data = {}
         for aoi in aois:
             #print "checking:",aoi.aid
-            if aoi.is_active(self.fixation_start, self.fixation_end):
-                active_aois.append(aoi)
-        if not(active_aois):
-            msg = "no active AOIs passed to segment:%s start:%d end:%d" %(self.segid,self.start,self.end)
-            warn(msg)
-        self.aoi_data = {}
-        for aoi in active_aois:
-            aoistat = AOI_Stat(aoi, fixation_data, self.start, self.end, active_aois, event_data)
+            aoistat = AOI_Stat(aoi, fixation_data, self.start, self.end, aois, event_data)
             self.aoi_data[aoi.aid] = aoistat
-            self.has_aois = True
+
+            act, _ = aoi.is_active_partition(self.fixation_start, self.fixation_end)
+            if act:
+                active_aois.append(aoi)
+                self.has_aois = True
+
+        if not(active_aois):
+            msg = "No active AOIs passed to segment:%s start:%d end:%d" %(self.segid,self.start,self.end)
+            warn(msg)
+
 
     def calc_validity_proportion(self, all_data):
         """Calculates the proportion of "Datapoint"s which are valid.
@@ -609,7 +695,6 @@ class Segment():
 
                     featnames += anames
                     featvals += avals
-
 
         return featnames, featvals
     

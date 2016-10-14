@@ -1,8 +1,12 @@
 """
-UBC Eye Movement Data Analysys Toolkit
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
 Created on 2011-09-30
 
-@author: skardan
+Scene class: capture all "Datapoint"s related to a target
+conceptual entity in the experiment.
+
+Authors: Samad Kardan (creator), Sebastien Lalle. 
+Institution: The University of British Columbia.
 """
 
 import math, geometry
@@ -54,7 +58,7 @@ class Scene(Segment):
     """
 
                 
-    def __init__(self, scid, seglist, all_data, fixation_data, event_data = None, Segments = None, aoilist = None,
+    def __init__(self, scid, seglist, all_data, fixation_data, saccade_data = None, event_data = None, Segments = None, aoilist = None,
                   prune_length= None, require_valid = True, auto_partition = False, rest_pupil_size = 0, export_pupilinfo = False):
         """
         Args:
@@ -67,7 +71,11 @@ class Scene(Segment):
             all_data: a list of "Datapoint"s which make up this Scene.
             
             fixation_data: a list of "Fixation"s which make up this Scene.
+ 
+            saccade_data: If not None, a list of "Saccade"s which make up this Scene.
             
+            event_data: If not None, a list of "Event"s which make up this Scene.
+            			
             Segments: a list of "Segment"s which belong to this Scene.
                          
             aoilist: If not None, a list of "AOI"s.
@@ -124,32 +132,45 @@ class Scene(Segment):
                     
                 fix_inds: a list of tuples of the form (start, end) that detrmines the index of the start and end of each 
                     new Segment in the old Segment's fixation_data field
+					
+                sac_inds: a list of tuples of the form (start, end) that detrmines the index of the start and end of each 
+                    new Segment in the old Segment's saccade_data field
+					
+                event_inds: a list of tuples of the form (start, end) that detrmines the index of the start and end of each 
+                    new Segment in the old Segment's event_data field
             """
             timegaps = new_seg.getgaps()
             subsegments = []
             sub_segid=0
             samp_inds = []
             fix_inds = []
+            saccade_inds = []
             event_inds = []
             last_samp_idx = 0
             last_fix_idx = 0
+            last_sac_idx = 0
             last_event_idx = 0
             sub_seg_time_start = seg_start
             for timebounds in timegaps:
                 sub_seg_time_end = timebounds[0] #end of this sub_seg is start of this gap
                 last_samp_idx, all_start,all_end = get_chunk(all_data, last_samp_idx, sub_seg_time_start, sub_seg_time_end)
                 last_fix_idx, fix_start, fix_end = get_chunk(fixation_data, last_fix_idx, sub_seg_time_start, sub_seg_time_end)
+                if saccade_data != None:
+                    last_sac_idx, sac_start, sac_end = get_chunk(saccade_data, last_sac_idx, sub_seg_time_start, sub_seg_time_end)
+                    saccade_data_in_part = saccade_data[sac_start:sac_end]
+                else:
+                    saccade_data_in_part = None
                 if event_data != None:
                     last_event_idx, event_start, event_end = get_chunk(event_data, last_event_idx, sub_seg_time_start, sub_seg_time_end)
+                    event_data_in_part = event_data[event_start:event_end]
+                else:
+                    event_data_in_part = None
+					
                 sub_seg_time_start = timebounds[1] #beginning of the next sub_seg is end of this gap
                 if fix_end - fix_start>0:
                     try:
-                        if event_data != None:
-                            new_sub_seg = Segment(segid+"_"+str(sub_segid), all_data[all_start:all_end], fixation_data[fix_start:fix_end], 
-                                      event_data=event_data[event_start:event_end], aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size, export_pupilinfo = export_pupilinfo)
-                        else:
-                            new_sub_seg = Segment(segid+"_"+str(sub_segid), all_data[all_start:all_end], fixation_data[fix_start:fix_end], 
-                                      event_data=None, aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size, export_pupilinfo = export_pupilinfo)
+                        new_sub_seg = Segment(segid+"_"+str(sub_segid), all_data[all_start:all_end], fixation_data[fix_start:fix_end], saccade_data=saccade_data_in_part,
+                                      event_data=event_data_in_part, aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size, export_pupilinfo = export_pupilinfo)
                     except  Exception as e:
                         warn(str(e))
                         if params.DEBUG:
@@ -161,24 +182,31 @@ class Scene(Segment):
                 subsegments.append(new_sub_seg)
                 samp_inds.append((all_start,all_end))
                 fix_inds.append((fix_start, fix_end))
+                if saccade_data != None:
+                    saccade_inds.append((sac_start, sac_end))
                 if event_data != None:
                     event_inds.append((event_start, event_end))
                 sub_segid +=1
+				
             # handling the last sub_seg
             sub_seg_time_end = seg_end #end of last sub_seg is the end of seg
             last_samp_idx, all_start,all_end = get_chunk(all_data, last_samp_idx, sub_seg_time_start, sub_seg_time_end)
             last_fix_idx, fix_start, fix_end = get_chunk(fixation_data, last_fix_idx, sub_seg_time_start, sub_seg_time_end)
+            if saccade_data != None:
+                last_sac_idx, sac_start, sac_end = get_chunk(saccade_data, last_sac_idx, sub_seg_time_start, sub_seg_time_end)
+                saccade_data_in_part = saccade_data[sac_start:sac_end]
+            else:
+                saccade_data_in_part = None
             if event_data != None:
                 last_event_idx, event_start, event_end = get_chunk(event_data, last_event_idx, sub_seg_time_start, sub_seg_time_end)
+                event_data_in_part = event_data[event_start:event_end]
+            else:
+                event_data_in_part = None
             if fix_end - fix_start>0: #add the last sub_seg
                 try:
-                    if event_data != None:
-                        new_sub_seg = Segment(segid+"_"+str(sub_segid), all_data[all_start:all_end], fixation_data[fix_start:fix_end], 
-                                      event_data=event_data[event_start:event_end], aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size, export_pupilinfo = export_pupilinfo)
-                    else:
-                        new_sub_seg = Segment(segid+"_"+str(sub_segid), all_data[all_start:all_end], fixation_data[fix_start:fix_end], 
-                                      event_data=None, aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size, export_pupilinfo = export_pupilinfo)
-                except  Exception as e:
+                    new_sub_seg = Segment(segid+"_"+str(sub_segid), all_data[all_start:all_end], fixation_data[fix_start:fix_end], saccade_data_in_part,
+                                      event_data=event_data_in_part, aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size, export_pupilinfo = export_pupilinfo)
+                except Exception as e:
                     warn(str(e))
                     if params.DEBUG:
                         raise
@@ -189,34 +217,49 @@ class Scene(Segment):
                     subsegments.append(new_sub_seg)
                     samp_inds.append((all_start,all_end))
                     fix_inds.append((fix_start, fix_end))
+                    if saccade_data != None:
+                        saccade_inds.append((sac_start, sac_end))
                     if event_data != None:
                         event_inds.append((event_start, event_end))
             #end of handling the last sub_seg
                 
-            return subsegments, samp_inds, fix_inds, event_inds
-        ########################################
+            return subsegments, samp_inds, fix_inds, saccade_inds, event_inds
+        ######################################## end partition_segment()
         
+		
+		
         if len(all_data)<=0:
             raise Exception('A scene with no sample data!')
         if Segments == None:
             self.segments = []
 #            print "seglist",seglist
             for (segid, start, end) in seglist:
-                print "segid, start, end:",segid, start, end
+                if params.VERBOSE != "QUIET":
+                    print "segid, start, end:", segid, start, end
+					
                 if prune_length != None:
 				    end = min(end, start+prune_length)
                 _, all_start, all_end = get_chunk(all_data, 0, start, end)
                 _, fix_start, fix_end = get_chunk(fixation_data, 0, start, end)
+                if saccade_data != None:
+                    _, sac_start, sac_end = get_chunk(saccade_data, 0, start, end)
+                    saccade_data_in_seg = saccade_data[sac_start:sac_end]
+                else:
+				    sac_start = None
+				    sac_end = None
+				    saccade_data_in_seg = None
                 if event_data != None:
                     _, event_start, event_end = get_chunk(event_data, 0, start, end)
+                    event_data_in_seg = event_data[event_start:event_end]
+                else:
+				    event_start = None
+				    event_end = None
+				    event_data_in_seg = None
+					
                 if fix_end - fix_start>0:
                     try:
-                        if event_data != None:
-                            new_seg = Segment(segid, all_data[all_start:all_end], fixation_data[fix_start:fix_end], 
-							        event_data=event_data[event_start:event_end], aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size, export_pupilinfo = export_pupilinfo)
-                        else:
-                            new_seg = Segment(segid, all_data[all_start:all_end], fixation_data[fix_start:fix_end], 
-							        event_data=None, aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size, export_pupilinfo = export_pupilinfo)
+                        new_seg = Segment(segid, all_data[all_start:all_end], fixation_data[fix_start:fix_end], saccade_data = saccade_data_in_seg,
+							        event_data=event_data_in_seg, aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size, export_pupilinfo = export_pupilinfo)
                     except  Exception as e:
                         warn(str(e))
                         if params.DEBUG:
@@ -227,22 +270,33 @@ class Scene(Segment):
                     continue
                 
                 if (new_seg.largest_data_gap > params.MAX_SEG_TIMEGAP) and auto_partition: #low quality segment that needs to be partitioned!
-                    new_segs, samp_inds, fix_inds, event_inds = partition_segment(new_seg, start, end, rest_pupil_size, export_pupilinfo=export_pupilinfo) 
-                    if event_data != None:
-                        for nseg,samp,fix,eve in zip(new_segs, samp_inds, fix_inds, event_inds):
-                            if nseg.length > params.MINSEGSIZE:
-                                nseg.set_indices(samp[0],samp[1],fix[0],fix[1],eve[0],eve[1])
-                                self.segments.append(nseg)
-                    else:
-                        for nseg,samp,fix in zip(new_segs, samp_inds, fix_inds):
-                            if nseg.length > params.MINSEGSIZE:
-                                nseg.set_indices(samp[0],samp[1],fix[0],fix[1])
-                                self.segments.append(nseg)
+                    try:
+                        new_segs, samp_inds, fix_inds, sac_inds, event_inds = partition_segment(new_seg, start, end, rest_pupil_size, export_pupilinfo=export_pupilinfo) 
+                        if saccade_data != None and event_data != None:
+                            for nseg,samp,fix,sac,eve in zip(new_segs, samp_inds, fix_inds, sac_inds, event_inds):
+                                if nseg.length > params.MINSEGSIZE:
+                                    nseg.set_indices(samp[0],samp[1],fix[0],fix[1],sac[0],sac[1],eve[0],eve[1])
+                                    self.segments.append(nseg)
+                        elif saccade_data != None and event_data == None:
+                            for nseg,samp,fix,sac in zip(new_segs, samp_inds, fix_inds, sac_inds):
+                                if nseg.length > params.MINSEGSIZE:
+                                    nseg.set_indices(samp[0],samp[1],fix[0],fix[1],sac[0],sac[1])
+                                    self.segments.append(nseg)
+                        elif saccade_data == None and event_data != None:
+                            for nseg,samp,fix,eve in zip(new_segs, samp_inds, fix_inds, event_inds):
+                                if nseg.length > params.MINSEGSIZE:
+                                    nseg.set_indices(samp[0],samp[1],fix[0],fix[1],event_st=eve[0],event_end=eve[1])
+                                    self.segments.append(nseg)
+                        else:
+                            for nseg,samp,fix in zip(new_segs, samp_inds, fix_inds):
+                                if nseg.length > params.MINSEGSIZE:
+                                    nseg.set_indices(samp[0],samp[1],fix[0],fix[1])
+                                    self.segments.append(nseg)
+                    except Exception as e:
+                        raise Exception("Error while partitioning scene. "+str(e))
+
                 else:   #good quality segment OR no auto_partition
-                    if event_data != None:
-						new_seg.set_indices(all_start,all_end,fix_start,fix_end,event_start,event_end)
-                    else:
-						new_seg.set_indices(all_start,all_end,fix_start,fix_end)
+                    new_seg.set_indices(all_start,all_end,fix_start,fix_end,sac_start,sac_end,event_start,event_end)
                     self.segments.append(new_seg)
         else:
             self.segments = Segments #segments are already generated
@@ -256,28 +310,24 @@ class Scene(Segment):
             raise Exception('no segments in scene %s!' %(scid))
         
         fixationlist = []
-        eventlist = []
-        sample_list = []
+        saccadelist = []
         totalfixations = 0
         firstsegtime = float('infinity')
         endsegtime = float(0)
         firstseg = None 
         for seg in segments:
-            sample_st,sample_end,fix_start,fix_end,event_st,event_end = seg.get_indices()
-            if params.DEBUG:
-                print "sample_st,sample_end,fix_start,fix_end",sample_st,sample_end,fix_start,fix_end,event_st,event_end
-            sample_list.append(all_data[sample_st:sample_end])
+            sample_st,sample_end,fix_start,fix_end,sac_st,sac_end,event_st,event_end = seg.get_indices()
+            if params.DEBUG or params.VERBOSE == "VERBOSE":
+                print "sample_st,sample_end,fix_start,fix_end",sample_st,sample_end,fix_start,fix_end,sac_st,sac_end,event_st,event_end
             fixationlist.append(fixation_data[fix_start:fix_end])
             totalfixations += len(fixationlist[-1])
-            if event_data != None:
-                eventlist.append(event_data[event_st:event_end])
-                totalevents = len(eventlist[-1])
             if seg.start < firstsegtime:
                 firstsegtime = seg.start
                 firstseg = seg
             if seg.end > endsegtime:
                 endsegtime = seg.end
                 endseg = seg
+        fixationlist = []
 				
         self.firstseg = firstseg
         self.endseg = endseg
@@ -291,9 +341,10 @@ class Scene(Segment):
         self.validity3 = self.calc_validity3()
         self.is_valid = self.get_validity()
 
-        self.length = sumfeat(segments,'length')
+        self.length = sumfeat(segments,"features['length']")
         if self.length == 0:
             raise Exception('Zero length segments!')
+			
         self.features['numsegments'] = len(segments)
         self.features['length'] = self.length
         self.start = minfeat(segments,'start')
@@ -304,93 +355,143 @@ class Scene(Segment):
         
         self.numfixations = sumfeat(segments, 'numfixations')
         self.features['numfixations'] = self.numfixations
+		
         if prune_length == None:
             if self.numfixations != totalfixations:
-                raise Exception('error in fixation count for scene:'+self.scid)
-            #warn ('error in fixation count for scene:'+self.scid)
+                if params.DEBUG:
+                    raise Exception('Error in fixation count for scene: '+self.scid)
+                else:
+                    warn('Error in fixation count for scene: '+self.scid)
+					
         self.features['fixationrate'] = float(self.numfixations) / self.length
+		
         if self.numfixations > 0:
             self.features['meanfixationduration'] = weightedmeanfeat(segments,'numfixations',"features['meanfixationduration']")
-            self.features['stddevfixationduration'] = stddev(map(lambda x: float(x.fixationduration), reduce(lambda x,y: x+y ,fixationlist)))##
+            self.features['stddevfixationduration'] = aggregatestddevfeat(segments, 'numfixations', "features['stddevfixationduration']", "features['meanfixationduration']", self.features['meanfixationduration'])
             self.features['sumfixationduration'] = sumfeat(segments, "features['sumfixationduration']")
             self.features['fixationrate'] = float(self.numfixations)/self.length
-            distances = self.calc_distances(fixationlist)
-            abs_angles = self.calc_abs_angles(fixationlist)
-            rel_angles = self.calc_rel_angles(fixationlist)
         else:
-            self.features['meanfixationduration'] = 0
-            self.features['stddevfixationduration'] = 0
-            self.features['sumfixationduration'] = 0
-            self.features['fixationrate'] = 0
-            distances = []
-        if len(distances) > 0:
-            self.features['meanpathdistance'] = mean(distances)
-            self.features['sumpathdistance'] = sum(distances)
-            self.features['stddevpathdistance'] = stddev(distances)
+            self.features['meanfixationduration'] = -1
+            self.features['stddevfixationduration'] = -1
+            self.features['sumfixationduration'] = -1
+            self.features['fixationrate'] = -1
+			
+        self.numdistances = sumfeat(segments, "numdistances")
+        self.numabsangles = sumfeat(segments, "numabsangles")
+        self.numrelangles = sumfeat(segments, "numrelangles")
+		
+        if self.numfixations > 1:
+            self.features['meanpathdistance'] = weightedmeanfeat(segments,'numdistances',"features['meanpathdistance']") 
+            self.features['sumpathdistance'] = sumfeat(segments, "features['sumpathdistance']")
+            self.features['stddevpathdistance'] = aggregatestddevfeat(segments, 'numdistances', "features['stddevpathdistance']", "features['meanpathdistance']", self.features['meanpathdistance'])
             self.features['eyemovementvelocity'] = self.features['sumpathdistance']/self.length
-            self.features['sumabspathangles'] = sum(abs_angles)
-            self.features['meanabspathangles'] = mean(abs_angles)
-            self.features['abspathanglesrate'] = sum(abs_angles)/self.length
-            self.features['stddevabspathangles'] = stddev(abs_angles)
-            self.features['sumrelpathangles'] = sum(rel_angles)
-            self.features['relpathanglesrate'] = sum(rel_angles)/self.length
-            self.features['meanrelpathangles'] = mean(rel_angles)
-            self.features['stddevrelpathangles'] = stddev(rel_angles)
+            self.features['sumabspathangles'] = sumfeat(segments, "features['sumabspathangles']")
+            self.features['meanabspathangles'] = weightedmeanfeat(segments,'numabsangles',"features['meanabspathangles']")
+            self.features['abspathanglesrate'] = self.features['sumabspathangles']/self.length
+            self.features['stddevabspathangles'] = aggregatestddevfeat(segments, 'numabsangles', "features['stddevabspathangles']", "features['meanabspathangles']", self.features['meanabspathangles'])
+            self.features['sumrelpathangles'] = sumfeat(segments, "features['sumrelpathangles']")
+            self.features['meanrelpathangles'] = weightedmeanfeat(segments,'numrelangles',"features['meanrelpathangles']")
+            self.features['relpathanglesrate'] = self.features['sumrelpathangles']/self.length
+            self.features['stddevrelpathangles'] = aggregatestddevfeat(segments, 'numrelangles', "features['stddevrelpathangles']", "features['meanrelpathangles']", self.features['meanrelpathangles'])
         else:
-            self.features['meanpathdistance'] = 0
-            self.features['sumpathdistance'] = 0
-            self.features['stddevpathdistance'] = 0
-            self.features['eyemovementvelocity'] = 0
-            self.features['sumabspathangles'] = 0
-            self.features['abspathanglesrate'] = 0
-            self.features['meanabspathangles']= 0
-            self.features['stddevabspathangles']= 0
-            self.features['sumrelpathangles'] = 0
-            self.features['relpathanglesrate'] = 0
-            self.features['meanrelpathangles']= 0
-            self.features['stddevrelpathangles'] = 0
+            self.features['meanpathdistance'] = -1
+            self.features['sumpathdistance'] = -1
+            self.features['stddevpathdistance'] = -1
+            self.features['eyemovementvelocity'] = -1
+            self.features['sumabspathangles'] = -1
+            self.features['abspathanglesrate'] = -1
+            self.features['meanabspathangles']= -1
+            self.features['stddevabspathangles']= -1
+            self.features['sumrelpathangles'] = -1
+            self.features['relpathanglesrate'] = -1
+            self.features['meanrelpathangles']= -1
+            self.features['stddevrelpathangles'] = -1
         
         """ calculate pupil dilation features (no rest pupil size adjustments yet)""" 
         
         self.numpupilsizes = sumfeat(segments,'numpupilsizes')
-        self.adjvalidpupilsizes = mergevalues(segments, 'adjvalidpupilsizes')
+        self.numpupilvelocity = sumfeat(segments,'numpupilvelocity')
+
         if self.numpupilsizes > 0: # check if scene has any pupil data
             if export_pupilinfo:
                 self.pupilinfo_for_export = mergevalues(segments, 'pupilinfo_for_export') 
             self.features['meanpupilsize'] = weightedmeanfeat(segments, 'numpupilsizes', "features['meanpupilsize']")
-            self.features['stddevpupilsize'] = stddev(self.adjvalidpupilsizes)
+            self.features['stddevpupilsize'] = aggregatestddevfeat(segments, 'numpupilsizes', "features['stddevpupilsize']", "features['meanpupilsize']", self.features['meanpupilsize']) #stddev(self.adjvalidpupilsizes)
             self.features['maxpupilsize'] = maxfeat(segments, "features['maxpupilsize']")
-            self.features['minpupilsize'] = minfeat(segments, "features['minpupilsize']")
+            self.features['minpupilsize'] = minfeat(segments, "features['minpupilsize']", -1)
             self.features['startpupilsize'] = self.firstseg.features['startpupilsize']
             self.features['endpupilsize'] = self.endseg.features['endpupilsize']
         else:
             self.pupilinfo_for_export = [] 
-            self.features['meanpupilsize'] = 0
-            self.features['stddevpupilsize'] = 0
-            self.features['maxpupilsize'] = 0
-            self.features['minpupilsize'] = 0
-            self.features['startpupilsize'] = 0
-            self.features['endpupilsize'] = 0
+            self.features['meanpupilsize'] = -1
+            self.features['stddevpupilsize'] = -1
+            self.features['maxpupilsize'] = -1
+            self.features['minpupilsize'] = -1
+            self.features['startpupilsize'] = -1
+            self.features['endpupilsize'] = -1
+			
+        if self.numpupilvelocity > 0: # check if scene has any pupil velocity data
+            self.features['meanpupilvelocity'] = weightedmeanfeat(segments, 'numpupilvelocity', "features['meanpupilvelocity']")
+            self.features['stddevpupilvelocity'] = aggregatestddevfeat(segments, 'numpupilvelocity', "features['stddevpupilvelocity']", "features['meanpupilvelocity']", self.features['meanpupilvelocity']) #stddev(self.valid_pupil_velocity)
+            self.features['maxpupilvelocity'] = maxfeat(segments, "features['maxpupilvelocity']")
+            self.features['minpupilvelocity'] = minfeat(segments, "features['minpupilvelocity']", -1)
+        else:
+            self.features['meanpupilvelocity'] = -1
+            self.features['stddevpupilvelocity'] = -1
+            self.features['maxpupilvelocity'] = -1
+            self.features['minpupilvelocity'] = -1
         """end """
 
         self.numdistances = sumfeat(segments,'numdistances') #Distance
-        self.distances_from_screen = mergevalues(segments, 'distances_from_screen')
         if self.numdistances > 0: # check if scene has any pupil data
             self.features['meandistance'] = weightedmeanfeat(segments, 'numdistances', "features['meandistance']")
-            self.features['stddevdistance'] = stddev(self.distances_from_screen)
+            self.features['stddevdistance'] = aggregatestddevfeat(segments, 'numdistances', "features['stddevdistance']", "features['meandistance']", self.features['meandistance'])
             self.features['maxdistance'] = maxfeat(segments, "features['maxdistance']")
-            self.features['mindistance'] = minfeat(segments, "features['mindistance']")
+            self.features['mindistance'] = minfeat(segments, "features['mindistance']", -1)
             self.features['startdistance'] = self.firstseg.features['startdistance']
             self.features['enddistance'] = self.endseg.features['enddistance']
         else:
-            self.features['meandistance'] = 0
-            self.features['stddevdistance'] = 0
-            self.features['maxdistance'] = 0
-            self.features['mindistance'] = 0
-            self.features['startdistance'] = 0
-            self.features['enddistance'] = 0
+            self.features['meandistance'] = -1
+            self.features['stddevdistance'] = -1
+            self.features['maxdistance'] = -1
+            self.features['mindistance'] = -1
+            self.features['startdistance'] = -1
+            self.features['enddistance'] = -1
         """end """
 
+        """ calculate saccades features if available """
+        if saccade_data != None:
+            self.features['numsaccades'] = sumfeat(segments,'numsaccades')
+            self.features['sumsaccadedistance'] = sumfeat(segments, "features['sumsaccadedistance']")
+            self.features['meansaccadedistance'] = weightedmeanfeat(self.segments,'numsaccades',"features['meansaccadedistance']")
+            self.features['stddevsaccadedistance'] = aggregatestddevfeat(segments, 'numsaccades', "features['stddevsaccadedistance']", "features['meansaccadedistance']", self.features['meansaccadedistance']) 
+            self.features['longestsaccadedistance'] = maxfeat(segments, "features['longestsaccadedistance']")
+            self.features['sumsaccadeduration'] = sumfeat(segments,"features['sumsaccadeduration']")
+            self.features['meansaccadeduration'] = weightedmeanfeat(self.segments,'numsaccades',"features['meansaccadeduration']")
+            self.features['stddevsaccadeduration'] = aggregatestddevfeat(segments, 'numsaccades', "features['stddevsaccadeduration']", "features['meansaccadeduration']", self.features['meansaccadeduration']) 
+            self.features['longestsaccadeduration'] = maxfeat(segments, "features['longestsaccadeduration']")
+            self.features['meansaccadespeed'] = weightedmeanfeat(self.segments,'numsaccades',"features['meansaccadespeed']")
+            self.features['stddevsaccadespeed'] = aggregatestddevfeat(segments, 'numsaccades', "features['stddevsaccadespeed']", "features['meansaccadespeed']", self.features['meansaccadespeed']) 
+            self.features['maxsaccadespeed'] = maxfeat(segments, "features['maxsaccadespeed']")
+            self.features['minsaccadespeed'] = minfeat(segments, "features['minsaccadespeed']", -1)
+            self.features['fixationsaccadetimeratio'] = sumfeat(segments, "features['fixationsaccadetimeratio']") / float(len(segments))
+        else:
+            self.features['numsaccades'] = 0
+            self.features['sumsaccadedistance'] = -1
+            self.features['meansaccadedistance'] = -1
+            self.features['stddevsaccadedistance'] = -1
+            self.features['longestsaccadedistance'] = -1
+            self.features['sumsaccadeduration'] = -1
+            self.features['meansaccadeduration'] = -1
+            self.features['stddevsaccadeduration'] = -1
+            self.features['longestsaccadeduration'] = -1
+            self.features['meansaccadespeed'] = -1
+            self.features['stddevsaccadespeed'] = -1
+            self.features['maxsaccadespeed'] = -1
+            self.features['minsaccadespeed'] = -1
+            self.features['fixationsaccadetimeratio'] = -1
+        """ end saccade """
+		
         if event_data != None:
             self.features['numevents'] = sumfeat(segments,'numevents')
             self.features['numleftclic'] = sumfeat(segments,"features['numleftclic']")
@@ -411,10 +512,10 @@ class Scene(Segment):
             self.features['numrightclic'] = 0
             self.features['numdoubleclic'] = 0
             self.features['numkeypressed'] = 0
-            self.features['leftclicrate'] = 0
-            self.features['rightclicrate'] = 0
-            self.features['doubleclicrate'] = 0
-            self.features['keypressedrate'] = 0
+            self.features['leftclicrate'] = -1
+            self.features['rightclicrate'] = -1
+            self.features['doubleclicrate'] = -1
+            self.features['keypressedrate'] = -1
             self.features['timetofirstleftclic'] = -1
             self.features['timetofirstrightclic'] = -1
             self.features['timetofirstdoubleclic'] = -1
@@ -442,17 +543,30 @@ class Scene(Segment):
 
             aois: a list of "AOI"s relevant to this Scene        
         """
-        if len(aois) == 0:
-            print "no AOI:",self.segid
+        if len(aois) == 0 and params.VERBOSE != "QUIET":
+            print "No AOI in segment ", self.segid
+			
         self.aoi_data={}
         for seg in segments:
             for aid in seg.aoi_data.keys():
-                if seg.aoi_data[aid].isActive:
                     if aid in self.aoi_data:
-                        self.aoi_data[aid] = merge_aoistats(self.aoi_data[aid],seg.aoi_data[aid], self.features['length'],self.numfixations)
+                        if seg.aoi_data[aid].isActive:
+                            self.aoi_data[aid] = merge_aoistats(self.aoi_data[aid],seg.aoi_data[aid], self.features['length'], self.numfixations, self.start)
                     else:
                         self.aoi_data[aid] = deepcopy(seg.aoi_data[aid])
+                        if seg.aoi_data[aid].isActive:
+                            self.aoi_data[aid].features['timetofirstfixation'] += self.aoi_data[aid].starttime - self.start
+                            self.aoi_data[aid].features['timetolastfixation'] += self.aoi_data[aid].starttime - self.start
+							
+                            if self.firstseg.aoi_data[aid].features['timetofirstleftclic'] != -1:
+                                self.aoi_data[aid].features['timetofirstleftclic'] += self.aoi_data[aid].starttime - self.start
+                                self.aoi_data[aid].features['timetofirstrightclic'] += self.aoi_data[aid].starttime - self.start
+                                self.aoi_data[aid].features['timetofirstdoubleclic'] += self.aoi_data[aid].starttime - self.start
+							
+       #for aid in self.aoi_data.keys(): #compute stdev
+       #	self.aoi_data[aid].features['stddevfixationduration'] = math.
         
+        """
         firstsegaois = self.firstseg.aoi_data.keys()            
         for aid in self.aoi_data.keys():
             if aid in firstsegaois:
@@ -466,11 +580,12 @@ class Scene(Segment):
                 self.aoi_data[aid].features['timetofirstleftclic'] = float('inf')
                 self.aoi_data[aid].features['timetofirstrightclic'] = float('inf')
                 self.aoi_data[aid].features['timetofirstdoubleclic'] = float('inf')
-                
-        #maois.features['averagetimetofirstfixation'] = ?
-        #maois.features['averagettimetolastfixation'] = ?
+        """ 
+		  
+        if len(self.aoi_data) > 0:
             self.has_aois = True
 
+		
     def calc_distances(self, fixdatalists):
         """returns the Euclidean distances between a sequence of "Fixation"s
     
@@ -479,7 +594,6 @@ class Scene(Segment):
         """
         distances = []
         for fixdata in fixdatalists:
-            #print "fixdata", fixdata
             if not(fixdata):
                 continue
             lastx = fixdata[0].mappedfixationpointx
@@ -568,23 +682,26 @@ class Scene(Segment):
         return sequence
 
     def clean_memory(self):
-        for seg in self.segments:
-            seg.adjvalidpupilsizes = []
-            seg.distances_from_screen = []
-        self.adjvalidpupilsizes = []
-        self.distances_from_screen = []
+        return
+        #for seg in self.segments:
+        #   seg.adjvalidpupilsizes = []
+        #    seg.distances_from_screen = []
+        #self.adjvalidpupilsizes = []
+        #self.distances_from_screen = []
 
-def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations):
+def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_start=0):
         """a helper method that updates the AOI_Stat object of this Scene with a new AOI_Stat object
         
         Args:
-            main_AOI_Stat: AOI_Stat object of this Scene
+            main_AOI_Stat: AOI_Stat object of this Scene (must have been initialised)
             
             new_AOI_Stat: a new AOI_Stat object
             
-            total_time:
+            total_time: duration of the scene
             
-            total_numfixations:
+            total_numfixations: number of fixations in the scene
+			
+            sc_start: start time (timestamp) of the scene
         
         Returns:
             the updated AOI_Sata object
@@ -592,14 +709,23 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations):
         maois = main_AOI_Stat
         maois.features['numfixations'] += new_AOI_Stat.features['numfixations']
         maois.features['longestfixation'] = max(maois.features['longestfixation'],new_AOI_Stat.features['longestfixation'])
-        maois.features['totaltimespent'] += + new_AOI_Stat.features['totaltimespent'] 
+        maois.features['totaltimespent'] += new_AOI_Stat.features['totaltimespent'] 
+		
+        maois.features['meanfixationduration'] = maois.features['totaltimespent'] / maois.features['numfixations'] if maois.features['numfixations'] != 0 else -1
+        maois.squaredsumfixationduration += new_AOI_Stat.squaredsumfixationduration
+		
         maois.features['proportiontime'] = float(maois.features['totaltimespent'])/total_time
         maois.features['proportionnum'] = float(maois.features['numfixations'])/total_numfixations
-        if maois.features['totaltimespent']>0: 
-            maois.features['fixationrate'] = float(maois.features['numfixations'])/maois.features['totaltimespent']
+        if maois.features['totaltimespent'] > 0: 
+            maois.features['fixationrate'] = float(maois.features['numfixations']) / maois.features['totaltimespent']
         else:
-            maois.features['fixationrate'] = 0.0
-                
+            maois.features['fixationrate'] = -1
+			
+        if new_AOI_Stat.features['timetofirstfixation'] != -1:
+            maois.features['timetofirstfixation'] = min(maois.features['timetofirstfixation'], deepcopy(new_AOI_Stat.features['timetofirstfixation']) + new_AOI_Stat.starttime - sc_start)
+        if new_AOI_Stat.features['timetolastfixation'] != -1:
+            maois.features['timetolastfixation'] = max(maois.features['timetolastfixation'], deepcopy(new_AOI_Stat.features['timetolastfixation']) + new_AOI_Stat.starttime - sc_start)
+				
         #merge events
         if new_AOI_Stat.features['numevents']>0:
             maois.features['numevents'] += new_AOI_Stat.features['numevents']
@@ -609,19 +735,18 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations):
             maois.features['leftclicrate'] += float(maois.features['numleftclic'])/total_time
             maois.features['rightclicrate'] += float(maois.features['numrightclic'])/total_time
             maois.features['doubleclicrate'] += float(maois.features['numdoubleclic'])/total_time
-        else:
-            maois.features['numevents'] = 0
-            maois.features['numleftclic'] = 0
-            maois.features['numrightclic'] = 0
-            maois.features['numdoubleclic']  = 0
-            maois.features['leftclicrate'] = 0
-            maois.features['rightclicrate'] = 0
-            maois.features['doubleclicrate'] = 0
-            
+			        
+            if new_AOI_Stat.features['timetofirstfixation'] != -1:		
+                maois.features['timetofirstleftclic'] = min(maois.features['timetofirstleftclic'], deepcopy(new_AOI_Stat.features['timetofirstleftclic']) + new_AOI_Stat.starttime - sc_start)
+            if new_AOI_Stat.features['timetofirstrightclic'] != -1:		
+                maois.features['timetofirstrightclic'] = min(maois.features['timetofirstrightclic'], deepcopy(new_AOI_Stat.features['timetofirstrightclic']) + new_AOI_Stat.starttime - sc_start)
+            if new_AOI_Stat.features['timetofirstdoubleclic'] != -1:		
+                maois.features['timetofirstdoubleclic'] = min(maois.features['timetofirstdoubleclic'], deepcopy(new_AOI_Stat.features['timetofirstdoubleclic']) + new_AOI_Stat.starttime - sc_start)
+
         #calculating the transitions to and from this AOI and other active AOIs at the moment
-        new_AOI_Stat_transition_aois = filter(lambda x: x.startswith(('numtransto_','numtransfrom_')),new_AOI_Stat.features.keys())
-        if params.DEBUG:
-            print "segement's transition_aois",new_AOI_Stat_transition_aois
+        new_AOI_Stat_transition_aois = filter(lambda x: x.startswith(('numtransto_','numtransfrom_')), new_AOI_Stat.features.keys())
+        if params.DEBUG or params.VERBOSE == "VERBOSE":
+            print "Segment's transition_aois", new_AOI_Stat_transition_aois
             
         maois.total_tans_to += new_AOI_Stat.total_tans_to       #updating the total number of transition to this AOI
         maois.total_tans_from += new_AOI_Stat.total_tans_from   #updating the total number of transition from this AOI
@@ -642,7 +767,6 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations):
             if feat.startswith('numtransto_'):
                 aid = feat.lstrip('numtransto_')
                 if maois.total_tans_to > 0:
-
                     maois.features['proptransto_%s'%(aid)] = float(maois.features[feat]) / maois.total_tans_to
                 else:
                     maois.features['proptransto_%s'%(aid)] = 0
@@ -679,7 +803,36 @@ def weightedmeanfeat(obj_list, totalfeat,ratefeat):
     if num != 0:
         return num_valid / num
     return 0
+
+def aggregatestddevfeat(obj_list, totalfeat, sdfeat, meanfeat, meanscene):
+    """a helper method that calculates the aggregated standard deviation of a target feature over a list of Segments
     
+    Args:
+        obj_list: a list of Segments which all have a numeric field for which the stdev is calculated 
+        
+        totalfeat: a string containing the name of the feature that has the total value of the target feature 
+        
+        ratefeat: a string containing the name of the feature that has the rate value of the target feature
+    
+    Returns:
+        the weighted average of the ratefeat over the Segments
+    """
+    num = float(0)
+    den = float(0)
+
+    for obj in obj_list:
+        t = eval('obj.'+totalfeat)
+        if t > 0:
+            sd = eval('obj.'+sdfeat)
+            if math.isnan(sd): sd = 0
+            meanobj = eval('obj.'+meanfeat)
+		
+            num += (t-1) * sd**2 + t * (meanobj-meanscene)**2
+            den += t
+
+    if den > 1:
+        return math.sqrt(float(num)/(den-1))
+    return 0	
 
 def sumfeat(obj_list, feat):
     """a helper method that calculates the sum of a target feature over a list of objects
@@ -698,7 +851,7 @@ def sumfeat(obj_list, feat):
         sum += eval('obj.'+feat)
     return sum
 
-def minfeat(obj_list, feat):
+def minfeat(obj_list, feat, nonevalue = None):
     """a helper method that calculates the min of a target feature over a list of objects
     
     Args:
@@ -706,6 +859,8 @@ def minfeat(obj_list, feat):
         obj_list: a list of objects
         
         feat: a string containing the name of the target feature
+
+        nonevalue: value to be ignored when computing the min (typically -1 in EMDAT)
     
     Returns:
         the min of the target feature over the given list of objects
@@ -713,7 +868,7 @@ def minfeat(obj_list, feat):
     min = float('+infinity')
     for obj in obj_list:
         val = eval('obj.'+feat)
-        if min > val:
+        if min > val and val != nonevalue:
             min = val
     return min     
     
