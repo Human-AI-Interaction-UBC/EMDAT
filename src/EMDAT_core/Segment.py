@@ -130,7 +130,7 @@ class Segment():
 		#get all pupil sizes (valid + invalid)
         #pupilsizes = map(lambda x: x.pupilsize, all_data)
         #get all datapoints where pupil size is available
-        valid_pupil_data = filter(lambda x: x.pupilsize != -1, all_data) 
+        valid_pupil_data = filter(lambda x: x.pupilsize > 0, all_data) 
         valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, all_data) 
         
         #number of valid pupil sizes
@@ -177,12 +177,12 @@ class Segment():
         """ calculate distance from screen features""" #distance
                    
         # check if pupil sizes are available for all missing points
-        invalid_distance_data = filter(lambda x: x.distance == -1 and x.gazepointxleft >= 0, all_data)
+        invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointxleft >= 0, all_data)
         if len(invalid_distance_data) > 0:
             warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
             
         #get all datapoints where distance is available
-        valid_distance_data = filter(lambda x: x.distance != -1, all_data) 
+        valid_distance_data = filter(lambda x: x.distance > 0, all_data) 
         
         #number of valid pupil sizes
         self.numdistances = len(valid_distance_data) 

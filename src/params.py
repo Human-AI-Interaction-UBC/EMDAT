@@ -17,8 +17,8 @@ EYELOGDATAFOLDER = "./sampledata"
 EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
 
 # the eye tracker and/or software used to collect and export the data
-#EYETRACKERTYPE = "Tobii" #Tobii Studio version 1x and 2x
-EYETRACKERTYPE = "TobiiV3" #Tobii Studio version 3x
+EYETRACKERTYPE = "Tobii" #Tobii Studio version 1x and 2x
+#EYETRACKERTYPE = "TobiiV3" #Tobii Studio version 3x
 #EYETRACKERTYPE = "SMI" # SMI/BeGaze
 
 
