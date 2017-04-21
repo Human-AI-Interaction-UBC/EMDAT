@@ -486,7 +486,7 @@ class Segment():
             #if d.stimuliname == 'ScreenRec':
             if d.stimuliname != '':
                 num += 1
-                if d.fixationindex!=None:
+                if d.is_valid or d.fixationindex!=None:
                     num_valid += 1.0
 #            else:
 #                print "###",d.event, d.data1
