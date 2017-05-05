@@ -20,7 +20,7 @@ from EMDAT_core.AOI import AOI
 from EMDAT_core.Scene import Scene
 from EMDAT_core.utils import *
 
-from EMDAT_eyetracker.TobiiRecording import TobiiRecording
+from EMDAT_eyetracker.TobiiV2Recording import TobiiV2Recording
 from EMDAT_eyetracker.TobiiV3Recording import TobiiV3Recording
 from EMDAT_eyetracker.SMIRecording import SMIRecording
 
@@ -84,7 +84,7 @@ class BasicParticipant(Participant):
             print 
 		    	
         self.features={}
-        if params.EYETRACKERTYPE == "Tobii":
+        if params.EYETRACKERTYPE == "TobiiV2":
             rec = TobiiRecording(datafile, fixfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
         elif params.EYETRACKERTYPE == "TobiiV3":
             rec = TobiiV3Recording(datafile, fixfile, saccade_file=saccfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
@@ -181,7 +181,7 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
         else:
             currpsdata = None
         
-        if params.EYETRACKERTYPE == "Tobii":
+        if params.EYETRACKERTYPE == "TobiiV2":
             allfile = datadir+'/P'+str(rec)+'-All-Data.tsv'
             fixfile = datadir+'/P'+str(rec)+'-Fixation-Data.tsv'
             evefile = datadir+'/P'+str(rec)+'-Event-Data.tsv'

@@ -42,14 +42,6 @@ class Recording:
             if len(self.sac_data) == 0:
                 raise Exception("The file '" + saccade_file + "' has no saccades!")
 				
-			##### temp code ################
-            tempname = saccade_file.replace("/", "_").replace(".", "")
-            f = open("C:\\Python27\\Code\\temp\\output_saccade_temp_"+tempname+".txt", "w")
-            f.write("index,timestamp,duration,distance,speed,acceleration,startpointx,startpointy,endpointx,endpointy,quality\n")
-            for s in self.sac_data:
-                f.write(str(s.saccadeindex)+","+str(s.timestamp)+","+str(s.saccadeduration)+","+str(s.saccadedistance)+","+str(s.saccadespeed)+","+str(s.saccadeacceleration)
-						+","+str(s.saccadestartpointx)+","+str(s.saccadestartpointy)+","+str(s.saccadeendpointx)+","+str(s.saccadeendpointy)+","+str(s.saccadequality)+"\n")
-            f.close()
         else:
             self.sac_data = None
 
