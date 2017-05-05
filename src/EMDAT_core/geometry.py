@@ -36,9 +36,9 @@ def vector_difference(point1, point2):
     signx = dx > 0
     signy = dy > 0
 
-    if dx ==0 and dy!=0:
+    if dx !=0 and dy==0:
         return distance, 0
-    elif dx!=0 and dy==0:
+    elif dx==0 and dy!=0:
         theta = math.pi/2
     else:
         theta = math.atan(float(abs(dy))/abs(dx))
