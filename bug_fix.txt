@@ -1,0 +1,7 @@
+Record of bugs found so far in testing
+
+    Date of Report        Date of Resolution      Pertinent Part of Code        Description
+
+1.  04 May 2017           05 May 2017             vector_difference in          In the if-else statement block, the angle for vertical eye movement            
+                                                  EMDAT_core\geometry.py        and that for horizntal eye movement were placed under the wrong condition,   
+                                                  lines: 39-42                  swapping the values.  
