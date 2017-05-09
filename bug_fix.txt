@@ -4,4 +4,11 @@ Record of bugs found so far in testing
 
 1.  04 May 2017           05 May 2017             vector_difference in          In the if-else statement block, the angle for vertical eye movement            
                                                   EMDAT_core\geometry.py        and that for horizntal eye movement were placed under the wrong condition,   
-                                                  lines: 39-42                  swapping the values.  
+                                                  lines: 39-42                  swapping the values.
+
+2.  08 May 2017           09 May 2017             second value assignment to    The attribute is actually reassigned the value, len(distances), in that line,
+                                                  the numdistances attibute in  overwriting the previously assigned value, len(valid_distance_data), in line
+                                                  __init()__ of Segmemt.py      188 in the same __init()__. The former value concerns fixation, while the latter, 
+                                                  at line 225                   head distance related to pupil data. The reassigned attribute value is passed to a 
+                                                                                Scene object, where it is used for computation of the mean head distance in line 447 
+                                                                                of Scene.py, affecting the computed mean head distance.                                                                                  
