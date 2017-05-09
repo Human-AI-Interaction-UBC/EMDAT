@@ -5,7 +5,7 @@ Created on 2011-08-26
 Segment class: smallest unit of aggregated eye data samples that has conceptual meaning.
 A segment is alwawys assigned to a scene.
 
-Authors: Samad Kardan (creator), Sebastien Lalle. 
+Authors: Samad Kardan (creator), Sebastien Lalle.
 Institution: The University of British Columbia.
 """
 
@@ -20,17 +20,17 @@ class Segment():
     """A Segment is a class that represents the smallest unit of aggregated eye data samples with a conceptual meaning.
 
     A segment is the smallest unit of aggregated eye data samples that has conceptual meaning. This class is the equivalent
-    of segments as defined in Tobii studio. 
-    
+    of segments as defined in Tobii studio.
+
     Attributes:
         segid: A string containing the id of the Segment.
         alldata: A list of "Datapoint"s for this Segment
-        features: A dict with feature names as its keys and feature values as its values 
+        features: A dict with feature names as its keys and feature values as its values
         completion_time: An integer indicating total duration of the Segment in milliseconds
             minimum is 16 ms (length of one sample with 60Hz sampling rate (ms))
         start: An integer indicating the Segment's start time in milliseconds
         end: An integer indicating the Segment's end time in milliseconds
-        sample_start_ind: An integer indicating the index of the first Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data) 
+        sample_start_ind: An integer indicating the index of the first Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data)
         sample_end_ind: An integer indicating the index of the last Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data)
         fixation_start_ind: An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
         fixation_end_ind: An integer indicating the index of the last Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
@@ -38,44 +38,44 @@ class Segment():
         time_gaps: a list of tuples of the form (start, end) indicating the start and end of the gaps of invalid samples in the Segement's samples
         largest_data_gap: An integer indicating the length of largest invalid gap for this Segment in milliseconds
         proportion_valid: A float indicating the proportion of valid samples over all the samples in this Segment
-        proportion_valid_fix: A float indicating the proportion of (valid + restored) samples over all the samples in this Segment 
-        validity1: a boolean indicating whether this Segment is valid using proportion of valid samples threshold 
+        proportion_valid_fix: A float indicating the proportion of (valid + restored) samples over all the samples in this Segment
+        validity1: a boolean indicating whether this Segment is valid using proportion of valid samples threshold
         validity2: a boolean indicating whether this Segment is valid using largest acceptable gap threshold
         validity3: a boolean indicating whether this Segment is valid using proportion of (valid + restored) samples threshold
         is_valid: a boolean indicating whether this Segment is considered valid by the validity method indicated by params.VALIDITY_METHOD
         length: An integer indicating total duration of the Segment in milliseconds
-        numsamples: An integer indicating total number of samples in the Segment 
+        numsamples: An integer indicating total number of samples in the Segment
         fixation_data: A list of "Fixation"s for this Segment
         fixation_start: timestamp of the first entry from list of "Fixation"s for this Segment
         fixation_end: timestamp of the last entry from list of "Fixation"s for this Segment
         aoi_data: A list of AOI_Stat objects for relevant "AOI"s for this Segment
         has_aois: A boolean indicating if this Segment has AOI features calculated for it
-        
+
     """
     def __init__(self, segid, all_data, fixation_data, saccade_data = None, event_data = None, aois = None, prune_length = None, rest_pupil_size = 0, export_pupilinfo = False):
         """
         Args:
             segid: A string containing the id of the Segment.
-            
+
             all_data: a list of "Datapoint"s which make up this Segment.
-            
+
             fixation_data: a list of "Fixation"s which make up this Segment.
-			
+
             saccade_data: a list of "Saccade"s which make up this Segment (None if no saccades).
-			
+
             event_data: a list of "Event"s which make up this Segment (None if no events).
-            
+
             aois: a list of "AOI"s relevant to this Segment.
-         
+
             prune_length: If not None, an integer that specifies the time interval (in ms) from the beginning of each segment in which
-                samples are considered in calculations.  This can be used if, for example, you only wish to consider data in the first 
+                samples are considered in calculations.  This can be used if, for example, you only wish to consider data in the first
                 1000 ms of each segment. In this case (prune_length = 1000), all data beyond the first 1000ms of the start of the segments
                 will be disregarded.
-				
+
             rest_pupil_size: rest pupil size for this segment, used to adjust pupil size.
-			
+
             export_pupilinfo: True to export raw pupil data in EMDAT output (False by default).
-                
+
         Yields:
             a Segment object
         """
@@ -100,15 +100,15 @@ class Segment():
         self.validity2 = self.calc_validity2()
         self.validity3 = self.calc_validity3()
         self.is_valid = self.get_validity()
-		
+
         if prune_length:
             all_data = filter(lambda x: x.timestamp <= self.start + prune_length, all_data)
             fixation_data = filter(lambda x: x.timestamp <= self.start + prune_length, fixation_data)
-            if event_data != None:   
+            if event_data != None:
                 event_data = filter(lambda x: x.timestamp <= self.start + prune_length, event_data)
-            if saccade_data != None:   
+            if saccade_data != None:
                 saccade_data = filter(lambda x: x.timestamp <= self.start + prune_length, saccade_data)
-				
+
         self.end = all_data[-1].timestamp
         self.length = self.end - self.start
         self.features['length'] = self.end - self.start
@@ -117,8 +117,8 @@ class Segment():
         self.numfixations = len(fixation_data)
         self.features['numfixations'] = self.numfixations
         self.features['fixationrate'] = float(self.numfixations) / self.length
-        
-        """ calculate pupil dilation features (no rest pupil size adjustments yet)""" 
+
+        """ calculate pupil dilation features (no rest pupil size adjustments yet)"""
         # check if pupil sizes are available for all missing points
         pupil_invalid_data = filter(lambda x: x.pupilsize == -1 and x.gazepointxleft > 0, all_data)
         if len(pupil_invalid_data) > 0:
@@ -126,13 +126,13 @@ class Segment():
                 raise Exception("Pupil size is unavailable for a valid data sample. Number of missing points: " + str(len(pupil_invalid_data)))
             else:
                 warn("Pupil size is unavailable for a valid data sample. Number of missing points: " + str(len(pupil_invalid_data)) )
-        
+
 		#get all pupil sizes (valid + invalid)
         #pupilsizes = map(lambda x: x.pupilsize, all_data)
         #get all datapoints where pupil size is available
-        valid_pupil_data = filter(lambda x: x.pupilsize > 0, all_data) 
-        valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, all_data) 
-        
+        valid_pupil_data = filter(lambda x: x.pupilsize > 0, all_data)
+        valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, all_data)
+
         #number of valid pupil sizes
         self.features['meanpupilsize'] = -1
         self.features['stddevpupilsize'] = -1
@@ -144,9 +144,9 @@ class Segment():
         self.features['stddevpupilvelocity'] = -1
         self.features['maxpupilvelocity'] = -1
         self.features['minpupilvelocity'] = -1
-        self.numpupilsizes = len(valid_pupil_data) 
-        self.numpupilvelocity = len(valid_pupil_velocity) 
-		
+        self.numpupilsizes = len(valid_pupil_data)
+        self.numpupilvelocity = len(valid_pupil_velocity)
+
         if self.numpupilsizes > 0: #check if the current segment has pupil data available
             if params.PUPIL_ADJUSTMENT == "rpscenter":
                 adjvalidpupilsizes = map(lambda x: x.pupilsize - rest_pupil_size, valid_pupil_data)
@@ -154,19 +154,19 @@ class Segment():
                 adjvalidpupilsizes = map(lambda x: (x.pupilsize - rest_pupil_size) / (1.0 * rest_pupil_size), valid_pupil_data)
             else:
                 adjvalidpupilsizes = map(lambda x: x.pupilsize, valid_pupil_data)#valid_pupil_data
-				
+
             valid_pupil_velocity = map(lambda x: x.pupilvelocity, valid_pupil_velocity)#valid_pupil_data
-			
+
             if export_pupilinfo:
-                self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, rest_pupil_size], valid_pupil_data) 
-            
+                self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, rest_pupil_size], valid_pupil_data)
+
             self.features['meanpupilsize'] = mean(adjvalidpupilsizes)
             self.features['stddevpupilsize'] = stddev(adjvalidpupilsizes)
             self.features['maxpupilsize'] = max(adjvalidpupilsizes)
             self.features['minpupilsize'] = min(adjvalidpupilsizes)
             self.features['startpupilsize'] = adjvalidpupilsizes[0]
             self.features['endpupilsize'] = adjvalidpupilsizes[-1]
-            
+
             if len(valid_pupil_velocity) > 0:
                 self.features['meanpupilvelocity'] = mean(valid_pupil_velocity)
                 self.features['stddevpupilvelocity'] = stddev(valid_pupil_velocity)
@@ -175,18 +175,18 @@ class Segment():
         """ end pupil """
 
         """ calculate distance from screen features""" #distance
-                   
+
         # check if pupil sizes are available for all missing points
         invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointxleft >= 0, all_data)
         if len(invalid_distance_data) > 0:
             warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
-            
+
         #get all datapoints where distance is available
-        valid_distance_data = filter(lambda x: x.distance > 0, all_data) 
-        
+        valid_distance_data = filter(lambda x: x.distance > 0, all_data)
+
         #number of valid pupil sizes
-        self.numdistances = len(valid_distance_data) 
-        if self.numdistances > 0: #check if the current segment has pupil data available
+        self.numdistancedata = len(valid_distance_data)
+        if self.numdistancedata > 0: #check if the current segment has pupil data available
             distances_from_screen = map(lambda x: x.distance, valid_distance_data)
             self.features['meandistance'] = mean(distances_from_screen)
             self.features['stddevdistance'] = stddev(distances_from_screen)
@@ -202,8 +202,8 @@ class Segment():
             self.features['startdistance'] = -1
             self.features['enddistance'] = -1
         """ end distance """
-        
-        """ calculate fixations, angles and path features""" 
+
+        """ calculate fixations, angles and path features"""
         if self.numfixations > 0:
             self.fixation_start = fixation_data[0].timestamp
             self.fixation_end = fixation_data[-1].timestamp
@@ -216,13 +216,13 @@ class Segment():
             rel_angles = self.calc_rel_angles(fixation_data)
         else:
             self.fixation_start = -1
-            self.fixation_end = -1            
+            self.fixation_end = -1
             self.features['meanfixationduration'] = -1
             self.features['stddevfixationduration'] = -1
             self.features['sumfixationduration'] = -1
             self.features['fixationrate'] = -1
-			
-        self.numdistances = len(distances)
+
+        self.numfixdistances = len(distances)
         self.numabsangles = len(abs_angles)
         self.numrelangles = len(rel_angles)
         if len(distances) > 0:
@@ -252,7 +252,7 @@ class Segment():
             self.features['meanrelpathangles'] = -1
             self.features['stddevrelpathangles'] = -1
         """ end fixations, angles, path """
-			
+
         """ calculate saccades features if available """
         if saccade_data != None:
             self.numsaccades = len(saccade_data)
@@ -266,9 +266,9 @@ class Segment():
             self.features['stddevsaccadeduration'] = stddev(map(lambda x: float(x.saccadeduration), saccade_data))
             self.features['longestsaccadeduration'] = max(map(lambda x: float(x.saccadeduration), saccade_data))
             self.features['meansaccadespeed'] = mean(map(lambda x: float(x.saccadespeed), saccade_data))
-            self.features['stddevsaccadespeed'] = stddev(map(lambda x: float(x.saccadespeed), saccade_data))	
-            self.features['maxsaccadespeed'] = max(map(lambda x: float(x.saccadespeed), saccade_data))	
-            self.features['minsaccadespeed'] = min(map(lambda x: float(x.saccadespeed), saccade_data))	
+            self.features['stddevsaccadespeed'] = stddev(map(lambda x: float(x.saccadespeed), saccade_data))
+            self.features['maxsaccadespeed'] = max(map(lambda x: float(x.saccadespeed), saccade_data))
+            self.features['minsaccadespeed'] = min(map(lambda x: float(x.saccadespeed), saccade_data))
             self.features['fixationsaccadetimeratio'] = float(self.features['sumfixationduration']) / self.features['sumsaccadeduration']
         else:
             self.features['numsaccades'] = 0
@@ -286,11 +286,11 @@ class Segment():
             self.features['minsaccadespeed'] = -1
             self.features['fixationsaccadetimeratio'] = -1
         """ end saccade """
-		
+
         """ calculate event features (if available) """
         if event_data != None:
             (leftc, rightc, doublec, keyp) = generate_event_lists(event_data)
-			
+
             self.numevents = len(leftc)+len(rightc)+len(doublec)+len(keyp)
             self.features['numevents'] = self.numevents
             self.features['numleftclic'] = len(leftc)
@@ -320,7 +320,7 @@ class Segment():
             self.features['timetofirstdoubleclic'] = -1
             self.features['timetofirstkeypressed'] = -1
         """ end event """
-		
+
         """ calculate AOIs features """
         self.has_aois = False
         if aois:
@@ -328,19 +328,19 @@ class Segment():
             self.features['aoisequence'] = self.generate_aoi_sequence(fixation_data, aois)
         """ end AOIs """
 
-		
+
     def set_indices(self,sample_st,sample_end,fix_st,fix_end,sac_st=None,sac_end=None,event_st=None,event_end=None):
         """Sets the index features
-        
+
         Args:
-            sample_st: An integer indicating the index of the first Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data) 
+            sample_st: An integer indicating the index of the first Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data)
             sample_end: An integer indicating the index of the last Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data)
             fix_st: An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
-            fix_end: An integer indicating the index of the last Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)        
+            fix_end: An integer indicating the index of the last Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
             sac_st: An integer indicating the index of the first Saccade for this Segment in the Participant's list of all "Saccade"s (saccade_data)
-            sac_end: An integer indicating the index of the last Saccade for this Segment in the Participant's list of all "Saccade"s (saccade_data)     
+            sac_end: An integer indicating the index of the last Saccade for this Segment in the Participant's list of all "Saccade"s (saccade_data)
             event_st: An integer indicating the index of the first Event for this Segment in the Participant's list of all "Event"s (event_data)
-            event_end: An integer indicating the index of the last Event for this Segment in the Participant's list of all "Event"s (event_data)     
+            event_end: An integer indicating the index of the last Event for this Segment in the Participant's list of all "Event"s (event_data)
         """
         self.sample_start_ind = sample_st
         self.sample_end_ind = sample_end
@@ -353,12 +353,12 @@ class Segment():
 
     def get_indices(self):
         """Returns the index features
-        
+
         Returns:
-            An integer indicating the index of the first Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data) 
+            An integer indicating the index of the first Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data)
             An integer indicating the index of the last Datapoint for this Segment in the Participant's list of all "Datapoint"s (all_data)
             An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
-            An integer indicating the index of the last Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)   
+            An integer indicating the index of the last Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
             An integer indicating the index of the first Saccade for this Segment in the Participant's list of all "Saccade"s (saccade_data). None if no saccade.
             An integer indicating the index of the last Saccade for this Segment in the Participant's list of all "Saccade"s (saccade_data). None if no saccade.
             An integer indicating the index of the first Event for this Segment in the Participant's list of all "Event"s (event_data). None if no saccade.
@@ -372,12 +372,12 @@ class Segment():
 
     def set_aois(self, aois, fixation_data, event_data = None):
         """Sets the relevant "AOI"s for this Segment
-        
+
         Args:
             fixation_data: The list of "Fixation"s which make up this Segment
             aois: a list of "AOI"s relevant to this Segment
         """
-        
+
         if len(aois) == 0:
             warn("No AOIs passed to segment:"+self.segid)
         active_aois=[]
@@ -399,10 +399,10 @@ class Segment():
 
     def calc_validity_proportion(self, all_data):
         """Calculates the proportion of "Datapoint"s which are valid.
-        
+
         Args:
             all_data: The list of "Datapoint"s which make up this Segement
-            
+
         Returns:
             A float indicating the proportion of valid samples over all the samples in this Segment
         """
@@ -424,12 +424,12 @@ class Segment():
 
     def calc_largest_validity_gap(self, all_data):
         """Calculates the largest gap of invalid samples in the "Datapoint"s for this Segment.
-        
+
         Args:
             all_data: The list of "Datapoint"s which make up this Segement
-            
+
         Returns:
-            An integer indicating the length of largest invalid gap for this Segment in milliseconds  
+            An integer indicating the length of largest invalid gap for this Segment in milliseconds
         """
         if self.numfixations == 0:
             return all_data[-1].timestamp - all_data[0].timestamp
@@ -457,7 +457,7 @@ class Segment():
 
     def getgaps(self):
         """Returns the list of invalid gaps for this Segment
-        
+
         Args:
             a list of invalid gaps for this Segment
         """
@@ -465,15 +465,15 @@ class Segment():
 
     def calc_validity_fixation(self, all_data):
         """Calculates the proportion of (valid + restored) "Datapoint"s over all "Datapoint"s of the Segment.
-        
+
         Restored samples are the samples which are not valid but they are part of a Fixation.
-        The idea is that if the user was looking at a certain point and then we loose the eye data for 
+        The idea is that if the user was looking at a certain point and then we loose the eye data for
         a short period of time and afterwards the user is looking at the same point we can assume that user
-        was looking at that same point during that period. 
-        
+        was looking at that same point during that period.
+
         Args:
             all_data: The list of "Datapoint"s which make up this Segement
-            
+
         Returns:
             A float indicating the proportion of (valid + restored) samples over all the samples in this Segment
         """
@@ -494,13 +494,13 @@ class Segment():
             return 0.0
         else:
             return num_valid / num
-        
+
     def calc_validity1(self, threshold = params.VALID_PROP_THRESH):
         """Returns a boolean indicating whether this Segment is valid using proportion of valid samples threshold
-        
+
         Args:
-            threshold: the minimum proportion of valid samples for a Segment or Scene to be 
-                considered valid. By default set to value VALID_PROP_THRESH from module params.py 
+            threshold: the minimum proportion of valid samples for a Segment or Scene to be
+                considered valid. By default set to value VALID_PROP_THRESH from module params.py
         """
         return self.proportion_valid > threshold
 
@@ -509,15 +509,15 @@ class Segment():
         """
         return self.largest_data_gap <= threshold
 
-       
+
     def calc_validity3(self, threshold = params.VALID_PROP_THRESH):
         """Returns a boolean indicating whether this Segment is valid using proportion of (valid + restored) samples threshold
         """
         return self.proportion_valid_fix > threshold
-    
+
     def get_validity(self):
         """Determines if this Segment is valid with the given validity method set in params.VALIDITY_METHOD
-        
+
         Returns:
             A boolean indicating whether this Segment is valid
         """
@@ -527,10 +527,10 @@ class Segment():
             return self.validity2
         elif params.VALIDITY_METHOD == 3:
             return self.validity3
-    
+
     def calc_distances(self, fixdata):
         """returns the Euclidean distances between a sequence of "Fixation"s
-    
+
         Args:
             fixdata: a list of "Fixation"s
         """
@@ -550,12 +550,12 @@ class Segment():
 
     def calc_abs_angles(self, fixdata):
         """returns the absolute angles between a sequence of "Fixation"s that build a scan path.
-        
+
         Abosolute angle for each saccade is the angle between that saccade and the horizental axis
-    
+
         Args:
             fixdata: a list of "Fixation"s
-            
+
         Returns:
             a list of absolute angles for the saccades formed by the given sequence of "Fixation"s in Radiant
         """
@@ -575,12 +575,12 @@ class Segment():
 
     def calc_rel_angles(self, fixdata):
         """returns the relative angles between a sequence of "Fixation"s that build a scan path in Radiant
-        
+
         Relative angle for each saccade is the angle between that saccade and the previous saccade.
-    
+
         Args:
             fixdata: a list of "Fixation"s
-            
+
         Returns:
             a list of relative angles for the saccades formed by the given sequence of "Fixation"s in Radiant
         """
@@ -607,10 +607,10 @@ class Segment():
 
         Args:
             all_data: a list of "Datapoint"s which make up this Segment.
-            
+
         Returns:
             An integer determining the number of samples in the Segment
-        
+
         """
         num = 0
         for d in all_data:
@@ -619,7 +619,7 @@ class Segment():
         return num
 
     def generate_aoi_sequence(self, fixdata, aois):
-        """returns the sequence of AOI's where "Fixation"s occurred 
+        """returns the sequence of AOI's where "Fixation"s occurred
         Args:
             fixdata: a list of "Fixation"s
         Returns:
@@ -631,33 +631,33 @@ class Segment():
                 if _fixation_inside_aoi(fix, aoi.polyin, aoi.polyout) and aoi.is_active(fix.timestamp, fix.timestamp) :
                     sequence.append(aoi.aid)
         return sequence
-    
+
     def getid(self):
         """Returns the segid for this Segment
-        
+
         Returns: a string conataining the segid for this Segment
         """
         return self.segid
-    
+
     def get_features(self, featurelist = None, aoifeaturelist = None, aoifeaturelabels = None):
         """Returns feature names and their values for this Segment
-        
+
         Args:
             featurelist: if not None, a list containing the name of features to be returned. If this is None all features will be returned
-            aoifeaturelist: if not None, a list of features to be returned for each of the "AOI"s relevant to this Segment. 
+            aoifeaturelist: if not None, a list of features to be returned for each of the "AOI"s relevant to this Segment.
             aoifeaturelabels: if not None, a list of AOI related features to be returned.
-            *Note: while aoifeaturelist is a subset of features that will be returned for all relevant "AOI"s, aoifeaturelabels contains 
+            *Note: while aoifeaturelist is a subset of features that will be returned for all relevant "AOI"s, aoifeaturelabels contains
             the exact AOI feature name, i.e., a feature of the form: [AOI name]_[feature name]
-            For example if an AOI called 'graph' is releveant to this Segment, aoifeaturelabels may contain 'graph_fixationrate'  
-            
+            For example if an AOI called 'graph' is releveant to this Segment, aoifeaturelabels may contain 'graph_fixationrate'
+
         Returns:
             featnames: a list of feature names sorted alphabetically
             featvals: a corrsponding list of feature values
             e.g.
             featnames = ['fixationrate', 'length', 'meanabspathangles']
             featvals  = [0.00268522882294', '1529851', '1.60354714212']
-        
-        """ 
+
+        """
         if featurelist == []:
             featnames = []
         elif not featurelist:       #include all features
@@ -676,7 +676,7 @@ class Segment():
 
         if self.has_aois:
             for aid, aoi in self.aoi_data.iteritems():
-                if aoifeaturelabels:    #an exact list of aoifeatures was given 
+                if aoifeaturelabels:    #an exact list of aoifeatures was given
                     anames, avals = aoi.get_features()
                     anames = map(lambda x: '%s_%s'%(aid, x), anames)
                     featval = zip(anames,avals)
@@ -686,9 +686,9 @@ class Segment():
                     for fn,fv in newfeatval:
                         anames.append(fn)
                         avals.append(fv)
-                    if featnames:                    
+                    if featnames:
                         featnames += anames
-                        featvals += avals                   
+                        featvals += avals
                 else:                   #a list of features for each AIO was given
                     anames, avals = aoi.get_features(aoifeaturelist)
                     anames = map(lambda x: '%s_%s'%(aid, x), anames)
@@ -697,25 +697,22 @@ class Segment():
                     featvals += avals
 
         return featnames, featvals
-    
+
     def print_(self):
-        """Ourputs all feature names and their values for this Segment on the console        
-        """ 
+        """Ourputs all feature names and their values for this Segment on the console
+        """
         print"ID", self.getid()
-        print"start",self.start 
+        print"start",self.start
         print"end",self.end
         print"is_valid",self.is_valid
         print
 #        featurelist =["completion_time","numfixations","length","numsamples"]
 #        if self.features['numfixations'] > 0:
 #            featurelist.extend(["meanfixationduration","stddevfixationduration","sumfixationduration","fixationrate"])
-#        
+#
 #        featurelist.extend(["meanpathdistance","sumpathdistance","stddevpathdistance","sumabspathangles","meanabspathangles","stddevabspathangles","sumrelpathangles","meanrelpathangles","stddevrelpathangles"])
 
         fn,fv = self.get_features()
         for i in xrange(len(fn)):
             print fn[i],':',fv[i]
         print
-    
-
-        
