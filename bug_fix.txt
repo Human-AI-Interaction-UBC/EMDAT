@@ -1,14 +1,21 @@
-Record of bugs found so far in testing
+Record of Bugs Found so far during the Second Phase of the EMDAT_testing Project  
 
-    Date of Report        Date of Resolution      Pertinent Part of Code        Description
+    Date of Detection     Date of Resolution      Pertinent Part of Code          Description
 
-1.  04 May 2017           05 May 2017             vector_difference in          In the if-else statement block, the angle for vertical eye movement            
-                                                  EMDAT_core\geometry.py        and that for horizntal eye movement were placed under the wrong condition,   
-                                                  lines: 39-42                  swapping the values.
+1.  04 May 2017           05 May 2017             vector_difference in            In the if-else statement block, the angle for vertical eye movement            
+                                                  EMDAT_core\geometry.py          and that for horizntal eye movement were placed under the wrong condition,   
+                                                  lines: 39-42                    swapping the values.
 
-2.  08 May 2017           09 May 2017             second value assignment to    The attribute is actually reassigned the value, len(distances), in that line,
-                                                  the numdistances attibute in  overwriting the previously assigned value, len(valid_distance_data), in line
-                                                  __init()__ of Segmemt.py      188 in the same __init()__. The former value concerns fixation, while the latter, 
-                                                  at line 225                   head distance related to pupil data. The reassigned attribute value is passed to a 
-                                                                                Scene object, where it is used for computation of the mean head distance in line 447 
-                                                                                of Scene.py, affecting the computed mean head distance.                                                                                  
+2.  08 May 2017                                   second value assignment to      The attribute is actually reassigned the value, len(distances), in that line,
+                                                  the numdistances attibute in    overwriting the previously assigned value, len(valid_distance_data), in line
+                                                  __init()__ of Segmemt.py        188 in the same __init()__. The former value concerns fixation, while the latter, 
+                                                  at line 225                     head distance related to pupil data. The reassigned attribute value is passed to a 
+                                                                                  Scene object, where it is used for computation of the mean head distance in line 447 
+                                                                                  of Scene.py, affecting the computed mean head distance.                                   
+
+
+Notes:
+1) Date of Resolution refers to the time when the effectiveness of applied fix was
+   confimred by EMDAT_teting available at https://github.com/dtoker/EMDAT_testing;
+2) The line numbers in the Petinent Part of Code refer to those at the time of
+   detection of the bug.      
