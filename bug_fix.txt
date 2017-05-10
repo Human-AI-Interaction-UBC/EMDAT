@@ -6,7 +6,7 @@ Record of Bugs Found so far during the Second Phase of the EMDAT_testing Project
                                                   EMDAT_core\geometry.py          and that for horizntal eye movement were placed under the wrong condition,   
                                                   lines: 39-42                    swapping the values.
 
-2.  08 May 2017                                   second value assignment to      The attribute is actually reassigned the value, len(distances), in that line,
+2.  08 May 2017           10 May 2017             second value assignment to      The attribute is actually reassigned the value, len(distances), in that line,
                                                   the numdistances attibute in    overwriting the previously assigned value, len(valid_distance_data), in line
                                                   __init()__ of Segmemt.py        188 in the same __init()__. The former value concerns fixation, while the latter, 
                                                   at line 225                     head distance related to pupil data. The reassigned attribute value is passed to a 
