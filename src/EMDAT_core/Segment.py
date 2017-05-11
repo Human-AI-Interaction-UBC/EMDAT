@@ -578,6 +578,8 @@ class Segment():
 
         Relative angle for each saccade is the angle between that saccade and the previous saccade.
 
+        Defined as: angle = acos(v1•v2)  such that v1 and v2 are normalized vectors
+
         Args:
             fixdata: a list of "Fixation"s
 
@@ -593,9 +595,12 @@ class Segment():
             y = fixdata[i].mappedfixationpointy
             nextx = fixdata[i+1].mappedfixationpointx
             nexty = fixdata[i+1].mappedfixationpointy
-            (dist, theta) = geometry.vector_difference((x,y), (lastx, lasty))
-            (dist, nextheta) = geometry.vector_difference((x,y), (nextx, nexty))
-            theta = abs(theta-nextheta)
+            v1 = (lastx-x, lasty-y)
+            v2 = (nextx-x, nexty-y)
+            normv1 = v1 / sqrt(geometry.simpledotproduct(v1, v1))
+            normv2 = v2 / sqrt(geometry.simpledotproduct(v2, v2))
+            dotproduct = geometry.simpledotproduct(normv1, normv2)
+            theta = acos(dotproduct)
             rel_angles.append(theta)
             lastx=x
             lasty=y

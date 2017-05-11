@@ -3,7 +3,7 @@ UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
 
 Basic geometrical helper functions.
 
-Authors: Nicholas FitzGerald (creator), Daria Bondareva, Sebastien Lalle. 
+Authors: Nicholas FitzGerald (creator), Daria Bondareva, Sebastien Lalle.
 Institution: The University of British Columbia.
 """
 
@@ -30,7 +30,7 @@ def vector_difference(point1, point2):
 
     if distance == 0:
         return 0,0
-    
+
     (dx, dy) = (x2-x1, y2-y1)
 
     signx = dx > 0
@@ -56,7 +56,7 @@ def vector_difference(point1, point2):
 
 def vector2coords(mag, angle):
     return (mag*math.cos(angle), mag*math.sin(angle))
-   
+
 def random_angle():
     return random.uniform(-math.pi, math.pi)
 
@@ -76,3 +76,6 @@ def add_random_scatter(target, mag):
 
 def rads2degrees(angle):
     return angle*180/math.pi
+
+def simpledotproduct((x1,y1), (x2,y2)):
+    return (x1*x2 + y1*y2)
