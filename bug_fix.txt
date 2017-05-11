@@ -6,16 +6,23 @@ Record of Bugs Found so far during the Second Phase of the EMDAT_testing Project
                                                   EMDAT_core\geometry.py          and that for horizntal eye movement were placed under the wrong condition,   
                                                   lines: 39-42                    swapping the values.
 
-2.  08 May 2017           10 May 2017             second value assignment to      The attribute is actually reassigned the value, len(distances), in that line,
+2.  08 May 2017           10 May 2017             second value assignment to      The attribute was actually reassigned the value, len(distances), in that line,
                                                   the numdistances attibute in    overwriting the previously assigned value, len(valid_distance_data), in line
                                                   __init()__ of Segmemt.py        188 in the same __init()__. The former value concerns fixation, while the latter, 
-                                                  at line 225                     head distance related to pupil data. The reassigned attribute value is passed to a 
-                                                                                  Scene object, where it is used for computation of the mean head distance in line 447 
-                                                                                  of Scene.py, affecting the computed mean head distance.                                   
+                                                  at line 225                     head distance related to pupil data. The reassigned attribute value was passed to a 
+                                                                                  Scene object, where it was used for computation of the mean head distance in line 447 
+                                                                                  of Scene.py, affecting the computed mean head distance. A diffent variable was created
+                                                                                  for demarcation.                                    
 
+3.  10 May 2017           11 May 2017             calc_rel_angles in Segment.py   Due to the sign convention and range of vector_difference, which is defined in 
+                                                                                  geometry.py and was invoked in calc_rel_angles (prior to the fix), computed realtive 
+                                                                                  differences were not always internal angles. calc_rel_angles was redifined.  
 
+4.  11 May 2017           11 May 2017             calc_distances,                 Not strictly a bug in that it had no adverse effect on the function of application.   
+                                                  calc_abs_angles, and            However, those methods were never used anywhere in the code, so that they were    
+                                                  calc_rel_angles in Scene.py     removed. 
+                                                                                                    
 Notes:
 1) Date of Resolution refers to the time when the effectiveness of applied fix was
-   confimred by EMDAT_teting available at https://github.com/dtoker/EMDAT_testing;
-2) The line numbers in the Petinent Part of Code refer to those at the time of
-   detection of the bug.      
+   ,if possible, confimred by EMDAT_teting available at https://github.com/dtoker/EMDAT_testing;
+2) The line numbers mentioned refer to those at the time of detection of the bug.      
