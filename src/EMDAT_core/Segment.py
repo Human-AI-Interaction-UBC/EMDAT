@@ -578,7 +578,7 @@ class Segment():
 
         Relative angle for each saccade is the angle between that saccade and the previous saccade.
 
-        Defined as: angle = acos(v1•v2)  such that v1 and v2 are normalized vectors
+        Defined as: angle = acos(v1 dot v2)  such that v1 and v2 are normalized vector2coord
 
         Args:
             fixdata: a list of "Fixation"s
