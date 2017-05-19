@@ -3,7 +3,7 @@ UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
 
 Module that contains all global parameters. Values of parameters are specific to the project.
 
-@author: Samad Kardan (creator), Sebastien Lalle
+@author: Samad Kardan (creator), Sebastien Lalle, Dereck Toker
 Institution: The University of British Columbia.
 """
 
@@ -11,18 +11,22 @@ Institution: The University of British Columbia.
 # ####################### Eye tracker type and path ##############################################################
 
 # the folder that has the files exported from eye trackers
-EYELOGDATAFOLDER = "./sampledata"
+EYELOGDATAFOLDER = "./gazepoint_data"
 
 # the folder that has the external log files
 EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
 
 # the eye tracker and/or software used to collect and export the data
 #EYETRACKERTYPE = "TobiiV2" #Tobii Studio version 1x and 2x
-EYETRACKERTYPE = "TobiiV3" #Tobii Studio version 3x
+#EYETRACKERTYPE = "TobiiV3" #Tobii Studio version 3x
 #EYETRACKERTYPE = "SMI" # SMI/BeGaze
+EYETRACKERTYPE = "Gazepoint" #Gazepoint eye tracker
 
 
 # ####################### Eye tracker specific parameters ##############################################################
+
+
+# DO THIS after
 
 # number of extra lines at the beginning of the files exported from Tobii
 # this is specific to study and is based on the number of variables defined in Tobii studio for the experiment
@@ -39,6 +43,9 @@ EVENTSHEADERLINES = 27
 
 # number of lines at the beginning of the external log files before the actual data
 ACTIONHEADERLINES = 0
+
+
+
 
 # ### SMI-specific parameters
 # the line number of the first data row in Events file
@@ -76,50 +83,50 @@ featurelist = ['numsegments','length','numsamples','numfixations','fixationrate'
 			   'sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
 
 # Pupil features to generate and export
-featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize',
-               'meanpupilvelocity', 'stddevpupilvelocity', 'maxpupilvelocity', 'minpupilvelocity'])
+#featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize',
+               #'meanpupilvelocity', 'stddevpupilvelocity', 'maxpupilvelocity', 'minpupilvelocity'])
 
 # Head distance features to generate and export
-featurelist.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
+#featurelist.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
 
 # Saccade features to generate and export
-featurelist.extend(['numsaccades', 'sumsaccadedistance', 'meansaccadedistance', 'stddevsaccadedistance', 'longestsaccadedistance',
-               'sumsaccadeduration','meansaccadeduration', 'stddevsaccadeduration', 'longestsaccadeduration',
-               'meansaccadespeed', 'stddevsaccadespeed','minsaccadespeed', 'maxsaccadespeed',
-			   'fixationsaccadetimeratio'])
+#featurelist.extend(['numsaccades', 'sumsaccadedistance', 'meansaccadedistance', 'stddevsaccadedistance', 'longestsaccadedistance',
+#               'sumsaccadeduration','meansaccadeduration', 'stddevsaccadeduration', 'longestsaccadeduration',
+#               'meansaccadespeed', 'stddevsaccadespeed','minsaccadespeed', 'maxsaccadespeed',
+	#		   'fixationsaccadetimeratio'])
 
 # Events features to generate and export
-featurelist.extend(['numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'numkeypressed', 'leftclicrate', 'rightclicrate', 'doubleclicrate', 'keypressedrate',
-               'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic', 'timetofirstkeypressed'])
+#featurelist.extend(['numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'numkeypressed', 'leftclicrate', 'rightclicrate', #'doubleclicrate', 'keypressedrate',
+               #'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic', 'timetofirstkeypressed'])
 
 # Generate AOI-sequence
-aoisequencefeat = ['aoisequence']
+#aoisequencefeat = ['aoisequence']
 
 # AOI features to generate and export
-aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum',
-                  'proportiontime','longestfixation', 'meanfixationduration', 'stddevfixationduration', 'timetofirstfixation','timetolastfixation',
-				  'numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'leftclicrate', 'rightclicrate', 'doubleclicrate',
-                  'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic']
+#aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum',
+#                  'proportiontime','longestfixation', 'meanfixationduration', 'stddevfixationduration', 'timetofirstfixation','timetolastfixation',
+	#			  'numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'leftclicrate', 'rightclicrate', 'doubleclicrate',
+    #              'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic']
 
 #list of the AOI names
-aoinames = ['Top','Bottom','Graph','Toolbar']
+#aoinames = ['Top','Bottom','Graph','Toolbar']
 
 #list of transition-based AOI features (count)
-aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames)
+#aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames)
 #aoitransto = map(lambda x:'numtransto_'+x, aoinames)
 
 #list of transition-based AOI features (proportion)
-aoiproportion = map(lambda x:'proptransfrom_'+x, aoinames)
+#aoiproportion = map(lambda x:'proptransfrom_'+x, aoinames)
 #aoitransto = map(lambda x:'proptransto_'+x, aoinames)
 
 
 # Generating a list of all AOI-based features (including transitions)
-aoifeaturelist =[]
-for aoin in aoinames:
-    aoifeaturelist.extend(map(lambda x:aoin+'_'+x, aoigeneralfeat))
-    aoifeaturelist.extend(map(lambda x:aoin+'_'+x, aoitransfrom))
-    #aoifeaturelist.extend(map(lambda x:aoin+x, aoitransto))
-    aoifeaturelist.extend(map(lambda x:aoin+'_'+x, aoiproportion))
+#aoifeaturelist =[]
+#for aoin in aoinames:
+#    aoifeaturelist.extend(map(lambda x:aoin+'_'+x, aoigeneralfeat))
+#    aoifeaturelist.extend(map(lambda x:aoin+'_'+x, aoitransfrom))
+#    #aoifeaturelist.extend(map(lambda x:aoin+x, aoitransto))
+#    aoifeaturelist.extend(map(lambda x:aoin+'_'+x, aoiproportion))
 
 
 # ####################### Data processing, restoration and validation ##############################################################
@@ -169,7 +176,7 @@ INCLUDE_HALF_FIXATIONS = False
 
 #Pupil adjustment to minimize the pupil size differences among individual users, if Rest Pupil Size (RPS) is provided. Possible values:
 #PUPIL_ADJUSTMENT = None 		#no adjustment;
-PUPIL_ADJUSTMENT = "rpscenter"	#Rps-centering (substraction of the rps from the raw pupil size)
+#PUPIL_ADJUSTMENT = "rpscenter"	#Rps-centering (substraction of the rps from the raw pupil size)
 #PUPIL_ADJUSTMENT = "PCPS" 		#Normalization of pupil size based on the rsp following [Iqbal et al., 2005, doi>10.1145/1054972.1055016]
 
 
