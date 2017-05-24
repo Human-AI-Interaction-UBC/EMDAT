@@ -602,6 +602,10 @@ class Segment():
             normv1 = ((lastx-x) / v1_dot, (lasty-y) / v1_dot)
             normv2 = ((nextx-x) / v2_dot, (nexty-y) / v2_dot)
             dotproduct = geometry.simpledotproduct(normv1, normv2)
+            if dotproduct < -1:
+                dotproduct = -1.0
+            if dotproduct > 1:
+                dotproduct = 1.0
             theta = math.acos(dotproduct)
             rel_angles.append(theta)
             lastx=x
