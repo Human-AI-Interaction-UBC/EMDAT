@@ -30,16 +30,16 @@ EYETRACKERTYPE = "Gazepoint" #Gazepoint eye tracker
 
 # number of extra lines at the beginning of the files exported from Tobii
 # this is specific to study and is based on the number of variables defined in Tobii studio for the experiment
-NUMBEROFEXTRAHEADERLINES = 8
+NUMBEROFEXTRAHEADERLINES = 0
 
 # number of lines at the beginning of the 'Fixation-Data' files exported from Tobii before the actual data
-FIXATIONHEADERLINES = 19
+FIXATIONHEADERLINES = 0
 
 # number of lines at the beginning of the 'All-Data' files exported from Tobii before the actual data
-ALLDATAHEADERLINES = 26
+ALLDATAHEADERLINES = 0
 
 # number of lines at the beginning of the 'Event-Data' files exported from Tobii before the actual data
-EVENTSHEADERLINES = 27
+EVENTSHEADERLINES = 0
 
 # number of lines at the beginning of the external log files before the actual data
 ACTIONHEADERLINES = 0
@@ -66,6 +66,10 @@ RAW_HEADER_LINE = 1
 #L or R for using left/right eye event when averaging both eyes measures is not possible
 MONOCULAR_EYE = "L"
 
+
+#Gazepoint-specific parameters
+SCREEN_WIDTH = 1920
+SCREEN_HEIGHT = 1080
 
 
 # ####################### Features generation ##############################################################

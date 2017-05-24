@@ -27,8 +27,8 @@ class GazepointRecording(Recording):
         """
         all_data = []
         with open(all_file, 'r') as f:
-            for _ in xrange(params.ALLDATAHEADERLINES + params.NUMBEROFEXTRAHEADERLINES - 1):
-                next(f)
+            # for _ in xrange(params.ALLDATAHEADERLINES + params.NUMBEROFEXTRAHEADERLINES - 1):
+            #     next(f)
             reader = csv.DictReader(f, delimiter=",")
             last_pupil_left = -1
             last_pupil_right = -1
@@ -41,7 +41,7 @@ class GazepointRecording(Recording):
                 #pupil_right = cast_float(row["PupilRight"], -1)
                 #distance_left = cast_float(row["DistanceLeft"], -1)
                 #distance_right = cast_float(row["DistanceRight"], -1)
-                timestamp = cast_int(row["TIME"]*1000)
+                timestamp = cast_int(cast_float(row["TIME"])*1000)
                 data = {"timestamp": timestamp,
                         #"pupilsize": get_pupil_size(pupil_left, pupil_right),
                         #"pupilvelocity": get_pupil_velocity(last_pupil_left, last_pupil_right, pupil_left, pupil_right, (timestamp-last_time) ),
@@ -68,15 +68,15 @@ class GazepointRecording(Recording):
 
         all_fixation = []
         with open(fixation_file, 'r') as f:
-            for _ in xrange(params.FIXATIONHEADERLINES - 1):
-                next(f)
+            # for _ in xrange(params.FIXATIONHEADERLINES - 1):
+            #     next(f)
             reader = csv.DictReader(f, delimiter=',')
             for row in reader:
                 data = {"fixationindex": cast_int(row["FPOGID"]),
-                        "timestamp": cast_int(row["TIME"]*1000),
-                        "fixationduration": cast_int(row["FPOGD"]*1000),
-                        "fixationpointx": cast_int(row["FPOGX"]),
-                        "fixationpointy": cast_int(row["FPOGY"])}
+                        "timestamp": cast_int(cast_float(row["TIME"])*1000),
+                        "fixationduration": cast_int(cast_float(row["FPOGD"])*1000),
+                        "fixationpointx": cast_int(cast_float(row["FPOGX"]) * params.SCREEN_WIDTH),
+                        "fixationpointy": cast_int(cast_float(row["FPOGY"]) * params.SCREEN_HEIGHT)}
                 all_fixation.append(Fixation(data, self.media_offset))
 
         return all_fixation
