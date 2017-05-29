@@ -21,8 +21,12 @@ Record of Bugs Found so far during the Second Phase of the EMDAT_testing Project
 4.  11 May 2017           11 May 2017             calc_distances,                 Not strictly a bug in that it had no adverse effect on the function of application.   
                                                   calc_abs_angles, and            However, those methods were never used anywhere in the code, so that they were    
                                                   calc_rel_angles in Scene.py     removed. 
-                                                                                                    
+
+5.  24 May 2017           24 May 2017             calc_rel_angles in Segment.py	  At least for one scene, apparently due to float accuracy, a dot product of normalized  
+                                                                                  last and next vectors exceeded the lower bound of -1, inducing error in the subsequent
+                                                                                  computation of arccosine that uses the value. The fix was to use if statements for cases 
+                                                                                  where a dot product vlaue in float falls outside of the domain of arc cosine.     																				  
 Notes:
 1) Date of Resolution refers to the time when the effectiveness of applied fix was
    ,if possible, confimred by EMDAT_teting available at https://github.com/dtoker/EMDAT_testing;
-2) The line numbers mentioned refer to those at the time of detection of the bug.      
+2) The line numbers mentioned refer to those at the time of detection of the bug.  
