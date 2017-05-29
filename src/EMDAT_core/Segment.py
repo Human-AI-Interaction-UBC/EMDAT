@@ -598,17 +598,21 @@ class Segment():
             nexty = fixdata[i+1].mappedfixationpointy
             v1 = (lastx-x, lasty-y)
             v2 = (nextx-x, nexty-y)
-            v1_dot = math.sqrt(geometry.simpledotproduct(v1, v1))
-            v2_dot = math.sqrt(geometry.simpledotproduct(v2, v2))
-            normv1 = ((lastx-x) / v1_dot, (lasty-y) / v1_dot)
-            normv2 = ((nextx-x) / v2_dot, (nexty-y) / v2_dot)
-            dotproduct = geometry.simpledotproduct(normv1, normv2)
-            if dotproduct < -1:
-                dotproduct = -1.0
-            if dotproduct > 1:
-                dotproduct = 1.0
-            theta = math.acos(dotproduct)
-            rel_angles.append(theta)
+
+            if v1 != (0.0, 0.0) and v2 != (0.0, 0.0):
+                v1_dot = math.sqrt(geometry.simpledotproduct(v1, v1))
+                v2_dot = math.sqrt(geometry.simpledotproduct(v2, v2))
+                normv1 = ((lastx-x) / v1_dot, (lasty-y) / v1_dot)
+                normv2 = ((nextx-x) / v2_dot, (nexty-y) / v2_dot)
+                dotproduct = geometry.simpledotproduct(normv1, normv2)
+                if dotproduct < -1:
+                    dotproduct = -1.0
+                if dotproduct > 1:
+                    dotproduct = 1.0
+                theta = math.acos(dotproduct)
+                rel_angles.append(theta)
+            else:
+                rel_angles.append(0.0)
             lastx=x
             lasty=y
 
