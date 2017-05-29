@@ -254,7 +254,7 @@ class Segment():
         """ end fixations, angles, path """
 
         """ calculate saccades features if available """
-        if saccade_data != None:
+        if saccade_data != None and len(saccade_data) > 0:
             self.numsaccades = len(saccade_data)
             self.features['numsaccades'] = self.numsaccades
             self.features['sumsaccadedistance'] = sum(map(lambda x: float(x.saccadedistance), saccade_data))
@@ -271,6 +271,7 @@ class Segment():
             self.features['minsaccadespeed'] = min(map(lambda x: float(x.saccadespeed), saccade_data))
             self.features['fixationsaccadetimeratio'] = float(self.features['sumfixationduration']) / self.features['sumsaccadeduration']
         else:
+            self.numsaccades = 0
             self.features['numsaccades'] = 0
             self.features['sumsaccadedistance'] = -1
             self.features['meansaccadedistance'] = -1
