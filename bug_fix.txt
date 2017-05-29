@@ -27,14 +27,14 @@ Record of Bugs Found so far during the Second Phase of the EMDAT_testing Project
                                                                                   computation of arccosine that uses the value. The fix was to use if statements for cases 
                                                                                   where a dot product vlaue in float falls outside of the domain of arc cosine.
 
-6.  25 May 2017 		  26 May 2017             computation coede for saccade   Due to an apparent syntax error (saccade_data != None, which is still true when  
+6.  25 May 2017 	  26 May 2017             computation coede for saccade   Due to an apparent syntax error (saccade_data != None, which is still true when  
                                                   features in the constructor     saccade_data = []) in an if-statement, an empty list was passed to build-in max   
-												  of Segment.py					  min funcitons, resulting in an error. An additonal clauee len(saccade_data) > 0 was
+						  of Segment.py		          min funcitons, resulting in an error. An additonal clauee len(saccade_data) > 0 was
                                                                                   implemented. Another change required for the fix is value assignment to      
-												                                  the numsaccade attribute in the else clause, which was originally missing.
+										  the numsaccade attribute in the else clause, which was originally missing.
 
 7.  25 May 2017           29 May 2017             calc_rel_angles in Segment.py   The vectors passed to arc cos in the method are first normalized by dividing with the square                    
-																				  root of the dot product of each vecor with itself, so that a zero vecor resulted in a division
+										  root of the dot product of each vecor with itself, so that a zero vecor resulted in a division
                                                                                   by zero. It is stipulated that if one or both vectors are zero, the relative angle is zero.
 
 																				  
