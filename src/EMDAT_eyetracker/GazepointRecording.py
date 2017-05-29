@@ -48,7 +48,7 @@ class GazepointRecording(Recording):
                         #"distance": get_distance(distance_left, distance_right),
                         "is_valid": cast_int(row["FPOGV"]),
                         "fixationindex": cast_int(row["FPOGID"]),
-                        "gazepointxleft": cast_float(row["FPOGX"])}
+                        "gazepointxleft": cast_float(cast_float(row["FPOGX"]) * params.SCREEN_WIDTH)}
                 all_data.append(Datapoint(data))
                 last_pupil_left = None
                 last_pupil_right = None

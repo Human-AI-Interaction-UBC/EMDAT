@@ -191,6 +191,6 @@ INCLUDE_HALF_FIXATIONS = False
 DEBUG = False
 
 #Verbosity level
-#VERBOSE = "QUIET"		#prints nothing except errors and warnings
-VERBOSE = "NORMAL"		#prints essential information
+VERBOSE = "QUIET"		#prints nothing except errors and warnings
+#VERBOSE = "NORMAL"		#prints essential information
 #VERBOSE = "VERBOSE"	#prints information useful for debugging

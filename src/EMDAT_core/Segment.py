@@ -131,7 +131,7 @@ class Segment():
         #pupilsizes = map(lambda x: x.pupilsize, all_data)
         #get all datapoints where pupil size is available
         valid_pupil_data = filter(lambda x: x.pupilsize > 0, all_data)
-        valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, all_data)
+        valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1 and x.pupilvelocity != None, all_data)
 
         #number of valid pupil sizes
         self.features['meanpupilsize'] = -1
@@ -254,7 +254,7 @@ class Segment():
         """ end fixations, angles, path """
 
         """ calculate saccades features if available """
-        if saccade_data != None:
+        if saccade_data != None and len(saccade_data) > 0:
             self.numsaccades = len(saccade_data)
             self.features['numsaccades'] = self.numsaccades
             self.features['sumsaccadedistance'] = sum(map(lambda x: float(x.saccadedistance), saccade_data))
@@ -271,6 +271,7 @@ class Segment():
             self.features['minsaccadespeed'] = min(map(lambda x: float(x.saccadespeed), saccade_data))
             self.features['fixationsaccadetimeratio'] = float(self.features['sumfixationduration']) / self.features['sumsaccadeduration']
         else:
+            self.numsaccades = 0
             self.features['numsaccades'] = 0
             self.features['sumsaccadedistance'] = -1
             self.features['meansaccadedistance'] = -1
@@ -312,7 +313,7 @@ class Segment():
             self.features['numdoubleclic'] = 0
             self.features['numkeypressed'] = 0
             self.features['leftclicrate'] = -1
-            self.features['rightclicrate'] -1
+            self.features['rightclicrate'] = -1
             self.features['doubleclicrate'] = -1
             self.features['keypressedrate'] = -1
             self.features['timetofirstleftclic'] = -1
@@ -602,6 +603,10 @@ class Segment():
             normv1 = ((lastx-x) / v1_dot, (lasty-y) / v1_dot)
             normv2 = ((nextx-x) / v2_dot, (nexty-y) / v2_dot)
             dotproduct = geometry.simpledotproduct(normv1, normv2)
+            if dotproduct < -1:
+                dotproduct = -1.0
+            if dotproduct > 1:
+                dotproduct = 1.0
             theta = math.acos(dotproduct)
             rel_angles.append(theta)
             lastx=x
