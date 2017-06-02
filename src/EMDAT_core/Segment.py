@@ -80,10 +80,12 @@ class Segment():
             a Segment object
         """
         self.segid = segid
-        #self.all_data = all_data
-        #self.fixation_data = fixation_data
-        #self.saccade_data = saccade_data
-        #self.event_data = event_data
+        # for internal data
+        # self.all_data = all_data
+        # self.fixation_data = fixation_data
+        # self.saccade_data = saccade_data
+        # self.event_data = event_data
+
         self.features = {}
         self.completion_time = all_data[-1].timestamp - all_data[0].timestamp
         if self.completion_time == 0:
@@ -254,7 +256,7 @@ class Segment():
         """ end fixations, angles, path """
 
         """ calculate saccades features if available """
-        if saccade_data != None:
+        if saccade_data != None and len(saccade_data) > 0:
             self.numsaccades = len(saccade_data)
             self.features['numsaccades'] = self.numsaccades
             self.features['sumsaccadedistance'] = sum(map(lambda x: float(x.saccadedistance), saccade_data))
@@ -271,6 +273,7 @@ class Segment():
             self.features['minsaccadespeed'] = min(map(lambda x: float(x.saccadespeed), saccade_data))
             self.features['fixationsaccadetimeratio'] = float(self.features['sumfixationduration']) / self.features['sumsaccadeduration']
         else:
+            self.numsaccades = 0
             self.features['numsaccades'] = 0
             self.features['sumsaccadedistance'] = -1
             self.features['meansaccadedistance'] = -1
@@ -597,19 +600,23 @@ class Segment():
             nexty = fixdata[i+1].mappedfixationpointy
             v1 = (lastx-x, lasty-y)
             v2 = (nextx-x, nexty-y)
-            v1_dot = math.sqrt(geometry.simpledotproduct(v1, v1))
-            v2_dot = math.sqrt(geometry.simpledotproduct(v2, v2))
-            normv1 = ((lastx-x) / v1_dot, (lasty-y) / v1_dot)
-            normv2 = ((nextx-x) / v2_dot, (nexty-y) / v2_dot)
-            dotproduct = geometry.simpledotproduct(normv1, normv2)
-            if dotproduct < -1:
-                dotproduct = -1.0
-            if dotproduct > 1:
-                dotproduct = 1.0
-            theta = math.acos(dotproduct)
-            rel_angles.append(theta)
-            lastx=x
-            lasty=y
+
+            if v1 != (0.0, 0.0) and v2 != (0.0, 0.0):
+                v1_dot = math.sqrt(geometry.simpledotproduct(v1, v1))
+                v2_dot = math.sqrt(geometry.simpledotproduct(v2, v2))
+                normv1 = ((lastx-x) / v1_dot, (lasty-y) / v1_dot)
+                normv2 = ((nextx-x) / v2_dot, (nexty-y) / v2_dot)
+                dotproduct = geometry.simpledotproduct(normv1, normv2)
+                if dotproduct < -1:
+                    dotproduct = -1.0
+                if dotproduct > 1:
+                    dotproduct = 1.0
+                theta = math.acos(dotproduct)
+                rel_angles.append(theta)
+            else:
+                rel_angles.append(0.0)
+            lastx = x
+            lasty = y
 
         return rel_angles
 

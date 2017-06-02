@@ -191,7 +191,7 @@ def read_participants_Basic(datadir, user_list, pids, prune_length = None, aoifi
             fixfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
             sacfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
             evefile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
-            segfile = "{dir}/TobiiV3_sample_{rec}.seg".format(dir=datadir, rec=rec)
+            segfile = "{dir}/P{rec}.seg".format(dir=datadir, rec=rec)
         elif params.EYETRACKERTYPE == "SMI":
             allfile = "{dir}/SMI_Sample_{rec}_Samples.txt".format(dir=datadir, rec=rec)
             fixfile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
