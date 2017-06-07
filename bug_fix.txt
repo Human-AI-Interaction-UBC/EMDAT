@@ -37,7 +37,10 @@ Record of Bugs Found so far during the Second Phase of the EMDAT_testing Project
 										  root of the dot product of each vecor with itself, so that a zero vecor resulted in a division
                                                                                   by zero. It is stipulated that if one or both vectors are zero, the relative angle is zero.
 
-																				  
+8.  2 June 2017           7 June 2017             merge_aoistats in Scene.py      There were extraneous entries in the feature name row and _allsc rows in the exproted features file, 
+                                                                                  causing misalignment of names and their values. The cause was misuse of the built-in lstrip in the      
+										  function in question. An alternative method of taking a substring was applied.   
+  										  
 Notes:
 1) Date of Resolution refers to the time when the effectiveness of applied fix was
    ,if possible, confimred by EMDAT_teting available at https://github.com/dtoker/EMDAT_testing;
