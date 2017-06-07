@@ -1,4 +1,4 @@
-Record of Bugs Found so far during the Second Phase of the EMDAT_testing Project  
+Record of Bugs Found so far during the Second and AOI Phases of the EMDAT_testing Project  
 
     Date of Detection     Date of Resolution      Pertinent Part of Code          Description
 
