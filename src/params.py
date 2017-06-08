@@ -67,8 +67,7 @@ MONOCULAR_EYE = "L"
 # (0,0) if the interface was in full screen (default value).
 MEDIA_OFFSET = (0, 0)
 
-
-#Overall gaze features to generate and export 
+#Overall gaze features to generate and export
 featurelist = ['numsegments','length','numsamples','numfixations','fixationrate','meanabspathangles',
                'meanfixationduration','meanpathdistance','meanrelpathangles','stddevabspathangles',
                'stddevfixationduration','stddevpathdistance','stddevrelpathangles',

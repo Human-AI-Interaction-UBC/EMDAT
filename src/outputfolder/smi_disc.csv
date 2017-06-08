@@ -1,2 +1,3 @@
 pid,is_valid,valid_duration,total_duration,valid_portion
-107a,True,752471,752471,1.0
+101a,True,912206,912206,1.0
+101b,True,602342,602342,1.0

@@ -682,13 +682,13 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
         maois_transition_aois = filter(lambda x: x.startswith(('numtransto_','numtransfrom_')),maois.features.keys()) #all the transition features for this AOI should be aupdated even if they are not active for this segment
         for feat in maois_transition_aois:
             if feat.startswith('numtransto_'):
-                aid = feat.lstrip('numtransto_')
+                aid = feat[len('numtransto_'):]
                 if maois.total_tans_to > 0:
                     maois.features['proptransto_%s'%(aid)] = float(maois.features[feat]) / maois.total_tans_to
                 else:
                     maois.features['proptransto_%s'%(aid)] = 0
             else:
-                aid = feat.lstrip('numtransfrom_')
+                aid = feat[len('numtransfrom_'):]
                 if maois.total_tans_from > 0:
 
                     maois.features['proptransfrom_%s'%(aid)] = float(maois.features[feat]) / maois.total_tans_from

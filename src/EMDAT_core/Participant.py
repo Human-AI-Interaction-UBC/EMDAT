@@ -11,6 +11,7 @@ Institution: The University of British Columbia.
 
 import string
 import params
+from sets import Set
 from data_structures import *
 from Scene import Scene
 from Recording import *
@@ -179,7 +180,7 @@ class Participant():
             fixationrate    length    meanabspathangles
             0.00268522882294    1529851    1.60354714212
         """
-        featnames, data  = self.export_features(featurelist, aoifeaturelist = aoifeaturelist, 
+        featnames, data = self.export_features(featurelist, aoifeaturelist = aoifeaturelist,
                                                 id_prefix = id_prefix, require_valid = require_valid)
 
         ret = string.join(featnames, '\t') + '\n'
@@ -357,7 +358,6 @@ def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist
     fnames, fvals = export_features_all(participants, featurelist =  featurelist, 
                                         aoifeaturelabels = aoifeaturelabels,
                                         aoifeaturelist = aoifeaturelist, id_prefix=id_prefix)
-    
     with open(outfile, 'w') as f:
         f.write(string.join(fnames, '\t') + '\n')
         for l in fvals:

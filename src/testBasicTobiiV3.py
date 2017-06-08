@@ -12,13 +12,13 @@ from BasicParticipant import *
 from EMDAT_core.Participant import export_features_all, write_features_tsv
 from EMDAT_core.ValidityProcessing import output_Validity_info_Segments, output_percent_discarded, output_Validity_info_Participants
 
-ul = ["101a", "101b"]
-# for i in range(101, 143):
-#     ul.append(str(i) + "a")
-#     ul.append(str(i) + "b")
-# for i in range(144, 163):
-#     ul.append(str(i) + "a")
-#     ul.append(str(i) + "b")
+ul = []
+for i in range(101, 143):
+    ul.append(str(i) + "a")
+    ul.append(str(i) + "b")
+for i in range(144, 163):
+    ul.append(str(i) + "a")
+    ul.append(str(i) + "b")
 uids = ul
 alogoffset = [0]*len(ul)
 
@@ -27,7 +27,6 @@ aoifile_name = "single_aoi.aoi"
 # Read participants
 ps = read_participants_Basic(user_list=ul, pids=uids, log_time_offsets=alogoffset, datadir=params.EYELOGDATAFOLDER, aoifile= aoifile_name,
                              prune_length=None, require_valid_segs=False, auto_partition_low_quality_segments=False)
-			
 
 if params.DEBUG or params.VERBOSE == "VERBOSE":
     # explore_validation_threshold_segments(ps, auto_partition_low_quality_segments = False)
