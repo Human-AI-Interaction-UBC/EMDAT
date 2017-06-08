@@ -661,39 +661,27 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
                 maois.features['timetofirstdoubleclic'] = min(maois.features['timetofirstdoubleclic'], deepcopy(new_AOI_Stat.features['timetofirstdoubleclic']) + new_AOI_Stat.starttime - sc_start)
 
         #calculating the transitions to and from this AOI and other active AOIs at the moment
-        new_AOI_Stat_transition_aois = filter(lambda x: x.startswith(('numtransto_','numtransfrom_')), new_AOI_Stat.features.keys())
+        new_AOI_Stat_transition_aois = filter(lambda x: x.startswith('numtransfrom_'), new_AOI_Stat.features.keys())
         if params.DEBUG or params.VERBOSE == "VERBOSE":
             print "Segment's transition_aois", new_AOI_Stat_transition_aois
 
-        maois.total_tans_to += new_AOI_Stat.total_tans_to       #updating the total number of transition to this AOI
-        maois.total_tans_from += new_AOI_Stat.total_tans_from   #updating the total number of transition from this AOI
+        maois.total_trans_from += new_AOI_Stat.total_trans_from   #updating the total number of transition from this AOI
         for feat in new_AOI_Stat_transition_aois:
             if feat in maois.features:
                 maois.features[feat] += new_AOI_Stat.features[feat]
             else:
                 maois.features[feat] = new_AOI_Stat.features[feat]
-#            if feat.startswith('numtransto_'):
-#                sumtransto += maois.features[feat]
-#            else:
-#                sumtransfrom += maois.features[feat]
+#               sumtransfrom += maois.features[feat]
 
 
         # updating the proportion tansition features based on new transitions to and from this AOI
-        maois_transition_aois = filter(lambda x: x.startswith(('numtransto_','numtransfrom_')),maois.features.keys()) #all the transition features for this AOI should be aupdated even if they are not active for this segment
+        maois_transition_aois = filter(lambda x: x.startswith('numtransfrom_'),maois.features.keys()) #all the transition features for this AOI should be aupdated even if they are not active for this segment
         for feat in maois_transition_aois:
-            if feat.startswith('numtransto_'):
-                aid = feat[len('numtransto_'):]
-                if maois.total_tans_to > 0:
-                    maois.features['proptransto_%s'%(aid)] = float(maois.features[feat]) / maois.total_tans_to
-                else:
-                    maois.features['proptransto_%s'%(aid)] = 0
+            aid = feat[len('numtransfrom_'):]
+            if maois.total_trans_from > 0:
+                maois.features['proptransfrom_%s'%(aid)] = float(maois.features[feat]) / maois.total_trans_from
             else:
-                aid = feat[len('numtransfrom_'):]
-                if maois.total_tans_from > 0:
-
-                    maois.features['proptransfrom_%s'%(aid)] = float(maois.features[feat]) / maois.total_tans_from
-                else:
-                    maois.features['proptransfrom_%s'%(aid)] = 0
+                maois.features['proptransfrom_%s'%(aid)] = 0
         ###endof trnsition calculation
         return maois
 

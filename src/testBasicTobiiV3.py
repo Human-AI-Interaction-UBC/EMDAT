@@ -16,10 +16,15 @@ ul = [16,17,18]
 uids = ul
 alogoffset = [0,0,0]
 
+
+
 # Read participants
 ps = read_participants_Basic(user_list=ul, pids=uids, log_time_offsets=alogoffset, datadir=params.EYELOGDATAFOLDER,
-                             prune_length=None, require_valid_segs=False, auto_partition_low_quality_segments=False)
-			
+                             prune_length=None,
+                             #aoifile = "./sampledata/general.aoi",
+                             require_valid_segs=False,
+                             auto_partition_low_quality_segments=False)
+
 
 if params.DEBUG or params.VERBOSE == "VERBOSE":
     # explore_validation_threshold_segments(ps, auto_partition_low_quality_segments = False)

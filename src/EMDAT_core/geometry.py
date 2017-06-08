@@ -80,7 +80,7 @@ def rads2degrees(angle):
 def simpledotproduct((x1,y1), (x2,y2)):
     x1 = float(x1)
     x2 = float(x2)
-    x3 = float(x3)
-    x4 = float(x4)
+    y1 = float(y1)
+    y2 = float(y2)
 
     return x1*x2 + y1*y2
