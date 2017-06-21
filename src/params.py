@@ -11,10 +11,12 @@ Institution: The University of British Columbia.
 # ####################### Eye tracker type and path ##############################################################
 
 # the folder that has the files exported from eye trackers
-EYELOGDATAFOLDER = "./sampledata"
+EYELOGDATAFOLDER = "C:/git00/EMDAT_testing/Part1_TobiiV3Output_EMDATInternal/new_data"
+#EYELOGDATAFOLDER = "C:/git00/EMDAT_testing/Part1_TobiiV3Output_EMDATInternal/old_data"
 
 # the folder that has the external log files
-EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
+EXTERNALLOGDATAFOLDER = "C:/git00/EMDAT_testing/Part1_TobiiV3Output_EMDATInternal/new_data"
+#EXTERNALLOGDATAFOLDER = "C:/git00/EMDAT_testing/Part1_TobiiV3Output_EMDATInternal/old_data"
 
 # the eye tracker and/or software used to collect and export the data
 #EYETRACKERTYPE = "TobiiV2" #Tobii Studio version 1x and 2x
@@ -102,7 +104,10 @@ aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum'
                   'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic']
 
 #list of the AOI names
-aoinames = ['Top','Bottom','Graph','Toolbar']
+# aoinames = ['Top','Bottom','Graph','Toolbar']
+#aoinames = ['single']
+#aoinames = ['1', '2', '3', '4']
+aoinames = ['Question', 'Labels', 'Legend', 'High', 'Low', 'Input']
 
 #list of transition-based AOI features (count)
 aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames)
@@ -137,7 +142,7 @@ was looking at that same point during that period.
 VALIDITY_METHOD = 3
 
 # Validity Threshold for segments (the minimum proportion of valid samples for a Segment or Scene to be considered valid)
-VALID_PROP_THRESH = 0.8
+VALID_PROP_THRESH = 0.0
 
 #the maximum gap size (ms) allowable in samples for a Segment or Scene to be considered valid
 VALID_TIME_THRESH = 3000
@@ -165,8 +170,8 @@ MINSEGSIZE = 0
 INCLUDE_HALF_FIXATIONS = False
 
 #Pupil adjustment to minimize the pupil size differences among individual users, if Rest Pupil Size (RPS) is provided. Possible values:
-#PUPIL_ADJUSTMENT = None 		#no adjustment;
-PUPIL_ADJUSTMENT = "rpscenter"	#Rps-centering (substraction of the rps from the raw pupil size)
+PUPIL_ADJUSTMENT = None 		#no adjustment;
+#PUPIL_ADJUSTMENT = "rpscenter"	#Rps-centering (substraction of the rps from the raw pupil size)
 #PUPIL_ADJUSTMENT = "PCPS" 		#Normalization of pupil size based on the rsp following [Iqbal et al., 2005, doi>10.1145/1054972.1055016]
 
 
@@ -177,6 +182,6 @@ PUPIL_ADJUSTMENT = "rpscenter"	#Rps-centering (substraction of the rps from the 
 DEBUG = False
 
 #Verbosity level
-#VERBOSE = "QUIET"		#prints nothing except errors and warnings
-VERBOSE = "NORMAL"		#prints essential information
+VERBOSE = "QUIET"		#prints nothing except errors and warnings
+#VERBOSE = "NORMAL"		#prints essential information
 #VERBOSE = "VERBOSE"	#prints information useful for debugging

@@ -628,7 +628,7 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
         maois.features['longestfixation'] = max(maois.features['longestfixation'],new_AOI_Stat.features['longestfixation'])
         maois.features['totaltimespent'] += new_AOI_Stat.features['totaltimespent']
 
-        maois.features['meanfixationduration'] = maois.features['totaltimespent'] / maois.features['numfixations'] if maois.features['numfixations'] != 0 else -1
+        maois.features['meanfixationduration'] = maois.features['totaltimespent'] / float(maois.features['numfixations']) if maois.features['numfixations'] != 0 else -1
         maois.squaredsumfixationduration += new_AOI_Stat.squaredsumfixationduration
 
         maois.features['proportiontime'] = float(maois.features['totaltimespent'])/total_time
@@ -649,9 +649,9 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
             maois.features['numleftclic'] += new_AOI_Stat.features['numleftclic']
             maois.features['numrightclic'] += new_AOI_Stat.features['numrightclic']
             maois.features['numdoubleclic'] += new_AOI_Stat.features['numdoubleclic']
-            maois.features['leftclicrate'] += float(maois.features['numleftclic'])/total_time
-            maois.features['rightclicrate'] += float(maois.features['numrightclic'])/total_time
-            maois.features['doubleclicrate'] += float(maois.features['numdoubleclic'])/total_time
+            maois.features['leftclicrate'] = float(maois.features['numleftclic'])/total_time
+            maois.features['rightclicrate'] = float(maois.features['numrightclic'])/total_time
+            maois.features['doubleclicrate'] = float(maois.features['numdoubleclic'])/total_time
 
             if new_AOI_Stat.features['timetofirstfixation'] != -1:
                 maois.features['timetofirstleftclic'] = min(maois.features['timetofirstleftclic'], deepcopy(new_AOI_Stat.features['timetofirstleftclic']) + new_AOI_Stat.starttime - sc_start)
