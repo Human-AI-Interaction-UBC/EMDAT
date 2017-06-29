@@ -12,19 +12,20 @@ from BasicParticipant import *
 from EMDAT_core.Participant import export_features_all, write_features_tsv
 from EMDAT_core.ValidityProcessing import output_Validity_info_Segments, output_percent_discarded, output_Validity_info_Participants
 
-ul = []
-for i in range(101, 143):
-    ul.append(str(i) + "a")
-    ul.append(str(i) + "b")
-for i in range(144, 163):
-    ul.append(str(i) + "a")
-    ul.append(str(i) + "b")
+ul = ['16', '17', '18']
+# for i in range(101, 143):
+#     ul.append(str(i) + "a")
+#     ul.append(str(i) + "b")
+# for i in range(144, 163):
+#     ul.append(str(i) + "a")
+#     ul.append(str(i) + "b")
 uids = ul
 alogoffset = [0]*len(ul)
 
 #aoifile_name = "single_aoi.aoi"
 #aoifile_name = "grid2x2.aoi"
-aoifile_name = "viz-specific.aoi"
+#aoifile_name = "viz-specific.aoi"
+aoifile_name = None
 
 # Read participants
 ps = read_participants_Basic(user_list=ul, pids=uids, log_time_offsets=alogoffset, datadir=params.EYELOGDATAFOLDER, aoifile= aoifile_name,
@@ -47,7 +48,8 @@ write_features_tsv(ps, './outputfolder/tobiiv3_sample_features.tsv', featurelist
 
 # output internal data
 # for participant in ps:
-#     dir = "C:/git00/EMDAT_testing/Part2_EMDATInternal_EMDATOutput/new_data/"
+#     #dir = "C:/git00/EMDAT_testing/Part2_EMDATInternal_EMDATOutput/new_data/"
+#     dir = "C:/Users/admin-ishige/Desktop/data/"
 #     fall = open(dir + "EMDATinternaldata_gazesamples_" + str(participant.pid) + ".csv", "w")
 #     fall.write(
 #         "scene,timestamp,rawpupilsize,pupilvelocity,headdistance,is_valid_pupil,is_valid_headdistance,stimuliname\n")

@@ -80,10 +80,12 @@ class Segment():
             a Segment object
         """
         self.segid = segid
-        #self.all_data = all_data
-        #self.fixation_data = fixation_data
-        #self.saccade_data = saccade_data
-        #self.event_data = event_data
+
+        # self.all_data = all_data
+        # self.fixation_data = fixation_data
+        # self.saccade_data = saccade_data
+        # self.event_data = event_data
+
         self.features = {}
         self.completion_time = all_data[-1].timestamp - all_data[0].timestamp
         if self.completion_time == 0:

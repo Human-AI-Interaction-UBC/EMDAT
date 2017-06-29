@@ -340,6 +340,7 @@ class Scene(Segment):
         self.validity2 = self.calc_validity2()
         self.validity3 = self.calc_validity3()
         self.is_valid = self.get_validity()
+        #print ("validity value for " + scid + " " + str(self.proportion_valid_fix))
 
         self.length = sumfeat(segments,"features['length']")
         if self.length == 0:
