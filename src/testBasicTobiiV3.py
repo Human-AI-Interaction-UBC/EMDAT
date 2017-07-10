@@ -12,16 +12,29 @@ from BasicParticipant import *
 from EMDAT_core.Participant import export_features_all, write_features_tsv
 from EMDAT_core.ValidityProcessing import output_Validity_info_Segments, output_percent_discarded, output_Validity_info_Participants
 
-ul = [16,17,18]
+ul = ['16', '17', '18']
+# for i in range(101, 143):
+#     ul.append(str(i) + "a")
+#     ul.append(str(i) + "b")
+# for i in range(144, 163):
+#     ul.append(str(i) + "a")
+#     ul.append(str(i) + "b")
 uids = ul
-alogoffset = [0,0,0]
+alogoffset = [0]*len(ul)
 
+#aoifile_name = "single_aoi.aoi"
+#aoifile_name = "grid2x2.aoi"
+#aoifile_name = "viz-specific.aoi"
 
+#aoifile_name = "single_aoi_dynamic.aoi"
+#aoifile_name = "grid2x2_dynamic.aoi"
+
+aoifile_name = None
 
 # Read participants
 ps = read_participants_Basic(user_list=ul, pids=uids, log_time_offsets=alogoffset, datadir=params.EYELOGDATAFOLDER,
+                             aoifile= aoifile_name,
                              prune_length=None,
-                             #aoifile = "./sampledata/general.aoi",
                              require_valid_segs=False,
                              auto_partition_low_quality_segments=False)
 

@@ -646,7 +646,7 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
         maois.features['longestfixation'] = max(maois.features['longestfixation'],new_AOI_Stat.features['longestfixation'])
         maois.features['totaltimespent'] += new_AOI_Stat.features['totaltimespent']
 
-        maois.features['meanfixationduration'] = maois.features['totaltimespent'] / maois.features['numfixations'] if maois.features['numfixations'] != 0 else -1
+        maois.features['meanfixationduration'] = maois.features['totaltimespent'] / float(maois.features['numfixations']) if maois.features['numfixations'] != 0 else -1
 
         maois.features['proportiontime'] = float(maois.features['totaltimespent'])/total_time
         maois.features['proportionnum'] = float(maois.features['numfixations'])/total_numfixations
