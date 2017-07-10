@@ -560,12 +560,30 @@ class Scene(Segment):
 
                             if self.firstseg.aoi_data[aid].features['timetofirstleftclic'] != -1:
                                 self.aoi_data[aid].features['timetofirstleftclic'] += self.aoi_data[aid].starttime - self.start
+                            if self.firstseg.aoi_data[aid].features['timetofirstrightclic'] != -1:
                                 self.aoi_data[aid].features['timetofirstrightclic'] += self.aoi_data[aid].starttime - self.start
+                            if self.firstseg.aoi_data[aid].features['timetofirstdoubleclic'] != -1:
                                 self.aoi_data[aid].features['timetofirstdoubleclic'] += self.aoi_data[aid].starttime - self.start
+								
+                            if self.firstseg.aoi_data[aid].features['timetolastleftclic'] != -1:
+                                self.aoi_data[aid].features['timetolastleftclic'] += self.aoi_data[aid].starttime - self.start
+                            if self.firstseg.aoi_data[aid].features['timetolastrightclic'] != -1:
+                                self.aoi_data[aid].features['timetolastrightclic'] += self.aoi_data[aid].starttime - self.start
+                            if self.firstseg.aoi_data[aid].features['timetolastdoubleclic'] != -1:
+                                self.aoi_data[aid].features['timetolastdoubleclic'] += self.aoi_data[aid].starttime - self.start
 
-       #for aid in self.aoi_data.keys(): #compute stdev
-       #	self.aoi_data[aid].features['stddevfixationduration'] = math.
-
+		
+        #Merge stdev
+        #For each seg, compute: T = [(numfix-1) * Variance + numfix * power( meanfixduration_in_seg - meanfixduration_in_scene, 2)]
+        #At the Scene level: [ SQRT( SUM(T_seg1...Tsegn) / (numfix-1) ]
+        for aid in self.aoi_data.keys(): 
+            temp = 0
+            numdata = 0
+            for seg in segments:
+                    temp += (seg.aoi_data[aid].features['numfixations']-1) * seg.aoi_data[aid].variance + seg.aoi_data[aid].features['numfixations'] * math.pow(seg.aoi_data[aid].features['meanfixationduration'] - self.aoi_data[aid].features['meanfixationduration'], 2)
+                    numdata += seg.aoi_data[aid].features['numfixations']
+            self.aoi_data[aid].features['stddevfixationduration'] = math.sqrt(temp / (numdata-1) )
+			
         """
         firstsegaois = self.firstseg.aoi_data.keys()
         for aid in self.aoi_data.keys():
@@ -629,7 +647,6 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
         maois.features['totaltimespent'] += new_AOI_Stat.features['totaltimespent']
 
         maois.features['meanfixationduration'] = maois.features['totaltimespent'] / maois.features['numfixations'] if maois.features['numfixations'] != 0 else -1
-        maois.squaredsumfixationduration += new_AOI_Stat.squaredsumfixationduration
 
         maois.features['proportiontime'] = float(maois.features['totaltimespent'])/total_time
         maois.features['proportionnum'] = float(maois.features['numfixations'])/total_numfixations
@@ -653,12 +670,19 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
             maois.features['rightclicrate'] = float(maois.features['numrightclic'])/total_time
             maois.features['doubleclicrate'] = float(maois.features['numdoubleclic'])/total_time
 
-            if new_AOI_Stat.features['timetofirstfixation'] != -1:
+            if new_AOI_Stat.features['timetofirstleftclic'] != -1:
                 maois.features['timetofirstleftclic'] = min(maois.features['timetofirstleftclic'], deepcopy(new_AOI_Stat.features['timetofirstleftclic']) + new_AOI_Stat.starttime - sc_start)
             if new_AOI_Stat.features['timetofirstrightclic'] != -1:
                 maois.features['timetofirstrightclic'] = min(maois.features['timetofirstrightclic'], deepcopy(new_AOI_Stat.features['timetofirstrightclic']) + new_AOI_Stat.starttime - sc_start)
             if new_AOI_Stat.features['timetofirstdoubleclic'] != -1:
                 maois.features['timetofirstdoubleclic'] = min(maois.features['timetofirstdoubleclic'], deepcopy(new_AOI_Stat.features['timetofirstdoubleclic']) + new_AOI_Stat.starttime - sc_start)
+				
+            if new_AOI_Stat.features['timetolastleftclic'] != -1:
+                maois.features['timetolastleftclic'] = max(maois.features['timetolastleftclic'], deepcopy(new_AOI_Stat.features['timetolastleftclic']) + new_AOI_Stat.starttime - sc_start)
+            if new_AOI_Stat.features['timetolastrightclic'] != -1:
+                maois.features['timetolastrightclic'] = max(maois.features['timetolastrightclic'], deepcopy(new_AOI_Stat.features['timetolastrightclic']) + new_AOI_Stat.starttime - sc_start)
+            if new_AOI_Stat.features['timetolastdoubleclic'] != -1:
+                maois.features['timetolastdoubleclic'] = max(maois.features['timetolastdoubleclic'], deepcopy(new_AOI_Stat.features['timetolastdoubleclic']) + new_AOI_Stat.starttime - sc_start)
 
         #calculating the transitions to and from this AOI and other active AOIs at the moment
         new_AOI_Stat_transition_aois = filter(lambda x: x.startswith('numtransfrom_'), new_AOI_Stat.features.keys())

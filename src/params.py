@@ -99,7 +99,7 @@ aoisequencefeat = ['aoisequence']
 aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum',
                   'proportiontime','longestfixation', 'meanfixationduration', 'stddevfixationduration', 'timetofirstfixation','timetolastfixation',
 				  'numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'leftclicrate', 'rightclicrate', 'doubleclicrate',
-                  'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic']
+                  'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic', 'timetolastleftclic', 'timetolastrightclic', 'timetolastdoubleclic']
 
 #list of the AOI names
 aoinames = ['Top','Bottom','Graph','Toolbar']

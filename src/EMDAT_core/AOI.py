@@ -151,8 +151,6 @@ class AOI_Stat():
         self.features['proportiontime'] = 0
         self.features['fixationrate'] = 0
         self.features['totaltimespent'] = 0
-        self.features['totaltimespent'] = 0
-        self.features['totaltimespent'] = 0
         self.features['numevents'] = 0
         self.features['numleftclic'] = 0
         self.features['numrightclic'] = 0
@@ -167,7 +165,7 @@ class AOI_Stat():
         self.features['timetolastrightclic'] = -1
         self.features['timetolastdoubleclic'] = -1
         self.total_trans_from = 0
-        self.squaredsumfixationduration = 0
+        self.variance = 0
         for aoi in active_aois:
             aid = aoi.aid
             self.features['numtransfrom_%s'%(aid)] = 0
@@ -227,7 +225,7 @@ class AOI_Stat():
             self.features['timetolastfixation'] = fixations[-1].timestamp - starttime
             self.features['proportionnum'] = float(numfixations)/len(fixation_data)
             self.features['fixationrate'] = numfixations / float(totaltimespent)
-            self.squaredsumfixationduration = sum(map(lambda x: float(x.fixationduration) ** 2, fixations)) #to compute stddev over all segments in a scene
+            self.variance = sum(map(lambda x: float(x.fixationduration) ** 2, fixations))
 
         if seg_event_data != None:
             self.features['numevents'] = len(events)
@@ -240,6 +238,9 @@ class AOI_Stat():
             self.features['timetofirstleftclic'] = leftc[0].timestamp - starttime if len(leftc) > 0 else -1
             self.features['timetofirstrightclic'] = rightc[0].timestamp - starttime if len(rightc) > 0 else -1
             self.features['timetofirstdoubleclic'] = doublec[0].timestamp - starttime if len(doublec) > 0 else -1
+            self.features['timetolastleftclic'] = leftc[-1].timestamp - starttime if len(leftc) > 0 else -1
+            self.features['timetolastrightclic'] = rightc[-1].timestamp - starttime if len(rightc) > 0 else -1
+            self.features['timetolastdoubleclic'] = doublec[-1].timestamp - starttime if len(doublec) > 0 else -1
 
 
         #calculating the transitions to and from this AOI and other active AOIs at the moment
@@ -269,7 +270,7 @@ class AOI_Stat():
             else:
                 self.features['proptransfrom_%s'%(aid)] = 0
         self.total_trans_from = sumtransfrom
-        ###endof trnsition calculation
+        ###end of transition calculation
 
 
     def get_features(self, featurelist = None):
