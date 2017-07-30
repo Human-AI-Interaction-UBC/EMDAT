@@ -195,8 +195,8 @@ def read_participants_Basic(datadir, user_list, pids, prune_length = None, aoifi
             #aoifile = "{dir}/single_aoi.aoi".format(dir=datadir, rec=rec)
             # aoifile = "{dir}/grid2x2.aoi".format(dir=datadir, rec=rec)
             # aoifile = "{dir}/viz-specific.aoi".format(dir=datadir, rec=rec)
-            # aoifile = "{dir}/single_aoi_dynamic.aoi".format(dir=datadir, rec=rec)
-            # aoifile = "{dir}/grid2x2_dynamic.aoi".format(dir=datadir, rec=rec)
+            #aoifile = "{dir}/single_aoi_dynamic.aoi".format(dir=datadir, rec=rec)
+            #aoifile = "{dir}/grid2x2_dynamic.aoi".format(dir=datadir, rec=rec)
             aoifile = "{dir}/{rec}.aois".format(dir=datadir, rec=rec)
         elif params.EYETRACKERTYPE == "SMI":
             allfile = "{dir}/SMI_Sample_{rec}_Samples.txt".format(dir=datadir, rec=rec)

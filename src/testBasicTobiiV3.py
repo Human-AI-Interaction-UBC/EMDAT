@@ -12,7 +12,7 @@ from BasicParticipant import *
 from EMDAT_core.Participant import export_features_all, write_features_tsv
 from EMDAT_core.ValidityProcessing import output_Validity_info_Segments, output_percent_discarded, output_Validity_info_Participants
 
-ul = ['16', '17', '18']
+ul = ['17', '18']
 # for i in range(101, 143):
 #     ul.append(str(i) + "a")
 #     ul.append(str(i) + "b")
