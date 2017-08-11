@@ -580,6 +580,7 @@ class Scene(Segment):
             temp = 0
             numdata = 0
             for seg in segments:
+                if seg.aoi_data[aid].features['numfixations'] > 0:
                     temp += (seg.aoi_data[aid].features['numfixations']-1) * seg.aoi_data[aid].variance + seg.aoi_data[aid].features['numfixations'] * math.pow(seg.aoi_data[aid].features['meanfixationduration'] - self.aoi_data[aid].features['meanfixationduration'], 2)
                     numdata += seg.aoi_data[aid].features['numfixations']
             if numdata > 1:
@@ -587,6 +588,22 @@ class Scene(Segment):
             else:
                 scene_sd = 0
             self.aoi_data[aid].features['stddevfixationduration'] = scene_sd
+
+            """
+            for obj in obj_list:
+                t = eval('obj.' + totalfeat)
+                if t > 0:
+                    sd = eval('obj.' + sdfeat)
+                    if math.isnan(sd): sd = 0
+                    meanobj = eval('obj.' + meanfeat)
+
+                    num += (t - 1) * sd ** 2 + t * (meanobj - meanscene) ** 2
+                    den += t
+
+            if den > 1:
+                return math.sqrt(float(num) / (den - 1))
+            return 0
+            """
 			
         """
         firstsegaois = self.firstseg.aoi_data.keys()

@@ -225,7 +225,9 @@ class AOI_Stat():
             self.features['timetolastfixation'] = fixations[-1].timestamp - starttime
             self.features['proportionnum'] = float(numfixations)/len(fixation_data)
             self.features['fixationrate'] = numfixations / float(totaltimespent)
-            self.variance = sum(map(lambda x: float(x.fixationduration) ** 2, fixations))
+            #self.variance = sum(map(lambda x: float(x.fixationduration) ** 2, fixations))
+            sd = self.features['stddevfixationduration']
+            self.variance = sd ** 2 if not math.isnan(sd) else 0
 
         if seg_event_data != None:
             self.features['numevents'] = len(events)
