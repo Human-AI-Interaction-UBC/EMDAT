@@ -345,6 +345,8 @@ class Scene(Segment):
         if self.length == 0:
             raise Exception('Zero length segments!')
 
+        self.length_invalid = self.get_length_invalid()
+
         self.features['numsegments'] = len(segments)
         self.features['length'] = self.length
         self.start = minfeat(segments,'start')
@@ -363,13 +365,13 @@ class Scene(Segment):
                 else:
                     warn('Error in fixation count for scene: '+self.scid)
 
-        self.features['fixationrate'] = float(self.numfixations) / self.length
+        self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
 
         if self.numfixations > 0:
             self.features['meanfixationduration'] = weightedmeanfeat(segments,'numfixations',"features['meanfixationduration']")
             self.features['stddevfixationduration'] = aggregatestddevfeat(segments, 'numfixations', "features['stddevfixationduration']", "features['meanfixationduration']", self.features['meanfixationduration'])
             self.features['sumfixationduration'] = sumfeat(segments, "features['sumfixationduration']")
-            self.features['fixationrate'] = float(self.numfixations)/self.length
+            self.features['fixationrate'] = float(self.numfixations)/(self.length - self.length_invalid)
         else:
             self.features['meanfixationduration'] = -1
             self.features['stddevfixationduration'] = -1
@@ -384,14 +386,14 @@ class Scene(Segment):
             self.features['meanpathdistance'] = weightedmeanfeat(segments,'numfixdistances',"features['meanpathdistance']")
             self.features['sumpathdistance'] = sumfeat(segments, "features['sumpathdistance']")
             self.features['stddevpathdistance'] = aggregatestddevfeat(segments, 'numfixdistances', "features['stddevpathdistance']", "features['meanpathdistance']", self.features['meanpathdistance'])
-            self.features['eyemovementvelocity'] = self.features['sumpathdistance']/self.length
+            self.features['eyemovementvelocity'] = self.features['sumpathdistance']/(self.length - self.length_invalid)
             self.features['sumabspathangles'] = sumfeat(segments, "features['sumabspathangles']")
             self.features['meanabspathangles'] = weightedmeanfeat(segments,'numabsangles',"features['meanabspathangles']")
-            self.features['abspathanglesrate'] = self.features['sumabspathangles']/self.length
+            self.features['abspathanglesrate'] = self.features['sumabspathangles']/(self.length - self.length_invalid)
             self.features['stddevabspathangles'] = aggregatestddevfeat(segments, 'numabsangles', "features['stddevabspathangles']", "features['meanabspathangles']", self.features['meanabspathangles'])
             self.features['sumrelpathangles'] = sumfeat(segments, "features['sumrelpathangles']")
             self.features['meanrelpathangles'] = weightedmeanfeat(segments,'numrelangles',"features['meanrelpathangles']")
-            self.features['relpathanglesrate'] = self.features['sumrelpathangles']/self.length
+            self.features['relpathanglesrate'] = self.features['sumrelpathangles']/(self.length - self.length_invalid)
             self.features['stddevrelpathangles'] = aggregatestddevfeat(segments, 'numrelangles', "features['stddevrelpathangles']", "features['meanrelpathangles']", self.features['meanrelpathangles'])
         else:
             self.features['meanpathdistance'] = -1
@@ -498,10 +500,10 @@ class Scene(Segment):
             self.features['numrightclic'] = sumfeat(segments, "features['numrightclic']")
             self.features['numdoubleclic'] = sumfeat(segments, "features['numdoubleclic']")
             self.features['numkeypressed'] = sumfeat(segments, "features['numkeypressed']")
-            self.features['leftclicrate'] = float(self.features['numleftclic'])/self.length
-            self.features['rightclicrate'] = float(self.features['numrightclic'])/self.length
-            self.features['doubleclicrate'] = float(self.features['numdoubleclic'])/self.length
-            self.features['keypressedrate'] = float(self.features['numkeypressed'])/self.length
+            self.features['leftclicrate'] = float(self.features['numleftclic'])/(self.length - self.length_invalid)
+            self.features['rightclicrate'] = float(self.features['numrightclic'])/(self.length - self.length_invalid)
+            self.features['doubleclicrate'] = float(self.features['numdoubleclic'])/(self.length - self.length_invalid)
+            self.features['keypressedrate'] = float(self.features['numkeypressed'])/(self.length - self.length_invalid)
             self.features['timetofirstleftclic'] = self.firstseg.features['timetofirstleftclic']
             self.features['timetofirstrightclic'] = self.firstseg.features['timetofirstrightclic']
             self.features['timetofirstdoubleclic'] = self.firstseg.features['timetofirstdoubleclic']
@@ -564,7 +566,7 @@ class Scene(Segment):
                                 self.aoi_data[aid].features['timetofirstrightclic'] += self.aoi_data[aid].starttime - self.start
                             if self.firstseg.aoi_data[aid].features['timetofirstdoubleclic'] != -1:
                                 self.aoi_data[aid].features['timetofirstdoubleclic'] += self.aoi_data[aid].starttime - self.start
-								
+
                             if self.firstseg.aoi_data[aid].features['timetolastleftclic'] != -1:
                                 self.aoi_data[aid].features['timetolastleftclic'] += self.aoi_data[aid].starttime - self.start
                             if self.firstseg.aoi_data[aid].features['timetolastrightclic'] != -1:
@@ -572,18 +574,18 @@ class Scene(Segment):
                             if self.firstseg.aoi_data[aid].features['timetolastdoubleclic'] != -1:
                                 self.aoi_data[aid].features['timetolastdoubleclic'] += self.aoi_data[aid].starttime - self.start
 
-		
+
         #Merge stdev
         #For each seg, compute: T = [(numfix-1) * Variance + numfix * power( meanfixduration_in_seg - meanfixduration_in_scene, 2)]
         #At the Scene level: [ SQRT( SUM(T_seg1...Tsegn) / (numfix-1) ]
-        for aid in self.aoi_data.keys(): 
+        for aid in self.aoi_data.keys():
             temp = 0
             numdata = 0
             for seg in segments:
                     temp += (seg.aoi_data[aid].features['numfixations']-1) * seg.aoi_data[aid].variance + seg.aoi_data[aid].features['numfixations'] * math.pow(seg.aoi_data[aid].features['meanfixationduration'] - self.aoi_data[aid].features['meanfixationduration'], 2)
                     numdata += seg.aoi_data[aid].features['numfixations']
             self.aoi_data[aid].features['stddevfixationduration'] = math.sqrt(temp / (numdata-1) )
-			
+
         """
         firstsegaois = self.firstseg.aoi_data.keys()
         for aid in self.aoi_data.keys():
@@ -615,6 +617,12 @@ class Scene(Segment):
         for seg in segments:
             sequence.extend(seg.features.get('aoisequence', []))
         return sequence
+
+    def get_length_invalid(self):
+        length = 0
+        for segment in self.segments:
+            length += segment.length_invalid
+        return length
 
     def clean_memory(self):
         return
@@ -676,7 +684,7 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
                 maois.features['timetofirstrightclic'] = min(maois.features['timetofirstrightclic'], deepcopy(new_AOI_Stat.features['timetofirstrightclic']) + new_AOI_Stat.starttime - sc_start)
             if new_AOI_Stat.features['timetofirstdoubleclic'] != -1:
                 maois.features['timetofirstdoubleclic'] = min(maois.features['timetofirstdoubleclic'], deepcopy(new_AOI_Stat.features['timetofirstdoubleclic']) + new_AOI_Stat.starttime - sc_start)
-				
+
             if new_AOI_Stat.features['timetolastleftclic'] != -1:
                 maois.features['timetolastleftclic'] = max(maois.features['timetolastleftclic'], deepcopy(new_AOI_Stat.features['timetolastleftclic']) + new_AOI_Stat.starttime - sc_start)
             if new_AOI_Stat.features['timetolastrightclic'] != -1:

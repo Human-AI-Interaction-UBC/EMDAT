@@ -277,6 +277,18 @@ def read_aoilines(aoilines):
                 for v in chunks[1:]:
                     seq.append((eval(v)))
 
+                existing_aoi = False
+                # first we check if the AOI doesn't already exist (it would be a dynamic boundaries AOI)
+                for exist_aoi in aoilist:
+                    if last_aid == exist_aoi.aid:
+                        existing_aoi = True
+                        # dynamic boundaries AOI: we simply add the new shape in the list of polyin and seq
+                        exist_aoi.polyin.append(polyin)
+                        exist_aoi.polyout.append([])
+                        exist_aoi.timeseq.append(seq)
+
+                if not existing_aoi: # new AOI
+                    aoi = AOI(last_aid, [polyin], [[]], [seq])
                 aoi = AOI(last_aid, polyin, [], seq)
                 aoilist.append(aoi)
                 polyin = []
@@ -284,6 +296,19 @@ def read_aoilines(aoilines):
                 raise Exception('error in the AOI file')
         else:
             if polyin:  # global AOI
+
+                existing_aoi = False
+                # first we check if the AOI doesn't already exist (it would be a dynamic boundaries AOI)
+                for exist_aoi in aoilist:
+                    if last_aid == exist_aoi.aid:
+                        existing_aoi = True
+                        # dynamic boundaries AOI: we simply add the new shape in the list of polyin and seq
+                        exist_aoi.polyin.append(polyin)
+                        exist_aoi.polyout.append([])
+                        exist_aoi.timeseq.append([])
+
+                if not existing_aoi: # new AOI
+                    aoi = AOI(last_aid, [polyin], [[]], [[]])
                 aoi = AOI(last_aid, polyin, [], [])
                 aoilist.append(aoi)
                 polyin = []
@@ -293,8 +318,20 @@ def read_aoilines(aoilines):
                 polyin.append((eval(v)))
 
     if polyin:  # last (global) AOI
-        aoi = AOI(last_aid, polyin, [], [])
-        aoilist.append(aoi)
+
+        existing_aoi = False
+        # first we check if the AOI doesn't already exist (it would be a dynamic boundaries AOI)
+        for exist_aoi in aoilist:
+            if last_aid == exist_aoi.aid:
+                existing_aoi = True
+                # dynamic boundaries AOI: we simply add the new shape in the list of polyin and seq
+                exist_aoi.polyin.append(polyin)
+                exist_aoi.polyout.append([])
+                exist_aoi.timeseq.append([])
+
+        if not existing_aoi: # new AOI
+            aoi = AOI(last_aid, polyin, [], [])
+            aoilist.append(aoi)
 
     return aoilist
 

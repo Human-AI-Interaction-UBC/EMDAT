@@ -36,6 +36,7 @@ class Segment():
         fixation_end_ind: An integer indicating the index of the last Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
         numfixations: An integer indicating the number of "Fixation"s in this Segment
         time_gaps: a list of tuples of the form (start, end) indicating the start and end of the gaps of invalid samples in the Segement's samples
+        all_invalid_gaps: a list of tuples of the form (start, end) indicating the start and the end of all the gaps of invalid samples
         largest_data_gap: An integer indicating the length of largest invalid gap for this Segment in milliseconds
         proportion_valid: A float indicating the proportion of valid samples over all the samples in this Segment
         proportion_valid_fix: A float indicating the proportion of (valid + restored) samples over all the samples in this Segment
@@ -43,6 +44,7 @@ class Segment():
         validity2: a boolean indicating whether this Segment is valid using largest acceptable gap threshold
         validity3: a boolean indicating whether this Segment is valid using proportion of (valid + restored) samples threshold
         is_valid: a boolean indicating whether this Segment is considered valid by the validity method indicated by params.VALIDITY_METHOD
+        length_invalid: An integer indicating total duration of invalid gaps in the segment in milliseconds
         length: An integer indicating total duration of the Segment in milliseconds
         numsamples: An integer indicating total number of samples in the Segment
         fixation_data: A list of "Fixation"s for this Segment
@@ -93,6 +95,7 @@ class Segment():
         self.start = all_data[0].timestamp
         self.numfixations = len(fixation_data)
         self.time_gaps = []
+        self.all_invalid_gaps = []
         self.largest_data_gap = self.calc_largest_validity_gap(all_data)
         self.proportion_valid = self.calc_validity_proportion(all_data)
         self.proportion_valid_fix = self.calc_validity_fixation(all_data)
@@ -100,6 +103,7 @@ class Segment():
         self.validity2 = self.calc_validity2()
         self.validity3 = self.calc_validity3()
         self.is_valid = self.get_validity()
+        self.length_invalid = self.get_length_invalid()
 
         if prune_length:
             all_data = filter(lambda x: x.timestamp <= self.start + prune_length, all_data)
@@ -112,11 +116,12 @@ class Segment():
         self.end = all_data[-1].timestamp
         self.length = self.end - self.start
         self.features['length'] = self.end - self.start
+        self.features['length_invalid'] = self.length_invalid
         self.numsamples = self.calc_num_samples(all_data)
         self.features['numsamples'] = self.numsamples
         self.numfixations = len(fixation_data)
         self.features['numfixations'] = self.numfixations
-        self.features['fixationrate'] = float(self.numfixations) / self.length
+        self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
 
         """ calculate pupil dilation features (no rest pupil size adjustments yet)"""
         # check if pupil sizes are available for all missing points
@@ -210,7 +215,7 @@ class Segment():
             self.features['meanfixationduration'] = mean(map(lambda x: float(x.fixationduration), fixation_data))
             self.features['stddevfixationduration'] = stddev(map(lambda x: float(x.fixationduration), fixation_data))
             self.features['sumfixationduration'] = sum(map(lambda x: x.fixationduration, fixation_data))
-            self.features['fixationrate'] = float(self.numfixations)/self.length
+            self.features['fixationrate'] = float(self.numfixations)/(self.length - self.length_invalid)
             distances = self.calc_distances(fixation_data)
             abs_angles = self.calc_abs_angles(fixation_data)
             rel_angles = self.calc_rel_angles(fixation_data)
@@ -229,13 +234,13 @@ class Segment():
             self.features['meanpathdistance'] = mean(distances)
             self.features['sumpathdistance'] = sum(distances)
             self.features['stddevpathdistance'] = stddev(distances)
-            self.features['eyemovementvelocity'] = self.features['sumpathdistance']/self.length
+            self.features['eyemovementvelocity'] = self.features['sumpathdistance']/(self.length - self.length_invalid)
             self.features['sumabspathangles'] = sum(abs_angles)
-            self.features['abspathanglesrate'] = sum(abs_angles)/self.length
+            self.features['abspathanglesrate'] = sum(abs_angles)/(self.length - self.length_invalid)
             self.features['meanabspathangles'] = mean(abs_angles)
             self.features['stddevabspathangles'] = stddev(abs_angles)
             self.features['sumrelpathangles'] = sum(rel_angles)
-            self.features['relpathanglesrate'] = sum(rel_angles)/self.length
+            self.features['relpathanglesrate'] = sum(rel_angles)/(self.length - self.length_invalid)
             self.features['meanrelpathangles'] = mean(rel_angles)
             self.features['stddevrelpathangles'] = stddev(rel_angles)
         else:
@@ -298,10 +303,10 @@ class Segment():
             self.features['numrightclic'] = len(rightc)
             self.features['numdoubleclic'] = len(doublec)
             self.features['numkeypressed'] = len(keyp)
-            self.features['leftclicrate'] = float(len(leftc))/self.length
-            self.features['rightclicrate'] = float(len(rightc))/self.length
-            self.features['doubleclicrate'] = float(len(doublec))/self.length
-            self.features['keypressedrate'] = float(len(keyp))/self.length
+            self.features['leftclicrate'] = float(len(leftc))/(self.length - self.length_invalid)
+            self.features['rightclicrate'] = float(len(rightc))/(self.length - self.length_invalid)
+            self.features['doubleclicrate'] = float(len(doublec))/(self.length - self.length_invalid)
+            self.features['keypressedrate'] = float(len(keyp))/(self.length - self.length_invalid)
             self.features['timetofirstleftclic'] = leftc[0].timestamp if len(leftc) > 0 else -1
             self.features['timetofirstrightclic'] = rightc[0].timestamp if len(rightc) > 0 else -1
             self.features['timetofirstdoubleclic'] = doublec[0].timestamp if len(doublec) > 0 else -1
@@ -385,7 +390,7 @@ class Segment():
         self.aoi_data = {}
         for aoi in aois:
             #print "checking:",aoi.aid
-            aoistat = AOI_Stat(aoi, fixation_data, self.start, self.end, aois, event_data)
+            aoistat = AOI_Stat(aoi, fixation_data, self.start, self.end, self.length_invalid, aois, event_data)
             self.aoi_data[aoi.aid] = aoistat
 
             act, _ = aoi.is_active_partition(self.fixation_start, self.fixation_end)
@@ -435,6 +440,7 @@ class Segment():
         if self.numfixations == 0:
             return all_data[-1].timestamp - all_data[0].timestamp
         self.time_gaps = []
+        self.all_invalid_gaps = []
         max = 0
         dindex = 0
         datalen = len(all_data)
@@ -457,12 +463,31 @@ class Segment():
         return max
 
     def getgaps(self):
-        """Returns the list of invalid gaps for this Segment
+        """Returns the list of invalid gaps > params.MAX_SEG_TIMEGAP for this Segment
 
         Args:
             a list of invalid gaps for this Segment
         """
         return self.time_gaps
+
+    def getallgaps(self):
+        """Returns the total length of all invalid gaps for this Segment
+
+        Args:
+            an integer: the length in ms of invalid points for this Segment
+        """
+        return self.all_invalid_gaps
+
+    def get_length_invalid(self):
+        """Returns the sum of the length of the invalid gaps > params.MAX_SEG_TIMEGAP
+
+        Args:
+            an integer, the length in milliseconds
+        """
+        length = 0
+        for gap in self.getgaps():
+            length += gap[1] - gap[0]
+        return length
 
     def calc_validity_fixation(self, all_data):
         """Calculates the proportion of (valid + restored) "Datapoint"s over all "Datapoint"s of the Segment.

@@ -21,21 +21,23 @@ from warnings import warn
 
 class AOI():
 
-    def __init__(self, aid, polyin, polyout=[], timeseq=[]):
+    def __init__(self, aid, polyin, polyout=[[]], timeseq=[[]]):
         """Inits AOI class
         Args:
             aid: AOI id
 
-            polyin: the polygon defining the boundaries of the AOI in form of a list of (x,y) tuples
+            polyin: a list of all the polygons defining the boundaries of the AOI, each in form of a list of (x,y) tuples
 
-            polyout: optional polygon inside the boundaries of the AOI that is not part of
+            polyout: a list of optional polygon inside the boundaries of the AOI that is not part of
                 the AOI in form of a list of (x,y) tuples
 
-            timeseq: the time sequence of the format [(start1, end1), (start2, end2), ...] that
-                specifies the intervals when this AOI is active
+            timeseq: a list of the time sequence of the format [(start1, end1), (start2, end2), ...] that
+                specifies the intervals when the shape corresponding in polyin is active
 
         Yields:
             an AOI object
+
+        note: for each i, polyin[i] is linked to polyout[i] and timeseq[i]
         """
         self.aid = aid
         self.polyin = polyin
@@ -68,15 +70,19 @@ class AOI():
         """
         if start == -1:
             return False
-        if self.timeseq:
-            for intr in self.timeseq:
+
+        if self.timeseq == [[]]:
+            return True #global AOI
+
+        for seq in self.timeseq:
+            if seq == []:
+                return True #one shape at least is global
+            for intr in seq:
                 if (start>=intr[0] and start<intr[1])or(end>intr[0] and end<=intr[1]):
                     return True
                 elif (start<intr[0] and start<intr[1])and(end>intr[0] and end>intr[1]):
                     warn("Incorrect definition of Dynamic AOI and Segments, AOI info not calculated for AOI:"+self.aid)
-            return False #not active
-        else:
-            return True #global AOI
+        return False #not active
 
     def is_active_partition(self,start,end):
         """Determines if an AOI is partially active during a given time interval
@@ -98,10 +104,16 @@ class AOI():
             return False, []
         if params.DEBUG or params.VERBOSE == "VERBOSE":
             print "in:",self.aid
+
+        if self.timeseq == [[]]:
+            return True, [] #global AOI
+
         ovelap_part = []
         is_active = False
-        if self.timeseq:
-            for intr in self.timeseq:
+        for seq in self.timeseq:
+            if seq == []:
+                return True, [] #one shape at least is global
+            for intr in seq:
                 if (start>=intr[0] and end<=intr[1]):
                     return True, [] #active during the whole interval
                 else:
@@ -113,16 +125,26 @@ class AOI():
                         ovelap_part.append( (ovstart,ovend) )
                         is_active = True
 
-            return is_active, ovelap_part #partially or not active
-        else:
-            return True, [] #global AOI
+        # optimization of ovelap_part (no intervals intersecting each others)
+        ovelap_part_opt = []
+        for nseq in ovelap_part:
+            intersection = False
+            for oseq in ovelap_part_opt:
+                if (oseq[0] < nseq[1] and oseq[1] > nseq[0]) or (oseq[0] < nseq[1] and oseq[1] > nseq[0]): #intersection in the intervals: merging them
+                    intersection = True
+                    oseq[0] = min(oseq[0], nseq[0])
+                    oseq[1] = max(oseq[1], nseq[1])
+            if not intersection: #new interval
+                ovelap_part_opt.append([nseq[0],nseq[1]])
+
+        return is_active, ovelap_part_opt #partially or not active
 
 
 class AOI_Stat():
     """Methods of AOI_Stat calculate and store all features related to the given AOI object
     """
 
-    def __init__(self,aoi,seg_fixation_data, starttime, endtime, active_aois, seg_event_data=None):
+    def __init__(self,aoi,seg_fixation_data, starttime, endtime, sum_discarded, active_aois, seg_event_data=None):
         """Inits AOI_Stat class
 
         Args:
@@ -190,7 +212,7 @@ class AOI_Stat():
             if params.DEBUG or params.VERBOSE == "VERBOSE":
                 print "len(seg_fixation_data)",seg_fixation_data
                 print "len(fixation_data)",fixation_data
-        else:  #global AOI (alaways active)
+        else:  #global AOI (always active)
             fixation_data = seg_fixation_data
             if seg_event_data != None:
                 event_data = seg_event_data
@@ -216,7 +238,7 @@ class AOI_Stat():
         self.features['totaltimespent'] = totaltimespent
         length = endtime - starttime
 
-        self.features['proportiontime'] = float(totaltimespent)/length
+        self.features['proportiontime'] = float(totaltimespent)/(length - sum_discarded)
         if numfixations > 0:
             self.features['longestfixation'] = max(map(lambda x: x.fixationduration, fixations))
             self.features['meanfixationduration'] = mean(map(lambda x: float(x.fixationduration), fixations))
@@ -232,9 +254,9 @@ class AOI_Stat():
             self.features['numleftclic'] = len(leftc)
             self.features['numrightclic'] = len(rightc)
             self.features['numdoubleclic'] = len(doublec)
-            self.features['leftclicrate'] = float(len(leftc))/length if length>0 else 0
-            self.features['rightclicrate'] = float(len(rightc))/length if length>0 else 0
-            self.features['doubleclicrate'] = float(len(doublec))/length if length>0 else 0
+            self.features['leftclicrate'] = float(len(leftc))/(length - sum_discarded) if (length - sum_discarded)>0 else 0
+            self.features['rightclicrate'] = float(len(rightc))/(length - sum_discarded) if (length - sum_discarded)>0 else 0
+            self.features['doubleclicrate'] = float(len(doublec))/(length - sum_discarded) if (length - sum_discarded)>0 else 0
             self.features['timetofirstleftclic'] = leftc[0].timestamp - starttime if len(leftc) > 0 else -1
             self.features['timetofirstrightclic'] = rightc[0].timestamp - starttime if len(rightc) > 0 else -1
             self.features['timetofirstdoubleclic'] = doublec[0].timestamp - starttime if len(doublec) > 0 else -1
@@ -334,9 +356,16 @@ def _fixation_inside_aoi(fixation, polyin, polyout):
     Returns:
         A boolean for whether the Fixation is inside the AOI or not
     """
-    return point_inside_polygon(fixation.mappedfixationpointx,
-    fixation.mappedfixationpointy, polyin) and not point_inside_polygon(fixation.mappedfixationpointx,
-    fixation.mappedfixationpointy, polyout)
+    inside = False
+    i = 0
+    for polyin_i in polyin:
+        if point_inside_polygon(fixation.mappedfixationpointx,
+                 fixation.mappedfixationpointy, polyin_i) and not point_inside_polygon(fixation.mappedfixationpointx,
+                 fixation.mappedfixationpointy, polyout[i]):
+            inside = True
+        i += 1
+
+    return inside
 
 def _event_inside_aoi(event, polyin, polyout):
     """Helper function that checks if an event (mouse clic) object is inside the AOI described by external polygon polyin and the internal polygon polyout.
@@ -351,7 +380,11 @@ def _event_inside_aoi(event, polyin, polyout):
     Returns:
         A boolean for whether the Fixation is inside the AOI or not
     """
+    inside = False
     if event.event == "LeftMouseClick" or event.event == "RightMouseClick": #keep only mouse clics
-        return point_inside_polygon(event.data1, event.data2, polyin) and not point_inside_polygon(event.data1, event.data2, polyout)
-    else:
-        return False
+        i = 0
+        for polyin_i in polyin:
+            if point_inside_polygon(event.data1, event.data2, polyin_i) and not point_inside_polygon(event.data1, event.data2, polyout[i]):
+                inside = True
+            i += 1
+    return inside
