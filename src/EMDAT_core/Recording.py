@@ -309,8 +309,7 @@ def read_aoilines(aoilines):
 
                 if not existing_aoi: # new AOI
                     aoi = AOI(last_aid, [polyin], [[]], [[]])
-                aoi = AOI(last_aid, polyin, [], [])
-                aoilist.append(aoi)
+                    aoilist.append(aoi)
                 polyin = []
 
             last_aid = chunks[0]  # first line
