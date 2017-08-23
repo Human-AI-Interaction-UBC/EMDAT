@@ -289,8 +289,7 @@ def read_aoilines(aoilines):
 
                 if not existing_aoi: # new AOI
                     aoi = AOI(last_aid, [polyin], [[]], [seq])
-                aoi = AOI(last_aid, polyin, [], seq)
-                aoilist.append(aoi)
+                    aoilist.append(aoi)
                 polyin = []
             else:
                 raise Exception('error in the AOI file')
@@ -329,7 +328,7 @@ def read_aoilines(aoilines):
                 exist_aoi.timeseq.append([])
 
         if not existing_aoi: # new AOI
-            aoi = AOI(last_aid, polyin, [], [])
+            aoi = AOI(last_aid, [polyin], [[]], [[]])
             aoilist.append(aoi)
 
     return aoilist
