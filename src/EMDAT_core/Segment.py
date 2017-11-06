@@ -318,7 +318,7 @@ class Segment():
             self.features['numdoubleclic'] = 0
             self.features['numkeypressed'] = 0
             self.features['leftclicrate'] = -1
-            self.features['rightclicrate'] -1
+            self.features['rightclicrate'] = -1
             self.features['doubleclicrate'] = -1
             self.features['keypressedrate'] = -1
             self.features['timetofirstleftclic'] = -1
