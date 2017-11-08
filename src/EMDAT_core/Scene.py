@@ -584,7 +584,7 @@ class Scene(Segment):
             for seg in segments:
                     temp += (seg.aoi_data[aid].features['numfixations']-1) * seg.aoi_data[aid].variance + seg.aoi_data[aid].features['numfixations'] * math.pow(seg.aoi_data[aid].features['meanfixationduration'] - self.aoi_data[aid].features['meanfixationduration'], 2)
                     numdata += seg.aoi_data[aid].features['numfixations']
-            self.aoi_data[aid].features['stddevfixationduration'] = math.sqrt(temp / (numdata-1) )
+            self.aoi_data[aid].features['stddevfixationduration'] = math.sqrt(temp / (numdata-1) ) if numdata > 1 else 0
 
         """
         firstsegaois = self.firstseg.aoi_data.keys()
