@@ -144,12 +144,13 @@ class AOI_Stat():
     """Methods of AOI_Stat calculate and store all features related to the given AOI object
     """
 
-    def __init__(self,aoi,seg_fixation_data, starttime, endtime, sum_discarded, active_aois, seg_event_data=None):
+    def __init__(self,aoi, seg_all_data, seg_fixation_data, starttime, endtime, sum_discarded, active_aois, seg_event_data=None):
         """Inits AOI_Stat class
 
         Args:
             aoi: the aoi object for which the statistics are calculated
-            seg_fixation_data:
+            seg_all_data: datapoints for this segment
+            seg_fixation_data: fixations for current segment
             starttime:
             endtime:
             active_aois:list of the AOI objects that will be used for calculating the transitions between this AOI and other AOIs
@@ -186,6 +187,19 @@ class AOI_Stat():
         self.features['timetolastleftclic'] = -1
         self.features['timetolastrightclic'] = -1
         self.features['timetolastdoubleclic'] = -1
+        ## Pupil features
+        self.features['meanpupilsize'] = -1
+        self.features['stddevpupilsize'] = -1
+        self.features['maxpupilsize'] = -1
+        self.features['minpupilsize'] = -1
+        self.features['startpupilsize'] = -1
+        self.features['endpupilsize'] = -1
+        self.features['meanpupilvelocity'] = -1
+        self.features['stddevpupilvelocity'] = -1
+        self.features['maxpupilvelocity'] = -1
+        self.features['minpupilvelocity'] = -1
+        ## Distance features
+
         self.total_trans_from = 0
         self.variance = 0
         for aoi in active_aois:
@@ -195,7 +209,7 @@ class AOI_Stat():
 
         if not(self.isActive):
             return
-
+        all_data = []
         fixation_data = []
         event_data = []
 
@@ -204,15 +218,20 @@ class AOI_Stat():
                 print "partition",partition
             for intr in partition:
                 if starttime <= intr[1] and endtime >= intr[0]:
+                    _,st,en = get_chunk(seg_all_data, 0, intr[0], intr[1])
+                    all_data += seg_all_data[st:en]
                     _,st,en = get_chunk(seg_fixation_data, 0, intr[0],intr[1])
                     fixation_data += seg_fixation_data[st:en]
                     if seg_event_data != None:
                         _,st,en = get_chunk(seg_event_data, 0, intr[0],intr[1])
                         event_data += seg_event_data[st:en]
             if params.DEBUG or params.VERBOSE == "VERBOSE":
+                print "len(seg_all_data)",seg_all_data
+                print "len(all_data)", all_data
                 print "len(seg_fixation_data)",seg_fixation_data
                 print "len(fixation_data)",fixation_data
         else:  #global AOI (always active)
+            all_data = seg_all_data
             fixation_data = seg_fixation_data
             if seg_event_data != None:
                 event_data = seg_event_data
@@ -342,6 +361,28 @@ class AOI_Stat():
             print fn[i],':',fv[i]
         print
 
+def _datapoint_inside_aoi(datapoint, polyin, polyout):
+    """Helper function that checks if a datapoint object is inside the AIO described by extrernal polygon polyin and the internal polygon polyout.
+
+    Datapoint object is inside AOI if it is inside polyin but outside polyout
+
+    Args:
+        datapoint: A Datapoint object
+        polyin: the external polygon in form of a list of (x,y) tuples
+        polyout: the internal polygon in form of a list of (x,y) tuples
+
+    Returns:
+        A boolean for whether the Datapoint is inside the AOI or not
+    """
+    for polyin_i in polyin:
+        if point_inside_polygon(datapoint.mappedgazepointx,
+                datapoint.mappedfixationpointy, polyin_i) and not point_inside_polygon(datapoint.mappedgazepointx,
+                datapoint.mappedfixationpointy, polyin_i):
+                inside = True
+                break
+
+    return inside
+
 
 def _fixation_inside_aoi(fixation, polyin, polyout):
     """Helper function that checks if a fixation object is inside the AOI described by external polygon polyin and the internal polygon polyout.
@@ -363,6 +404,7 @@ def _fixation_inside_aoi(fixation, polyin, polyout):
                  fixation.mappedfixationpointy, polyin_i) and not point_inside_polygon(fixation.mappedfixationpointx,
                  fixation.mappedfixationpointy, polyout[i]):
             inside = True
+            break
         i += 1
 
     return inside
@@ -386,5 +428,6 @@ def _event_inside_aoi(event, polyin, polyout):
         for polyin_i in polyin:
             if point_inside_polygon(event.data1, event.data2, polyin_i) and not point_inside_polygon(event.data1, event.data2, polyout[i]):
                 inside = True
+                break
             i += 1
     return inside

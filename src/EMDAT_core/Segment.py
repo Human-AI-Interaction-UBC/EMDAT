@@ -3,7 +3,7 @@ UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
 Created on 2011-08-26
 
 Segment class: smallest unit of aggregated eye data samples that has conceptual meaning.
-A segment is alwawys assigned to a scene.
+A segment is always assigned to a scene.
 
 Authors: Samad Kardan (creator), Sebastien Lalle.
 Institution: The University of British Columbia.
@@ -330,7 +330,7 @@ class Segment():
         """ calculate AOIs features """
         self.has_aois = False
         if aois:
-            self.set_aois(aois, fixation_data, event_data)
+            self.set_aois(aois, all_data, fixation_data, event_data)
             self.features['aoisequence'] = self.generate_aoi_sequence(fixation_data, aois)
         """ end AOIs """
 
@@ -376,10 +376,11 @@ class Segment():
             return self.sample_start_ind, self.sample_end_ind, self.fixation_start_ind, self.fixation_end_ind, self.saccade_start_ind, self.saccade_end_ind, self.event_start_ind, self.event_end_ind
         raise Exception ('The indices values are accessed before setting the initial value in segement:'+self.segid+'!')
 
-    def set_aois(self, aois, fixation_data, event_data = None):
+    def set_aois(self, aois, all_data, fixation_data, event_data = None):
         """Sets the relevant "AOI"s for this Segment
 
         Args:
+            all_data: a list of "Datapoint"s which make up this Segment
             fixation_data: The list of "Fixation"s which make up this Segment
             aois: a list of "AOI"s relevant to this Segment
         """
@@ -390,7 +391,7 @@ class Segment():
         self.aoi_data = {}
         for aoi in aois:
             #print "checking:",aoi.aid
-            aoistat = AOI_Stat(aoi, fixation_data, self.start, self.end, self.length_invalid, aois, event_data)
+            aoistat = AOI_Stat(aoi, all_data, fixation_data, self.start, self.end, self.length_invalid, aois, event_data)
             self.aoi_data[aoi.aid] = aoistat
 
             act, _ = aoi.is_active_partition(self.fixation_start, self.fixation_end)
