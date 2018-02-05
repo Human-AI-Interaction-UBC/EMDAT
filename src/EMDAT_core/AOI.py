@@ -227,7 +227,6 @@ class AOI_Stat():
                         event_data += seg_event_data[st:en]
             if params.DEBUG or params.VERBOSE == "VERBOSE":
                 print "len(seg_all_data)",seg_all_data
-                print "len(all_data)", all_data
                 print "len(seg_fixation_data)",seg_fixation_data
                 print "len(fixation_data)",fixation_data
         else:  #global AOI (always active)

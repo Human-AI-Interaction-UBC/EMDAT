@@ -330,7 +330,7 @@ class Segment():
         """ calculate AOIs features """
         self.has_aois = False
         if aois:
-            self.set_aois(aois, (valid_pupil_data, valid_pupil_velocity), valid_distance_data, fixation_data, event_data)
+            self.set_aois(aois, all_data, valid_distance_data, fixation_data, event_data)
             self.features['aoisequence'] = self.generate_aoi_sequence(fixation_data, aois)
         """ end AOIs """
 
