@@ -330,7 +330,7 @@ class Segment():
         """ calculate AOIs features """
         self.has_aois = False
         if aois:
-            self.set_aois(aois, all_data, fixation_data, event_data)
+            self.set_aois(aois, (valid_pupil_data, valid_pupil_velocity), valid_distance_data, fixation_data, event_data)
             self.features['aoisequence'] = self.generate_aoi_sequence(fixation_data, aois)
         """ end AOIs """
 
@@ -376,7 +376,7 @@ class Segment():
             return self.sample_start_ind, self.sample_end_ind, self.fixation_start_ind, self.fixation_end_ind, self.saccade_start_ind, self.saccade_end_ind, self.event_start_ind, self.event_end_ind
         raise Exception ('The indices values are accessed before setting the initial value in segement:'+self.segid+'!')
 
-    def set_aois(self, aois, all_data, fixation_data, event_data = None):
+    def set_aois(self, aois, valid_pupil_data, valid_pupil_velocity, valid_distance_data, fixation_data, event_data = None):
         """Sets the relevant "AOI"s for this Segment
 
         Args:

@@ -236,15 +236,86 @@ class AOI_Stat():
             if seg_event_data != None:
                 event_data = seg_event_data
 
-		fixation_indices = []
-        fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i], self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
-        fixations = map(lambda i: fixation_data[i], fixation_indices)
+        # Only keep samples inside AOI
+        datapoints = filter(lambda datapoint: _datapoint_inside_aoi(datapoint, self.aoi.polyin, self.aoi.polyout), all_data)
+        fixations = filter(lambda fixation: _fixation_inside_aoi(fixation, self.aoi.polyin, self.aoi.polyout), fixation_data)
 
         if seg_event_data != None:
-            event_indices = filter(lambda i: _event_inside_aoi(event_data[i],self.aoi.polyin, self.aoi.polyout), range(len(event_data)))
-            events = map(lambda i: event_data[i], event_indices)
+            events = filter(lambda event: _event_inside_aoi(event,self.aoi.polyin, self.aoi.polyout), event_data)
             (leftc, rightc, doublec, _) = generate_event_lists(events)
 
+        #get all datapoints where pupil size is available
+        valid_pupil_data = filter(lambda x: x.pupilsize > 0, datapoints)
+        valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, datapoints)
+        #number of valid pupil sizes
+        self.features['meanpupilsize'] = -1
+        self.features['stddevpupilsize'] = -1
+        self.features['maxpupilsize'] = -1
+        self.features['minpupilsize'] = -1
+        self.features['startpupilsize'] = -1
+        self.features['endpupilsize'] = -1
+        self.features['meanpupilvelocity'] = -1
+        self.features['stddevpupilvelocity'] = -1
+        self.features['maxpupilvelocity'] = -1
+        self.features['minpupilvelocity'] = -1
+        self.numpupilsizes = len(valid_pupil_data)
+        self.numpupilvelocity = len(valid_pupil_velocity)
+
+        if self.numpupilsizes > 0: #check if the current segment has pupil data available
+            if params.PUPIL_ADJUSTMENT == "rpscenter":
+                adjvalidpupilsizes = map(lambda x: x.pupilsize - rest_pupil_size, valid_pupil_data)
+            elif params.PUPIL_ADJUSTMENT == "PCPS":
+                adjvalidpupilsizes = map(lambda x: (x.pupilsize - rest_pupil_size) / (1.0 * rest_pupil_size), valid_pupil_data)
+            else:
+                adjvalidpupilsizes = map(lambda x: x.pupilsize, valid_pupil_data)#valid_pupil_data
+
+            valid_pupil_velocity = map(lambda x: x.pupilvelocity, valid_pupil_velocity)#valid_pupil_data
+
+            if export_pupilinfo:
+                self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, rest_pupil_size], valid_pupil_data)
+
+            self.features['meanpupilsize'] = mean(adjvalidpupilsizes)
+            self.features['stddevpupilsize'] = stddev(adjvalidpupilsizes)
+            self.features['maxpupilsize'] = max(adjvalidpupilsizes)
+            self.features['minpupilsize'] = min(adjvalidpupilsizes)
+            self.features['startpupilsize'] = adjvalidpupilsizes[0]
+            self.features['endpupilsize'] = adjvalidpupilsizes[-1]
+
+            if len(valid_pupil_velocity) > 0:
+                self.features['meanpupilvelocity'] = mean(valid_pupil_velocity)
+                self.features['stddevpupilvelocity'] = stddev(valid_pupil_velocity)
+                self.features['maxpupilvelocity'] = max(valid_pupil_velocity)
+                self.features['minpupilvelocity'] = min(valid_pupil_velocity)
+        """ end pupil """
+
+        """ calculate distance from screen features""" #distance
+
+        # check if pupil sizes are available for all missing points
+        invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointxleft >= 0, datapoints)
+        if len(invalid_distance_data) > 0:
+            warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
+
+        #get all datapoints where distance is available
+        valid_distance_data = filter(lambda x: x.distance > 0, datapoints)
+
+        #number of valid pupil sizes
+        self.numdistancedata = len(valid_distance_data)
+        if self.numdistancedata > 0: #check if the current segment has pupil data available
+            distances_from_screen = map(lambda x: x.distance, valid_distance_data)
+            self.features['meandistance'] = mean(distances_from_screen)
+            self.features['stddevdistance'] = stddev(distances_from_screen)
+            self.features['maxdistance'] = max(distances_from_screen)
+            self.features['mindistance'] = min(distances_from_screen)
+            self.features['startdistance'] = distances_from_screen[0]
+            self.features['enddistance'] = distances_from_screen[-1]
+        else:
+            self.features['meandistance'] = -1
+            self.features['stddevdistance'] = -1
+            self.features['maxdistance'] = -1
+            self.features['mindistance'] = -1
+            self.features['startdistance'] = -1
+            self.features['enddistance'] = -1
+        """ end distance """
 
         numfixations = len(fixations)
         self.features['numfixations'] = numfixations
@@ -374,13 +445,15 @@ def _datapoint_inside_aoi(datapoint, polyin, polyout):
     Returns:
         A boolean for whether the Datapoint is inside the AOI or not
     """
+    inside = False
+    i = 0
     for polyin_i in polyin:
         if point_inside_polygon(datapoint.mappedgazepointx,
-                datapoint.mappedfixationpointy, polyin_i) and not point_inside_polygon(datapoint.mappedgazepointx,
-                datapoint.mappedfixationpointy, polyin_i):
+                    datapoint.mappedfixationpointy, polyin_i) and not point_inside_polygon(datapoint.mappedgazepointx,
+                    datapoint.mappedfixationpointy, polyout[i]):
                 inside = True
                 break
-
+        i += 1
     return inside
 
 
