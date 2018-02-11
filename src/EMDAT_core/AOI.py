@@ -144,7 +144,7 @@ class AOI_Stat():
     """Methods of AOI_Stat calculate and store all features related to the given AOI object
     """
 
-    def __init__(self,aoi, seg_all_data, seg_fixation_data, starttime, endtime, sum_discarded, active_aois, seg_event_data=None):
+    def __init__(self,aoi, seg_all_data, seg_fixation_data, starttime, endtime, sum_discarded, active_aois, seg_event_data=None, rest_pupil_size = 0, export_pupilinfo = False):
         """Inits AOI_Stat class
 
         Args:
@@ -237,7 +237,9 @@ class AOI_Stat():
 
         # Only keep samples inside AOI
         datapoints = filter(lambda datapoint: _datapoint_inside_aoi(datapoint, self.aoi.polyin, self.aoi.polyout), all_data)
-        fixations = filter(lambda fixation: _fixation_inside_aoi(fixation, self.aoi.polyin, self.aoi.polyout), fixation_data)
+        fixation_indices = []
+        fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i], self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
+        fixations = map(lambda i: fixation_data[i], fixation_indices)
 
         if seg_event_data != None:
             events = filter(lambda event: _event_inside_aoi(event,self.aoi.polyin, self.aoi.polyout), event_data)
@@ -290,7 +292,7 @@ class AOI_Stat():
         """ calculate distance from screen features""" #distance
 
         # check if pupil sizes are available for all missing points
-        invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointxleft >= 0, datapoints)
+        invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, datapoints)
         if len(invalid_distance_data) > 0:
             warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
 
@@ -447,9 +449,9 @@ def _datapoint_inside_aoi(datapoint, polyin, polyout):
     inside = False
     i = 0
     for polyin_i in polyin:
-        if point_inside_polygon(datapoint.mappedgazepointx,
-                    datapoint.mappedfixationpointy, polyin_i) and not point_inside_polygon(datapoint.mappedgazepointx,
-                    datapoint.mappedfixationpointy, polyout[i]):
+        if point_inside_polygon(datapoint.gazepointx,
+                    datapoint.gazepointy, polyin_i) and not point_inside_polygon(datapoint.gazepointx,
+                    datapoint.gazepointy, polyout[i]):
                 inside = True
                 break
         i += 1

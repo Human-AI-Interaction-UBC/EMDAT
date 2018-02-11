@@ -174,7 +174,7 @@ PUPIL_ADJUSTMENT = "rpscenter"	#Rps-centering (substraction of the rps from the 
 
 #Enable/disable debug mode. In debug mode warnings are treated as errors, and the verbosity level is automatically set to "VERBOSE" (see below)
 #DEBUG = True
-DEBUG = False
+DEBUG = True
 
 #Verbosity level
 #VERBOSE = "QUIET"		#prints nothing except errors and warnings

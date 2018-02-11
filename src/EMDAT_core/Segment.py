@@ -125,7 +125,7 @@ class Segment():
 
         """ calculate pupil dilation features (no rest pupil size adjustments yet)"""
         # check if pupil sizes are available for all missing points
-        pupil_invalid_data = filter(lambda x: x.pupilsize == -1 and x.gazepointxleft > 0, all_data)
+        pupil_invalid_data = filter(lambda x: x.pupilsize == -1 and x.gazepointx > 0, all_data)
         if len(pupil_invalid_data) > 0:
             if params.DEBUG:
                 raise Exception("Pupil size is unavailable for a valid data sample. Number of missing points: " + str(len(pupil_invalid_data)))
@@ -182,7 +182,7 @@ class Segment():
         """ calculate distance from screen features""" #distance
 
         # check if pupil sizes are available for all missing points
-        invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointxleft >= 0, all_data)
+        invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, all_data)
         if len(invalid_distance_data) > 0:
             warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
 
@@ -330,7 +330,7 @@ class Segment():
         """ calculate AOIs features """
         self.has_aois = False
         if aois:
-            self.set_aois(aois, all_data, valid_distance_data, fixation_data, event_data)
+            self.set_aois(aois, all_data, fixation_data, event_data, rest_pupil_size, export_pupilinfo)
             self.features['aoisequence'] = self.generate_aoi_sequence(fixation_data, aois)
         """ end AOIs """
 
@@ -376,13 +376,14 @@ class Segment():
             return self.sample_start_ind, self.sample_end_ind, self.fixation_start_ind, self.fixation_end_ind, self.saccade_start_ind, self.saccade_end_ind, self.event_start_ind, self.event_end_ind
         raise Exception ('The indices values are accessed before setting the initial value in segement:'+self.segid+'!')
 
-    def set_aois(self, aois, valid_pupil_data, valid_pupil_velocity, valid_distance_data, fixation_data, event_data = None):
+    def set_aois(self, aois, all_data, fixation_data, event_data = None, rest_pupil_size = 0, export_pupilinfo = False):
         """Sets the relevant "AOI"s for this Segment
 
         Args:
             all_data: a list of "Datapoint"s which make up this Segment
             fixation_data: The list of "Fixation"s which make up this Segment
             aois: a list of "AOI"s relevant to this Segment
+            rest_pupil_size:
         """
 
         if len(aois) == 0:
@@ -391,7 +392,7 @@ class Segment():
         self.aoi_data = {}
         for aoi in aois:
             #print "checking:",aoi.aid
-            aoistat = AOI_Stat(aoi, all_data, fixation_data, self.start, self.end, self.length_invalid, aois, event_data)
+            aoistat = AOI_Stat(aoi, all_data, fixation_data, self.start, self.end, self.length_invalid, aois, event_data, rest_pupil_size, export_pupilinfo)
             self.aoi_data[aoi.aid] = aoistat
 
             act, _ = aoi.is_active_partition(self.fixation_start, self.fixation_end)
