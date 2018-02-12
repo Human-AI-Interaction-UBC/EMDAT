@@ -101,6 +101,13 @@ aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum'
 				  'numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'leftclicrate', 'rightclicrate', 'doubleclicrate',
                   'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic', 'timetolastleftclic', 'timetolastrightclic', 'timetolastdoubleclic']
 
+# Pupil features to generate and export
+aoigeneralfeat.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize',
+               'meanpupilvelocity', 'stddevpupilvelocity', 'maxpupilvelocity', 'minpupilvelocity'])
+
+# Head distance for AIO features to generate and export
+aoigeneralfeat.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
+
 #list of the AOI names
 aoinames = ['Top','Bottom','Graph','Toolbar']
 

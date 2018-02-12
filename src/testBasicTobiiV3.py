@@ -43,7 +43,5 @@ if params.DEBUG or params.VERBOSE == "VERBOSE":
 aoi_feat_names = (map(lambda x:x, params.aoigeneralfeat))
 if params.VERBOSE != "QUIET":
      print
-     print "Exporting features:\n--General:", params.featurelist,
-"\n--AOI:", aoi_feat_names#, "\n--Sequences:", params.aoisequencefeat
-write_features_tsv(ps,
-'./outputfolder/sample_AIO_features_test.tsv',featurelist = params.featurelist, aoifeaturelabels=params.aoifeaturelist, id_prefix = True)
+     print "Exporting features:\n--General:", params.featurelist, "\n--AOI:", aoi_feat_names#, "\n--Sequences:", params.aoisequencefeat
+write_features_tsv(ps, './outputfolder/sample_AIO_features_test.tsv',featurelist = params.featurelist, aoifeaturelabels=params.aoifeaturelist, id_prefix = True)

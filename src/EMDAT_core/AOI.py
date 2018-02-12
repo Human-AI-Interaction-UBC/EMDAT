@@ -187,18 +187,6 @@ class AOI_Stat():
         self.features['timetolastleftclic'] = -1
         self.features['timetolastrightclic'] = -1
         self.features['timetolastdoubleclic'] = -1
-        ## Pupil features
-        self.features['meanpupilsize'] = -1
-        self.features['stddevpupilsize'] = -1
-        self.features['maxpupilsize'] = -1
-        self.features['minpupilsize'] = -1
-        self.features['startpupilsize'] = -1
-        self.features['endpupilsize'] = -1
-        self.features['meanpupilvelocity'] = -1
-        self.features['stddevpupilvelocity'] = -1
-        self.features['maxpupilvelocity'] = -1
-        self.features['minpupilvelocity'] = -1
-        ## Distance features
 
         self.total_trans_from = 0
         self.variance = 0
