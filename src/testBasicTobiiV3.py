@@ -12,7 +12,8 @@ from BasicParticipant import *
 from EMDAT_core.Participant import export_features_all, write_features_tsv
 from EMDAT_core.ValidityProcessing import output_Validity_info_Segments, output_percent_discarded, output_Validity_info_Participants
 
-ul = [16,17,18]
+#ul = [16,17,18]
+ul = [16, 17]
 uids = ul
 alogoffset = [0,0,0]
 
@@ -21,10 +22,9 @@ alogoffset = [0,0,0]
 # Read participants
 ps = read_participants_Basic(user_list=ul, pids=uids, log_time_offsets=alogoffset, datadir=params.EYELOGDATAFOLDER,
                              prune_length=None,
-                             #aoifile = "./sampledata/general.aoi",
+                             aoifile = "./sampledata/general.aoi",
                              require_valid_segs=False,
                              auto_partition_low_quality_segments=False)
-
 
 if params.DEBUG or params.VERBOSE == "VERBOSE":
     # explore_validation_threshold_segments(ps, auto_partition_low_quality_segments = False)
@@ -36,7 +36,13 @@ if params.DEBUG or params.VERBOSE == "VERBOSE":
 
 
 # WRITE features to file
+#if params.VERBOSE != "QUIET":#
+#    print#
+#    print "Exporting:\n--General:", params.featurelist
+#write_features_tsv(ps, './outputfolder/tobiiv3_sample_features_test.tsv', featurelist=params.featurelist, id_prefix=False)
+
+aoi_feat_names = (map(lambda x:x, params.aoigeneralfeat))
 if params.VERBOSE != "QUIET":
-    print
-    print "Exporting:\n--General:", params.featurelist
-write_features_tsv(ps, './outputfolder/tobiiv3_sample_features.tsv', featurelist=params.featurelist, id_prefix=False)
+     print
+     print "Exporting features:\n--General:", params.featurelist, "\n--AOI:", aoi_feat_names#, "\n--Sequences:", params.aoisequencefeat
+write_features_tsv(ps, './outputfolder/sample_AIO_features_test.tsv',featurelist = params.featurelist, aoifeaturelabels=params.aoifeaturelist, id_prefix = True)

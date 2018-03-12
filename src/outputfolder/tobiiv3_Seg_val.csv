@@ -1,0 +1,5 @@
+Threshold,inv_seg,totalseg,# of Participants with invalid Segment,# of invalid Segements for each Participant
+100,4,4,2,[2, 2]
+200,2,4,2,[1, 1]
+250,2,4,2,[1, 1]
+300,2,4,2,[1, 1]

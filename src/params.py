@@ -101,6 +101,13 @@ aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum'
 				  'numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'leftclicrate', 'rightclicrate', 'doubleclicrate',
                   'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic', 'timetolastleftclic', 'timetolastrightclic', 'timetolastdoubleclic']
 
+# Pupil features to generate and export
+aoigeneralfeat.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize',
+               'meanpupilvelocity', 'stddevpupilvelocity', 'maxpupilvelocity', 'minpupilvelocity'])
+
+# Head distance for AIO features to generate and export
+aoigeneralfeat.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
+
 #list of the AOI names
 aoinames = ['Top','Bottom','Graph','Toolbar']
 
@@ -174,7 +181,7 @@ PUPIL_ADJUSTMENT = "rpscenter"	#Rps-centering (substraction of the rps from the 
 
 #Enable/disable debug mode. In debug mode warnings are treated as errors, and the verbosity level is automatically set to "VERBOSE" (see below)
 #DEBUG = True
-DEBUG = False
+DEBUG = True
 
 #Verbosity level
 #VERBOSE = "QUIET"		#prints nothing except errors and warnings

@@ -5,7 +5,7 @@ Created on 2011-09-30
 Regcording class: hold all the data from one recording (i.e, one complete experiment session)
 for one participant
 
-Authors: Nicholas FitzGerald (creator), Samad Kardan, Sebastien Lalle, Mike Wu. 
+Authors: Nicholas FitzGerald (creator), Samad Kardan, Sebastien Lalle, Mike Wu.
 Institution: The University of British Columbia.
 """
 
@@ -36,12 +36,12 @@ class Recording:
         self.fix_data = self.read_fixation_data(fixation_file)
         if len(self.fix_data) == 0:
             raise Exception("The file '" + fixation_file + "' has no fixations!")
-			
+
         if saccade_file is not None:
             self.sac_data = self.read_saccade_data(saccade_file)
             if len(self.sac_data) == 0:
                 raise Exception("The file '" + saccade_file + "' has no saccades!")
-				
+
         else:
             self.sac_data = None
 
@@ -71,7 +71,7 @@ class Recording:
         :rtype: list[Fixation]
         """
         pass
-		
+
     @abstractmethod
     def read_saccade_data(self, saccade_file):
         """ Read the data file that contains all saccades.
@@ -98,7 +98,7 @@ class Recording:
         """Processes the data for one recording (i.e, one complete experiment session)
 
         Args:
-            segfile: If not None, a string containing the name of the segfile 
+            segfile: If not None, a string containing the name of the segfile
                 with segment definitions in following format:
                 Scene_ID<tab>Segment_ID<tab>start time<tab>end time<newline>
                 e.g.:
@@ -106,34 +106,34 @@ class Recording:
                 With one segment definition per line
             scenelist: If not None, a list of Scene objects
             *Note: At least one of segfile and scenelist should be not None
-                
-            aoifile: If not None, a string containing the name of the aoifile 
+
+            aoifile: If not None, a string containing the name of the aoifile
                 with definitions of the "AOI"s.
             aoilist: If not None, a list of "AOI"s.
             *Note:  if aoifile is not None, aoilist will be ignored
                     if both aoifile and aoilist are none AOIs are ignored
-             
-            prune_length: If not None, an integer that specifies the time 
+
+            prune_length: If not None, an integer that specifies the time
                 interval (in ms) from the beginning of each Segment in which
-                samples are considered in calculations.  This can be used if, 
-                for example, you only wish to consider data in the first 
+                samples are considered in calculations.  This can be used if,
+                for example, you only wish to consider data in the first
                 1000 ms of each Segment. In this case (prune_length = 1000),
                 all data beyond the first 1000ms of the start of the "Segment"s
                 will be disregarded.
-            
+
             require_valid_segs: a boolean determining whether invalid "Segment"s
-                will be ignored when calculating the features or not. default = True 
-            
+                will be ignored when calculating the features or not. default = True
+
             auto_partition_low_quality_segments: a boolean flag determining whether
                 EMDAT should automatically split the "Segment"s which have low sample quality
-                into two new sub "Segment"s discarding the largest invalid sample gap in 
+                into two new sub "Segment"s discarding the largest invalid sample gap in
                 the "Segment". default = False
-                
+
             rpsdata: a dictionary with rest pupil sizes: (scene name is a key, rest pupil size is a value)
         Returns:
             a list of Scene objects for this Recording
             a list of Segment objects for this recording. This is an aggregated list
-            of the "Segment"s of all "Scene"s in the Recording 
+            of the "Segment"s of all "Scene"s in the Recording
         """
 
         if segfile is not None:
@@ -190,14 +190,13 @@ class Recording:
         for sc in scenes:
             segs.extend(sc.segments)
         return segs, scenes
-        
-		
+
+
     def clean_memory(self):
         self.all_data = []
         self.fix_data = []
         self.sac_data = []
         self.event_data = []
-
 
 def read_segs(segfile):
     """Returns a dict with scid as the key and segments as value from a '.seg' file.
@@ -342,12 +341,12 @@ def read_rest_pupil_sizes(rpsfile):
         <pid 1>\t<rest pupil size 1>\t<rest pupil size 2>
 
     Args:
-        rpsfile: a string containing the name of the '.tsv' file 
-            with rest pupil sizes for all partiicpants and all scenes. 
-    
+        rpsfile: a string containing the name of the '.tsv' file
+            with rest pupil sizes for all partiicpants and all scenes.
+
     Returns:
         a dictionary of rest pupil sizes. None otherwise
-    
+
     """
     if rpsfile != None:
         with open(rpsfile, 'r') as f:
@@ -363,12 +362,12 @@ def read_rest_pupil_sizes(rpsfile):
             rpsdic[pid] = {}
             for scene, rpsvalue in zip(scenelist[1:], linelist[1:]):
                 rpsdic[pid][scene] = cast_int(rpsvalue)
-        
+
         return rpsdic
     else:
         return None
-		
-	
+
+
 def get_pupil_size(pupilleft, pupilright):
     if pupilleft is None and pupilright is None:
         return -1
@@ -378,7 +377,7 @@ def get_pupil_size(pupilleft, pupilright):
         return pupilleft
     return (pupilleft + pupilright) / 2.0
 
-	
+
 def get_pupil_velocity(last_pupilleft, last_pupilright, pupilleft, pupilright, time):
     if (last_pupilleft is None or pupilleft is None) and (last_pupilright is None or pupilright is None):
         return -1
@@ -388,7 +387,7 @@ def get_pupil_velocity(last_pupilleft, last_pupilright, pupilleft, pupilright, t
         return abs(pupilleft - last_pupilleft) / time
     return abs( (pupilleft + pupilright) / 2 - (last_pupilleft + last_pupilright) / 2 ) / time
 
-	
+
 def get_distance(distanceleft, distanceright):
     if distanceleft is None and distanceright is None:
         return -1
@@ -397,8 +396,8 @@ def get_distance(distanceleft, distanceright):
     if distanceright is None:
         return distanceleft
     return (distanceleft + distanceright) / 2.0
-	
-	
+
+
 def get_saccade_distance(saccade_gaze_points):
     distance = 0.0
     try:
@@ -410,8 +409,8 @@ def get_saccade_distance(saccade_gaze_points):
         warn(str(e))
 
     return (distance)
-	
-	
+
+
 def get_saccade_acceleration(saccade_gaze_points):
     mean_accel = 0
     prev_temp_speed = 0 #initial speed = 0
