@@ -123,9 +123,6 @@ class Segment():
         self.features['numfixations'] = self.numfixations
         self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
 
-        ## TODO Ask if this is ok
-        all_data = filter(lambda datapoint: datapoint.gazepointx > 0 and datapoint.gazepointy > 0, all_data)
-
         """ calculate pupil dilation features (no rest pupil size adjustments yet)"""
         # check if pupil sizes are available for all missing points
         pupil_invalid_data = filter(lambda x: x.pupilsize == -1 and x.gazepointx > 0, all_data)
