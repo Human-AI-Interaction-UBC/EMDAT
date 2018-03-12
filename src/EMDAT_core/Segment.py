@@ -168,8 +168,6 @@ class Segment():
             if export_pupilinfo:
                 self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, rest_pupil_size], valid_pupil_data)
             self.features['meanpupilsize'] = mean(adjvalidpupilsizes)
-            print("pupul sizes for this segment %d" % len(adjvalidpupilsizes))
-            print("mean pupul sizes inside this segment %f" % mean(adjvalidpupilsizes))
             self.features['stddevpupilsize'] = stddev(adjvalidpupilsizes)
             self.features['maxpupilsize'] = max(adjvalidpupilsizes)
             self.features['minpupilsize'] = min(adjvalidpupilsizes)
@@ -198,8 +196,6 @@ class Segment():
         if self.numdistancedata > 0: #check if the current segment has pupil data available
             distances_from_screen = map(lambda x: x.distance, valid_distance_data)
             self.features['meandistance'] = mean(distances_from_screen)
-            print("distances for this segment %d" % len(distances_from_screen))
-            print("mean distance from screen inside this segment %f" % mean(distances_from_screen))
             self.features['stddevdistance'] = stddev(distances_from_screen)
             self.features['maxdistance'] = max(distances_from_screen)
             self.features['mindistance'] = min(distances_from_screen)

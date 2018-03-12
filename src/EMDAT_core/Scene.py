@@ -258,7 +258,6 @@ class Scene(Segment):
 
                 if fix_end - fix_start>0:
                     try:
-                        print("size of all_data inside scene %d" % len(all_data[all_start:all_end]))
                         new_seg = Segment(segid, all_data[all_start:all_end], fixation_data[fix_start:fix_end], saccade_data = saccade_data_in_seg,
 							        event_data=event_data_in_seg, aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size, export_pupilinfo = export_pupilinfo)
                     except  Exception as e:

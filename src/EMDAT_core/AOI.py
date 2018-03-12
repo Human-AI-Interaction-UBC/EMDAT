@@ -227,7 +227,6 @@ class AOI_Stat():
         datapoints = filter(lambda datapoint: datapoint.gazepointx != -1 and datapoint.gazepointy != -1, all_data)
         # Only keep samples inside AOI
         datapoints = filter(lambda datapoint: _datapoint_inside_aoi(datapoint, self.aoi.polyin, self.aoi.polyout), datapoints)
-        print("AOI: size of all_data inside AOI: %d" % len(datapoints))
         fixation_indices = []
         fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i], self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
         fixations = map(lambda i: fixation_data[i], fixation_indices)
@@ -267,8 +266,6 @@ class AOI_Stat():
                 self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, rest_pupil_size], valid_pupil_data)
 
             self.features['meanpupilsize'] = mean(adjvalidpupilsizes)
-            print("AOI: mean pupil size inside AOI: %f" % mean(adjvalidpupilsizes))
-            print("AOI: max pupil size inside AOI: %f" % max(adjvalidpupilsizes))
             self.features['stddevpupilsize'] = stddev(adjvalidpupilsizes)
             self.features['maxpupilsize'] = max(adjvalidpupilsizes)
             self.features['minpupilsize'] = min(adjvalidpupilsizes)

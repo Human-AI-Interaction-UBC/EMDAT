@@ -157,9 +157,6 @@ class Recording:
                 print "Preparing scene:" + str(scid)
             if params.DEBUG or params.VERBOSE == "VERBOSE":
                 print "len(all_data)", len(self.all_data)
-                test_pupilsize(self.all_data)
-                test_distancedata(self.all_data)
-                warn("Don't forget to remove this")
             try:
                 # get rest pupil size data
                 if rpsdata is not None:
@@ -200,19 +197,6 @@ class Recording:
         self.fix_data = []
         self.sac_data = []
         self.event_data = []
-
-def test_pupilsize(all_data):
-    valid_pupil_data = filter(lambda x: x.pupilsize > 0, all_data)
-    print("size of pupil data after filtering: %d" % len(valid_pupil_data))
-    adjvalidpupilsizes = map(lambda x: x.pupilsize, valid_pupil_data)
-    print("Mean so far on the whole dataset: %f" % mean(adjvalidpupilsizes))
-
-
-def test_distancedata(all_data):
-    valid_distance_data = filter(lambda x: x.distance > 0, all_data)
-    distances_from_screen = map(lambda x: x.distance, valid_distance_data)
-    print("size of distance data after filtering: %d" % len(distances_from_screen))
-    print("Mean so far on the whole dataset: %f" % mean(distances_from_screen))
 
 def read_segs(segfile):
     """Returns a dict with scid as the key and segments as value from a '.seg' file.
