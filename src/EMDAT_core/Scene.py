@@ -91,7 +91,7 @@ class Scene(Segment):
             require_valid: a boolean determining whether invalid "Segment"s
                 will be ignored when calculating the features or not. default = True
 
-            auto_partition_low_quality_segments: a boolean flag determining whether
+            auto_partition: a boolean flag determining whether
                 EMDAT should automatically split the "Segment"s which have low sample quality
                 into two new ssub "Segment"s discarding the largest invalid sample gap in
                 the "Segment". default = False
@@ -141,7 +141,7 @@ class Scene(Segment):
             """
             timegaps = new_seg.getgaps()
             subsegments = []
-            sub_segid=0
+            sub_segid = 0
             samp_inds = []
             fix_inds = []
             saccade_inds = []
@@ -236,7 +236,7 @@ class Scene(Segment):
             for (segid, start, end) in seglist:
                 if params.VERBOSE != "QUIET":
                     print "segid, start, end:", segid, start, end
-
+                # Selecting subsets of points belonging only to the current segment
                 if prune_length != None:
 				    end = min(end, start+prune_length)
                 _, all_start, all_end = get_chunk(all_data, 0, start, end)
@@ -258,6 +258,7 @@ class Scene(Segment):
 
                 if fix_end - fix_start>0:
                     try:
+                        print("size of all_data inside scene %d" % len(all_data[all_start:all_end]))
                         new_seg = Segment(segid, all_data[all_start:all_end], fixation_data[fix_start:fix_end], saccade_data = saccade_data_in_seg,
 							        event_data=event_data_in_seg, aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size, export_pupilinfo = export_pupilinfo)
                     except  Exception as e:
@@ -303,6 +304,7 @@ class Scene(Segment):
 
         self.require_valid_Segments = require_valid
         if require_valid:   #filter out the invalid Segments
+
             segments = filter(lambda x:x.is_valid,self.segments)
         else:
             segments = self.segments
@@ -602,6 +604,8 @@ class Scene(Segment):
                 self.aoi_data[aid].features['timetofirstdoubleclic'] = float('inf')
         """
 
+
+
         if len(self.aoi_data) > 0:
             self.has_aois = True
 
@@ -705,6 +709,42 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
                 maois.features[feat] = new_AOI_Stat.features[feat]
 #               sumtransfrom += maois.features[feat]
 
+        # Updating the pupil size features
+        if new_AOI_Stat.numpupilsizes + maois.numpupilsizes > 1 and new_AOI_Stat.numpupilsizes > 0:
+            total_numpupilsizes = maois.numpupilsizes + new_AOI_Stat.numpupilsizes
+            aggregate_mean_pupil =  maois.features['meanpupilsize'] * float(maois.numpupilsizes) / total_numpupilsizes + new_AOI_Stat.features['meanpupilsize'] * float(new_AOI_Stat.numpupilsizes) / total_numpupilsizes
+            maois.features['stddevpupilsize'] = pow(((maois.numpupilsizes - 1) * pow(maois.features['stddevpupilsize'], 2) \
+                                                + (new_AOI_Stat.numpupilsizes - 1) * pow(new_AOI_Stat.features['stddevpupilsize'], 2) + \
+                                                maois.numpupilsizes *  pow(maois.features['meanpupilsize'] - aggregate_mean_pupil, 2) + \
+                                                new_AOI_Stat.numpupilsizes * pow(new_AOI_Stat.features['meanpupilsize'] - aggregate_mean_pupil, 2)) \
+                                                / (total_numpupilsizes - 1), 0.5)
+            maois.features['maxpupilsize'] = max(maois.features['maxpupilsize'], new_AOI_Stat.features['maxpupilsize'])
+            maois.features['minpupilsize'] = min(maois.features['maxpupilsize'], new_AOI_Stat.features['maxpupilsize'])
+            maois.features['meanpupilsize'] = aggregate_mean_pupil
+            if maois.starttime > new_AOI_Stat.starttime:
+                maois.features['startpupilsize'] = new_AOI_Stat.features['startpupilsize']
+            if maois.endtime < new_AOI_Stat.endtime:
+                maois.features['endpupilsize'] = new_AOI_Stat.features['endpupilsize']
+
+
+            maois.numpupilsizes += new_AOI_Stat.numpupilsizes
+        ## Checking if new AOI contains distance datapoints. Also checking if total num of datapoints is not 1 so far
+        ## so we don't divide by 0 in stddev calculation
+        if new_AOI_Stat.numdistancedata + maois.numdistancedata> 1 and new_AOI_Stat.numdistancedata > 0:
+            total_distances = maois.numdistancedata + new_AOI_Stat.numdistancedata
+            aggregate_mean_distance = maois.features['meandistance'] * float(maois.numdistancedata) / total_distances + new_AOI_Stat.features['meandistance'] * float(new_AOI_Stat.numdistancedata) / total_distances
+            maois.features['stddevdistance'] = pow(((maois.numdistancedata - 1) * pow(maois.features['stddevdistance'], 2) + \
+                                        (new_AOI_Stat.numdistancedata - 1) * pow(new_AOI_Stat.features['stddevdistance'], 2) + \
+                                        maois.numdistancedata * pow(maois.features['meandistance'] - aggregate_mean_distance , 2) \
+                                        + new_AOI_Stat.numdistancedata * pow(new_AOI_Stat.features['meandistance'] - aggregate_mean_distance, 2)) / (total_distances - 1), 0.5)
+            maois.features['maxdistance'] = max(maois.features['maxdistance'], new_AOI_Stat.features['maxdistance'])
+            maois.features['mindistance'] = min(maois.features['mindistance'], new_AOI_Stat.features['mindistance'])
+            maois.features['meandistance'] = aggregate_mean_distance
+            if maois.starttime > new_AOI_Stat.starttime:
+                maois.features['startdistance'] = new_AOI_Stat.features['startdistance']
+            if maois.endtime < new_AOI_Stat.endtime:
+                maois.features['enddistance'] = new_AOI_Stat.features['enddistance']
+            maois.numdistancedata += new_AOI_Stat.numdistancedata
 
         # updating the proportion tansition features based on new transitions to and from this AOI
         maois_transition_aois = filter(lambda x: x.startswith('numtransfrom_'),maois.features.keys()) #all the transition features for this AOI should be aupdated even if they are not active for this segment

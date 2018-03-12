@@ -12,7 +12,8 @@ from BasicParticipant import *
 from EMDAT_core.Participant import export_features_all, write_features_tsv
 from EMDAT_core.ValidityProcessing import output_Validity_info_Segments, output_percent_discarded, output_Validity_info_Participants
 
-ul = [16,17,18]
+#ul = [16,17,18]
+ul = [16, 17]
 uids = ul
 alogoffset = [0,0,0]
 

@@ -123,6 +123,9 @@ class Segment():
         self.features['numfixations'] = self.numfixations
         self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
 
+        ## TODO Ask if this is ok
+        all_data = filter(lambda datapoint: datapoint.gazepointx > 0 and datapoint.gazepointy > 0, all_data)
+
         """ calculate pupil dilation features (no rest pupil size adjustments yet)"""
         # check if pupil sizes are available for all missing points
         pupil_invalid_data = filter(lambda x: x.pupilsize == -1 and x.gazepointx > 0, all_data)
@@ -164,8 +167,9 @@ class Segment():
 
             if export_pupilinfo:
                 self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, rest_pupil_size], valid_pupil_data)
-
             self.features['meanpupilsize'] = mean(adjvalidpupilsizes)
+            print("pupul sizes for this segment %d" % len(adjvalidpupilsizes))
+            print("mean pupul sizes inside this segment %f" % mean(adjvalidpupilsizes))
             self.features['stddevpupilsize'] = stddev(adjvalidpupilsizes)
             self.features['maxpupilsize'] = max(adjvalidpupilsizes)
             self.features['minpupilsize'] = min(adjvalidpupilsizes)
@@ -194,6 +198,8 @@ class Segment():
         if self.numdistancedata > 0: #check if the current segment has pupil data available
             distances_from_screen = map(lambda x: x.distance, valid_distance_data)
             self.features['meandistance'] = mean(distances_from_screen)
+            print("distances for this segment %d" % len(distances_from_screen))
+            print("mean distance from screen inside this segment %f" % mean(distances_from_screen))
             self.features['stddevdistance'] = stddev(distances_from_screen)
             self.features['maxdistance'] = max(distances_from_screen)
             self.features['mindistance'] = min(distances_from_screen)
@@ -392,6 +398,7 @@ class Segment():
         self.aoi_data = {}
         for aoi in aois:
             #print "checking:",aoi.aid
+            print("Generating features for %s AOI in segment %s" % (aoi.aid, self.segid))
             aoistat = AOI_Stat(aoi, all_data, fixation_data, self.start, self.end, self.length_invalid, aois, event_data, rest_pupil_size, export_pupilinfo)
             self.aoi_data[aoi.aid] = aoistat
 
@@ -399,7 +406,7 @@ class Segment():
             if act:
                 active_aois.append(aoi)
                 self.has_aois = True
-
+        print("SEGMENT: active aois in this segment: %d" % len(active_aois))
         if not(active_aois):
             msg = "No active AOIs passed to segment:%s start:%d end:%d" %(self.segid,self.start,self.end)
             warn(msg)
