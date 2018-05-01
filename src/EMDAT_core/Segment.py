@@ -404,6 +404,23 @@ class Segment():
             msg = "No active AOIs passed to segment:%s start:%d end:%d" %(self.segid,self.start,self.end)
             warn(msg)
 
+    def find_seqs_of_invalid(arr):
+        blink_tuples = []
+        curr_count = 0
+        for i in range(len(arr)):
+            # Point we detect is no longer an invalid sample
+            if (arr[i] != 4):
+                # Detected a cluster of consequtive  invalid  datapoints
+                if (curr_count >= 5):
+                    blink_tuples.append((i - curr_count, i - 1))
+                curr_count = 0
+            # Invalid datapoint, potential blink
+            else:
+                curr_count += 1
+                #print("potential %d" % i)
+        for tup in blink_tuples:
+            print(tup)
+
 
     def calc_validity_proportion(self, all_data):
         """Calculates the proportion of "Datapoint"s which are valid.
@@ -443,7 +460,7 @@ class Segment():
             return all_data[-1].timestamp - all_data[0].timestamp
         self.time_gaps = []
         self.all_invalid_gaps = []
-        max = 0
+        max_size = 0
         dindex = 0
         datalen = len(all_data)
         while dindex < datalen:
@@ -456,13 +473,13 @@ class Segment():
                 while not(d.is_valid) and (dindex < datalen-1):
                     dindex += 1
                     d = all_data[dindex]
-                if d.timestamp - gap_start > max:
-                    max = d.timestamp - gap_start
+                if d.timestamp - gap_start > max_size:
+                    max_size = d.timestamp - gap_start
                 if d.timestamp - gap_start > params.MAX_SEG_TIMEGAP:
                     self.time_gaps.append((gap_start,d.timestamp))
             dindex += 1
 
-        return max
+        return max_size
 
     def getgaps(self):
         """Returns the list of invalid gaps > params.MAX_SEG_TIMEGAP for this Segment
