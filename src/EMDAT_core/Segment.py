@@ -35,7 +35,7 @@ class Segment():
         fixation_start_ind: An integer indicating the index of the first Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
         fixation_end_ind: An integer indicating the index of the last Fixation for this Segment in the Participant's list of all "Fixation"s (fixation_data)
         numfixations: An integer indicating the number of "Fixation"s in this Segment
-        time_gaps: a list of tuples of the form (start, end) indicating the start and end of the gaps of invalid samples in the Segement's samples
+        time_gaps: a list of tuples of the form (start, end) indicating the start and end of the gaps of invalid samples in the Segment's samples
         all_invalid_gaps: a list of tuples of the form (start, end) indicating the start and the end of all the gaps of invalid samples
         largest_data_gap: An integer indicating the length of largest invalid gap for this Segment in milliseconds
         proportion_valid: A float indicating the proportion of valid samples over all the samples in this Segment
@@ -123,14 +123,19 @@ class Segment():
         self.features['numfixations'] = self.numfixations
         self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
 
+        """ calculate blink features (no rest pupil size adjustments yet)"""
+        calc_blink_features(self, all_data)
+
         """ calculate pupil dilation features (no rest pupil size adjustments yet)"""
         # check if pupil sizes are available for all missing points
         pupil_invalid_data = filter(lambda x: x.pupilsize == -1 and x.gazepointx > 0, all_data)
         if len(pupil_invalid_data) > 0:
             if params.DEBUG:
-                raise Exception("Pupil size is unavailable for a valid data sample. Number of missing points: " + str(len(pupil_invalid_data)))
+                raise Exception("Pupil size is unavailable for a valid data sample. \
+                        Number of missing points: " + str(len(pupil_invalid_data)))
             else:
                 warn("Pupil size is unavailable for a valid data sample. Number of missing points: " + str(len(pupil_invalid_data)) )
+
 
 		#get all pupil sizes (valid + invalid)
         #pupilsizes = map(lambda x: x.pupilsize, all_data)
@@ -183,7 +188,8 @@ class Segment():
         # check if pupil sizes are available for all missing points
         invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, all_data)
         if len(invalid_distance_data) > 0:
-            warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
+            warn("Distance from screen is unavailable for a valid data sample. \
+                        Number of missing points: " + str(len(invalid_distance_data)))
 
         #get all datapoints where distance is available
         valid_distance_data = filter(lambda x: x.distance > 0, all_data)
@@ -214,7 +220,7 @@ class Segment():
             self.features['meanfixationduration'] = mean(map(lambda x: float(x.fixationduration), fixation_data))
             self.features['stddevfixationduration'] = stddev(map(lambda x: float(x.fixationduration), fixation_data))
             self.features['sumfixationduration'] = sum(map(lambda x: x.fixationduration, fixation_data))
-            self.features['fixationrate'] = float(self.numfixations)/(self.length - self.length_invalid)
+            self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
             distances = self.calc_distances(fixation_data)
             abs_angles = self.calc_abs_angles(fixation_data)
             rel_angles = self.calc_rel_angles(fixation_data)
@@ -356,6 +362,7 @@ class Segment():
         self.event_start_ind = event_st
         self.event_end_ind = event_end
 
+
     def get_indices(self):
         """Returns the index features
 
@@ -372,8 +379,10 @@ class Segment():
             Exception: An exception is thrown if the values are read before initialization
         """
         if self.sample_start_ind != None:
-            return self.sample_start_ind, self.sample_end_ind, self.fixation_start_ind, self.fixation_end_ind, self.saccade_start_ind, self.saccade_end_ind, self.event_start_ind, self.event_end_ind
+            return self.sample_start_ind, self.sample_end_ind, self.fixation_start_ind, \
+                self.fixation_end_ind, self.saccade_start_ind, self.saccade_end_ind, self.event_start_ind, self.event_end_ind
         raise Exception ('The indices values are accessed before setting the initial value in segement:'+self.segid+'!')
+
 
     def set_aois(self, aois, all_data, fixation_data, event_data = None, rest_pupil_size = 0, export_pupilinfo = False):
         """Sets the relevant "AOI"s for this Segment
@@ -404,29 +413,49 @@ class Segment():
             msg = "No active AOIs passed to segment:%s start:%d end:%d" %(self.segid,self.start,self.end)
             warn(msg)
 
-    def find_seqs_of_invalid(arr):
-        blink_tuples = []
-        curr_count = 0
-        for i in range(len(arr)):
-            # Point we detect is no longer an invalid sample
-            if (arr[i] != 4):
-                # Detected a cluster of consequtive  invalid  datapoints
-                if (curr_count >= 5):
-                    blink_tuples.append((i - curr_count, i - 1))
-                curr_count = 0
-            # Invalid datapoint, potential blink
-            else:
-                curr_count += 1
-                #print("potential %d" % i)
-        for tup in blink_tuples:
-            print(tup)
 
+    def calc_blink_features(self):
+        """ Calculates blink features such as
+                num_blinks:                 number of blinks on the in the segment
+                blink_duration_total:       sum of the blink durations for this segment
+                blink_duration_mean:        mean of the blink durations for this segment
+                blink_duration_std:         standard deviation of blink durations for this segment
+                blink_duration_max:         maximal blink duration for this segment
+                blink_duration_min:         minimal blink duration for this segment
+                blink_rate:                 rate of blinks for this segment
+                blink_time_distance_mean:   mean time difference between consequtive blinks
+                blink_time_distance_std:    std time difference between consequtive blinks
+                blink_time_distance_min:    minimal time difference between consequtive blinks
+                blink_time_distance_max:    maximal time difference between consequtive blinks
+        """
+        blink_durations = []
+        blink_intervals = []
+
+        for i in range(len(self.time_gaps)):
+            blink_durations[i] = self.time_gaps[i][1] - self.time_gaps[i][0]
+            if i is not 0:
+                # Calculate time difference between start of current blink and end of previous blink
+                blink_intervals[i - 1] = blink_durations[i][0] - blink_durations[i - 1][1]
+
+        self.features['numblinks'] = len(self.time_gaps)
+        self.features['blinkdurationtotal'] = sum(blink_durations)
+        self.features['blinkdurationmean'] = mean(blink_durations)
+        self.features['blinkdurationstd'] = std(blink_durations)
+        self.features['blinkdurationmin'] = min(blink_durations)
+        self.features['blinkdurationmax'] = max(blink_durations)
+        self.features['blinkrate'] = float(self.features['numblinks']) / (self.length - self.length_invalid)
+
+        if len(blink_intervals) > 0:
+            self.features['blinktimedistancemean'] = mean(blink_intervals)
+            self.features['blinktimedistancestd'] = std(blink_intervals)
+            self.features['blinktimedistancemin'] = min(blink_intervals)
+            self.features['blinktimedistancemax'] = max(blink_intervals)
 
     def calc_validity_proportion(self, all_data):
         """Calculates the proportion of "Datapoint"s which are valid.
 
         Args:
-            all_data: The list of "Datapoint"s which make up this Segement
+            all_data: The list of "Datapoint"s which make up this Segment
 
         Returns:
             A float indicating the proportion of valid samples over all the samples in this Segment
@@ -465,20 +494,19 @@ class Segment():
         datalen = len(all_data)
         while dindex < datalen:
             d = all_data[dindex]
-            while d.is_valid and (dindex < datalen-1):
+            while d.is_valid and (dindex < datalen - 1):
                 dindex += 1
                 d = all_data[dindex]
-            if not(d.is_valid):
+            if not (d.is_valid):
                 gap_start = d.timestamp
-                while not(d.is_valid) and (dindex < datalen-1):
+                while not (d.is_valid) and (dindex < datalen - 1):
                     dindex += 1
                     d = all_data[dindex]
                 if d.timestamp - gap_start > max_size:
                     max_size = d.timestamp - gap_start
                 if d.timestamp - gap_start > params.MAX_SEG_TIMEGAP:
-                    self.time_gaps.append((gap_start,d.timestamp))
+                    self.time_gaps.append((gap_start, d.timestamp))
             dindex += 1
-
         return max_size
 
     def getgaps(self):
