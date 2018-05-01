@@ -124,94 +124,13 @@ class Segment():
         self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
 
         """ calculate blink features (no rest pupil size adjustments yet)"""
-        calc_blink_features(self, all_data)
+        calc_blink_features()
 
         """ calculate pupil dilation features (no rest pupil size adjustments yet)"""
-        # check if pupil sizes are available for all missing points
-        pupil_invalid_data = filter(lambda x: x.pupilsize == -1 and x.gazepointx > 0, all_data)
-        if len(pupil_invalid_data) > 0:
-            if params.DEBUG:
-                raise Exception("Pupil size is unavailable for a valid data sample. \
-                        Number of missing points: " + str(len(pupil_invalid_data)))
-            else:
-                warn("Pupil size is unavailable for a valid data sample. Number of missing points: " + str(len(pupil_invalid_data)) )
+        calc_pupil_features(all_data)
 
-
-		#get all pupil sizes (valid + invalid)
-        #pupilsizes = map(lambda x: x.pupilsize, all_data)
-        #get all datapoints where pupil size is available
-        valid_pupil_data = filter(lambda x: x.pupilsize > 0, all_data)
-        valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, all_data)
-
-        #number of valid pupil sizes
-        self.features['meanpupilsize'] = -1
-        self.features['stddevpupilsize'] = -1
-        self.features['maxpupilsize'] = -1
-        self.features['minpupilsize'] = -1
-        self.features['startpupilsize'] = -1
-        self.features['endpupilsize'] = -1
-        self.features['meanpupilvelocity'] = -1
-        self.features['stddevpupilvelocity'] = -1
-        self.features['maxpupilvelocity'] = -1
-        self.features['minpupilvelocity'] = -1
-        self.numpupilsizes = len(valid_pupil_data)
-        self.numpupilvelocity = len(valid_pupil_velocity)
-
-        if self.numpupilsizes > 0: #check if the current segment has pupil data available
-            if params.PUPIL_ADJUSTMENT == "rpscenter":
-                adjvalidpupilsizes = map(lambda x: x.pupilsize - rest_pupil_size, valid_pupil_data)
-            elif params.PUPIL_ADJUSTMENT == "PCPS":
-                adjvalidpupilsizes = map(lambda x: (x.pupilsize - rest_pupil_size) / (1.0 * rest_pupil_size), valid_pupil_data)
-            else:
-                adjvalidpupilsizes = map(lambda x: x.pupilsize, valid_pupil_data)#valid_pupil_data
-
-            valid_pupil_velocity = map(lambda x: x.pupilvelocity, valid_pupil_velocity)#valid_pupil_data
-
-            if export_pupilinfo:
-                self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, rest_pupil_size], valid_pupil_data)
-            self.features['meanpupilsize'] = mean(adjvalidpupilsizes)
-            self.features['stddevpupilsize'] = stddev(adjvalidpupilsizes)
-            self.features['maxpupilsize'] = max(adjvalidpupilsizes)
-            self.features['minpupilsize'] = min(adjvalidpupilsizes)
-            self.features['startpupilsize'] = adjvalidpupilsizes[0]
-            self.features['endpupilsize'] = adjvalidpupilsizes[-1]
-
-            if len(valid_pupil_velocity) > 0:
-                self.features['meanpupilvelocity'] = mean(valid_pupil_velocity)
-                self.features['stddevpupilvelocity'] = stddev(valid_pupil_velocity)
-                self.features['maxpupilvelocity'] = max(valid_pupil_velocity)
-                self.features['minpupilvelocity'] = min(valid_pupil_velocity)
-        """ end pupil """
-
-        """ calculate distance from screen features""" #distance
-
-        # check if pupil sizes are available for all missing points
-        invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, all_data)
-        if len(invalid_distance_data) > 0:
-            warn("Distance from screen is unavailable for a valid data sample. \
-                        Number of missing points: " + str(len(invalid_distance_data)))
-
-        #get all datapoints where distance is available
-        valid_distance_data = filter(lambda x: x.distance > 0, all_data)
-
-        #number of valid pupil sizes
-        self.numdistancedata = len(valid_distance_data)
-        if self.numdistancedata > 0: #check if the current segment has pupil data available
-            distances_from_screen = map(lambda x: x.distance, valid_distance_data)
-            self.features['meandistance'] = mean(distances_from_screen)
-            self.features['stddevdistance'] = stddev(distances_from_screen)
-            self.features['maxdistance'] = max(distances_from_screen)
-            self.features['mindistance'] = min(distances_from_screen)
-            self.features['startdistance'] = distances_from_screen[0]
-            self.features['enddistance'] = distances_from_screen[-1]
-        else:
-            self.features['meandistance'] = -1
-            self.features['stddevdistance'] = -1
-            self.features['maxdistance'] = -1
-            self.features['mindistance'] = -1
-            self.features['startdistance'] = -1
-            self.features['enddistance'] = -1
-        """ end distance """
+        """ calculate distance from screen features"""
+        calc_distance_features(all_data)
 
         """ calculate fixations, angles and path features"""
         if self.numfixations > 0:
@@ -450,6 +369,92 @@ class Segment():
             self.features['blinktimedistancestd'] = std(blink_intervals)
             self.features['blinktimedistancemin'] = min(blink_intervals)
             self.features['blinktimedistancemax'] = max(blink_intervals)
+
+
+    def calc_pupil_features(self, all_data):
+        # check if pupil sizes are available for all missing points
+        pupil_invalid_data = filter(lambda x: x.pupilsize == -1 and x.gazepointx > 0, all_data)
+        if len(pupil_invalid_data) > 0:
+            if params.DEBUG:
+                raise Exception("Pupil size is unavailable for a valid data sample. \
+                        Number of missing points: " + str(len(pupil_invalid_data)))
+            else:
+                warn("Pupil size is unavailable for a valid data sample. Number of missing points: " + str(len(pupil_invalid_data)) )
+
+		#get all pupil sizes (valid + invalid)
+        #pupilsizes = map(lambda x: x.pupilsize, all_data)
+        #get all datapoints where pupil size is available
+        valid_pupil_data = filter(lambda x: x.pupilsize > 0, all_data)
+        valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, all_data)
+
+        #number of valid pupil sizes
+        self.features['meanpupilsize'] = -1
+        self.features['stddevpupilsize'] = -1
+        self.features['maxpupilsize'] = -1
+        self.features['minpupilsize'] = -1
+        self.features['startpupilsize'] = -1
+        self.features['endpupilsize'] = -1
+        self.features['meanpupilvelocity'] = -1
+        self.features['stddevpupilvelocity'] = -1
+        self.features['maxpupilvelocity'] = -1
+        self.features['minpupilvelocity'] = -1
+        self.numpupilsizes = len(valid_pupil_data)
+        self.numpupilvelocity = len(valid_pupil_velocity)
+
+        if self.numpupilsizes > 0: #check if the current segment has pupil data available
+            if params.PUPIL_ADJUSTMENT == "rpscenter":
+                adjvalidpupilsizes = map(lambda x: x.pupilsize - rest_pupil_size, valid_pupil_data)
+            elif params.PUPIL_ADJUSTMENT == "PCPS":
+                adjvalidpupilsizes = map(lambda x: (x.pupilsize - rest_pupil_size) / (1.0 * rest_pupil_size), valid_pupil_data)
+            else:
+                adjvalidpupilsizes = map(lambda x: x.pupilsize, valid_pupil_data)#valid_pupil_data
+
+            valid_pupil_velocity = map(lambda x: x.pupilvelocity, valid_pupil_velocity)#valid_pupil_data
+
+            if export_pupilinfo:
+                self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, rest_pupil_size], valid_pupil_data)
+            self.features['meanpupilsize'] = mean(adjvalidpupilsizes)
+            self.features['stddevpupilsize'] = stddev(adjvalidpupilsizes)
+            self.features['maxpupilsize'] = max(adjvalidpupilsizes)
+            self.features['minpupilsize'] = min(adjvalidpupilsizes)
+            self.features['startpupilsize'] = adjvalidpupilsizes[0]
+            self.features['endpupilsize'] = adjvalidpupilsizes[-1]
+
+            if len(valid_pupil_velocity) > 0:
+                self.features['meanpupilvelocity'] = mean(valid_pupil_velocity)
+                self.features['stddevpupilvelocity'] = stddev(valid_pupil_velocity)
+                self.features['maxpupilvelocity'] = max(valid_pupil_velocity)
+                self.features['minpupilvelocity'] = min(valid_pupil_velocity)
+
+    def calc_distance_features(self, all_data):
+
+        # check if distances are available for all missing points
+        invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, all_data)
+        if len(invalid_distance_data) > 0:
+            warn("Distance from screen is unavailable for a valid data sample. \
+                        Number of missing points: " + str(len(invalid_distance_data)))
+
+        #get all datapoints where distance is available
+        valid_distance_data = filter(lambda x: x.distance > 0, all_data)
+
+        #number of valid pupil sizes
+        self.numdistancedata = len(valid_distance_data)
+        if self.numdistancedata > 0: #check if the current segment has pupil data available
+            distances_from_screen = map(lambda x: x.distance, valid_distance_data)
+            self.features['meandistance'] = mean(distances_from_screen)
+            self.features['stddevdistance'] = stddev(distances_from_screen)
+            self.features['maxdistance'] = max(distances_from_screen)
+            self.features['mindistance'] = min(distances_from_screen)
+            self.features['startdistance'] = distances_from_screen[0]
+            self.features['enddistance'] = distances_from_screen[-1]
+        else:
+            self.features['meandistance'] = -1
+            self.features['stddevdistance'] = -1
+            self.features['maxdistance'] = -1
+            self.features['mindistance'] = -1
+            self.features['startdistance'] = -1
+            self.features['enddistance'] = -1
+
 
     def calc_validity_proportion(self, all_data):
         """Calculates the proportion of "Datapoint"s which are valid.
