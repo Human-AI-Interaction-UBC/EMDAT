@@ -374,7 +374,7 @@ class Segment():
                 last_blink_detected = i
 
         if len(blink_durations) > 0:
-            self.features['blinknum']               = len(self.time_gaps)
+            self.features['blinknum']               = len(blink_durations)
             self.features['blinkdurationtotal']     = sum(blink_durations)
             self.features['blinkdurationmean']      = mean(blink_durations)
             self.features['blinkdurationstd']       = stddev(blink_durations)
