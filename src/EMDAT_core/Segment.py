@@ -347,12 +347,11 @@ class Segment():
                 blink_time_distance_min:    minimal time difference between consequtive blinks
                 blink_time_distance_max:    maximal time difference between consequtive blinks
             Args:
-                blink_threshold - tuple(int, int): specifies minimal and maximal blink duration in ms
+                blink_threshold - tuple(int, int): specifies minimal and maximal blink duration respectively in ms
         """
-        blink_durations = [0] * len(self.time_gaps)
-        blink_intervals = [0] * (len(self.time_gaps) - 1)
-
-
+        blink_durations = []
+        blink_intervals = []
+        last_blink_detected = -1
         self.features['blinknum']               = 0
         self.features['blinkdurationtotal']     = 0
         self.features['blinkdurationmean']      = 0
@@ -366,10 +365,14 @@ class Segment():
         self.features['blinktimedistancemax']   = 0
 
         for i in range(len(self.time_gaps)):
-            blink_durations[i] = self.time_gaps[i][1] - self.time_gaps[i][0]
-            if i is not 0:
-                # Calculate time difference between start of current blink and end of previous blink
-                blink_intervals[i - 1] = self.time_gaps[i][0] - self.time_gaps[i - 1][1]
+            blink_length = self.time_gaps[i][1] - self.time_gaps[i][0]
+            if blink_length <= blink_threshold[1] and blink_length <= blink_threshold[0]:
+                blink_durations.append(blink_length)
+                if last_blink_detected != -1:
+                    # Calculate time difference between start of current blink and end of previous blink
+                    blink_intervals.append(self.time_gaps[i][0] - self.time_gaps[last_blink_detected][1])
+                last_blink_detected = i
+
         if len(blink_durations) > 0:
             self.features['blinknum']               = len(self.time_gaps)
             self.features['blinkdurationtotal']     = sum(blink_durations)
