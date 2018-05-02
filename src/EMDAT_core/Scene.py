@@ -410,6 +410,24 @@ class Scene(Segment):
             self.features['meanrelpathangles']= -1
             self.features['stddevrelpathangles'] = -1
 
+        """ calculate blink features """
+        self.features['numblinks'] = sumfeat(segments, "features['numblinks']")
+        if self.features['numblinks'] > 0:
+            self.features['blinkdurationtotal'] = sumfeat(segments, "features['blinkdurationtotal']")
+            self.features['blinkdurationmean'] = weightedmeanfeat(segments, "features['numblinks']", "features['blinkdurationmean']")
+            self.features['blinkdurationstd'] = aggregatestddevfeat(segments, "features['numblinks']", "features['blinkdurationstd']", "features['blinkdurationmean']", self.features['blinkdurationmean'])
+            self.features['blinkdurationmin'] = minfeat(segments, "features['blinkdurationmin']", -1)
+            self.features['blinkdurationmax'] = maxfeat(segments, "features['blinkdurationmax']")
+            self.features['blinkrate'] = float(self.features['numblinks']) / (self.length - self.length_invalid)
+
+            self.features['blinktimedistancemean'] = weightedmeanfeat(segments,
+                            "features['numblinks']", "features['blinktimedistancemean']")
+            self.features['blinktimedistancestd'] = aggregatestddevfeat(segments, "features['numblinks']",
+                            "features['blinktimedistancestd']", "features['blinktimedistancemean']", self.features['blinktimedistancemean'])
+            self.features['blinktimedistancemin'] =  minfeat(segments, "features['blinktimedistancemin']", -1)
+            self.features['blinktimedistancemax'] = maxfeat(segments, "features['blinktimedistancemax']")
+        """ end  """
+
         """ calculate pupil dilation features (no rest pupil size adjustments yet)"""
 
         self.numpupilsizes = sumfeat(segments,'numpupilsizes')
@@ -445,6 +463,7 @@ class Scene(Segment):
             self.features['minpupilvelocity'] = -1
         """end """
 
+        """ calculate distance from screen features"""
         self.numdistancedata = sumfeat(segments,'numdistancedata') #Distance
         if self.numdistancedata > 0: # check if scene has any pupil data
             self.features['meandistance'] = weightedmeanfeat(segments, 'numdistancedata', "features['meandistance']")
@@ -753,7 +772,7 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
                 maois.features['proptransfrom_%s'%(aid)] = float(maois.features[feat]) / maois.total_trans_from
             else:
                 maois.features['proptransfrom_%s'%(aid)] = 0
-        ###endof trnsition calculation
+        ###endof transition calculation
         return maois
 
 def weightedmeanfeat(obj_list, totalfeat,ratefeat):

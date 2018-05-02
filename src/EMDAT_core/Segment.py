@@ -124,13 +124,13 @@ class Segment():
         self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
 
         """ calculate blink features (no rest pupil size adjustments yet)"""
-        calc_blink_features()
+        self.calc_blink_features()
 
         """ calculate pupil dilation features (no rest pupil size adjustments yet)"""
-        calc_pupil_features(all_data)
+        self.calc_pupil_features(all_data, export_pupilinfo, rest_pupil_size)
 
         """ calculate distance from screen features"""
-        calc_distance_features(all_data)
+        self.calc_distance_features(all_data)
 
         """ calculate fixations, angles and path features"""
         if self.numfixations > 0:
@@ -347,31 +347,57 @@ class Segment():
                 blink_time_distance_min:    minimal time difference between consequtive blinks
                 blink_time_distance_max:    maximal time difference between consequtive blinks
         """
-        blink_durations = []
-        blink_intervals = []
+        blink_durations = [0] * len(self.time_gaps)
+        blink_intervals = [0] * (len(self.time_gaps) - 1)
+
+
+        self.features['numblinks']              = 0
+        self.features['blinkdurationtotal']     = 0
+        self.features['blinkdurationmean']      = 0
+        self.features['blinkdurationstd']       = 0
+        self.features['blinkdurationmin']       = 0
+        self.features['blinkdurationmax']       = 0
+        self.features['blinkrate']              = 0
+        self.features['blinktimedistancemean']  = 0
+        self.features['blinktimedistancestd']   = 0
+        self.features['blinktimedistancemin']   = 0
+        self.features['blinktimedistancemax']   = 0
 
         for i in range(len(self.time_gaps)):
             blink_durations[i] = self.time_gaps[i][1] - self.time_gaps[i][0]
             if i is not 0:
                 # Calculate time difference between start of current blink and end of previous blink
-                blink_intervals[i - 1] = blink_durations[i][0] - blink_durations[i - 1][1]
-
-        self.features['numblinks'] = len(self.time_gaps)
-        self.features['blinkdurationtotal'] = sum(blink_durations)
-        self.features['blinkdurationmean'] = mean(blink_durations)
-        self.features['blinkdurationstd'] = std(blink_durations)
-        self.features['blinkdurationmin'] = min(blink_durations)
-        self.features['blinkdurationmax'] = max(blink_durations)
-        self.features['blinkrate'] = float(self.features['numblinks']) / (self.length - self.length_invalid)
+                blink_intervals[i - 1] = self.time_gaps[i][0] - self.time_gaps[i - 1][1]
+        if len(blink_durations) > 0:
+            self.features['numblinks']              = len(self.time_gaps)
+            self.features['blinkdurationtotal']     = sum(blink_durations)
+            self.features['blinkdurationmean']      = mean(blink_durations)
+            self.features['blinkdurationstd']       = stddev(blink_durations)
+            self.features['blinkdurationmin']       = min(blink_durations)
+            self.features['blinkdurationmax']       = max(blink_durations)
+            self.features['blinkrate']              = float(self.features['numblinks']) / (self.length - self.length_invalid)
 
         if len(blink_intervals) > 0:
-            self.features['blinktimedistancemean'] = mean(blink_intervals)
-            self.features['blinktimedistancestd'] = std(blink_intervals)
-            self.features['blinktimedistancemin'] = min(blink_intervals)
-            self.features['blinktimedistancemax'] = max(blink_intervals)
+            self.features['blinktimedistancemean']  = mean(blink_intervals)
+            self.features['blinktimedistancestd']   = stddev(blink_intervals)
+            self.features['blinktimedistancemin']   = min(blink_intervals)
+            self.features['blinktimedistancemax']   = max(blink_intervals)
 
 
-    def calc_pupil_features(self, all_data):
+    def calc_pupil_features(self, all_data, export_pupilinfo, rest_pupil_size):
+        """ Calculates pupil features such as
+                mean_pupil_size:            mean of pupil sizes
+                stddev_pupil_size:          standard deviation of pupil sizes
+                min_pupil_size:             smallest pupil size in this segment
+                max_pupil_size:             largest pupil size in this segment
+                mean_pupil_velocity:        mean of pupil velocities
+                stddev_pupil_velocity:      standard deviation of pupil velocities
+                min_pupil_velocity:         smallest pupil velocity in this segment
+                max_pupil_velocity:         largest pupil velocity in this segment
+
+            Args:
+                all_data: The list of "Datapoint"s which make up this Segment
+        """
         # check if pupil sizes are available for all missing points
         pupil_invalid_data = filter(lambda x: x.pupilsize == -1 and x.gazepointx > 0, all_data)
         if len(pupil_invalid_data) > 0:
@@ -388,18 +414,18 @@ class Segment():
         valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, all_data)
 
         #number of valid pupil sizes
-        self.features['meanpupilsize'] = -1
-        self.features['stddevpupilsize'] = -1
-        self.features['maxpupilsize'] = -1
-        self.features['minpupilsize'] = -1
-        self.features['startpupilsize'] = -1
-        self.features['endpupilsize'] = -1
-        self.features['meanpupilvelocity'] = -1
+        self.features['meanpupilsize']       = -1
+        self.features['stddevpupilsize']     = -1
+        self.features['maxpupilsize']        = -1
+        self.features['minpupilsize']        = -1
+        self.features['startpupilsize']      = -1
+        self.features['endpupilsize']        = -1
+        self.features['meanpupilvelocity']   = -1
         self.features['stddevpupilvelocity'] = -1
-        self.features['maxpupilvelocity'] = -1
-        self.features['minpupilvelocity'] = -1
-        self.numpupilsizes = len(valid_pupil_data)
-        self.numpupilvelocity = len(valid_pupil_velocity)
+        self.features['maxpupilvelocity']    = -1
+        self.features['minpupilvelocity']    = -1
+        self.numpupilsizes                   = len(valid_pupil_data)
+        self.numpupilvelocity                = len(valid_pupil_velocity)
 
         if self.numpupilsizes > 0: #check if the current segment has pupil data available
             if params.PUPIL_ADJUSTMENT == "rpscenter":
@@ -413,21 +439,32 @@ class Segment():
 
             if export_pupilinfo:
                 self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, rest_pupil_size], valid_pupil_data)
-            self.features['meanpupilsize'] = mean(adjvalidpupilsizes)
-            self.features['stddevpupilsize'] = stddev(adjvalidpupilsizes)
-            self.features['maxpupilsize'] = max(adjvalidpupilsizes)
-            self.features['minpupilsize'] = min(adjvalidpupilsizes)
-            self.features['startpupilsize'] = adjvalidpupilsizes[0]
-            self.features['endpupilsize'] = adjvalidpupilsizes[-1]
+            self.features['meanpupilsize']           = mean(adjvalidpupilsizes)
+            self.features['stddevpupilsize']         = stddev(adjvalidpupilsizes)
+            self.features['maxpupilsize']            = max(adjvalidpupilsizes)
+            self.features['minpupilsize']            = min(adjvalidpupilsizes)
+            self.features['startpupilsize']          = adjvalidpupilsizes[0]
+            self.features['endpupilsize']            = adjvalidpupilsizes[-1]
 
             if len(valid_pupil_velocity) > 0:
-                self.features['meanpupilvelocity'] = mean(valid_pupil_velocity)
+                self.features['meanpupilvelocity']   = mean(valid_pupil_velocity)
                 self.features['stddevpupilvelocity'] = stddev(valid_pupil_velocity)
-                self.features['maxpupilvelocity'] = max(valid_pupil_velocity)
-                self.features['minpupilvelocity'] = min(valid_pupil_velocity)
+                self.features['maxpupilvelocity']    = max(valid_pupil_velocity)
+                self.features['minpupilvelocity']    = min(valid_pupil_velocity)
+
 
     def calc_distance_features(self, all_data):
+        """ Calculates distance features such as
+                mean_distance:            mean of distances from the screen
+                stddev_distance:          standard deviation of distances from the screen
+                min_distance:             smallest distance from the screen in this segment
+                max_distance:             largest distance from the screen in this segment
+                start_distance:           distance from the screen in the beginning of this segment
+                end_distance:             distance from the screen in the end of this segment
 
+            Args:
+                all_data: The list of "Datapoint"s which make up this Segment
+        """
         # check if distances are available for all missing points
         invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, all_data)
         if len(invalid_distance_data) > 0:
@@ -437,23 +474,23 @@ class Segment():
         #get all datapoints where distance is available
         valid_distance_data = filter(lambda x: x.distance > 0, all_data)
 
-        #number of valid pupil sizes
+        #number of valid distance datapoints
         self.numdistancedata = len(valid_distance_data)
         if self.numdistancedata > 0: #check if the current segment has pupil data available
-            distances_from_screen = map(lambda x: x.distance, valid_distance_data)
-            self.features['meandistance'] = mean(distances_from_screen)
-            self.features['stddevdistance'] = stddev(distances_from_screen)
-            self.features['maxdistance'] = max(distances_from_screen)
-            self.features['mindistance'] = min(distances_from_screen)
-            self.features['startdistance'] = distances_from_screen[0]
-            self.features['enddistance'] = distances_from_screen[-1]
+            distances_from_screen               = map(lambda x: x.distance, valid_distance_data)
+            self.features['meandistance']       = mean(distances_from_screen)
+            self.features['stddevdistance']     = stddev(distances_from_screen)
+            self.features['maxdistance']        = max(distances_from_screen)
+            self.features['mindistance']        = min(distances_from_screen)
+            self.features['startdistance']      = distances_from_screen[0]
+            self.features['enddistance']        = distances_from_screen[-1]
         else:
-            self.features['meandistance'] = -1
-            self.features['stddevdistance'] = -1
-            self.features['maxdistance'] = -1
-            self.features['mindistance'] = -1
-            self.features['startdistance'] = -1
-            self.features['enddistance'] = -1
+            self.features['meandistance']       = -1
+            self.features['stddevdistance']     = -1
+            self.features['maxdistance']        = -1
+            self.features['mindistance']        = -1
+            self.features['startdistance']      = -1
+            self.features['enddistance']        = -1
 
 
     def calc_validity_proportion(self, all_data):
@@ -476,7 +513,7 @@ class Segment():
                     num_valid += 1
 #            else:
 #                print "###",d.event, d.data1
-        if num==0:
+        if num == 0:
             return 0.0
         else:
             return num_valid / num
@@ -568,7 +605,7 @@ class Segment():
                     num_valid += 1.0
 #            else:
 #                print "###",d.event, d.data1
-        if num==0:
+        if num == 0:
             return 0.0
         else:
             return num_valid / num
@@ -619,7 +656,7 @@ class Segment():
         for i in xrange(1, len(fixdata)):
             x = fixdata[i].mappedfixationpointx
             y = fixdata[i].mappedfixationpointy
-            dist = math.sqrt((x-lastx)**2 + (y-lasty)**2)
+            dist = math.sqrt((x - lastx)**2 + (y - lasty)**2)
             distances.append(dist)
             lastx = x
             lasty = y
@@ -668,19 +705,19 @@ class Segment():
         lastx = fixdata[0].mappedfixationpointx
         lasty = fixdata[0].mappedfixationpointy
 
-        for i in xrange(1, len(fixdata)-1):
+        for i in xrange(1, len(fixdata) - 1):
             x = fixdata[i].mappedfixationpointx
             y = fixdata[i].mappedfixationpointy
-            nextx = fixdata[i+1].mappedfixationpointx
-            nexty = fixdata[i+1].mappedfixationpointy
-            v1 = (lastx-x, lasty-y)
-            v2 = (nextx-x, nexty-y)
+            nextx = fixdata[i + 1].mappedfixationpointx
+            nexty = fixdata[i + 1].mappedfixationpointy
+            v1 = (lastx - x, lasty - y)
+            v2 = (nextx - x, nexty - y)
 
             if v1 != (0.0, 0.0) and v2 != (0.0, 0.0):
                 v1_dot = math.sqrt(geometry.simpledotproduct(v1, v1))
                 v2_dot = math.sqrt(geometry.simpledotproduct(v2, v2))
-                normv1 = ((lastx-x) / v1_dot, (lasty-y) / v1_dot)
-                normv2 = ((nextx-x) / v2_dot, (nexty-y) / v2_dot)
+                normv1 = ((lastx - x) / v1_dot, (lasty - y) / v1_dot)
+                normv2 = ((nextx - x) / v2_dot, (nexty - y) / v2_dot)
                 dotproduct = geometry.simpledotproduct(normv1, normv2)
                 if dotproduct < -1:
                     dotproduct = -1.0
@@ -690,8 +727,8 @@ class Segment():
                 rel_angles.append(theta)
             else:
                 rel_angles.append(0.0)
-            lastx=x
-            lasty=y
+            lastx = x
+            lasty = y
 
         return rel_angles
 
