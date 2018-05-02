@@ -335,7 +335,7 @@ class Segment():
 
     def calc_blink_features(self):
         """ Calculates blink features such as
-                num_blinks:                 number of blinks on the in the segment
+                blink_num:                 number of blinks on the in the segment
                 blink_duration_total:       sum of the blink durations for this segment
                 blink_duration_mean:        mean of the blink durations for this segment
                 blink_duration_std:         standard deviation of blink durations for this segment
@@ -351,7 +351,7 @@ class Segment():
         blink_intervals = [0] * (len(self.time_gaps) - 1)
 
 
-        self.features['numblinks']              = 0
+        self.features['blinknum']               = 0
         self.features['blinkdurationtotal']     = 0
         self.features['blinkdurationmean']      = 0
         self.features['blinkdurationstd']       = 0
@@ -369,13 +369,13 @@ class Segment():
                 # Calculate time difference between start of current blink and end of previous blink
                 blink_intervals[i - 1] = self.time_gaps[i][0] - self.time_gaps[i - 1][1]
         if len(blink_durations) > 0:
-            self.features['numblinks']              = len(self.time_gaps)
+            self.features['blinknum']              = len(self.time_gaps)
             self.features['blinkdurationtotal']     = sum(blink_durations)
             self.features['blinkdurationmean']      = mean(blink_durations)
             self.features['blinkdurationstd']       = stddev(blink_durations)
             self.features['blinkdurationmin']       = min(blink_durations)
             self.features['blinkdurationmax']       = max(blink_durations)
-            self.features['blinkrate']              = float(self.features['numblinks']) / (self.length - self.length_invalid)
+            self.features['blinkrate']              = float(self.features['blinknum']) / (self.length - self.length_invalid)
 
         if len(blink_intervals) > 0:
             self.features['blinktimedistancemean']  = mean(blink_intervals)

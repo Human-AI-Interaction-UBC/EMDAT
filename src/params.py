@@ -75,6 +75,11 @@ featurelist = ['numsegments','length','numsamples','numfixations','fixationrate'
 			   'eyemovementvelocity', 'abspathanglesrate', 'relpathanglesrate',
 			   'sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
 
+# Blink features to generate and export
+featurelist.extend(['blinknum', 'blinkdurationtotal', 'blinkdurationmean', 'blinkdurationstd', 'blinkdurationmin',
+                    'blinkdurationmax', 'blinkrate', 'blinktimedistancemean', 'blinktimedistancestd',
+                    'blinktimedistancemax', 'blinktimedistancemin'])
+
 # Pupil features to generate and export
 featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize',
                'meanpupilvelocity', 'stddevpupilvelocity', 'maxpupilvelocity', 'minpupilvelocity'])

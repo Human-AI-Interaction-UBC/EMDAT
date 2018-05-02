@@ -411,26 +411,39 @@ class Scene(Segment):
             self.features['stddevrelpathangles'] = -1
 
         """ calculate blink features """
-        self.features['numblinks'] = sumfeat(segments, "features['numblinks']")
-        if self.features['numblinks'] > 0:
-            self.features['blinkdurationtotal'] = sumfeat(segments, "features['blinkdurationtotal']")
-            self.features['blinkdurationmean'] = weightedmeanfeat(segments, "features['numblinks']", "features['blinkdurationmean']")
-            self.features['blinkdurationstd'] = aggregatestddevfeat(segments, "features['numblinks']", "features['blinkdurationstd']", "features['blinkdurationmean']", self.features['blinkdurationmean'])
-            self.features['blinkdurationmin'] = minfeat(segments, "features['blinkdurationmin']", -1)
-            self.features['blinkdurationmax'] = maxfeat(segments, "features['blinkdurationmax']")
-            self.features['blinkrate'] = float(self.features['numblinks']) / (self.length - self.length_invalid)
+        self.features['blinknum'] = sumfeat(segments, "features['blinknum']")
+        if self.features['blinknum'] > 0:
+            self.features['blinkdurationtotal']     = sumfeat(segments, "features['blinkdurationtotal']")
+            self.features['blinkdurationmean']      = weightedmeanfeat(segments, "features['blinknum']", "features['blinkdurationmean']")
+            self.features['blinkdurationstd']       = aggregatestddevfeat(segments, "features['blinknum']", "features['blinkdurationstd']",
+                                                      "features['blinkdurationmean']", self.features['blinkdurationmean'])
+            self.features['blinkdurationmin']       = minfeat(segments, "features['blinkdurationmin']", -1)
+            self.features['blinkdurationmax']       = maxfeat(segments, "features['blinkdurationmax']")
+            self.features['blinkrate']              = float(self.features['blinknum']) / (self.length - self.length_invalid)
+            self.features['blinktimedistancemean']  = weightedmeanfeat(segments,
+                                                      "features['blinknum']", "features['blinktimedistancemean']")
+            self.features['blinktimedistancestd']   = aggregatestddevfeat(segments, "features['blinknum']",
+                                                      "features['blinktimedistancestd']", "features['blinktimedistancemean']",
+                                                      self.features['blinktimedistancemean'])
+            self.features['blinktimedistancemin']   = minfeat(segments, "features['blinktimedistancemin']", -1)
+            self.features['blinktimedistancemax']   = maxfeat(segments, "features['blinktimedistancemax']")
+        else:
+            self.features['blinkdurationtotal']     = -1
+            self.features['blinkdurationmean']      = -1
+            self.features['blinkdurationstd']       = -1
+            self.features['blinkdurationmin']       = -1
+            self.features['blinkdurationmax']       = -1
+            self.features['blinkrate']              = -1
 
-            self.features['blinktimedistancemean'] = weightedmeanfeat(segments,
-                            "features['numblinks']", "features['blinktimedistancemean']")
-            self.features['blinktimedistancestd'] = aggregatestddevfeat(segments, "features['numblinks']",
-                            "features['blinktimedistancestd']", "features['blinktimedistancemean']", self.features['blinktimedistancemean'])
-            self.features['blinktimedistancemin'] =  minfeat(segments, "features['blinktimedistancemin']", -1)
-            self.features['blinktimedistancemax'] = maxfeat(segments, "features['blinktimedistancemax']")
+            self.features['blinktimedistancemean']  = -1
+            self.features['blinktimedistancestd']   = -1
+            self.features['blinktimedistancemin']   = -1
+            self.features['blinktimedistancemax']   = -1
         """ end  """
 
         """ calculate pupil dilation features (no rest pupil size adjustments yet)"""
 
-        self.numpupilsizes = sumfeat(segments,'numpupilsizes')
+        self.numpupilsizes    = sumfeat(segments,'numpupilsizes')
         self.numpupilvelocity = sumfeat(segments,'numpupilvelocity')
 
         if self.numpupilsizes > 0: # check if scene has any pupil data
