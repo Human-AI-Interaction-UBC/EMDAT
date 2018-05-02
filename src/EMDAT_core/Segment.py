@@ -54,7 +54,7 @@ class Segment():
         has_aois: A boolean indicating if this Segment has AOI features calculated for it
 
     """
-    def __init__(self, segid, all_data, fixation_data, saccade_data = None, event_data = None, aois = None, prune_length = None, rest_pupil_size = 0, export_pupilinfo = False):
+    def __init__(self, segid, all_data, fixation_data, saccade_data = None, event_data = None, aois = None, prune_length = None, rest_pupil_size = 0, export_pupilinfo = False, blink_threshold = (50, 300)):
         """
         Args:
             segid: A string containing the id of the Segment.
@@ -124,7 +124,7 @@ class Segment():
         self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
 
         """ calculate blink features (no rest pupil size adjustments yet)"""
-        self.calc_blink_features()
+        self.calc_blink_features(blink_threshold)
 
         """ calculate pupil dilation features (no rest pupil size adjustments yet)"""
         self.calc_pupil_features(all_data, export_pupilinfo, rest_pupil_size)
@@ -333,7 +333,7 @@ class Segment():
             warn(msg)
 
 
-    def calc_blink_features(self):
+    def calc_blink_features(self, blink_threshold):
         """ Calculates blink features such as
                 blink_num:                 number of blinks on the in the segment
                 blink_duration_total:       sum of the blink durations for this segment
@@ -346,6 +346,8 @@ class Segment():
                 blink_time_distance_std:    std time difference between consequtive blinks
                 blink_time_distance_min:    minimal time difference between consequtive blinks
                 blink_time_distance_max:    maximal time difference between consequtive blinks
+            Args:
+                blink_threshold - tuple(int, int): specifies minimal and maximal blink duration in ms
         """
         blink_durations = [0] * len(self.time_gaps)
         blink_intervals = [0] * (len(self.time_gaps) - 1)
@@ -369,7 +371,7 @@ class Segment():
                 # Calculate time difference between start of current blink and end of previous blink
                 blink_intervals[i - 1] = self.time_gaps[i][0] - self.time_gaps[i - 1][1]
         if len(blink_durations) > 0:
-            self.features['blinknum']              = len(self.time_gaps)
+            self.features['blinknum']               = len(self.time_gaps)
             self.features['blinkdurationtotal']     = sum(blink_durations)
             self.features['blinkdurationmean']      = mean(blink_durations)
             self.features['blinkdurationstd']       = stddev(blink_durations)
