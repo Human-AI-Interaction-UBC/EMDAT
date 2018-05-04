@@ -363,10 +363,11 @@ class Segment():
         self.features['blinktimedistancestd']   = 0
         self.features['blinktimedistancemin']   = 0
         self.features['blinktimedistancemax']   = 0
+        lower_bound, upper_bould = blink_threshold
 
         for i in range(len(self.time_gaps)):
             blink_length = self.time_gaps[i][1] - self.time_gaps[i][0]
-            if blink_length <= blink_threshold[1] and blink_length <= blink_threshold[0]:
+            if blink_length <= upper_bould and blink_length >= lower_bound:
                 blink_durations.append(blink_length)
                 if last_blink_detected != -1:
                     # Calculate time difference between start of current blink and end of previous blink
