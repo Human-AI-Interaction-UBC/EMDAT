@@ -80,6 +80,8 @@ class BasicParticipant(Participant):
                              auto_partition_low_quality_segments, rpsdata)
 
         print "Participant \""+str(pid)+"\"..."
+
+        # print files used
         if params.VERBOSE != "QUIET":
             print "Reading input files:"
             print "--Scenes/Segments file: "+segfile
@@ -92,6 +94,11 @@ class BasicParticipant(Participant):
 
 
         self.features = {}
+
+        """
+        Type of eye tracker that generated the raw data. Must be specified in params.py,
+        so appropriate parser is selected
+        """
         if params.EYETRACKERTYPE == "TobiiV2":
             rec = TobiiV2Recording(datafile, fixfile, event_file=eventfile,
                                    media_offset=params.MEDIA_OFFSET)
@@ -107,10 +114,13 @@ class BasicParticipant(Participant):
         if params.VERBOSE != "QUIET":
             print "Creating partition..."
 
+        # In Participant.py: Get the scenes and segments specified in the segfile
         scenelist, self.numofsegments = partition(segfile)
+
         if self.numofsegments == 0:
             raise Exception("No segments found.")
 
+        # In Recording.py: Read the list of AIOs for this experiment from aoifile
         if aoifile is not None:
             aois = read_aois(aoifile)
         else:
@@ -121,12 +131,16 @@ class BasicParticipant(Participant):
         if params.VERBOSE != "QUIET":
             print "Generating features..."
 
+        # Generate the features for all specified scenes, segments and AOIs
         self.segments, self.scenes = rec.process_rec(scenelist=scenelist, aoilist=aois,
                                                      prune_length=prune_length,
                                                      require_valid_segs=require_valid_segs,
                                                      auto_partition_low_quality_segments=auto_partition_low_quality_segments,
                                                      rpsdata=rpsdata, export_pupilinfo=export_pupilinfo)
+        # Sort segments by their starting timestamp
         all_segs = sorted(self.segments, key=lambda x: x.start)
+
+        # Generate the features for whole datafile
         self.whole_scene = Scene(str(pid)+'_allsc', [], rec.all_data, rec.fix_data,
                                  saccade_data=rec.sac_data, event_data=rec.event_data,
                                  Segments=all_segs, aoilist=aois, prune_length=prune_length,
