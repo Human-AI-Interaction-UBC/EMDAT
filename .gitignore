@@ -2,3 +2,5 @@
 *.pyc
 
 *.pyc
+
+/src/sampledata/blinks

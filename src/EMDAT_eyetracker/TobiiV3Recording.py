@@ -33,7 +33,7 @@ class TobiiV3Recording(Recording):
             last_time = -1
 
             for row in reader:
-                if row["MediaName"] != 'ScreenRec':  # ignore non-recording data point
+                if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
                     continue
                 if not row["ValidityLeft"] or not row["ValidityRight"]: #ignore data point with no validity information
                     continue
@@ -75,7 +75,7 @@ class TobiiV3Recording(Recording):
             currentfix = 0
             reader = csv.DictReader(f, delimiter='\t')
             for row in reader:
-                if row["MediaName"] != 'ScreenRec':  # ignore non-recording data point
+                if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
                     continue
                 if not row["ValidityLeft"] or not row["ValidityRight"] or not row["FixationPointX (MCSpx)"] or not row["FixationPointY (MCSpx)"]: #ignore data point with no information
                     continue
@@ -116,7 +116,7 @@ class TobiiV3Recording(Recording):
             nb_sample = 0
 
             for row in reader:
-                if row["MediaName"] != 'ScreenRec' or not row["EyeTrackerTimestamp"]:  # ignore non-recording data point
+                if row["MediaName"] != 'Screen Recordings (1)' or not row["EyeTrackerTimestamp"]:  # ignore non-recording data point
                     continue
 
                 if in_fixation:
@@ -215,7 +215,7 @@ class TobiiV3Recording(Recording):
         with open(event_file, 'r') as f:
             reader = csv.DictReader(f, delimiter='\t')
             for row in reader:
-                if row["MediaName"] != 'ScreenRec':  # ignore non-recording data point
+                if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
                     continue
                 if row["MouseEventIndex"] : #mouse event
                     data = {"timestamp": EMDAT_core.utils.cast_int(row["RecordingTimestamp"]),

@@ -54,7 +54,7 @@ class Segment():
         has_aois: A boolean indicating if this Segment has AOI features calculated for it
 
     """
-    def __init__(self, segid, all_data, fixation_data, saccade_data = None, event_data = None, aois = None, prune_length = None, rest_pupil_size = 0, export_pupilinfo = False, blink_threshold = (50, 300)):
+    def __init__(self, segid, all_data, fixation_data, saccade_data = None, event_data = None, aois = None, prune_length = None, rest_pupil_size = 0, export_pupilinfo = False, blink_threshold = (100, 250)):
         """
         Args:
             segid: A string containing the id of the Segment.
@@ -364,7 +364,6 @@ class Segment():
         self.features['blinktimedistancemin']   = 0
         self.features['blinktimedistancemax']   = 0
         lower_bound, upper_bould = blink_threshold
-
         for i in range(len(self.time_gaps)):
             blink_length = self.time_gaps[i][1] - self.time_gaps[i][0]
             if blink_length <= upper_bould and blink_length >= lower_bound:
@@ -373,7 +372,6 @@ class Segment():
                     # Calculate time difference between start of current blink and end of previous blink
                     blink_intervals.append(self.time_gaps[i][0] - self.time_gaps[last_blink_detected][1])
                 last_blink_detected = i
-
         if len(blink_durations) > 0:
             self.features['blinknum']               = len(blink_durations)
             self.features['blinkdurationtotal']     = sum(blink_durations)
