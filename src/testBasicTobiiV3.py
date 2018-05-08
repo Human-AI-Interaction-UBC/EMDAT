@@ -12,9 +12,11 @@ from BasicParticipant import *
 from EMDAT_core.Participant import export_features_all, write_features_tsv
 from EMDAT_core.ValidityProcessing import output_Validity_info_Segments, output_percent_discarded, output_Validity_info_Participants
 
-#ul = [16,17,18]
+# user list
 ul = [7, 19, 26, 36, 38, 52, 57]
+# user ids
 uids = ul
+# time offsets from start of the recording
 alogoffset = [0,0,0, 0, 0, 0, 0]
 
 

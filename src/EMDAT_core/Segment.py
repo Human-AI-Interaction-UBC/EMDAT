@@ -94,6 +94,8 @@ class Segment():
         self.features['completion_time'] = self.completion_time
         self.start = all_data[0].timestamp
         self.numfixations = len(fixation_data)
+
+        """ Validity-related features, determining if the segment is valid """
         self.time_gaps = []
         self.all_invalid_gaps = []
         self.largest_data_gap = self.calc_largest_validity_gap(all_data)
@@ -105,6 +107,9 @@ class Segment():
         self.is_valid = self.get_validity()
         self.length_invalid = self.get_length_invalid()
 
+        """ If prune_length specified, keep only data from start to start + prune_length
+            of the segment
+        """
         if prune_length:
             all_data = filter(lambda x: x.timestamp <= self.start + prune_length, all_data)
             fixation_data = filter(lambda x: x.timestamp <= self.start + prune_length, fixation_data)
@@ -183,39 +188,7 @@ class Segment():
         """ end fixations, angles, path """
 
         """ calculate saccades features if available """
-        if saccade_data != None and len(saccade_data) > 0:
-            self.numsaccades = len(saccade_data)
-            self.features['numsaccades'] = self.numsaccades
-            self.features['sumsaccadedistance'] = sum(map(lambda x: float(x.saccadedistance), saccade_data))
-            self.features['meansaccadedistance'] = mean(map(lambda x: float(x.saccadedistance), saccade_data))
-            self.features['stddevsaccadedistance'] = stddev(map(lambda x: float(x.saccadedistance), saccade_data))
-            self.features['longestsaccadedistance'] = max(map(lambda x: float(x.saccadedistance), saccade_data))
-            self.features['sumsaccadeduration'] = sum(map(lambda x: float(x.saccadeduration), saccade_data))
-            self.features['meansaccadeduration'] = mean(map(lambda x: float(x.saccadeduration), saccade_data))
-            self.features['stddevsaccadeduration'] = stddev(map(lambda x: float(x.saccadeduration), saccade_data))
-            self.features['longestsaccadeduration'] = max(map(lambda x: float(x.saccadeduration), saccade_data))
-            self.features['meansaccadespeed'] = mean(map(lambda x: float(x.saccadespeed), saccade_data))
-            self.features['stddevsaccadespeed'] = stddev(map(lambda x: float(x.saccadespeed), saccade_data))
-            self.features['maxsaccadespeed'] = max(map(lambda x: float(x.saccadespeed), saccade_data))
-            self.features['minsaccadespeed'] = min(map(lambda x: float(x.saccadespeed), saccade_data))
-            self.features['fixationsaccadetimeratio'] = float(self.features['sumfixationduration']) / self.features['sumsaccadeduration']
-        else:
-            self.numsaccades = 0
-            self.features['numsaccades'] = 0
-            self.features['sumsaccadedistance'] = -1
-            self.features['meansaccadedistance'] = -1
-            self.features['stddevsaccadedistance'] = -1
-            self.features['longestsaccadedistance'] = -1
-            self.features['sumsaccadeduration'] = -1
-            self.features['meansaccadeduration'] = -1
-            self.features['stddevsaccadeduration'] = -1
-            self.features['longestsaccadeduration'] = -1
-            self.features['meansaccadespeed'] = -1
-            self.features['stddevsaccadespeed'] = -1
-            self.features['maxsaccadespeed'] = -1
-            self.features['minsaccadespeed'] = -1
-            self.features['fixationsaccadetimeratio'] = -1
-        """ end saccade """
+        calc_saccade_features(saccade_data)
 
         """ calculate event features (if available) """
         if event_data != None:
@@ -496,6 +469,58 @@ class Segment():
             self.features['startdistance']      = -1
             self.features['enddistance']        = -1
 
+
+    def calc_saccade_features(self, saccade_data):
+        """ Calculates saccade features such as
+                numsaccades:              number of saccades in the segment
+                sumsaccadedistance:       sum of distances during each saccade
+                meansaccadedistance:      mean of distances during each saccade
+                stddevsaccadedistance:    standard deviation of distances during each saccade
+                longestsaccadedistance:   distance of longest saccade
+                sumsaccadeduration:       total time spent on saccades in this segment
+                meansaccadeduration:      average saccade duration
+                stddevsaccadeduration:    standard deviation of saccade durations
+                longestsaccadeduration:   longest duration of saccades in this segment
+                meansaccadespeed:         average speed of saccades in this segment
+                stddevsaccadespeed:       standard deviation of speed of saccades in this segment
+                maxsaccadespeed:          highest saccade speed in this segment
+                minsaccadespeed:          lowest saccade speed in this  segment
+                fixationsaccadetimeratio: fixation to saccade time ratio for this segment
+            Args:
+                saccade_data: The list of saccade datapoints for this Segment
+        """
+        if saccade_data != None and len(saccade_data) > 0:
+            self.numsaccades = len(saccade_data)
+            self.features['numsaccades'] = self.numsaccades
+            self.features['sumsaccadedistance'] = sum(map(lambda x: float(x.saccadedistance), saccade_data))
+            self.features['meansaccadedistance'] = mean(map(lambda x: float(x.saccadedistance), saccade_data))
+            self.features['stddevsaccadedistance'] = stddev(map(lambda x: float(x.saccadedistance), saccade_data))
+            self.features['longestsaccadedistance'] = max(map(lambda x: float(x.saccadedistance), saccade_data))
+            self.features['sumsaccadeduration'] = sum(map(lambda x: float(x.saccadeduration), saccade_data))
+            self.features['meansaccadeduration'] = mean(map(lambda x: float(x.saccadeduration), saccade_data))
+            self.features['stddevsaccadeduration'] = stddev(map(lambda x: float(x.saccadeduration), saccade_data))
+            self.features['longestsaccadeduration'] = max(map(lambda x: float(x.saccadeduration), saccade_data))
+            self.features['meansaccadespeed'] = mean(map(lambda x: float(x.saccadespeed), saccade_data))
+            self.features['stddevsaccadespeed'] = stddev(map(lambda x: float(x.saccadespeed), saccade_data))
+            self.features['maxsaccadespeed'] = max(map(lambda x: float(x.saccadespeed), saccade_data))
+            self.features['minsaccadespeed'] = min(map(lambda x: float(x.saccadespeed), saccade_data))
+            self.features['fixationsaccadetimeratio'] = float(self.features['sumfixationduration']) / self.features['sumsaccadeduration']
+        else:
+            self.numsaccades = 0
+            self.features['numsaccades'] = 0
+            self.features['sumsaccadedistance'] = -1
+            self.features['meansaccadedistance'] = -1
+            self.features['stddevsaccadedistance'] = -1
+            self.features['longestsaccadedistance'] = -1
+            self.features['sumsaccadeduration'] = -1
+            self.features['meansaccadeduration'] = -1
+            self.features['stddevsaccadeduration'] = -1
+            self.features['longestsaccadeduration'] = -1
+            self.features['meansaccadespeed'] = -1
+            self.features['stddevsaccadespeed'] = -1
+            self.features['maxsaccadespeed'] = -1
+            self.features['minsaccadespeed'] = -1
+            self.features['fixationsaccadetimeratio'] = -1
 
     def calc_validity_proportion(self, all_data):
         """Calculates the proportion of "Datapoint"s which are valid.
