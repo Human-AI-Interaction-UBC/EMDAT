@@ -1,8 +1,2 @@
 pid,is_valid,valid_duration,total_duration,valid_portion
-7,True,234196,234196,1.0
-19,True,271995,271995,1.0
 26,True,350791,350791,1.0
-36,True,256580,256580,1.0
-38,True,229391,229391,1.0
-52,True,880607,880607,1.0
-57,True,261785,261785,1.0

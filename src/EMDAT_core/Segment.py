@@ -188,41 +188,10 @@ class Segment():
         """ end fixations, angles, path """
 
         """ calculate saccades features if available """
-        calc_saccade_features(saccade_data)
+        self.calc_saccade_features(saccade_data)
 
         """ calculate event features (if available) """
-        if event_data != None:
-            (leftc, rightc, doublec, keyp) = generate_event_lists(event_data)
 
-            self.numevents = len(leftc)+len(rightc)+len(doublec)+len(keyp)
-            self.features['numevents'] = self.numevents
-            self.features['numleftclic'] = len(leftc)
-            self.features['numrightclic'] = len(rightc)
-            self.features['numdoubleclic'] = len(doublec)
-            self.features['numkeypressed'] = len(keyp)
-            self.features['leftclicrate'] = float(len(leftc))/(self.length - self.length_invalid)
-            self.features['rightclicrate'] = float(len(rightc))/(self.length - self.length_invalid)
-            self.features['doubleclicrate'] = float(len(doublec))/(self.length - self.length_invalid)
-            self.features['keypressedrate'] = float(len(keyp))/(self.length - self.length_invalid)
-            self.features['timetofirstleftclic'] = leftc[0].timestamp if len(leftc) > 0 else -1
-            self.features['timetofirstrightclic'] = rightc[0].timestamp if len(rightc) > 0 else -1
-            self.features['timetofirstdoubleclic'] = doublec[0].timestamp if len(doublec) > 0 else -1
-            self.features['timetofirstkeypressed'] = keyp[0].timestamp if len(keyp) > 0 else -1
-        else:
-            self.features['numevents'] = 0
-            self.features['numleftclic'] = 0
-            self.features['numrightclic'] = 0
-            self.features['numdoubleclic'] = 0
-            self.features['numkeypressed'] = 0
-            self.features['leftclicrate'] = -1
-            self.features['rightclicrate'] = -1
-            self.features['doubleclicrate'] = -1
-            self.features['keypressedrate'] = -1
-            self.features['timetofirstleftclic'] = -1
-            self.features['timetofirstrightclic'] = -1
-            self.features['timetofirstdoubleclic'] = -1
-            self.features['timetofirstkeypressed'] = -1
-        """ end event """
 
         """ calculate AOIs features """
         self.has_aois = False
@@ -337,14 +306,18 @@ class Segment():
         self.features['blinktimedistancemin']   = 0
         self.features['blinktimedistancemax']   = 0
         lower_bound, upper_bould = blink_threshold
+        #file = open('blinks.txt', 'w')
         for i in range(len(self.time_gaps)):
+
             blink_length = self.time_gaps[i][1] - self.time_gaps[i][0]
             if blink_length <= upper_bould and blink_length >= lower_bound:
                 blink_durations.append(blink_length)
+                #file.write('Blink start, end: %d, %d\n' % (self.time_gaps[i][0], self.time_gaps[i][1]))
                 if last_blink_detected != -1:
                     # Calculate time difference between start of current blink and end of previous blink
                     blink_intervals.append(self.time_gaps[i][0] - self.time_gaps[last_blink_detected][1])
                 last_blink_detected = i
+        #file.close()
         if len(blink_durations) > 0:
             self.features['blinknum']               = len(blink_durations)
             self.features['blinkdurationtotal']     = sum(blink_durations)
@@ -521,6 +494,58 @@ class Segment():
             self.features['maxsaccadespeed'] = -1
             self.features['minsaccadespeed'] = -1
             self.features['fixationsaccadetimeratio'] = -1
+
+
+    def calc_event_features(self, event_data):
+        """ Calculates event features such as
+                numevents:                number of events in the segment
+                numleftclic:              number of left clinks in the segment
+                numrightclic:             number of right clinks in the segment
+                numdoubleclic:            number of double clinks in the segment
+                numkeypressed:            number of times a key was pressed in the segment
+                leftclicrate:             the rate of left clicks (relative to all datapoints) in this segment
+                rightclicrate:            the rate of right clicks (relative to all datapoints) in this segment
+                doubleclicrate:           the rate of double clicks (relative to all datapoints) in this segment
+                keypressedrate:           the rate of key presses (relative to all datapoints) in this segment
+                timetofirstleftclic:      time until the first left click in this segment
+                timetofirstrightclic:     time until the first right click in this segment
+                timetofirstdoubleclic:    time until the first double click in this segment
+                timetofirstkeypressed:    time until the first key pressed in this segment
+            Args:
+                event_data: The list of events for this Segment
+        """
+        if event_data != None:
+            (leftc, rightc, doublec, keyp) = generate_event_lists(event_data)
+
+            self.numevents = len(leftc)+len(rightc)+len(doublec)+len(keyp)
+            self.features['numevents'] = self.numevents
+            self.features['numleftclic'] = len(leftc)
+            self.features['numrightclic'] = len(rightc)
+            self.features['numdoubleclic'] = len(doublec)
+            self.features['numkeypressed'] = len(keyp)
+            self.features['leftclicrate'] = float(len(leftc))/(self.length - self.length_invalid)
+            self.features['rightclicrate'] = float(len(rightc))/(self.length - self.length_invalid)
+            self.features['doubleclicrate'] = float(len(doublec))/(self.length - self.length_invalid)
+            self.features['keypressedrate'] = float(len(keyp))/(self.length - self.length_invalid)
+            self.features['timetofirstleftclic'] = leftc[0].timestamp if len(leftc) > 0 else -1
+            self.features['timetofirstrightclic'] = rightc[0].timestamp if len(rightc) > 0 else -1
+            self.features['timetofirstdoubleclic'] = doublec[0].timestamp if len(doublec) > 0 else -1
+            self.features['timetofirstkeypressed'] = keyp[0].timestamp if len(keyp) > 0 else -1
+        else:
+            self.features['numevents'] = 0
+            self.features['numleftclic'] = 0
+            self.features['numrightclic'] = 0
+            self.features['numdoubleclic'] = 0
+            self.features['numkeypressed'] = 0
+            self.features['leftclicrate'] = -1
+            self.features['rightclicrate'] = -1
+            self.features['doubleclicrate'] = -1
+            self.features['keypressedrate'] = -1
+            self.features['timetofirstleftclic'] = -1
+            self.features['timetofirstrightclic'] = -1
+            self.features['timetofirstdoubleclic'] = -1
+            self.features['timetofirstkeypressed'] = -1
+
 
     def calc_validity_proportion(self, all_data):
         """Calculates the proportion of "Datapoint"s which are valid.
