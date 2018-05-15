@@ -4,7 +4,7 @@ Created on 2015-08-15
 
 Class to read Tobii data (exported with Tobii Studio version 1x and 2x). See sample data in the "sampledata" folder.
 
-Authors: Mike Wu (creator), Sebastien Lalle. 
+Authors: Mike Wu (creator), Sebastien Lalle.
 Institution: The University of British Columbia.
 """
 
@@ -33,7 +33,7 @@ class TobiiV2Recording(Recording):
             last_pupil_left = -1
             last_pupil_right = -1
             last_time = -1
-			
+
             for row in reader:
                 if not row["Number"]:  # ignore invalid data point
                     continue
@@ -47,6 +47,7 @@ class TobiiV2Recording(Recording):
                         "pupilvelocity": get_pupil_velocity(last_pupil_left, last_pupil_right, pupil_left, pupil_right, (timestamp-last_time) ),
                         "distance": get_distance(distance_left, distance_right),
                         "is_valid": cast_int(row["ValidityRight"]) < 2 or cast_int(row["ValidityLeft"]) < 2,
+                        "both_eyes_valid": cast_int(row["ValidityRight"]) < 2 and cast_int(row["ValidityLeft"]) < 2,
                         "stimuliname": row["StimuliName"],
                         "fixationindex": cast_int(row["FixationIndex"]),
                         "gazepointxleft": cast_float(row["GazePointXLeft"])}
@@ -110,7 +111,7 @@ class TobiiV2Recording(Recording):
                 all_event.append(Event(data, self.media_offset))
 
         return all_event
-		
+
     def read_saccade_data(self, saccade_file):
         """ no saccade in data exported from Tobii Studio V1-V2
         """

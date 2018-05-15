@@ -14,7 +14,7 @@ import geometry
 from AOI import *
 from warnings import warn
 from AOI import AOI, _fixation_inside_aoi
-
+from math import isnan
 
 class Segment():
     """A Segment is a class that represents the smallest unit of aggregated eye data samples with a conceptual meaning.
@@ -52,9 +52,8 @@ class Segment():
         fixation_end: timestamp of the last entry from list of "Fixation"s for this Segment
         aoi_data: A list of AOI_Stat objects for relevant "AOI"s for this Segment
         has_aois: A boolean indicating if this Segment has AOI features calculated for it
-
     """
-    def __init__(self, segid, all_data, fixation_data, saccade_data = None, event_data = None, aois = None, prune_length = None, rest_pupil_size = 0, export_pupilinfo = False, blink_threshold = (100, 250)):
+    def __init__(self, segid, all_data, fixation_data, saccade_data = None, event_data = None, aois = None, prune_length = None, rest_pupil_size = 0, export_pupilinfo = False):
         """
         Args:
             segid: A string containing the id of the Segment.
@@ -129,7 +128,8 @@ class Segment():
         self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
 
         """ calculate blink features (no rest pupil size adjustments yet)"""
-        self.calc_blink_features(blink_threshold)
+        """ TODO REMOVE  ALL_DATA"""
+        self.calc_blink_features()
 
         """ calculate pupil dilation features (no rest pupil size adjustments yet)"""
         self.calc_pupil_features(all_data, export_pupilinfo, rest_pupil_size)
@@ -138,67 +138,19 @@ class Segment():
         self.calc_distance_features(all_data)
 
         """ calculate fixations, angles and path features"""
-        if self.numfixations > 0:
-            self.fixation_start = fixation_data[0].timestamp
-            self.fixation_end = fixation_data[-1].timestamp
-            self.features['meanfixationduration'] = mean(map(lambda x: float(x.fixationduration), fixation_data))
-            self.features['stddevfixationduration'] = stddev(map(lambda x: float(x.fixationduration), fixation_data))
-            self.features['sumfixationduration'] = sum(map(lambda x: x.fixationduration, fixation_data))
-            self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
-            distances = self.calc_distances(fixation_data)
-            abs_angles = self.calc_abs_angles(fixation_data)
-            rel_angles = self.calc_rel_angles(fixation_data)
-        else:
-            self.fixation_start = -1
-            self.fixation_end = -1
-            self.features['meanfixationduration'] = -1
-            self.features['stddevfixationduration'] = -1
-            self.features['sumfixationduration'] = -1
-            self.features['fixationrate'] = -1
-
-        self.numfixdistances = len(distances)
-        self.numabsangles = len(abs_angles)
-        self.numrelangles = len(rel_angles)
-        if len(distances) > 0:
-            self.features['meanpathdistance'] = mean(distances)
-            self.features['sumpathdistance'] = sum(distances)
-            self.features['stddevpathdistance'] = stddev(distances)
-            self.features['eyemovementvelocity'] = self.features['sumpathdistance']/(self.length - self.length_invalid)
-            self.features['sumabspathangles'] = sum(abs_angles)
-            self.features['abspathanglesrate'] = sum(abs_angles)/(self.length - self.length_invalid)
-            self.features['meanabspathangles'] = mean(abs_angles)
-            self.features['stddevabspathangles'] = stddev(abs_angles)
-            self.features['sumrelpathangles'] = sum(rel_angles)
-            self.features['relpathanglesrate'] = sum(rel_angles)/(self.length - self.length_invalid)
-            self.features['meanrelpathangles'] = mean(rel_angles)
-            self.features['stddevrelpathangles'] = stddev(rel_angles)
-        else:
-            self.features['meanpathdistance'] = -1
-            self.features['sumpathdistance'] = -1
-            self.features['stddevpathdistance'] = -1
-            self.features['eyemovementvelocity'] = -1
-            self.features['sumabspathangles'] = -1
-            self.features['abspathanglesrate'] = -1
-            self.features['meanabspathangles'] = -1
-            self.features['stddevabspathangles'] = -1
-            self.features['sumrelpathangles'] = -1
-            self.features['relpathanglesrate'] = -1
-            self.features['meanrelpathangles'] = -1
-            self.features['stddevrelpathangles'] = -1
-        """ end fixations, angles, path """
+        self.calc_fix_ang_path_features(fixation_data)
 
         """ calculate saccades features if available """
         self.calc_saccade_features(saccade_data)
 
-        """ calculate event features (if available) """
-
+        """ calculate event features if available """
+        self.calc_event_features(event_data)
 
         """ calculate AOIs features """
         self.has_aois = False
         if aois:
             self.set_aois(aois, all_data, fixation_data, event_data, rest_pupil_size, export_pupilinfo)
             self.features['aoisequence'] = self.generate_aoi_sequence(fixation_data, aois)
-        """ end AOIs """
 
 
     def set_indices(self,sample_st,sample_end,fix_st,fix_end,sac_st=None,sac_end=None,event_st=None,event_end=None):
@@ -274,8 +226,7 @@ class Segment():
             msg = "No active AOIs passed to segment:%s start:%d end:%d" %(self.segid,self.start,self.end)
             warn(msg)
 
-
-    def calc_blink_features(self, blink_threshold):
+    def calc_blink_features(self):
         """ Calculates blink features such as
                 blink_num:                 number of blinks on the in the segment
                 blink_duration_total:       sum of the blink durations for this segment
@@ -288,8 +239,6 @@ class Segment():
                 blink_time_distance_std:    std time difference between consequtive blinks
                 blink_time_distance_min:    minimal time difference between consequtive blinks
                 blink_time_distance_max:    maximal time difference between consequtive blinks
-            Args:
-                blink_threshold - tuple(int, int): specifies minimal and maximal blink duration respectively in ms
         """
         blink_durations = []
         blink_intervals = []
@@ -305,14 +254,15 @@ class Segment():
         self.features['blinktimedistancestd']   = 0
         self.features['blinktimedistancemin']   = 0
         self.features['blinktimedistancemax']   = 0
-        lower_bound, upper_bould = blink_threshold
-        #file = open('blinks.txt', 'w')
+        lower_bound, upper_bould = params.blink_threshold
+        ### File operations are for testing
+        #file = open('outputfolder/blinks/blinks_%s.txt' % all_data[0].participant_name, 'w')
         for i in range(len(self.time_gaps)):
 
             blink_length = self.time_gaps[i][1] - self.time_gaps[i][0]
             if blink_length <= upper_bould and blink_length >= lower_bound:
                 blink_durations.append(blink_length)
-                #file.write('Blink start, end: %d, %d\n' % (self.time_gaps[i][0], self.time_gaps[i][1]))
+                #file.write('Blink start, end: %d %d\n' % (self.time_gaps[i][0], self.time_gaps[i][1]))
                 if last_blink_detected != -1:
                     # Calculate time difference between start of current blink and end of previous blink
                     blink_intervals.append(self.time_gaps[i][0] - self.time_gaps[last_blink_detected][1])
@@ -401,7 +351,6 @@ class Segment():
                 self.features['stddevpupilvelocity'] = stddev(valid_pupil_velocity)
                 self.features['maxpupilvelocity']    = max(valid_pupil_velocity)
                 self.features['minpupilvelocity']    = min(valid_pupil_velocity)
-
 
     def calc_distance_features(self, all_data):
         """ Calculates distance features such as
@@ -496,6 +445,73 @@ class Segment():
             self.features['fixationsaccadetimeratio'] = -1
 
 
+    def calc_fix_ang_path_features(self, fixation_data):
+        """ Calculates fixation, angle and path features such as
+                meanfixationduration:     mean duration of fixations in the segment
+                stddevfixationduration    standard deviation of duration of fixations in the segment
+                sumfixationduration:      sum of durations of fixations in the segment
+                fixationrate:             rate of fixation datapoints relative to all datapoints in this segment
+                meanpathdistance:         mean of path distances for this segment
+                sumpathdistance:          sum of path distances for this segment
+                eyemovementvelocity:      average eye movement velocity for this segment
+                sumabspathangles:         sum of absolute path angles for this segment
+                abspathanglesrate:        ratio of absolute path angles relative to all datapoints in this segment
+                stddevabspathangles:      standard deviation of absolute path angles for this segment
+                sumrelpathangles:         sum of relative path angles for this segment
+                relpathanglesrate:        ratio of relative path angles relative to all datapoints in this segment
+                stddevrelpathangles:      standard deviation of relative path angles for this segment
+            Args:
+                saccade_data: The list of saccade datapoints for this Segment
+        """
+        if self.numfixations > 0:
+            self.fixation_start = fixation_data[0].timestamp
+            self.fixation_end = fixation_data[-1].timestamp
+            self.features['meanfixationduration'] = mean(map(lambda x: float(x.fixationduration), fixation_data))
+            self.features['stddevfixationduration'] = stddev(map(lambda x: float(x.fixationduration), fixation_data))
+            self.features['sumfixationduration'] = sum(map(lambda x: x.fixationduration, fixation_data))
+            self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
+            distances = self.calc_distances(fixation_data)
+            abs_angles = self.calc_abs_angles(fixation_data)
+            rel_angles = self.calc_rel_angles(fixation_data)
+        else:
+            self.fixation_start = -1
+            self.fixation_end = -1
+            self.features['meanfixationduration'] = -1
+            self.features['stddevfixationduration'] = -1
+            self.features['sumfixationduration'] = -1
+            self.features['fixationrate'] = -1
+
+        self.numfixdistances = len(distances)
+        self.numabsangles = len(abs_angles)
+        self.numrelangles = len(rel_angles)
+        if len(distances) > 0:
+            self.features['meanpathdistance'] = mean(distances)
+            self.features['sumpathdistance'] = sum(distances)
+            self.features['stddevpathdistance'] = stddev(distances)
+            self.features['eyemovementvelocity'] = self.features['sumpathdistance']/(self.length - self.length_invalid)
+            self.features['sumabspathangles'] = sum(abs_angles)
+            self.features['abspathanglesrate'] = sum(abs_angles)/(self.length - self.length_invalid)
+            self.features['meanabspathangles'] = mean(abs_angles)
+            self.features['stddevabspathangles'] = stddev(abs_angles)
+            self.features['sumrelpathangles'] = sum(rel_angles)
+            self.features['relpathanglesrate'] = sum(rel_angles)/(self.length - self.length_invalid)
+            self.features['meanrelpathangles'] = mean(rel_angles)
+            self.features['stddevrelpathangles'] = stddev(rel_angles)
+        else:
+            self.features['meanpathdistance'] = -1
+            self.features['sumpathdistance'] = -1
+            self.features['stddevpathdistance'] = -1
+            self.features['eyemovementvelocity'] = -1
+            self.features['sumabspathangles'] = -1
+            self.features['abspathanglesrate'] = -1
+            self.features['meanabspathangles'] = -1
+            self.features['stddevabspathangles'] = -1
+            self.features['sumrelpathangles'] = -1
+            self.features['relpathanglesrate'] = -1
+            self.features['meanrelpathangles'] = -1
+            self.features['stddevrelpathangles'] = -1
+
+
     def calc_event_features(self, event_data):
         """ Calculates event features such as
                 numevents:                number of events in the segment
@@ -561,6 +577,7 @@ class Segment():
 
         for d in all_data:
             #if d.stimuliname == 'ScreenRec':
+            #if d.stimuliname == 'Screen Recordings (1)'
             if d.stimuliname != '':
                 num += 1
                 if d.is_valid:
@@ -571,6 +588,7 @@ class Segment():
             return 0.0
         else:
             return num_valid / num
+
 
     def calc_largest_validity_gap(self, all_data):
         """Calculates the largest gap of invalid samples in the "Datapoint"s for this Segment.

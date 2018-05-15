@@ -122,6 +122,8 @@ aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames)
 #list of transition-based AOI features (proportion)
 aoiproportion = map(lambda x:'proptransfrom_'+x, aoinames)
 
+# lower and  upper bound on size of invalid data gaps to be treated as blinks
+blink_threshold = (50, 500)
 
 # Generating a list of all AOI-based features (including transitions)
 aoifeaturelist =[]

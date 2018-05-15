@@ -33,6 +33,7 @@ class TobiiV3Recording(Recording):
             last_time = -1
 
             for row in reader:
+                #if row["MediaName"] != 'ScreenRec':
                 if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
                     continue
                 if not row["ValidityLeft"] or not row["ValidityRight"]: #ignore data point with no validity information
@@ -44,11 +45,13 @@ class TobiiV3Recording(Recording):
                 distance_left = EMDAT_core.utils.cast_float(row["DistanceLeft"], -1)
                 distance_right = EMDAT_core.utils.cast_float(row["DistanceRight"], -1)
                 timestamp = EMDAT_core.utils.cast_int(row["RecordingTimestamp"])
-                data = {"timestamp": timestamp,
+                data = {'participant_name': row["ParticipantName"],
+                        "timestamp": timestamp,
                         "pupilsize": EMDAT_core.Recording.get_pupil_size(pupil_left, pupil_right),
                         "pupilvelocity": EMDAT_core.Recording.get_pupil_velocity(last_pupil_left, last_pupil_right, pupil_left, pupil_right, (timestamp-last_time) ),
                         "distance": EMDAT_core.Recording.get_distance(distance_left, distance_right),
                         "is_valid": EMDAT_core.utils.cast_int(row["ValidityRight"]) < 2 or EMDAT_core.utils.cast_int(row["ValidityLeft"]) < 2,
+                        "both_eyes_valid": EMDAT_core.utils.cast_int(row["ValidityRight"]) < 2 and EMDAT_core.utils.cast_int(row["ValidityLeft"]) < 2,
                         "stimuliname": row["MediaName"],
                         "fixationindex": EMDAT_core.utils.cast_int(row["FixationIndex"]),
                         "gazepointx": gaze_point_x,
@@ -75,6 +78,7 @@ class TobiiV3Recording(Recording):
             currentfix = 0
             reader = csv.DictReader(f, delimiter='\t')
             for row in reader:
+                #if row["MediaName"] != 'ScreenRec':
                 if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
                     continue
                 if not row["ValidityLeft"] or not row["ValidityRight"] or not row["FixationPointX (MCSpx)"] or not row["FixationPointY (MCSpx)"]: #ignore data point with no information
@@ -116,6 +120,7 @@ class TobiiV3Recording(Recording):
             nb_sample = 0
 
             for row in reader:
+                #if row["MediaName"] != 'ScreenRec':
                 if row["MediaName"] != 'Screen Recordings (1)' or not row["EyeTrackerTimestamp"]:  # ignore non-recording data point
                     continue
 
@@ -215,6 +220,7 @@ class TobiiV3Recording(Recording):
         with open(event_file, 'r') as f:
             reader = csv.DictReader(f, delimiter='\t')
             for row in reader:
+                #if row["MediaName"] != 'ScreenRec':
                 if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
                     continue
                 if row["MouseEventIndex"] : #mouse event

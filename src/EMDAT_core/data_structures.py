@@ -37,10 +37,12 @@ class Datapoint:
         self.pupilvelocity = data.get("pupilvelocity", None)
         self.distance = data.get("distance", None)
         self.is_valid = data.get("is_valid", None)
+        self.both_eyes_valid = data.get("both_eyes_valid", None)
         self.stimuliname = data.get("stimuliname", None)
         self.fixationindex = data.get("fixationindex", None)
         self.gazepointx = data.get("gazepointx", None)
         self.gazepointy = data.get("gazepointy", None)
+        #self.participant_name = data.get("participant_name", None)
         self.segid = None
 
     def get_string(self, sep='\t'):
