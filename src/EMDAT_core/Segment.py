@@ -248,13 +248,13 @@ class Segment():
         self.features['blinkdurationtotal']     = 0
         self.features['blinkdurationmean']      = 0
         self.features['blinkdurationstd']       = 0
-        self.features['blinkdurationmin']       = 0
-        self.features['blinkdurationmax']       = 0
-        self.features['blinkrate']              = 0
-        self.features['blinktimedistancemean']  = 0
-        self.features['blinktimedistancestd']   = 0
-        self.features['blinktimedistancemin']   = 0
-        self.features['blinktimedistancemax']   = 0
+        self.features['blinkdurationmin']       = -1
+        self.features['blinkdurationmax']       = -1
+        self.features['blinkrate']              = -1
+        self.features['blinktimedistancemean']  = -1
+        self.features['blinktimedistancestd']   = -1
+        self.features['blinktimedistancemin']   = -1
+        self.features['blinktimedistancemax']   = -1
         lower_bound, upper_bould = params.blink_threshold
         ### File operations are for testing
         #file = open('outputfolder/blinks/blinks_%s.txt' % all_data[0].participant_name, 'w
@@ -278,7 +278,13 @@ class Segment():
             self.features['blinkdurationmin']       = min(blink_durations)
             self.features['blinkdurationmax']       = max(blink_durations)
             self.features['blinkrate']              = float(self.features['blinknum']) / (self.length - self.length_invalid)
-
+        else:
+            print("BLINK DURATIONS NONZERO")
+            print("BLINK DURATIONS NONZERO")
+            print("BLINK DURATIONS NONZERO")
+            print("BLINK DURATIONS NONZERO")
+            print("BLINK DURATIONS NONZERO")
+            print("BLINK DURATIONS NONZERO")
         if len(blink_intervals) > 0:
             self.features['blinktimedistancemean']  = mean(blink_intervals)
             self.features['blinktimedistancestd']   = stddev(blink_intervals)
