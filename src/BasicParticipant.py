@@ -233,6 +233,7 @@ def read_participants_Basic(datadir, user_list, pids, prune_length=None, aoifile
             segfile = "{dir}/TobiiV3_sample_{rec}.segs".format(dir=datadir, rec=rec)
         elif params.EYETRACKERTYPE == "SMI":
             allfile = "{dir}/SMI_Sample_{rec}_Samples.txt".format(dir=datadir, rec=rec)
+            print(allfile)
             fixfile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
             sacfile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
             evefile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)

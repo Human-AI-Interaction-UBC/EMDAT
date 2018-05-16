@@ -259,16 +259,26 @@ class Segment():
         ### File operations are for testing
         #file = open('outputfolder/blinks/blinks_%s.txt' % all_data[0].participant_name, 'w
         blinks_validity_gaps = self.calc_blink_validity_gaps(all_data)
-        for i in range(len(blinks_validity_gaps)):
-
-            blink_length = blinks_validity_gaps[i][1] - blinks_validity_gaps[i][0]
-            if blink_length <= upper_bould and blink_length >= lower_bound:
+        if params.EYETRACKERTYPE == "SMI":
+            for i in range(len(blinks_validity_gaps)):
+                blink_length = blinks_validity_gaps[i][1] - blinks_validity_gaps[i][0]
                 blink_durations.append(blink_length)
                 #file.write('Blink start, end: %d %d\n' % (self.time_gaps[i][0], self.time_gaps[i][1]))
                 if last_blink_detected != -1:
                     # Calculate time difference between start of current blink and end of previous blink
                     blink_intervals.append(blinks_validity_gaps[i][0] - blinks_validity_gaps[last_blink_detected][1])
                 last_blink_detected = i
+        else:
+            for i in range(len(blinks_validity_gaps)):
+                blink_length = blinks_validity_gaps[i][1] - blinks_validity_gaps[i][0]
+                if blink_length <= upper_bould and blink_length >= lower_bound:
+                    blink_durations.append(blink_length)
+                    #file.write('Blink start, end: %d %d\n' % (self.time_gaps[i][0], self.time_gaps[i][1]))
+                    if last_blink_detected != -1:
+                        # Calculate time difference between start of current blink and end of previous blink
+                        blink_intervals.append(blinks_validity_gaps[i][0] - blinks_validity_gaps[last_blink_detected][1])
+                    last_blink_detected = i
+
         #file.close()
         if len(blink_durations) > 0:
             self.features['blinknum']               = len(blink_durations)
@@ -278,13 +288,6 @@ class Segment():
             self.features['blinkdurationmin']       = min(blink_durations)
             self.features['blinkdurationmax']       = max(blink_durations)
             self.features['blinkrate']              = float(self.features['blinknum']) / (self.length - self.length_invalid)
-        else:
-            print("BLINK DURATIONS NONZERO")
-            print("BLINK DURATIONS NONZERO")
-            print("BLINK DURATIONS NONZERO")
-            print("BLINK DURATIONS NONZERO")
-            print("BLINK DURATIONS NONZERO")
-            print("BLINK DURATIONS NONZERO")
         if len(blink_intervals) > 0:
             self.features['blinktimedistancemean']  = mean(blink_intervals)
             self.features['blinktimedistancestd']   = stddev(blink_intervals)
