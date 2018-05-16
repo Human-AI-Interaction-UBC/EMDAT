@@ -11,15 +11,15 @@ Institution: The University of British Columbia.
 # ####################### Eye tracker type and path ##############################################################
 
 # the folder that has the files exported from eye trackers
-EYELOGDATAFOLDER = "./sampledata"
+EYELOGDATAFOLDER = "./sampledata/blinks"
 
 # the folder that has the external log files
 EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
 
 # the eye tracker and/or software used to collect and export the data
 #EYETRACKERTYPE = "TobiiV2" #Tobii Studio version 1x and 2x
-#EYETRACKERTYPE = "TobiiV3" #Tobii Studio version 3x
-EYETRACKERTYPE = "SMI" # SMI/BeGaze
+EYETRACKERTYPE = "TobiiV3" #Tobii Studio version 3x
+#EYETRACKERTYPE = "SMI" # SMI/BeGaze
 
 
 # ####################### Eye tracker specific parameters ##############################################################
@@ -123,7 +123,7 @@ aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames)
 aoiproportion = map(lambda x:'proptransfrom_'+x, aoinames)
 
 # lower and  upper bound on size of invalid data gaps to be treated as blinks
-blink_threshold = (50, 500)
+blink_threshold = (100, 300)
 
 # Generating a list of all AOI-based features (including transitions)
 aoifeaturelist =[]

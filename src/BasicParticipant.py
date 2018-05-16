@@ -219,13 +219,6 @@ def read_participants_Basic(datadir, user_list, pids, prune_length=None, aoifile
             segfile = datadir+'/P'+str(rec)+'.seg'
         elif params.EYETRACKERTYPE == "TobiiV3":
             allfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
-            print("ATTENTION ALLFILE")
-            print("ATTENTION ALLFILE")
-            print("ATTENTION ALLFILE")
-            print(allfile)
-            print("ATTENTION ALLFILE")
-            print("ATTENTION ALLFILE")
-            print("ATTENTION ALLFILE")
             fixfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
             sacfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
             evefile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
