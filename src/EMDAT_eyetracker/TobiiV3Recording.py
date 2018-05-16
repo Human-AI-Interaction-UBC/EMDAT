@@ -51,7 +51,7 @@ class TobiiV3Recording(Recording):
                         "pupilvelocity": EMDAT_core.Recording.get_pupil_velocity(last_pupil_left, last_pupil_right, pupil_left, pupil_right, (timestamp-last_time) ),
                         "distance": EMDAT_core.Recording.get_distance(distance_left, distance_right),
                         "is_valid": EMDAT_core.utils.cast_int(row["ValidityRight"]) < 2 or EMDAT_core.utils.cast_int(row["ValidityLeft"]) < 2,
-                        "both_eyes_valid": EMDAT_core.utils.cast_int(row["ValidityRight"]) < 2 and EMDAT_core.utils.cast_int(row["ValidityLeft"]) < 2,
+                        "is_valid_blink": EMDAT_core.utils.cast_int(row["ValidityRight"]) < 2 and EMDAT_core.utils.cast_int(row["ValidityLeft"]) < 2,
                         "stimuliname": row["MediaName"],
                         "fixationindex": EMDAT_core.utils.cast_int(row["FixationIndex"]),
                         "gazepointx": gaze_point_x,

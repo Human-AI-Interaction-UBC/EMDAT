@@ -47,7 +47,7 @@ class TobiiV2Recording(Recording):
                         "pupilvelocity": get_pupil_velocity(last_pupil_left, last_pupil_right, pupil_left, pupil_right, (timestamp-last_time) ),
                         "distance": get_distance(distance_left, distance_right),
                         "is_valid": cast_int(row["ValidityRight"]) < 2 or cast_int(row["ValidityLeft"]) < 2,
-                        "both_eyes_valid": cast_int(row["ValidityRight"]) < 2 and cast_int(row["ValidityLeft"]) < 2,
+                        "is_valid_blink": cast_int(row["ValidityRight"]) < 2 and cast_int(row["ValidityLeft"]) < 2,
                         "stimuliname": row["StimuliName"],
                         "fixationindex": cast_int(row["FixationIndex"]),
                         "gazepointxleft": cast_float(row["GazePointXLeft"])}

@@ -128,8 +128,7 @@ class Segment():
         self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
 
         """ calculate blink features (no rest pupil size adjustments yet)"""
-        """ TODO REMOVE  ALL_DATA"""
-        self.calc_blink_features()
+        self.calc_blink_features(all_data)
 
         """ calculate pupil dilation features (no rest pupil size adjustments yet)"""
         self.calc_pupil_features(all_data, export_pupilinfo, rest_pupil_size)
@@ -226,7 +225,7 @@ class Segment():
             msg = "No active AOIs passed to segment:%s start:%d end:%d" %(self.segid,self.start,self.end)
             warn(msg)
 
-    def calc_blink_features(self):
+    def calc_blink_features(self, all_data):
         """ Calculates blink features such as
                 blink_num:                 number of blinks on the in the segment
                 blink_duration_total:       sum of the blink durations for this segment
@@ -239,6 +238,8 @@ class Segment():
                 blink_time_distance_std:    std time difference between consequtive blinks
                 blink_time_distance_min:    minimal time difference between consequtive blinks
                 blink_time_distance_max:    maximal time difference between consequtive blinks
+            Args:
+                all_data: The list of "Datapoint"s which make up this Segment
         """
         blink_durations = []
         blink_intervals = []
@@ -256,16 +257,17 @@ class Segment():
         self.features['blinktimedistancemax']   = 0
         lower_bound, upper_bould = params.blink_threshold
         ### File operations are for testing
-        #file = open('outputfolder/blinks/blinks_%s.txt' % all_data[0].participant_name, 'w')
-        for i in range(len(self.time_gaps)):
+        #file = open('outputfolder/blinks/blinks_%s.txt' % all_data[0].participant_name, 'w
+        blinks_validity_gaps = self.calc_blink_validity_gaps(all_data)
+        for i in range(len(blinks_validity_gaps)):
 
-            blink_length = self.time_gaps[i][1] - self.time_gaps[i][0]
+            blink_length = blinks_validity_gaps[i][1] - blinks_validity_gaps[i][0]
             if blink_length <= upper_bould and blink_length >= lower_bound:
                 blink_durations.append(blink_length)
                 #file.write('Blink start, end: %d %d\n' % (self.time_gaps[i][0], self.time_gaps[i][1]))
                 if last_blink_detected != -1:
                     # Calculate time difference between start of current blink and end of previous blink
-                    blink_intervals.append(self.time_gaps[i][0] - self.time_gaps[last_blink_detected][1])
+                    blink_intervals.append(blinks_validity_gaps[i][0] - blinks_validity_gaps[last_blink_detected][1])
                 last_blink_detected = i
         #file.close()
         if len(blink_durations) > 0:
@@ -622,6 +624,34 @@ class Segment():
                     self.time_gaps.append((gap_start, d.timestamp))
             dindex += 1
         return max_size
+
+
+    def calc_blink_validity_gaps(self, all_data):
+        """Calculates the blink validity gaps for this segment
+
+        Args:
+            all_data: The list of "Datapoint"s which make up this Segement
+
+        Returns:
+            An array for tuples (int, int) indicating beginning and end timestamps for each contiguous invalid group of rows
+        """
+
+        blinks_validity_gaps = []
+        dindex = 0
+        datalen = len(all_data)
+        while dindex < datalen:
+            d = all_data[dindex]
+            while d.is_valid_blink and (dindex < datalen - 1):
+                dindex += 1
+                d = all_data[dindex]
+            if not (d.is_valid_blink):
+                gap_start = d.timestamp
+                while not (d.is_valid_blink) and (dindex < datalen - 1):
+                    dindex += 1
+                    d = all_data[dindex]
+                blinks_validity_gaps.append((gap_start, d.timestamp))
+            dindex += 1
+        return blinks_validity_gaps
 
     def getgaps(self):
         """Returns the list of invalid gaps > params.MAX_SEG_TIMEGAP for this Segment
