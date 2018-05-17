@@ -37,6 +37,7 @@ class Datapoint:
         self.pupilvelocity = data.get("pupilvelocity", None)
         self.distance = data.get("distance", None)
         self.is_valid = data.get("is_valid", None)
+        self.is_valid_blink = data.get("is_valid_blink", None)
         self.stimuliname = data.get("stimuliname", None)
         self.fixationindex = data.get("fixationindex", None)
         self.gazepointx = data.get("gazepointx", None)

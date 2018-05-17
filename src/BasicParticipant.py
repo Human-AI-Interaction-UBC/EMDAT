@@ -10,7 +10,7 @@ Institution: The University of British Columbia.
 from math import ceil, floor
 import os.path
 
-params=__import__('params')
+params = __import__('params')
 from EMDAT_core.data_structures import *
 from EMDAT_core.Participant import *
 from EMDAT_core.Recording import *
@@ -27,27 +27,34 @@ class BasicParticipant(Participant):
     This is a sample child class based on the Participant class that implements all the
     placeholder methods in the Participant class for a basic project
     """
-    def __init__(self, pid, eventfile, datafile, fixfile, saccfile, segfile, log_time_offset = None, aoifile = None, prune_length= None,
-                 require_valid_segs = True, auto_partition_low_quality_segments = False, rpsdata = None, export_pupilinfo = False):
+    def __init__(self, pid, eventfile, datafile, fixfile, saccfile, segfile,
+                 log_time_offset=None, aoifile=None, prune_length=None,
+                 require_valid_segs=True, auto_partition_low_quality_segments=False,
+                 rpsdata=None, export_pupilinfo=False):
         """Inits BasicParticipant class
         Args:
             pid: Participant id
 
-            eventfile: a string containing the name of the event file for this participant (None if no event)
+            eventfile: a string containing the name of the event file
+                       for this participant (None if no event)
 
-            datafile: a string containing the name of the gaze sample file for this participant
+            datafile: a string containing the name of the gaze sample file
+                      for this participant
 
-            fixfile: a string containing the name of the fixation file for this participant
+            fixfile: a string containing the name of the fixation file
+                     for this participant
 
-			saccfile: a string containing the name of the saccade file for this participant (None if no saccades)
+			saccfile: a string containing the name of the saccade file
+                      for this participant (None if no saccades)
 
-            segfile: a string containing the name of the '.seg' file for this participant
+            segfile: a string containing the name of the '.seg' file
+                     for this participant
 
-            log_time_offset: If not None, an integer indicating the time offset between the
-                external log file and eye tracking logs
+            log_time_offset: If not None, an integer indicating the time offset
+                     between the external log file and eye tracking logs
 
             aoifile: If not None, a string containing the name of the '.aoi' file
-                with definitions of the "AOI"s.
+                    with definitions of the "AOI"s.
 
             prune_length: If not None, an integer that specifies the time
                 interval (in ms) from the beginning of each Segment in which
@@ -67,11 +74,14 @@ class BasicParticipant(Participant):
             a BasicParticipant object
         """
 
-
-        Participant.__init__(self, pid, eventfile, datafile, fixfile, saccfile, segfile, log_time_offset, aoifile, prune_length,
-                 require_valid_segs, auto_partition_low_quality_segments, rpsdata)   #calling the Participant's constructor
+        # calling the Participant's constructor
+        Participant.__init__(self, pid, eventfile, datafile, fixfile, saccfile, segfile,
+                             log_time_offset, aoifile, prune_length, require_valid_segs,
+                             auto_partition_low_quality_segments, rpsdata)
 
         print "Participant \""+str(pid)+"\"..."
+
+        # print files used
         if params.VERBOSE != "QUIET":
             print "Reading input files:"
             print "--Scenes/Segments file: "+segfile
@@ -83,23 +93,34 @@ class BasicParticipant(Participant):
             print
 
 
-        self.features={}
+        self.features = {}
+
+        """
+        Type of eye tracker that generated the raw data. Must be specified in params.py,
+        so appropriate parser is selected
+        """
         if params.EYETRACKERTYPE == "TobiiV2":
-            rec = TobiiV2Recording(datafile, fixfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
+            rec = TobiiV2Recording(datafile, fixfile, event_file=eventfile,
+                                   media_offset=params.MEDIA_OFFSET)
         elif params.EYETRACKERTYPE == "TobiiV3":
-            rec = TobiiV3Recording(datafile, fixfile, saccade_file=saccfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
+            rec = TobiiV3Recording(datafile, fixfile, saccade_file=saccfile,
+                                   event_file=eventfile, media_offset=params.MEDIA_OFFSET)
         elif params.EYETRACKERTYPE == "SMI":
-            rec = SMIRecording(datafile, fixfile, saccade_file=saccfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
+            rec = SMIRecording(datafile, fixfile, saccade_file=saccfile, event_file=eventfile,
+                               media_offset=params.MEDIA_OFFSET)
         else:
             raise Exception("Unknown eye tracker type.")
 
         if params.VERBOSE != "QUIET":
             print "Creating partition..."
 
-        scenelist,self.numofsegments = partition(segfile)
+        # In Participant.py: Get the scenes and segments specified in the segfile
+        scenelist, self.numofsegments = partition(segfile)
+
         if self.numofsegments == 0:
             raise Exception("No segments found.")
 
+        # In Recording.py: Read the list of AIOs for this experiment from aoifile
         if aoifile is not None:
             aois = read_aois(aoifile)
         else:
@@ -110,11 +131,21 @@ class BasicParticipant(Participant):
         if params.VERBOSE != "QUIET":
             print "Generating features..."
 
-        self.segments, self.scenes = rec.process_rec(scenelist = scenelist,aoilist = aois,prune_length = prune_length, require_valid_segs = require_valid_segs,
-                                                     auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = rpsdata, export_pupilinfo=export_pupilinfo)
+        # Generate the features for all specified scenes, segments and AOIs
+        self.segments, self.scenes = rec.process_rec(scenelist=scenelist, aoilist=aois,
+                                                     prune_length=prune_length,
+                                                     require_valid_segs=require_valid_segs,
+                                                     auto_partition_low_quality_segments=auto_partition_low_quality_segments,
+                                                     rpsdata=rpsdata, export_pupilinfo=export_pupilinfo)
+        # Sort segments by their starting timestamp
         all_segs = sorted(self.segments, key=lambda x: x.start)
-        self.whole_scene = Scene(str(pid)+'_allsc',[],rec.all_data,rec.fix_data, saccade_data = rec.sac_data, event_data = rec.event_data, Segments = all_segs, aoilist = aois,prune_length = prune_length, require_valid = require_valid_segs, export_pupilinfo=export_pupilinfo )
-        self.scenes.insert(0,self.whole_scene)
+
+        # Generate the features for whole datafile
+        self.whole_scene = Scene(str(pid)+'_allsc', [], rec.all_data, rec.fix_data,
+                                 saccade_data=rec.sac_data, event_data=rec.event_data,
+                                 Segments=all_segs, aoilist=aois, prune_length=prune_length,
+                                 require_valid=require_valid_segs, export_pupilinfo=export_pupilinfo)
+        self.scenes.insert(0, self.whole_scene)
 
         #Clean memory
         for sc in self.scenes:
@@ -126,8 +157,9 @@ class BasicParticipant(Participant):
             print
 
 
-def read_participants_Basic(datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets=None,
-                          require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None):
+def read_participants_Basic(datadir, user_list, pids, prune_length=None, aoifile=None,
+                            log_time_offsets=None, require_valid_segs=True,
+                            auto_partition_low_quality_segments=False, rpsfile=None):
     """Generates list of Participant objects. Relevant information is read from input files
 
     Args:
@@ -172,7 +204,7 @@ def read_participants_Basic(datadir, user_list, pids, prune_length = None, aoifi
     # read rest pupil sizes (rpsvalues) from rpsfile
     rpsdata = read_rest_pupil_sizes(rpsfile)
 
-    for rec,pid,offset in zip(user_list,pids,log_time_offsets):
+    for rec, pid, offset in zip(user_list, pids, log_time_offsets):
         #extract pupil sizes for the current user. Set to None if not available
         if rpsdata != None:
             currpsdata = rpsdata[pid]
@@ -190,7 +222,8 @@ def read_participants_Basic(datadir, user_list, pids, prune_length = None, aoifi
             fixfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
             sacfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
             evefile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
-            segfile = "{dir}/TobiiV3_sample_{rec}.seg".format(dir=datadir, rec=rec)
+            #segfile = "{dir}/TobiiV3_sample_{rec}.seg".format(dir=datadir, rec=rec)
+            segfile = "{dir}/TobiiV3_sample_{rec}.segs".format(dir=datadir, rec=rec)
         elif params.EYETRACKERTYPE == "SMI":
             allfile = "{dir}/SMI_Sample_{rec}_Samples.txt".format(dir=datadir, rec=rec)
             fixfile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
@@ -199,10 +232,10 @@ def read_participants_Basic(datadir, user_list, pids, prune_length = None, aoifi
             segfile = "{dir}/SMI_Sample_{rec}.seg".format(dir=datadir, rec=rec)
 
         if os.path.exists(allfile):
-            p = BasicParticipant(rec, evefile, allfile, fixfile, sacfile, segfile, log_time_offset = offset,
-                                aoifile=aoifile, prune_length = prune_length, require_valid_segs = require_valid_segs,
-                                auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = currpsdata)
+            p = BasicParticipant(rec, evefile, allfile, fixfile, sacfile, segfile, log_time_offset=offset,
+                                 aoifile=aoifile, prune_length=prune_length, require_valid_segs=require_valid_segs,
+                                 auto_partition_low_quality_segments=auto_partition_low_quality_segments, rpsdata=currpsdata)
             participants.append(p)
         else:
-            warn( "Error reading participant files for: "+str(pid) )
+            warn("Error reading participant files for: "+str(pid))
     return participants

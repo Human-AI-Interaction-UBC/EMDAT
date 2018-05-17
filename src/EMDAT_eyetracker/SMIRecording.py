@@ -4,7 +4,7 @@ Created on 2015-08-15
 
 Class to read SMI data (exported with BeGaze). See sample data in the "sampledata" folder.
 
-Authors: Sebastien Lalle (creator), Mike Wu. 
+Authors: Sebastien Lalle (creator), Mike Wu.
 Institution: The University of British Columbia.
 """
 
@@ -24,12 +24,12 @@ class SMIRecording(Recording):
                     data_header = next(f).strip().split(',')
                 else:
                     next(f)
-		
+
             reader = csv.DictReader(f, fieldnames=data_header)
             last_pupil_left = -1
             last_pupil_right = -1
             last_time = -1
-			
+
             for row in reader:
                 if row["L Event Info"] != "Fixation":  # ignore data points other than fixations (gaze points)
                     continue
@@ -45,6 +45,7 @@ class SMIRecording(Recording):
                         "is_valid": (EMDAT_core.utils.cast_float(row["L POR X [px]"], -1) > 0 and EMDAT_core.utils.cast_float(row["L POR Y [px]"], -1) > 0 )
                                               or (EMDAT_core.utils.cast_float(row["R POR X [px]"], -1) > 0 and EMDAT_core.utils.cast_float(row["R POR Y [px]"], -1) > 0),
                         "stimuliname": "Screen",  # temporarily set to the same stimuli
+                        "is_valid_blink": not ("Blink" in row['L Event Info'] or "Blink" in row['R Event Info']),
                         "fixationindex": EMDAT_core.utils.cast_int(row["Time"]),
                         "gazepointxleft": EMDAT_core.utils.cast_float(row["L POR X [px]"]),
                         "gazepointxlright": EMDAT_core.utils.cast_float(row["R POR X [px]"])}
@@ -75,7 +76,7 @@ class SMIRecording(Recording):
                 all_fixation.append(Fixation(data, self.media_offset))
 
         return all_fixation
-        
+
     def read_saccade_data(self, saccade_file):
         all_saccades = []
         with open(saccade_file, 'r') as f:
@@ -92,9 +93,9 @@ class SMIRecording(Recording):
                         "timestamp": EMDAT_core.utils.cast_int(row["Start"]),
                         "saccadeduration": EMDAT_core.utils.cast_int(row["Duration"]),
                         "saccadestartpointx": EMDAT_core.utils.cast_float(row["Start Loc.X"]),
-                        "saccadestartpointy": EMDAT_core.utils.cast_float(row["Start Loc.Y"]),                  
+                        "saccadestartpointy": EMDAT_core.utils.cast_float(row["Start Loc.Y"]),
                         "saccadeendpointx": EMDAT_core.utils.cast_float(row["End Loc.X"]),
-                        "saccadeendpointy": EMDAT_core.utils.cast_float(row["End Loc.Y"]),            
+                        "saccadeendpointy": EMDAT_core.utils.cast_float(row["End Loc.Y"]),
                         "saccadedistance": EMDAT_core.utils.cast_float(row["Average Speed"])*EMDAT_core.utils.cast_float(row["Duration"]),
                         "saccadespeed": EMDAT_core.utils.cast_float(row["Average Speed"]),
                         "saccadeacceleration": EMDAT_core.utils.cast_float(row["Average Accel."])
@@ -102,7 +103,7 @@ class SMIRecording(Recording):
                 all_saccades.append(Saccade(data, self.media_offset))
 
         return all_saccades
-                            
+
     def read_event_data(self, event_file):
         all_event = []
         with open(event_file, 'r') as f:
@@ -131,4 +132,3 @@ class SMIRecording(Recording):
                 all_event.append(Event(data, self.media_offset))
 
         return all_event
-

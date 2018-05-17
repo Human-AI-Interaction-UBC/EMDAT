@@ -11,7 +11,7 @@ Institution: The University of British Columbia.
 # ####################### Eye tracker type and path ##############################################################
 
 # the folder that has the files exported from eye trackers
-EYELOGDATAFOLDER = "./sampledata"
+EYELOGDATAFOLDER = "./sampledata/blinks"
 
 # the folder that has the external log files
 EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
@@ -75,6 +75,11 @@ featurelist = ['numsegments','length','numsamples','numfixations','fixationrate'
 			   'eyemovementvelocity', 'abspathanglesrate', 'relpathanglesrate',
 			   'sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
 
+# Blink features to generate and export
+featurelist.extend(['blinknum', 'blinkdurationtotal', 'blinkdurationmean', 'blinkdurationstd', 'blinkdurationmin',
+                    'blinkdurationmax', 'blinkrate', 'blinktimedistancemean', 'blinktimedistancestd',
+                    'blinktimedistancemax', 'blinktimedistancemin'])
+
 # Pupil features to generate and export
 featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize',
                'meanpupilvelocity', 'stddevpupilvelocity', 'maxpupilvelocity', 'minpupilvelocity'])
@@ -117,6 +122,8 @@ aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames)
 #list of transition-based AOI features (proportion)
 aoiproportion = map(lambda x:'proptransfrom_'+x, aoinames)
 
+# lower and  upper bound on size of invalid data gaps to be treated as blinks
+blink_threshold = (100, 300)
 
 # Generating a list of all AOI-based features (including transitions)
 aoifeaturelist =[]
@@ -158,7 +165,7 @@ quality, into two new sub "Segment"s discarding the largest gap of invalid sampl
 a "Segment". EMDAT will continue to perform the splitting on the Segments until there is not
 any gap larger than MAX_SEG_TIMEGAP left in the data.
 """
-MAX_SEG_TIMEGAP = 300
+MAX_SEG_TIMEGAP = 10
 
 
 #proportion of valid gaze samples required per saccade. If less than 1, missing gaze sample will be extrapolated.
