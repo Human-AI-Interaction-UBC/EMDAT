@@ -356,9 +356,6 @@ class Scene(Segment):
         self.numsamples = sumfeat(segments, 'numsamples')
         self.features['numsamples'] = self.numsamples
 
-        self.numfixations = sumfeat(segments, 'numfixations')
-        self.features['numfixations'] = self.numfixations
-
         if prune_length == None:
             if self.numfixations != totalfixations:
                 if params.DEBUG:
@@ -366,196 +363,19 @@ class Scene(Segment):
                 else:
                     warn('Error in fixation count for scene: '+self.scid)
 
-        self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
+        self.merge_fixation_features(segments)
 
-        if self.numfixations > 0:
-            self.features['meanfixationduration'] = weightedmeanfeat(segments,'numfixations',"features['meanfixationduration']")
-            self.features['stddevfixationduration'] = aggregatestddevfeat(segments, 'numfixations', "features['stddevfixationduration']", "features['meanfixationduration']", self.features['meanfixationduration'])
-            self.features['sumfixationduration'] = sumfeat(segments, "features['sumfixationduration']")
-            self.features['fixationrate'] = float(self.numfixations)/(self.length - self.length_invalid)
-        else:
-            self.features['meanfixationduration'] = -1
-            self.features['stddevfixationduration'] = -1
-            self.features['sumfixationduration'] = -1
-            self.features['fixationrate'] = -1
+        self.merge_path_angle_features(segments)
 
-        self.numfixdistances = sumfeat(segments, "numfixdistances")
-        self.numabsangles = sumfeat(segments, "numabsangles")
-        self.numrelangles = sumfeat(segments, "numrelangles")
+        self.merge_blink_features(segments)
 
-        if self.numfixations > 1:
-            self.features['meanpathdistance'] = weightedmeanfeat(segments,'numfixdistances',"features['meanpathdistance']")
-            self.features['sumpathdistance'] = sumfeat(segments, "features['sumpathdistance']")
-            self.features['stddevpathdistance'] = aggregatestddevfeat(segments, 'numfixdistances', "features['stddevpathdistance']", "features['meanpathdistance']", self.features['meanpathdistance'])
-            self.features['eyemovementvelocity'] = self.features['sumpathdistance']/(self.length - self.length_invalid)
-            self.features['sumabspathangles'] = sumfeat(segments, "features['sumabspathangles']")
-            self.features['meanabspathangles'] = weightedmeanfeat(segments,'numabsangles',"features['meanabspathangles']")
-            self.features['abspathanglesrate'] = self.features['sumabspathangles']/(self.length - self.length_invalid)
-            self.features['stddevabspathangles'] = aggregatestddevfeat(segments, 'numabsangles', "features['stddevabspathangles']", "features['meanabspathangles']", self.features['meanabspathangles'])
-            self.features['sumrelpathangles'] = sumfeat(segments, "features['sumrelpathangles']")
-            self.features['meanrelpathangles'] = weightedmeanfeat(segments,'numrelangles',"features['meanrelpathangles']")
-            self.features['relpathanglesrate'] = self.features['sumrelpathangles']/(self.length - self.length_invalid)
-            self.features['stddevrelpathangles'] = aggregatestddevfeat(segments, 'numrelangles', "features['stddevrelpathangles']", "features['meanrelpathangles']", self.features['meanrelpathangles'])
-        else:
-            self.features['meanpathdistance'] = -1
-            self.features['sumpathdistance'] = -1
-            self.features['stddevpathdistance'] = -1
-            self.features['eyemovementvelocity'] = -1
-            self.features['sumabspathangles'] = -1
-            self.features['abspathanglesrate'] = -1
-            self.features['meanabspathangles']= -1
-            self.features['stddevabspathangles']= -1
-            self.features['sumrelpathangles'] = -1
-            self.features['relpathanglesrate'] = -1
-            self.features['meanrelpathangles']= -1
-            self.features['stddevrelpathangles'] = -1
+        self.merge_pupil_features(export_pupilinfo, segments)
 
-        """ calculate blink features """
-        self.features['blinknum'] = sumfeat(segments, "features['blinknum']")
-        if self.features['blinknum'] > 0:
-            self.features['blinkdurationtotal']     = sumfeat(segments, "features['blinkdurationtotal']")
-            self.features['blinkdurationmean']      = weightedmeanfeat(segments, "features['blinknum']", "features['blinkdurationmean']")
-            self.features['blinkdurationstd']       = aggregatestddevfeat(segments, "features['blinknum']", "features['blinkdurationstd']",
-                                                      "features['blinkdurationmean']", self.features['blinkdurationmean'])
-            self.features['blinkdurationmin']       = minfeat(segments, "features['blinkdurationmin']", -1)
-            self.features['blinkdurationmax']       = maxfeat(segments, "features['blinkdurationmax']")
-            self.features['blinkrate']              = float(self.features['blinknum']) / (self.length - self.length_invalid)
-            self.features['blinktimedistancemean']  = weightedmeanfeat(segments,
-                                                      "features['blinknum']", "features['blinktimedistancemean']")
-            self.features['blinktimedistancestd']   = aggregatestddevfeat(segments, "features['blinknum']",
-                                                      "features['blinktimedistancestd']", "features['blinktimedistancemean']",
-                                                      self.features['blinktimedistancemean'])
-            self.features['blinktimedistancemin']   = minfeat(segments, "features['blinktimedistancemin']", -1)
-            self.features['blinktimedistancemax']   = maxfeat(segments, "features['blinktimedistancemax']")
-        else:
-            self.features['blinkdurationtotal']     = -1
-            self.features['blinkdurationmean']      = -1
-            self.features['blinkdurationstd']       = -1
-            self.features['blinkdurationmin']       = -1
-            self.features['blinkdurationmax']       = -1
-            self.features['blinkrate']              = -1
+        self.merge_distance_data(segments)
 
-            self.features['blinktimedistancemean']  = -1
-            self.features['blinktimedistancestd']   = -1
-            self.features['blinktimedistancemin']   = -1
-            self.features['blinktimedistancemax']   = -1
-        """ end  """
+        self.merge_saccade_data(saccade_data, segments)
 
-        """ calculate pupil dilation features (no rest pupil size adjustments yet)"""
-
-        self.numpupilsizes    = sumfeat(segments,'numpupilsizes')
-        self.numpupilvelocity = sumfeat(segments,'numpupilvelocity')
-
-        if self.numpupilsizes > 0: # check if scene has any pupil data
-            if export_pupilinfo:
-                self.pupilinfo_for_export = mergevalues(segments, 'pupilinfo_for_export')
-            self.features['meanpupilsize'] = weightedmeanfeat(segments, 'numpupilsizes', "features['meanpupilsize']")
-            self.features['stddevpupilsize'] = aggregatestddevfeat(segments, 'numpupilsizes', "features['stddevpupilsize']", "features['meanpupilsize']", self.features['meanpupilsize']) #stddev(self.adjvalidpupilsizes)
-            self.features['maxpupilsize'] = maxfeat(segments, "features['maxpupilsize']")
-            self.features['minpupilsize'] = minfeat(segments, "features['minpupilsize']", -1)
-            self.features['startpupilsize'] = self.firstseg.features['startpupilsize']
-            self.features['endpupilsize'] = self.endseg.features['endpupilsize']
-        else:
-            self.pupilinfo_for_export = []
-            self.features['meanpupilsize'] = -1
-            self.features['stddevpupilsize'] = -1
-            self.features['maxpupilsize'] = -1
-            self.features['minpupilsize'] = -1
-            self.features['startpupilsize'] = -1
-            self.features['endpupilsize'] = -1
-
-        if self.numpupilvelocity > 0: # check if scene has any pupil velocity data
-            self.features['meanpupilvelocity'] = weightedmeanfeat(segments, 'numpupilvelocity', "features['meanpupilvelocity']")
-            self.features['stddevpupilvelocity'] = aggregatestddevfeat(segments, 'numpupilvelocity', "features['stddevpupilvelocity']", "features['meanpupilvelocity']", self.features['meanpupilvelocity']) #stddev(self.valid_pupil_velocity)
-            self.features['maxpupilvelocity'] = maxfeat(segments, "features['maxpupilvelocity']")
-            self.features['minpupilvelocity'] = minfeat(segments, "features['minpupilvelocity']", -1)
-        else:
-            self.features['meanpupilvelocity'] = -1
-            self.features['stddevpupilvelocity'] = -1
-            self.features['maxpupilvelocity'] = -1
-            self.features['minpupilvelocity'] = -1
-        """end """
-
-        """ calculate distance from screen features"""
-        self.numdistancedata = sumfeat(segments,'numdistancedata') #Distance
-        if self.numdistancedata > 0: # check if scene has any pupil data
-            self.features['meandistance'] = weightedmeanfeat(segments, 'numdistancedata', "features['meandistance']")
-            self.features['stddevdistance'] = aggregatestddevfeat(segments, 'numdistancedata', "features['stddevdistance']", "features['meandistance']", self.features['meandistance'])
-            self.features['maxdistance'] = maxfeat(segments, "features['maxdistance']")
-            self.features['mindistance'] = minfeat(segments, "features['mindistance']", -1)
-            self.features['startdistance'] = self.firstseg.features['startdistance']
-            self.features['enddistance'] = self.endseg.features['enddistance']
-        else:
-            self.features['meandistance'] = -1
-            self.features['stddevdistance'] = -1
-            self.features['maxdistance'] = -1
-            self.features['mindistance'] = -1
-            self.features['startdistance'] = -1
-            self.features['enddistance'] = -1
-        """end """
-
-        """ calculate saccades features if available """
-        if saccade_data != None:
-            self.features['numsaccades'] = sumfeat(segments,'numsaccades')
-            self.features['sumsaccadedistance'] = sumfeat(segments, "features['sumsaccadedistance']")
-            self.features['meansaccadedistance'] = weightedmeanfeat(self.segments,'numsaccades',"features['meansaccadedistance']")
-            self.features['stddevsaccadedistance'] = aggregatestddevfeat(segments, 'numsaccades', "features['stddevsaccadedistance']", "features['meansaccadedistance']", self.features['meansaccadedistance'])
-            self.features['longestsaccadedistance'] = maxfeat(segments, "features['longestsaccadedistance']")
-            self.features['sumsaccadeduration'] = sumfeat(segments,"features['sumsaccadeduration']")
-            self.features['meansaccadeduration'] = weightedmeanfeat(self.segments,'numsaccades',"features['meansaccadeduration']")
-            self.features['stddevsaccadeduration'] = aggregatestddevfeat(segments, 'numsaccades', "features['stddevsaccadeduration']", "features['meansaccadeduration']", self.features['meansaccadeduration'])
-            self.features['longestsaccadeduration'] = maxfeat(segments, "features['longestsaccadeduration']")
-            self.features['meansaccadespeed'] = weightedmeanfeat(self.segments,'numsaccades',"features['meansaccadespeed']")
-            self.features['stddevsaccadespeed'] = aggregatestddevfeat(segments, 'numsaccades', "features['stddevsaccadespeed']", "features['meansaccadespeed']", self.features['meansaccadespeed'])
-            self.features['maxsaccadespeed'] = maxfeat(segments, "features['maxsaccadespeed']")
-            self.features['minsaccadespeed'] = minfeat(segments, "features['minsaccadespeed']", -1)
-            self.features['fixationsaccadetimeratio'] = sumfeat(segments, "features['fixationsaccadetimeratio']") / float(len(segments))
-        else:
-            self.features['numsaccades'] = 0
-            self.features['sumsaccadedistance'] = -1
-            self.features['meansaccadedistance'] = -1
-            self.features['stddevsaccadedistance'] = -1
-            self.features['longestsaccadedistance'] = -1
-            self.features['sumsaccadeduration'] = -1
-            self.features['meansaccadeduration'] = -1
-            self.features['stddevsaccadeduration'] = -1
-            self.features['longestsaccadeduration'] = -1
-            self.features['meansaccadespeed'] = -1
-            self.features['stddevsaccadespeed'] = -1
-            self.features['maxsaccadespeed'] = -1
-            self.features['minsaccadespeed'] = -1
-            self.features['fixationsaccadetimeratio'] = -1
-        """ end saccade """
-
-        if event_data != None:
-            self.features['numevents'] = sumfeat(segments,'numevents')
-            self.features['numleftclic'] = sumfeat(segments,"features['numleftclic']")
-            self.features['numrightclic'] = sumfeat(segments, "features['numrightclic']")
-            self.features['numdoubleclic'] = sumfeat(segments, "features['numdoubleclic']")
-            self.features['numkeypressed'] = sumfeat(segments, "features['numkeypressed']")
-            self.features['leftclicrate'] = float(self.features['numleftclic'])/(self.length - self.length_invalid)
-            self.features['rightclicrate'] = float(self.features['numrightclic'])/(self.length - self.length_invalid)
-            self.features['doubleclicrate'] = float(self.features['numdoubleclic'])/(self.length - self.length_invalid)
-            self.features['keypressedrate'] = float(self.features['numkeypressed'])/(self.length - self.length_invalid)
-            self.features['timetofirstleftclic'] = self.firstseg.features['timetofirstleftclic']
-            self.features['timetofirstrightclic'] = self.firstseg.features['timetofirstrightclic']
-            self.features['timetofirstdoubleclic'] = self.firstseg.features['timetofirstdoubleclic']
-            self.features['timetofirstkeypressed'] = self.firstseg.features['timetofirstkeypressed']
-        else:
-            self.features['numevents'] = 0
-            self.features['numleftclic'] = 0
-            self.features['numrightclic'] = 0
-            self.features['numdoubleclic'] = 0
-            self.features['numkeypressed'] = 0
-            self.features['leftclicrate'] = -1
-            self.features['rightclicrate'] = -1
-            self.features['doubleclicrate'] = -1
-            self.features['keypressedrate'] = -1
-            self.features['timetofirstleftclic'] = -1
-            self.features['timetofirstrightclic'] = -1
-            self.features['timetofirstdoubleclic'] = -1
-            self.features['timetofirstkeypressed'] = -1
-        """end """
+        self.merge_event_data(event_data, segments)
 
         self.has_aois = False
         if aoilist:
@@ -640,6 +460,200 @@ class Scene(Segment):
         if len(self.aoi_data) > 0:
             self.has_aois = True
 
+
+    def merge_fixation_features(self, segments):
+
+        self.numfixations = sumfeat(segments, 'numfixations')
+        self.features['numfixations'] = self.numfixations
+        self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
+
+        if self.numfixations > 0:
+            self.features['meanfixationduration'] = weightedmeanfeat(segments,'numfixations',"features['meanfixationduration']")
+            self.features['stddevfixationduration'] = aggregatestddevfeat(segments, 'numfixations', "features['stddevfixationduration']", "features['meanfixationduration']", self.features['meanfixationduration'])
+            self.features['sumfixationduration'] = sumfeat(segments, "features['sumfixationduration']")
+            self.features['fixationrate'] = float(self.numfixations)/(self.length - self.length_invalid)
+        else:
+            self.features['meanfixationduration'] = -1
+            self.features['stddevfixationduration'] = -1
+            self.features['sumfixationduration'] = -1
+            self.features['fixationrate'] = -1
+
+
+    def merge_path_angle_features(self, segments):
+        self.numfixdistances = sumfeat(segments, "numfixdistances")
+        self.numabsangles = sumfeat(segments, "numabsangles")
+        self.numrelangles = sumfeat(segments, "numrelangles")
+
+        if self.numfixations > 1:
+            self.features['meanpathdistance'] = weightedmeanfeat(segments,'numfixdistances',"features['meanpathdistance']")
+            self.features['sumpathdistance'] = sumfeat(segments, "features['sumpathdistance']")
+            self.features['stddevpathdistance'] = aggregatestddevfeat(segments, 'numfixdistances', "features['stddevpathdistance']", "features['meanpathdistance']", self.features['meanpathdistance'])
+            self.features['eyemovementvelocity'] = self.features['sumpathdistance']/(self.length - self.length_invalid)
+            self.features['sumabspathangles'] = sumfeat(segments, "features['sumabspathangles']")
+            self.features['meanabspathangles'] = weightedmeanfeat(segments,'numabsangles',"features['meanabspathangles']")
+            self.features['abspathanglesrate'] = self.features['sumabspathangles']/(self.length - self.length_invalid)
+            self.features['stddevabspathangles'] = aggregatestddevfeat(segments, 'numabsangles', "features['stddevabspathangles']", "features['meanabspathangles']", self.features['meanabspathangles'])
+            self.features['sumrelpathangles'] = sumfeat(segments, "features['sumrelpathangles']")
+            self.features['meanrelpathangles'] = weightedmeanfeat(segments,'numrelangles',"features['meanrelpathangles']")
+            self.features['relpathanglesrate'] = self.features['sumrelpathangles']/(self.length - self.length_invalid)
+            self.features['stddevrelpathangles'] = aggregatestddevfeat(segments, 'numrelangles', "features['stddevrelpathangles']", "features['meanrelpathangles']", self.features['meanrelpathangles'])
+        else:
+            self.features['meanpathdistance'] = -1
+            self.features['sumpathdistance'] = -1
+            self.features['stddevpathdistance'] = -1
+            self.features['eyemovementvelocity'] = -1
+            self.features['sumabspathangles'] = -1
+            self.features['abspathanglesrate'] = -1
+            self.features['meanabspathangles']= -1
+            self.features['stddevabspathangles']= -1
+            self.features['sumrelpathangles'] = -1
+            self.features['relpathanglesrate'] = -1
+            self.features['meanrelpathangles']= -1
+            self.features['stddevrelpathangles'] = -1
+
+    def merge_blink_features(self, segments):
+        self.features['blinknum'] = sumfeat(segments, "features['blinknum']")
+        if self.features['blinknum'] > 0:
+            self.features['blinkdurationtotal']     = sumfeat(segments, "features['blinkdurationtotal']")
+            self.features['blinkdurationmean']      = weightedmeanfeat(segments, "features['blinknum']", "features['blinkdurationmean']")
+            self.features['blinkdurationstd']       = aggregatestddevfeat(segments, "features['blinknum']", "features['blinkdurationstd']",
+                                                      "features['blinkdurationmean']", self.features['blinkdurationmean'])
+            self.features['blinkdurationmin']       = minfeat(segments, "features['blinkdurationmin']", -1)
+            self.features['blinkdurationmax']       = maxfeat(segments, "features['blinkdurationmax']")
+            self.features['blinkrate']              = float(self.features['blinknum']) / (self.length - self.length_invalid)
+            self.features['blinktimedistancemean']  = weightedmeanfeat(segments,
+                                                      "features['blinknum']", "features['blinktimedistancemean']")
+            self.features['blinktimedistancestd']   = aggregatestddevfeat(segments, "features['blinknum']",
+                                                      "features['blinktimedistancestd']", "features['blinktimedistancemean']",
+                                                      self.features['blinktimedistancemean'])
+            self.features['blinktimedistancemin']   = minfeat(segments, "features['blinktimedistancemin']", -1)
+            self.features['blinktimedistancemax']   = maxfeat(segments, "features['blinktimedistancemax']")
+        else:
+            self.features['blinkdurationtotal']     = -1
+            self.features['blinkdurationmean']      = -1
+            self.features['blinkdurationstd']       = -1
+            self.features['blinkdurationmin']       = -1
+            self.features['blinkdurationmax']       = -1
+            self.features['blinkrate']              = -1
+
+            self.features['blinktimedistancemean']  = -1
+            self.features['blinktimedistancestd']   = -1
+            self.features['blinktimedistancemin']   = -1
+            self.features['blinktimedistancemax']   = -1
+
+    def merge_pupil_features(self, export_pupilinfo, segments):
+
+        self.numpupilsizes    = sumfeat(segments,'numpupilsizes')
+        self.numpupilvelocity = sumfeat(segments,'numpupilvelocity')
+
+        if self.numpupilsizes > 0: # check if scene has any pupil data
+            if export_pupilinfo:
+                self.pupilinfo_for_export = mergevalues(segments, 'pupilinfo_for_export')
+            self.features['meanpupilsize'] = weightedmeanfeat(segments, 'numpupilsizes', "features['meanpupilsize']")
+            self.features['stddevpupilsize'] = aggregatestddevfeat(segments, 'numpupilsizes', "features['stddevpupilsize']", "features['meanpupilsize']", self.features['meanpupilsize']) #stddev(self.adjvalidpupilsizes)
+            self.features['maxpupilsize'] = maxfeat(segments, "features['maxpupilsize']")
+            self.features['minpupilsize'] = minfeat(segments, "features['minpupilsize']", -1)
+            self.features['startpupilsize'] = self.firstseg.features['startpupilsize']
+            self.features['endpupilsize'] = self.endseg.features['endpupilsize']
+        else:
+            self.pupilinfo_for_export = []
+            self.features['meanpupilsize'] = -1
+            self.features['stddevpupilsize'] = -1
+            self.features['maxpupilsize'] = -1
+            self.features['minpupilsize'] = -1
+            self.features['startpupilsize'] = -1
+            self.features['endpupilsize'] = -1
+
+        if self.numpupilvelocity > 0: # check if scene has any pupil velocity data
+            self.features['meanpupilvelocity'] = weightedmeanfeat(segments, 'numpupilvelocity', "features['meanpupilvelocity']")
+            self.features['stddevpupilvelocity'] = aggregatestddevfeat(segments, 'numpupilvelocity', "features['stddevpupilvelocity']", "features['meanpupilvelocity']", self.features['meanpupilvelocity']) #stddev(self.valid_pupil_velocity)
+            self.features['maxpupilvelocity'] = maxfeat(segments, "features['maxpupilvelocity']")
+            self.features['minpupilvelocity'] = minfeat(segments, "features['minpupilvelocity']", -1)
+        else:
+            self.features['meanpupilvelocity'] = -1
+            self.features['stddevpupilvelocity'] = -1
+            self.features['maxpupilvelocity'] = -1
+            self.features['minpupilvelocity'] = -1
+
+    def merge_distance_data(self, segments):
+
+        self.numdistancedata = sumfeat(segments,'numdistancedata') #Distance
+        if self.numdistancedata > 0: # check if scene has any pupil data
+            self.features['meandistance'] = weightedmeanfeat(segments, 'numdistancedata', "features['meandistance']")
+            self.features['stddevdistance'] = aggregatestddevfeat(segments, 'numdistancedata', "features['stddevdistance']", "features['meandistance']", self.features['meandistance'])
+            self.features['maxdistance'] = maxfeat(segments, "features['maxdistance']")
+            self.features['mindistance'] = minfeat(segments, "features['mindistance']", -1)
+            self.features['startdistance'] = self.firstseg.features['startdistance']
+            self.features['enddistance'] = self.endseg.features['enddistance']
+        else:
+            self.features['meandistance'] = -1
+            self.features['stddevdistance'] = -1
+            self.features['maxdistance'] = -1
+            self.features['mindistance'] = -1
+            self.features['startdistance'] = -1
+            self.features['enddistance'] = -1
+
+    def merge_saccade_data(self, saccade_data, segments):
+        if saccade_data != None:
+            self.features['numsaccades'] = sumfeat(segments,'numsaccades')
+            self.features['sumsaccadedistance'] = sumfeat(segments, "features['sumsaccadedistance']")
+            self.features['meansaccadedistance'] = weightedmeanfeat(self.segments,'numsaccades',"features['meansaccadedistance']")
+            self.features['stddevsaccadedistance'] = aggregatestddevfeat(segments, 'numsaccades', "features['stddevsaccadedistance']", "features['meansaccadedistance']", self.features['meansaccadedistance'])
+            self.features['longestsaccadedistance'] = maxfeat(segments, "features['longestsaccadedistance']")
+            self.features['sumsaccadeduration'] = sumfeat(segments,"features['sumsaccadeduration']")
+            self.features['meansaccadeduration'] = weightedmeanfeat(self.segments,'numsaccades',"features['meansaccadeduration']")
+            self.features['stddevsaccadeduration'] = aggregatestddevfeat(segments, 'numsaccades', "features['stddevsaccadeduration']", "features['meansaccadeduration']", self.features['meansaccadeduration'])
+            self.features['longestsaccadeduration'] = maxfeat(segments, "features['longestsaccadeduration']")
+            self.features['meansaccadespeed'] = weightedmeanfeat(self.segments,'numsaccades',"features['meansaccadespeed']")
+            self.features['stddevsaccadespeed'] = aggregatestddevfeat(segments, 'numsaccades', "features['stddevsaccadespeed']", "features['meansaccadespeed']", self.features['meansaccadespeed'])
+            self.features['maxsaccadespeed'] = maxfeat(segments, "features['maxsaccadespeed']")
+            self.features['minsaccadespeed'] = minfeat(segments, "features['minsaccadespeed']", -1)
+            self.features['fixationsaccadetimeratio'] = sumfeat(segments, "features['fixationsaccadetimeratio']") / float(len(segments))
+        else:
+            self.features['numsaccades'] = 0
+            self.features['sumsaccadedistance'] = -1
+            self.features['meansaccadedistance'] = -1
+            self.features['stddevsaccadedistance'] = -1
+            self.features['longestsaccadedistance'] = -1
+            self.features['sumsaccadeduration'] = -1
+            self.features['meansaccadeduration'] = -1
+            self.features['stddevsaccadeduration'] = -1
+            self.features['longestsaccadeduration'] = -1
+            self.features['meansaccadespeed'] = -1
+            self.features['stddevsaccadespeed'] = -1
+            self.features['maxsaccadespeed'] = -1
+            self.features['minsaccadespeed'] = -1
+            self.features['fixationsaccadetimeratio'] = -1
+
+    def merge_event_data(self, event_data, segments):
+        if event_data != None:
+            self.features['numevents'] = sumfeat(segments,'numevents')
+            self.features['numleftclic'] = sumfeat(segments,"features['numleftclic']")
+            self.features['numrightclic'] = sumfeat(segments, "features['numrightclic']")
+            self.features['numdoubleclic'] = sumfeat(segments, "features['numdoubleclic']")
+            self.features['numkeypressed'] = sumfeat(segments, "features['numkeypressed']")
+            self.features['leftclicrate'] = float(self.features['numleftclic'])/(self.length - self.length_invalid)
+            self.features['rightclicrate'] = float(self.features['numrightclic'])/(self.length - self.length_invalid)
+            self.features['doubleclicrate'] = float(self.features['numdoubleclic'])/(self.length - self.length_invalid)
+            self.features['keypressedrate'] = float(self.features['numkeypressed'])/(self.length - self.length_invalid)
+            self.features['timetofirstleftclic'] = self.firstseg.features['timetofirstleftclic']
+            self.features['timetofirstrightclic'] = self.firstseg.features['timetofirstrightclic']
+            self.features['timetofirstdoubleclic'] = self.firstseg.features['timetofirstdoubleclic']
+            self.features['timetofirstkeypressed'] = self.firstseg.features['timetofirstkeypressed']
+        else:
+            self.features['numevents'] = 0
+            self.features['numleftclic'] = 0
+            self.features['numrightclic'] = 0
+            self.features['numdoubleclic'] = 0
+            self.features['numkeypressed'] = 0
+            self.features['leftclicrate'] = -1
+            self.features['rightclicrate'] = -1
+            self.features['doubleclicrate'] = -1
+            self.features['keypressedrate'] = -1
+            self.features['timetofirstleftclic'] = -1
+            self.features['timetofirstrightclic'] = -1
+            self.features['timetofirstdoubleclic'] = -1
+            self.features['timetofirstkeypressed'] = -1
 
     def merge_aoisequences(self, segments):
         """returns the AOI sequence merged from the AOI sequences in the "Segment"s
