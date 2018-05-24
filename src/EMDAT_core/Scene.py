@@ -426,8 +426,6 @@ class Scene(Segment):
                                 self.aoi_data[aid].features['timetolastrightclic'] += self.aoi_data[aid].starttime - self.start
                             if self.firstseg.aoi_data[aid].features['timetolastdoubleclic'] != -1:
                                 self.aoi_data[aid].features['timetolastdoubleclic'] += self.aoi_data[aid].starttime - self.start
-
-
         #Merge stdev
         #For each seg, compute: T = [(numfix-1) * Variance + numfix * power( meanfixduration_in_seg - meanfixduration_in_scene, 2)]
         #At the Scene level: [ SQRT( SUM(T_seg1...Tsegn) / (numfix-1) ]
@@ -438,7 +436,6 @@ class Scene(Segment):
                     temp += (seg.aoi_data[aid].features['numfixations']-1) * seg.aoi_data[aid].variance + seg.aoi_data[aid].features['numfixations'] * math.pow(seg.aoi_data[aid].features['meanfixationduration'] - self.aoi_data[aid].features['meanfixationduration'], 2)
                     numdata += seg.aoi_data[aid].features['numfixations']
             self.aoi_data[aid].features['stddevfixationduration'] = math.sqrt(temp / (numdata-1) ) if numdata > 1 else 0
-
         """
         firstsegaois = self.firstseg.aoi_data.keys()
         for aid in self.aoi_data.keys():
@@ -454,15 +451,19 @@ class Scene(Segment):
                 self.aoi_data[aid].features['timetofirstrightclic'] = float('inf')
                 self.aoi_data[aid].features['timetofirstdoubleclic'] = float('inf')
         """
-
-
-
         if len(self.aoi_data) > 0:
             self.has_aois = True
 
 
     def merge_fixation_features(self, segments):
-
+        """ Merge fixation features such as
+                meanfixationduration:     mean duration of fixations
+                stddevfixationduration    standard deviation of duration of fixations
+                sumfixationduration:      sum of durations of fixations
+                fixationrate:             rate of fixation datapoints relative to all datapoints
+            Args:
+                segments: The list of Segments for this Scene with pre-calculated features
+        """
         self.numfixations = sumfeat(segments, 'numfixations')
         self.features['numfixations'] = self.numfixations
         self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
@@ -480,6 +481,19 @@ class Scene(Segment):
 
 
     def merge_path_angle_features(self, segments):
+        """ Merge path and angle features such as
+                meanpathdistance:         mean of path distances
+                sumpathdistance:          sum of path distances
+                eyemovementvelocity:      average eye movement velocity
+                sumabspathangles:         sum of absolute path angles
+                abspathanglesrate:        ratio of absolute path angles relative to all datapoints
+                stddevabspathangles:      standard deviation of absolute path angles
+                sumrelpathangles:         sum of relative path angles
+                relpathanglesrate:        ratio of relative path angles relative to all datapoints
+                stddevrelpathangles:      standard deviation of relative path angles
+            Args:
+                segments: The list of Segments for this Scene with pre-calculated features
+        """
         self.numfixdistances = sumfeat(segments, "numfixdistances")
         self.numabsangles = sumfeat(segments, "numabsangles")
         self.numrelangles = sumfeat(segments, "numrelangles")
@@ -511,7 +525,23 @@ class Scene(Segment):
             self.features['meanrelpathangles']= -1
             self.features['stddevrelpathangles'] = -1
 
+
     def merge_blink_features(self, segments):
+        """ Merge blink features asuch as
+                blink_num:                 number of blinks
+                blink_duration_total:       sum of the blink durations
+                blink_duration_mean:        mean of the blink durations
+                blink_duration_std:         standard deviation of blink durations
+                blink_duration_max:         maximal blink duration
+                blink_duration_min:         minimal blink duration
+                blink_rate:                 rate of blinks
+                blink_time_distance_mean:   mean time difference between consequtive blinks
+                blink_time_distance_std:    std time difference between consequtive blinks
+                blink_time_distance_min:    minimal time difference between consequtive blinks
+                blink_time_distance_max:    maximal time difference between consequtive blinks
+            Args:
+                segments: The list of Segments for this Scene with pre-calculated features
+        """
         self.features['blinknum'] = sumfeat(segments, "features['blinknum']")
         if self.features['blinknum'] > 0:
             self.features['blinkdurationtotal']     = sumfeat(segments, "features['blinkdurationtotal']")
@@ -535,14 +565,26 @@ class Scene(Segment):
             self.features['blinkdurationmin']       = -1
             self.features['blinkdurationmax']       = -1
             self.features['blinkrate']              = -1
-
             self.features['blinktimedistancemean']  = -1
             self.features['blinktimedistancestd']   = -1
             self.features['blinktimedistancemin']   = -1
             self.features['blinktimedistancemax']   = -1
 
-    def merge_pupil_features(self, export_pupilinfo, segments):
 
+    def merge_pupil_features(self, export_pupilinfo, segments):
+        """ Merge pupil features asuch as
+                mean_pupil_size:            mean of pupil sizes
+                stddev_pupil_size:          standard deviation of pupil sizes
+                min_pupil_size:             smallest pupil size
+                max_pupil_size:             largest pupil size
+                mean_pupil_velocity:        mean of pupil velocities
+                stddev_pupil_velocity:      standard deviation of pupil velocities
+                min_pupil_velocity:         smallest pupil velocity
+                max_pupil_velocity:         largest pupil velocity
+            Args:
+                segments: The list of Segments for this Scene with pre-calculated features
+                export_pupilinfo: True to export raw pupil data in EMDAT output (False by default).
+        """
         self.numpupilsizes    = sumfeat(segments,'numpupilsizes')
         self.numpupilvelocity = sumfeat(segments,'numpupilvelocity')
 
@@ -575,8 +617,19 @@ class Scene(Segment):
             self.features['maxpupilvelocity'] = -1
             self.features['minpupilvelocity'] = -1
 
-    def merge_distance_data(self, segments):
 
+    def merge_distance_data(self, segments):
+        """ Merge distance features such as
+                mean_distance:            mean of distances from the screen
+                stddev_distance:          standard deviation of distances from the screen
+                min_distance:             smallest distance from the screen
+                max_distance:             largest distance from the screen
+                start_distance:           distance from the screen in the beginning of this scene
+                end_distance:             distance from the screen in the end of this scene
+
+            Args:
+                segments: The list of Segments for this Scene with pre-calculated features
+        """
         self.numdistancedata = sumfeat(segments,'numdistancedata') #Distance
         if self.numdistancedata > 0: # check if scene has any pupil data
             self.features['meandistance'] = weightedmeanfeat(segments, 'numdistancedata', "features['meandistance']")
@@ -593,7 +646,27 @@ class Scene(Segment):
             self.features['startdistance'] = -1
             self.features['enddistance'] = -1
 
+
     def merge_saccade_data(self, saccade_data, segments):
+        """ Merge saccade features such as
+                numsaccades:              number of saccades in the segment
+                sumsaccadedistance:       sum of distances during each saccade
+                meansaccadedistance:      mean of distances during each saccade
+                stddevsaccadedistance:    standard deviation of distances during each saccade
+                longestsaccadedistance:   distance of longest saccade
+                sumsaccadeduration:       total time spent on saccades in this segment
+                meansaccadeduration:      average saccade duration
+                stddevsaccadeduration:    standard deviation of saccade durations
+                longestsaccadeduration:   longest duration of saccades in this segment
+                meansaccadespeed:         average speed of saccades in this segment
+                stddevsaccadespeed:       standard deviation of speed of saccades in this segment
+                maxsaccadespeed:          highest saccade speed in this segment
+                minsaccadespeed:          lowest saccade speed in this  segment
+                fixationsaccadetimeratio: fixation to saccade time ratio for this segment
+            Args:
+                saccade_data: The list of saccade datapoints for this Scene
+                segments: The list of Segments for this Scene with pre-calculated features
+        """
         if saccade_data != None:
             self.features['numsaccades'] = sumfeat(segments,'numsaccades')
             self.features['sumsaccadedistance'] = sumfeat(segments, "features['sumsaccadedistance']")
@@ -625,7 +698,26 @@ class Scene(Segment):
             self.features['minsaccadespeed'] = -1
             self.features['fixationsaccadetimeratio'] = -1
 
+
     def merge_event_data(self, event_data, segments):
+        """ Merge event features such as
+                numevents:                number of events in the segment
+                numleftclic:              number of left clinks in the segment
+                numrightclic:             number of right clinks in the segment
+                numdoubleclic:            number of double clinks in the segment
+                numkeypressed:            number of times a key was pressed in the segment
+                leftclicrate:             the rate of left clicks (relative to all datapoints) in this segment
+                rightclicrate:            the rate of right clicks (relative to all datapoints) in this segment
+                doubleclicrate:           the rate of double clicks (relative to all datapoints) in this segment
+                keypressedrate:           the rate of key presses (relative to all datapoints) in this segment
+                timetofirstleftclic:      time until the first left click in this segment
+                timetofirstrightclic:     time until the first right click in this segment
+                timetofirstdoubleclic:    time until the first double click in this segment
+                timetofirstkeypressed:    time until the first key pressed in this segment
+            Args:
+                event_data: The list of events for this Scene
+                segments: The list of Segments for this Scene with pre-calculated features
+        """
         if event_data != None:
             self.features['numevents'] = sumfeat(segments,'numevents')
             self.features['numleftclic'] = sumfeat(segments,"features['numleftclic']")
