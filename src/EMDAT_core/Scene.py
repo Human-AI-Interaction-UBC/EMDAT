@@ -791,52 +791,14 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
             the updated AOI_Sata object
         """
         maois = main_AOI_Stat
-        maois.features['numfixations'] += new_AOI_Stat.features['numfixations']
-        maois.features['longestfixation'] = max(maois.features['longestfixation'],new_AOI_Stat.features['longestfixation'])
-        maois.features['totaltimespent'] += new_AOI_Stat.features['totaltimespent']
 
-        maois.features['meanfixationduration'] = maois.features['totaltimespent'] / maois.features['numfixations'] if maois.features['numfixations'] != 0 else -1
-
-        maois.features['proportiontime'] = float(maois.features['totaltimespent'])/total_time
-        maois.features['proportionnum'] = float(maois.features['numfixations'])/total_numfixations
-        if maois.features['totaltimespent'] > 0:
-            maois.features['fixationrate'] = float(maois.features['numfixations']) / maois.features['totaltimespent']
-        else:
-            maois.features['fixationrate'] = -1
-
-        if new_AOI_Stat.features['timetofirstfixation'] != -1:
-            maois.features['timetofirstfixation'] = min(maois.features['timetofirstfixation'], deepcopy(new_AOI_Stat.features['timetofirstfixation']) + new_AOI_Stat.starttime - sc_start)
-        if new_AOI_Stat.features['timetolastfixation'] != -1:
-            maois.features['timetolastfixation'] = max(maois.features['timetolastfixation'], deepcopy(new_AOI_Stat.features['timetolastfixation']) + new_AOI_Stat.starttime - sc_start)
-
-        #merge events
-        if new_AOI_Stat.features['numevents']>0:
-            maois.features['numevents'] += new_AOI_Stat.features['numevents']
-            maois.features['numleftclic'] += new_AOI_Stat.features['numleftclic']
-            maois.features['numrightclic'] += new_AOI_Stat.features['numrightclic']
-            maois.features['numdoubleclic'] += new_AOI_Stat.features['numdoubleclic']
-            maois.features['leftclicrate'] = float(maois.features['numleftclic'])/total_time
-            maois.features['rightclicrate'] = float(maois.features['numrightclic'])/total_time
-            maois.features['doubleclicrate'] = float(maois.features['numdoubleclic'])/total_time
-
-            if new_AOI_Stat.features['timetofirstleftclic'] != -1:
-                maois.features['timetofirstleftclic'] = min(maois.features['timetofirstleftclic'], deepcopy(new_AOI_Stat.features['timetofirstleftclic']) + new_AOI_Stat.starttime - sc_start)
-            if new_AOI_Stat.features['timetofirstrightclic'] != -1:
-                maois.features['timetofirstrightclic'] = min(maois.features['timetofirstrightclic'], deepcopy(new_AOI_Stat.features['timetofirstrightclic']) + new_AOI_Stat.starttime - sc_start)
-            if new_AOI_Stat.features['timetofirstdoubleclic'] != -1:
-                maois.features['timetofirstdoubleclic'] = min(maois.features['timetofirstdoubleclic'], deepcopy(new_AOI_Stat.features['timetofirstdoubleclic']) + new_AOI_Stat.starttime - sc_start)
-
-            if new_AOI_Stat.features['timetolastleftclic'] != -1:
-                maois.features['timetolastleftclic'] = max(maois.features['timetolastleftclic'], deepcopy(new_AOI_Stat.features['timetolastleftclic']) + new_AOI_Stat.starttime - sc_start)
-            if new_AOI_Stat.features['timetolastrightclic'] != -1:
-                maois.features['timetolastrightclic'] = max(maois.features['timetolastrightclic'], deepcopy(new_AOI_Stat.features['timetolastrightclic']) + new_AOI_Stat.starttime - sc_start)
-            if new_AOI_Stat.features['timetolastdoubleclic'] != -1:
-                maois.features['timetolastdoubleclic'] = max(maois.features['timetolastdoubleclic'], deepcopy(new_AOI_Stat.features['timetolastdoubleclic']) + new_AOI_Stat.starttime - sc_start)
-
+        merge_aoi_fixations(maois, new_AOI_Stat. total_time, total_numfixations, sc_start)
         #calculating the transitions to and from this AOI and other active AOIs at the moment
         new_AOI_Stat_transition_aois = filter(lambda x: x.startswith('numtransfrom_'), new_AOI_Stat.features.keys())
         if params.DEBUG or params.VERBOSE == "VERBOSE":
             print "Segment's transition_aois", new_AOI_Stat_transition_aois
+
+        merge_aoi_events(maois, new_AOI_Stat, total_time, sc_start)
 
         maois.total_trans_from += new_AOI_Stat.total_trans_from   #updating the total number of transition from this AOI
         for feat in new_AOI_Stat_transition_aois:
@@ -846,43 +808,8 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
                 maois.features[feat] = new_AOI_Stat.features[feat]
 #               sumtransfrom += maois.features[feat]
 
-        # Updating the pupil size features
-        if new_AOI_Stat.numpupilsizes + maois.numpupilsizes > 1 and new_AOI_Stat.numpupilsizes > 0:
-            total_numpupilsizes = maois.numpupilsizes + new_AOI_Stat.numpupilsizes
-            aggregate_mean_pupil =  maois.features['meanpupilsize'] * float(maois.numpupilsizes) / total_numpupilsizes + new_AOI_Stat.features['meanpupilsize'] * float(new_AOI_Stat.numpupilsizes) / total_numpupilsizes
-            maois.features['stddevpupilsize'] = pow(((maois.numpupilsizes - 1) * pow(maois.features['stddevpupilsize'], 2) \
-                                                + (new_AOI_Stat.numpupilsizes - 1) * pow(new_AOI_Stat.features['stddevpupilsize'], 2) + \
-                                                maois.numpupilsizes *  pow(maois.features['meanpupilsize'] - aggregate_mean_pupil, 2) + \
-                                                new_AOI_Stat.numpupilsizes * pow(new_AOI_Stat.features['meanpupilsize'] - aggregate_mean_pupil, 2)) \
-                                                / (total_numpupilsizes - 1), 0.5)
-            maois.features['maxpupilsize'] = max(maois.features['maxpupilsize'], new_AOI_Stat.features['maxpupilsize'])
-            maois.features['minpupilsize'] = min(maois.features['maxpupilsize'], new_AOI_Stat.features['maxpupilsize'])
-            maois.features['meanpupilsize'] = aggregate_mean_pupil
-            if maois.starttime > new_AOI_Stat.starttime:
-                maois.features['startpupilsize'] = new_AOI_Stat.features['startpupilsize']
-            if maois.endtime < new_AOI_Stat.endtime:
-                maois.features['endpupilsize'] = new_AOI_Stat.features['endpupilsize']
-
-
-            maois.numpupilsizes += new_AOI_Stat.numpupilsizes
-        ## Checking if new AOI contains distance datapoints. Also checking if total num of datapoints is not 1 so far
-        ## so we don't divide by 0 in stddev calculation
-        if new_AOI_Stat.numdistancedata + maois.numdistancedata> 1 and new_AOI_Stat.numdistancedata > 0:
-            total_distances = maois.numdistancedata + new_AOI_Stat.numdistancedata
-            aggregate_mean_distance = maois.features['meandistance'] * float(maois.numdistancedata) / total_distances + new_AOI_Stat.features['meandistance'] * float(new_AOI_Stat.numdistancedata) / total_distances
-            maois.features['stddevdistance'] = pow(((maois.numdistancedata - 1) * pow(maois.features['stddevdistance'], 2) + \
-                                        (new_AOI_Stat.numdistancedata - 1) * pow(new_AOI_Stat.features['stddevdistance'], 2) + \
-                                        maois.numdistancedata * pow(maois.features['meandistance'] - aggregate_mean_distance , 2) \
-                                        + new_AOI_Stat.numdistancedata * pow(new_AOI_Stat.features['meandistance'] - aggregate_mean_distance, 2)) / (total_distances - 1), 0.5)
-            maois.features['maxdistance'] = max(maois.features['maxdistance'], new_AOI_Stat.features['maxdistance'])
-            maois.features['mindistance'] = min(maois.features['mindistance'], new_AOI_Stat.features['mindistance'])
-            maois.features['meandistance'] = aggregate_mean_distance
-            if maois.starttime > new_AOI_Stat.starttime:
-                maois.features['startdistance'] = new_AOI_Stat.features['startdistance']
-            if maois.endtime < new_AOI_Stat.endtime:
-                maois.features['enddistance'] = new_AOI_Stat.features['enddistance']
-            maois.numdistancedata += new_AOI_Stat.numdistancedata
-
+        merge_aoi_distance(maois, new_AOI_Stat)
+        merge_aoi_pupil(maois, new_AOI_Stat)
         # updating the proportion tansition features based on new transitions to and from this AOI
         maois_transition_aois = filter(lambda x: x.startswith('numtransfrom_'),maois.features.keys()) #all the transition features for this AOI should be aupdated even if they are not active for this segment
         for feat in maois_transition_aois:
@@ -893,6 +820,151 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
                 maois.features['proptransfrom_%s'%(aid)] = 0
         ###endof transition calculation
         return maois
+
+
+def merge_aoi_fixations(maois, new_AOI_Stat, total_time, total_numfixations, sc_start):
+    """ Merge fixation features such as
+            meanfixationduration:     mean duration of fixations
+            stddevfixationduration    standard deviation of duration of fixations
+            sumfixationduration:      sum of durations of fixations
+            fixationrate:             rate of fixation datapoints relative to all datapoints
+        Args:
+            main_AOI_Stat: AOI_Stat object of this Scene (must have been initialised)
+
+            new_AOI_Stat: a new AOI_Stat object
+
+            total_time: duration of the scene
+
+            total_numfixations: number of fixations in the scene
+
+            sc_start: start time (timestamp) of the scene
+    """
+    maois.features['numfixations'] += new_AOI_Stat.features['numfixations']
+    maois.features['longestfixation'] = max(maois.features['longestfixation'],new_AOI_Stat.features['longestfixation'])
+    maois.features['totaltimespent'] += new_AOI_Stat.features['totaltimespent']
+
+    maois.features['meanfixationduration'] = maois.features['totaltimespent'] / maois.features['numfixations'] if maois.features['numfixations'] != 0 else -1
+
+    maois.features['proportiontime'] = float(maois.features['totaltimespent'])/total_time
+    maois.features['proportionnum'] = float(maois.features['numfixations'])/total_numfixations
+    if maois.features['totaltimespent'] > 0:
+        maois.features['fixationrate'] = float(maois.features['numfixations']) / maois.features['totaltimespent']
+    else:
+        maois.features['fixationrate'] = -1
+
+    if new_AOI_Stat.features['timetofirstfixation'] != -1:
+        maois.features['timetofirstfixation'] = min(maois.features['timetofirstfixation'], deepcopy(new_AOI_Stat.features['timetofirstfixation']) + new_AOI_Stat.starttime - sc_start)
+    if new_AOI_Stat.features['timetolastfixation'] != -1:
+        maois.features['timetolastfixation'] = max(maois.features['timetolastfixation'], deepcopy(new_AOI_Stat.features['timetolastfixation']) + new_AOI_Stat.starttime - sc_start)
+
+
+def merge_aoi_distance(maois, new_AOI_Stat):
+    """ Merge distance features such as
+            mean_distance:            mean of distances from the screen
+            stddev_distance:          standard deviation of distances from the screen
+            min_distance:             smallest distance from the screen
+            max_distance:             largest distance from the screen
+            start_distance:           distance from the screen in the beginning of this scene
+            end_distance:             distance from the screen in the end of this scene
+
+        Args:
+            maois: AOI_Stat object of this Scene (must have been initialised)
+            new_AOI_Stat: a new AOI_Stat object
+    """
+    if new_AOI_Stat.numdistancedata + maois.numdistancedata > 1 and new_AOI_Stat.numdistancedata > 0:
+        total_distances = maois.numdistancedata + new_AOI_Stat.numdistancedata
+        aggregate_mean_distance = maois.features['meandistance'] * float(maois.numdistancedata) / total_distances + new_AOI_Stat.features['meandistance'] * float(new_AOI_Stat.numdistancedata) / total_distances
+        maois.features['stddevdistance'] = pow(((maois.numdistancedata - 1) * pow(maois.features['stddevdistance'], 2) + \
+                                    (new_AOI_Stat.numdistancedata - 1) * pow(new_AOI_Stat.features['stddevdistance'], 2) + \
+                                    maois.numdistancedata * pow(maois.features['meandistance'] - aggregate_mean_distance , 2) \
+                                    + new_AOI_Stat.numdistancedata * pow(new_AOI_Stat.features['meandistance'] - aggregate_mean_distance, 2)) / (total_distances - 1), 0.5)
+        maois.features['maxdistance'] = max(maois.features['maxdistance'], new_AOI_Stat.features['maxdistance'])
+        maois.features['mindistance'] = min(maois.features['mindistance'], new_AOI_Stat.features['mindistance'])
+        maois.features['meandistance'] = aggregate_mean_distance
+        if maois.starttime > new_AOI_Stat.starttime:
+            maois.features['startdistance'] = new_AOI_Stat.features['startdistance']
+        if maois.endtime < new_AOI_Stat.endtime:
+            maois.features['enddistance'] = new_AOI_Stat.features['enddistance']
+        maois.numdistancedata += new_AOI_Stat.numdistancedata
+
+
+def merge_aoi_pupil(maois, new_AOI_Stat):
+    """ Merge pupil features asuch as
+            mean_pupil_size:            mean of pupil sizes
+            stddev_pupil_size:          standard deviation of pupil sizes
+            min_pupil_size:             smallest pupil size
+            max_pupil_size:             largest pupil size
+            mean_pupil_velocity:        mean of pupil velocities
+            stddev_pupil_velocity:      standard deviation of pupil velocities
+            min_pupil_velocity:         smallest pupil velocity
+            max_pupil_velocity:         largest pupil velocity
+        Args:
+            maois: AOI_Stat object of this Scene (must have been initialised)
+            new_AOI_Stat: a new AOI_Stat object
+    """
+    if new_AOI_Stat.numpupilsizes + maois.numpupilsizes > 1 and new_AOI_Stat.numpupilsizes > 0:
+        total_numpupilsizes = maois.numpupilsizes + new_AOI_Stat.numpupilsizes
+        aggregate_mean_pupil =  maois.features['meanpupilsize'] * float(maois.numpupilsizes) / total_numpupilsizes + new_AOI_Stat.features['meanpupilsize'] * float(new_AOI_Stat.numpupilsizes) / total_numpupilsizes
+        maois.features['stddevpupilsize'] = pow(((maois.numpupilsizes - 1) * pow(maois.features['stddevpupilsize'], 2) \
+                                            + (new_AOI_Stat.numpupilsizes - 1) * pow(new_AOI_Stat.features['stddevpupilsize'], 2) + \
+                                            maois.numpupilsizes *  pow(maois.features['meanpupilsize'] - aggregate_mean_pupil, 2) + \
+                                            new_AOI_Stat.numpupilsizes * pow(new_AOI_Stat.features['meanpupilsize'] - aggregate_mean_pupil, 2)) \
+                                            / (total_numpupilsizes - 1), 0.5)
+        maois.features['maxpupilsize'] = max(maois.features['maxpupilsize'], new_AOI_Stat.features['maxpupilsize'])
+        maois.features['minpupilsize'] = min(maois.features['maxpupilsize'], new_AOI_Stat.features['maxpupilsize'])
+        maois.features['meanpupilsize'] = aggregate_mean_pupil
+        if maois.starttime > new_AOI_Stat.starttime:
+            maois.features['startpupilsize'] = new_AOI_Stat.features['startpupilsize']
+        if maois.endtime < new_AOI_Stat.endtime:
+            maois.features['endpupilsize'] = new_AOI_Stat.features['endpupilsize']
+
+        maois.numpupilsizes += new_AOI_Stat.numpupilsizes
+
+
+def merge_aoi_events(maois, new_AOI_Stat, total_time, sc_start):
+    """ Merge event features such as
+            numevents:                number of events in the segment
+            numleftclic:              number of left clinks in the segment
+            numrightclic:             number of right clinks in the segment
+            numdoubleclic:            number of double clinks in the segment
+            numkeypressed:            number of times a key was pressed in the segment
+            leftclicrate:             the rate of left clicks (relative to all datapoints) in this segment
+            rightclicrate:            the rate of right clicks (relative to all datapoints) in this segment
+            doubleclicrate:           the rate of double clicks (relative to all datapoints) in this segment
+            keypressedrate:           the rate of key presses (relative to all datapoints) in this segment
+            timetofirstleftclic:      time until the first left click in this segment
+            timetofirstrightclic:     time until the first right click in this segment
+            timetofirstdoubleclic:    time until the first double click in this segment
+            timetofirstkeypressed:    time until the first key pressed in this segment
+        Args:
+            maois: AOI_Stat object of this Scene (must have been initialised)
+            new_AOI_Stat: a new AOI_Stat object
+            total_time: duration of the scene
+            sc_start: start time (timestamp) of the scene
+    """
+    if new_AOI_Stat.features['numevents']>0:
+        maois.features['numevents'] += new_AOI_Stat.features['numevents']
+        maois.features['numleftclic'] += new_AOI_Stat.features['numleftclic']
+        maois.features['numrightclic'] += new_AOI_Stat.features['numrightclic']
+        maois.features['numdoubleclic'] += new_AOI_Stat.features['numdoubleclic']
+        maois.features['leftclicrate'] = float(maois.features['numleftclic'])/total_time
+        maois.features['rightclicrate'] = float(maois.features['numrightclic'])/total_time
+        maois.features['doubleclicrate'] = float(maois.features['numdoubleclic'])/total_time
+
+        if new_AOI_Stat.features['timetofirstleftclic'] != -1:
+            maois.features['timetofirstleftclic'] = min(maois.features['timetofirstleftclic'], deepcopy(new_AOI_Stat.features['timetofirstleftclic']) + new_AOI_Stat.starttime - sc_start)
+        if new_AOI_Stat.features['timetofirstrightclic'] != -1:
+            maois.features['timetofirstrightclic'] = min(maois.features['timetofirstrightclic'], deepcopy(new_AOI_Stat.features['timetofirstrightclic']) + new_AOI_Stat.starttime - sc_start)
+        if new_AOI_Stat.features['timetofirstdoubleclic'] != -1:
+            maois.features['timetofirstdoubleclic'] = min(maois.features['timetofirstdoubleclic'], deepcopy(new_AOI_Stat.features['timetofirstdoubleclic']) + new_AOI_Stat.starttime - sc_start)
+
+        if new_AOI_Stat.features['timetolastleftclic'] != -1:
+            maois.features['timetolastleftclic'] = max(maois.features['timetolastleftclic'], deepcopy(new_AOI_Stat.features['timetolastleftclic']) + new_AOI_Stat.starttime - sc_start)
+        if new_AOI_Stat.features['timetolastrightclic'] != -1:
+            maois.features['timetolastrightclic'] = max(maois.features['timetolastrightclic'], deepcopy(new_AOI_Stat.features['timetolastrightclic']) + new_AOI_Stat.starttime - sc_start)
+        if new_AOI_Stat.features['timetolastdoubleclic'] != -1:
+            maois.features['timetolastdoubleclic'] = max(maois.features['timetolastdoubleclic'], deepcopy(new_AOI_Stat.features['timetolastdoubleclic']) + new_AOI_Stat.starttime - sc_start)
+
 
 def weightedmeanfeat(obj_list, totalfeat,ratefeat):
     """a helper method that calculates the weighted average of a target feature over a list of Segments
