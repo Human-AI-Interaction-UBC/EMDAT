@@ -369,6 +369,15 @@ def read_rest_pupil_sizes(rpsfile):
 
 
 def get_pupil_size(pupilleft, pupilright):
+    '''
+    If recordings for both eyes are available, return their average,
+    else return value for a recorded eye (if any)
+    Args:
+        pupilleft - recording of pupil size on left eye
+        pupilright - recording of pupil size on right eye
+    Returns:
+        pupil size to generate pupil features with.
+    '''
     if pupilleft is None and pupilright is None:
         return -1
     if pupilleft is None:

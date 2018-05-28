@@ -164,6 +164,7 @@ class AOI_Stat():
         self.features = {}
         self.starttime = starttime
         self.endtime = endtime
+        self.length = endtime - starttime
         self.features['numfixations'] = 0
         self.features['longestfixation'] = -1
         self.features['meanfixationduration'] = -1
@@ -227,14 +228,47 @@ class AOI_Stat():
         datapoints = filter(lambda datapoint: datapoint.gazepointx != -1 and datapoint.gazepointy != -1, all_data)
         # Only keep samples inside AOI
         datapoints = filter(lambda datapoint: _datapoint_inside_aoi(datapoint, self.aoi.polyin, self.aoi.polyout), datapoints)
-        fixation_indices = []
-        fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i], self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
-        fixations = map(lambda i: fixation_data[i], fixation_indices)
 
-        if seg_event_data != None:
-            events = filter(lambda event: _event_inside_aoi(event,self.aoi.polyin, self.aoi.polyout), event_data)
-            (leftc, rightc, doublec, _) = generate_event_lists(events)
+        self.generate_pupil_features(datapoints, rest_pupil_size, export_pupilinfo)
 
+        self.generate_distance_features(datapoints)
+
+        fixation_indices = self.generate_fixation_features(datapoints, fixation_data, sum_discarded)
+
+        self.generate_event_features(seg_event_data, event_data, sum_discarded)
+
+        self.generate_transition_features(active_aois, fixation_data, fixation_indices)
+        #calculating the transitions to and from this AOI and other active AOIs at the moment
+        for aoi in active_aois:
+            aid = aoi.aid
+            self.features['numtransfrom_%s'%(aid)] = 0
+
+        sumtransfrom = 0
+        for i in fixation_indices:
+            if i > 0:
+                for aoi in active_aois:
+                    aid = aoi.aid
+                    polyin = aoi.polyin
+                    polyout = aoi.polyout
+                    key = 'numtransfrom_%s'%(aid)
+
+                    if _fixation_inside_aoi(fixation_data[i-1], polyin, polyout):
+                        self.features[key] += 1
+                        sumtransfrom += 1
+
+        for aoi in active_aois:
+            aid = aoi.aid
+
+            if sumtransfrom > 0:
+                val = self.features['numtransfrom_%s'%(aid)]
+                self.features['proptransfrom_%s'%(aid)] = float(val) / sumtransfrom
+            else:
+                self.features['proptransfrom_%s'%(aid)] = 0
+        self.total_trans_from = sumtransfrom
+        ###end of transition calculation
+
+
+    def generate_pupil_features(self, datapoints, rest_pupil_size, export_pupilinfo):
         #get all datapoints where pupil size is available
         valid_pupil_data = filter(lambda x: x.pupilsize > 0, datapoints)
         valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, datapoints)
@@ -277,10 +311,9 @@ class AOI_Stat():
                 self.features['stddevpupilvelocity'] = stddev(valid_pupil_velocity)
                 self.features['maxpupilvelocity'] = max(valid_pupil_velocity)
                 self.features['minpupilvelocity'] = min(valid_pupil_velocity)
-        """ end pupil """
 
-        """ calculate distance from screen features""" #distance
 
+    def generate_distance_features(self, datapoints):
         # check if pupil sizes are available for all missing points
         invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, datapoints)
         if len(invalid_distance_data) > 0:
@@ -306,46 +339,55 @@ class AOI_Stat():
             self.features['mindistance'] = -1
             self.features['startdistance'] = -1
             self.features['enddistance'] = -1
-        """ end distance """
 
+    def generate_fixation_features(self, datapoints, fixation_data, sum_discarded):
+
+        fixation_indices = []
+        fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i], self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
+        fixations = map(lambda i: fixation_data[i], fixation_indices)
         numfixations = len(fixations)
         self.features['numfixations'] = numfixations
         self.features['longestfixation'] = -1
         self.features['timetofirstfixation'] = -1
         self.features['timetolastfixation'] = -1
         self.features['proportionnum'] = 0
-        self.starttime = starttime
         totaltimespent = sum(map(lambda x: x.fixationduration, fixations))
         self.features['totaltimespent'] = totaltimespent
-        length = endtime - starttime
 
-        self.features['proportiontime'] = float(totaltimespent)/(length - sum_discarded)
+        self.features['proportiontime'] = float(totaltimespent)/(self.length - sum_discarded)
         if numfixations > 0:
             self.features['longestfixation'] = max(map(lambda x: x.fixationduration, fixations))
             self.features['meanfixationduration'] = mean(map(lambda x: float(x.fixationduration), fixations))
             self.features['stddevfixationduration'] = stddev(map(lambda x: float(x.fixationduration), fixations))
-            self.features['timetofirstfixation'] = fixations[0].timestamp - starttime
-            self.features['timetolastfixation'] = fixations[-1].timestamp - starttime
+            self.features['timetofirstfixation'] = fixations[0].timestamp - self.starttime
+            self.features['timetolastfixation'] = fixations[-1].timestamp - self.starttime
             self.features['proportionnum'] = float(numfixations)/len(fixation_data)
             self.features['fixationrate'] = numfixations / float(totaltimespent)
             self.variance = self.features['stddevfixationduration'] ** 2
+        return fixation_indices
 
+    def generate_event_features(self, seg_event_data, event_data, sum_discarded):
+
+        if seg_event_data != None:
+            events = filter(lambda event: _event_inside_aoi(event,self.aoi.polyin, self.aoi.polyout), event_data)
+            leftc, rightc, doublec, _ = generate_event_lists(events)
         if seg_event_data != None:
             self.features['numevents'] = len(events)
             self.features['numleftclic'] = len(leftc)
             self.features['numrightclic'] = len(rightc)
             self.features['numdoubleclic'] = len(doublec)
-            self.features['leftclicrate'] = float(len(leftc))/(length - sum_discarded) if (length - sum_discarded)>0 else 0
-            self.features['rightclicrate'] = float(len(rightc))/(length - sum_discarded) if (length - sum_discarded)>0 else 0
-            self.features['doubleclicrate'] = float(len(doublec))/(length - sum_discarded) if (length - sum_discarded)>0 else 0
-            self.features['timetofirstleftclic'] = leftc[0].timestamp - starttime if len(leftc) > 0 else -1
-            self.features['timetofirstrightclic'] = rightc[0].timestamp - starttime if len(rightc) > 0 else -1
-            self.features['timetofirstdoubleclic'] = doublec[0].timestamp - starttime if len(doublec) > 0 else -1
-            self.features['timetolastleftclic'] = leftc[-1].timestamp - starttime if len(leftc) > 0 else -1
-            self.features['timetolastrightclic'] = rightc[-1].timestamp - starttime if len(rightc) > 0 else -1
-            self.features['timetolastdoubleclic'] = doublec[-1].timestamp - starttime if len(doublec) > 0 else -1
+            self.features['leftclicrate'] = float(len(leftc))/(self.length - sum_discarded) if (self.length - sum_discarded)>0 else 0
+            self.features['rightclicrate'] = float(len(rightc))/(self.length - sum_discarded) if (self.length - sum_discarded)>0 else 0
+            self.features['doubleclicrate'] = float(len(doublec))/(self.length - sum_discarded) if (self.length - sum_discarded)>0 else 0
+            self.features['timetofirstleftclic'] = leftc[0].timestamp - self.starttime if len(leftc) > 0 else -1
+            self.features['timetofirstrightclic'] = rightc[0].timestamp - self.starttime if len(rightc) > 0 else -1
+            self.features['timetofirstdoubleclic'] = doublec[0].timestamp - self.starttime if len(doublec) > 0 else -1
+            self.features['timetolastleftclic'] = leftc[-1].timestamp - self.starttime if len(leftc) > 0 else -1
+            self.features['timetolastrightclic'] = rightc[-1].timestamp - self.starttime if len(rightc) > 0 else -1
+            self.features['timetolastdoubleclic'] = doublec[-1].timestamp - self.starttime if len(doublec) > 0 else -1
 
 
+    def generate_transition_features(self, active_aois, fixation_data, fixation_indices):
         #calculating the transitions to and from this AOI and other active AOIs at the moment
         for aoi in active_aois:
             aid = aoi.aid
@@ -363,7 +405,6 @@ class AOI_Stat():
                     if _fixation_inside_aoi(fixation_data[i-1], polyin, polyout):
                         self.features[key] += 1
                         sumtransfrom += 1
-
         for aoi in active_aois:
             aid = aoi.aid
 
@@ -373,7 +414,6 @@ class AOI_Stat():
             else:
                 self.features['proptransfrom_%s'%(aid)] = 0
         self.total_trans_from = sumtransfrom
-        ###end of transition calculation
 
 
     def get_features(self, featurelist = None):
