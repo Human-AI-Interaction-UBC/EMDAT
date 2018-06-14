@@ -209,7 +209,7 @@ class Participant():
                     out+= st.rjust(leng)
                 return out,leng
 
-        print  "PID:",self.pid
+        print("PID:", self.pid)
 
         for seg in self.segments:
             featnames = []
@@ -222,8 +222,8 @@ class Participant():
             featnames += fnames
             seg_feats += fvals
             o,l= format_list(featnames)
-            print o
-            print format_list(seg_feats,l)
+            print(o)
+            print(format_list(seg_feats,l))
 
         for sc in self.scenes:
             featnames = []
@@ -236,8 +236,8 @@ class Participant():
             featnames += fnames
             sc_feats += fvals
             o,l= format_list(featnames)
-            print o
-            print format_list(sc_feats,l)
+            print(o)
+            print(format_list(sc_feats,l))
 
 
     def write_raw_data(self, filename_all, filename_fix, filename_sac, filename_ev):

@@ -79,18 +79,18 @@ class BasicParticipant(Participant):
                              log_time_offset, aoifile, prune_length, require_valid_segs,
                              auto_partition_low_quality_segments, rpsdata)
 
-        print "Participant \""+str(pid)+"\"..."
+        print("Participant \""+str(pid)+"\"...")
 
         # print files used
         if params.VERBOSE != "QUIET":
-            print "Reading input files:"
-            print "--Scenes/Segments file: "+segfile
-            print "--Eye tracking samples file: "+datafile
-            print "--Fixations file: "+fixfile
-            print "--Saccades file: "+saccfile if saccfile is not None else "--No saccades file"
-            print "--Events file: "+eventfile if eventfile is not None else "--No events file"
-            print "--AOIs file: "+aoifile if aoifile is not None else "--No AOIs file"
-            print
+            print("Reading input files:")
+            print("--Scenes/Segments file: "+segfile)
+            print("--Eye tracking samples file: "+datafile)
+            print("--Fixations file: "+fixfile)
+            print("--Saccades file: "+saccfile if saccfile is not None else "--No saccades file")
+            print("--Events file: "+eventfile if eventfile is not None else "--No events file")
+            print("--AOIs file: "+aoifile if aoifile is not None else "--No AOIs file")
+            print()
 
 
         self.features = {}
@@ -112,7 +112,7 @@ class BasicParticipant(Participant):
             raise Exception("Unknown eye tracker type.")
 
         if params.VERBOSE != "QUIET":
-            print "Creating partition..."
+            print("Creating partition...")
 
         # In Participant.py: Get the scenes and segments specified in the segfile
         scenelist, self.numofsegments = partition(segfile)
@@ -128,8 +128,8 @@ class BasicParticipant(Participant):
 
         self.features['numofsegments'] = self.numofsegments
 
-        if params.VERBOSE != "QUIET":
-            print "Generating features..."
+        if (params.VERBOSE != "QUIET"):
+            print("Generating features...")
 
         # Generate the features for all specified scenes, segments and AOIs
         self.segments, self.scenes = rec.process_rec(scenelist=scenelist, aoilist=aois,
@@ -152,8 +152,8 @@ class BasicParticipant(Participant):
             sc.clean_memory()
         rec.clean_memory()
 
-        if params.VERBOSE != "QUIET":
-            print "Done!"
+        if (params.VERBOSE != "QUIET"):
+            print("Done!")
             print
 
 
