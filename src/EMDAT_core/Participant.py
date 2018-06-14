@@ -11,9 +11,10 @@ Institution: The University of British Columbia.
 
 import string
 import params
-from data_structures import *
-from Scene import Scene
-from Recording import *
+import EMDAT_core
+from EMDAT_core.data_structures import *
+from EMDAT_core.Scene import Scene
+from EMDAT_core.Recording import *
 
 
 class Participant():

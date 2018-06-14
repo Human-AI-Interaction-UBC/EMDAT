@@ -9,7 +9,7 @@ Authors: Samad Kardan (creator), Sebastien Lalle.
 Institution: The University of British Columbia.
 """
 
-import math, geometry
+import math, EMDAT_core.geometry
 from utils import *
 from Segment import *
 from copy import deepcopy
@@ -235,26 +235,26 @@ class Scene(Segment):
 #            print "seglist",seglist
             for (segid, start, end) in seglist:
                 if params.VERBOSE != "QUIET":
-                    print "segid, start, end:", segid, start, end
+                    print("segid, start, end:", segid, start, end)
                 # Selecting subsets of points belonging only to the current segment
                 if prune_length != None:
-				    end = min(end, start+prune_length)
+                    end = min(end, start+prune_length)
                 _, all_start, all_end = get_chunk(all_data, 0, start, end)
                 _, fix_start, fix_end = get_chunk(fixation_data, 0, start, end)
                 if saccade_data != None:
                     _, sac_start, sac_end = get_chunk(saccade_data, 0, start, end)
                     saccade_data_in_seg = saccade_data[sac_start:sac_end]
                 else:
-				    sac_start = None
-				    sac_end = None
-				    saccade_data_in_seg = None
+                    sac_start = None
+                    sac_end = None
+                    saccade_data_in_seg = None
                 if event_data != None:
                     _, event_start, event_end = get_chunk(event_data, 0, start, end)
                     event_data_in_seg = event_data[event_start:event_end]
                 else:
-				    event_start = None
-				    event_end = None
-				    event_data_in_seg = None
+                    event_start = None
+                    event_end = None
+                    event_data_in_seg = None
 
                 if fix_end - fix_start>0:
                     try:
@@ -319,7 +319,7 @@ class Scene(Segment):
         for seg in segments:
             sample_st,sample_end,fix_start,fix_end,sac_st,sac_end,event_st,event_end = seg.get_indices()
             if params.DEBUG or params.VERBOSE == "VERBOSE":
-                print "sample_st,sample_end,fix_start,fix_end",sample_st,sample_end,fix_start,fix_end,sac_st,sac_end,event_st,event_end
+                print("sample_st,sample_end,fix_start,fix_end",sample_st,sample_end,fix_start,fix_end,sac_st,sac_end,event_st,event_end)
             fixationlist.append(fixation_data[fix_start:fix_end])
             totalfixations += len(fixationlist[-1])
             if seg.start < firstsegtime:
@@ -399,7 +399,7 @@ class Scene(Segment):
             aois: a list of "AOI"s relevant to this Scene
         """
         if len(aois) == 0 and params.VERBOSE != "QUIET":
-            print "No AOI in segment ", self.segid
+            print("No AOI in segment ", self.segid)
 
         self.aoi_data={}
         for seg in segments:
@@ -796,7 +796,7 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
         #calculating the transitions to and from this AOI and other active AOIs at the moment
         new_AOI_Stat_transition_aois = filter(lambda x: x.startswith('numtransfrom_'), new_AOI_Stat.features.keys())
         if params.DEBUG or params.VERBOSE == "VERBOSE":
-            print "Segment's transition_aois", new_AOI_Stat_transition_aois
+            print("Segment's transition_aois", new_AOI_Stat_transition_aois)
 
         merge_aoi_events(maois, new_AOI_Stat, total_time, sc_start)
 
