@@ -10,10 +10,10 @@ Institution: The University of British Columbia.
 """
 
 from abc import ABCMeta, abstractmethod
-from data_structures import Datapoint, Fixation, Event
-from Scene import *
-from AOI import *
-from utils import *
+from EMDAT_core.data_structures import *
+from EMDAT_core.Scene import *
+from EMDAT_core.AOI import *
+from EMDAT_core.utils import *
 
 
 class Recording:
@@ -139,24 +139,24 @@ class Recording:
         if segfile is not None:
             scenelist = read_segs(segfile)
             if params.VERBOSE != "QUIET":
-                print "Done reading the segments!"
+                print("Done reading the segments!")
         elif scenelist is None:
-            print "Error in scene file."
+            print("Error in scene file.")
 
         if aoifile is not None:
             aoilist = read_aois(aoifile)
             if params.VERBOSE != "QUIET":
-                print "Done reading the AOIs!"
+                print("Done reading the AOIs!")
         elif aoilist is None:
             aoilist = []
-            print "Warning: No AOIs defined!"
+            print("Warning: No AOIs defined!")
 
         scenes = []
         for scid, sc in scenelist.iteritems():
             if params.VERBOSE != "QUIET":
-                print "Preparing scene:" + str(scid)
+                print("Preparing scene:" + str(scid))
             if params.DEBUG or params.VERBOSE == "VERBOSE":
-                print "len(all_data)", len(self.all_data)
+                print("len(all_data)", len(self.all_data))
             try:
                 # get rest pupil size data
                 if rpsdata is not None:
@@ -165,10 +165,10 @@ class Recording:
                     else:
                         scrpsdata = 0
                         if params.DEBUG:
-                            print rpsdata.keys()
+                            print(rpsdata.keys())
                             raise Exception("Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
                         else:
-                            print "Warning: Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0"
+                            print("Warning: Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
                             pass
                 else:
                     scrpsdata = 0
