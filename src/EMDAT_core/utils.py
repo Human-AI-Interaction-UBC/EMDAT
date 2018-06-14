@@ -8,7 +8,7 @@ Authors: Samad Kardan (creator), Sebastien Lalle.
 Institution: The University of British Columbia.
 """
 
-from data_structures import Fixation
+from EMDAT_core.data_structures import Fixation
 import params
 import math
 
@@ -20,7 +20,7 @@ def point_inside_polygon(x,y,poly):
 
     Args:
         poly: is a list of (x,y) pairs defining the polgon
-        
+
     Returns:
         True or False.
     """

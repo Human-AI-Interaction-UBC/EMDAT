@@ -10,10 +10,9 @@ Institution: The University of British Columbia.
 """
 
 import params
-import geometry
-from AOI import *
+import EMDAT_core.geometry
+from EMDAT_core.AOI import *
 from warnings import warn
-from AOI import AOI, _fixation_inside_aoi
 from math import isnan
 
 class Segment():
@@ -942,10 +941,10 @@ class Segment():
     def print_(self):
         """Ourputs all feature names and their values for this Segment on the console
         """
-        print"ID", self.getid()
-        print"start",self.start
-        print"end",self.end
-        print"is_valid",self.is_valid
+        print("ID", self.getid())
+        print("start",self.start)
+        print("end",self.end)
+        print("is_valid",self.is_valid)
         print
 #        featurelist =["completion_time","numfixations","length","numsamples"]
 #        if self.features['numfixations'] > 0:
@@ -955,5 +954,5 @@ class Segment():
 
         fn,fv = self.get_features()
         for i in xrange(len(fn)):
-            print fn[i],':',fv[i]
+            print(fn[i],':',fv[i])
         print

@@ -10,8 +10,8 @@ Institution: The University of British Columbia.
 """
 
 import math, EMDAT_core.geometry
-from utils import *
-from Segment import *
+from EMDAT_core.utils import *
+from EMDAT_core.Segment import *
 from copy import deepcopy
 
 
