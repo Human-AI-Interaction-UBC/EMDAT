@@ -194,7 +194,7 @@ class TobiiV3Recording(Recording):
 
                 else: #wait for the first fixation
                     if row["GazeEventType"] == "Fixation":
-						in_fixation = True
+                        in_fixation = True
 
                 if row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]:
                     last_gaze_coord = (EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"]))
