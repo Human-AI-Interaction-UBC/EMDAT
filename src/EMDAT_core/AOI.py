@@ -15,7 +15,7 @@ Authors: Samad Kardan (creator), Sebastien Lalle.
 Institution: The University of British Columbia.
 """
 
-from utils import *
+from EMDAT_core.utils import *
 from warnings import warn
 
 
@@ -103,7 +103,7 @@ class AOI():
         if start == -1:
             return False, []
         if params.DEBUG or params.VERBOSE == "VERBOSE":
-            print "in:",self.aid
+            print("in:",self.aid)
 
         if self.timeseq == [[]]:
             return True, [] #global AOI
@@ -119,7 +119,7 @@ class AOI():
                 else:
                     if start<=intr[1] and end>=intr[0]:
                         if params.DEBUG or params.VERBOSE == "VERBOSE":
-                            print "partial:",start,end,":",intr[0],intr[1]
+                            print("partial:",start,end,":",intr[0],intr[1])
                         ovstart = max(start,intr[0])
                         ovend  = min(end,intr[1])
                         ovelap_part.append( (ovstart,ovend) )
@@ -204,7 +204,7 @@ class AOI_Stat():
 
         if partition:
             if params.DEBUG or params.VERBOSE == "VERBOSE":
-                print "partition",partition
+                print("partition",partition)
             for intr in partition:
                 if starttime <= intr[1] and endtime >= intr[0]:
                     _,st,en = get_chunk(seg_all_data, 0, intr[0], intr[1])
@@ -215,9 +215,9 @@ class AOI_Stat():
                         _,st,en = get_chunk(seg_event_data, 0, intr[0],intr[1])
                         event_data += seg_event_data[st:en]
             if params.DEBUG or params.VERBOSE == "VERBOSE":
-                print "len(seg_all_data)",seg_all_data
-                print "len(seg_fixation_data)",seg_fixation_data
-                print "len(fixation_data)",fixation_data
+                print("len(seg_all_data)",seg_all_data)
+                print("len(seg_fixation_data)",seg_fixation_data)
+                print("len(fixation_data)",fixation_data)
         else:  #global AOI (always active)
             all_data = seg_all_data
             fixation_data = seg_fixation_data
@@ -457,10 +457,10 @@ class AOI_Stat():
         """Prints the list of features and their values for this AOI_Stat object
         """
 
-        print  "AOI ID:",self.aoi.aid
+        print("AOI ID:",self.aoi.aid)
         fn,fv = self.get_features()
         for i in xrange(len(fn)):
-            print fn[i],':',fv[i]
+            print(fn[i],':',fv[i])
         print
 
 def _datapoint_inside_aoi(datapoint, polyin, polyout):
