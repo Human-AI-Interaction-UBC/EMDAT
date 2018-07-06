@@ -10,10 +10,11 @@ Institution: The University of British Columbia.
 """
 
 import params
-import EMDAT_core.geometry
+from EMDAT_core import geometry
 from EMDAT_core.AOI import *
 from warnings import warn
 from math import isnan
+from EMDAT_core.AOI import _fixation_inside_aoi
 
 class Segment():
     """A Segment is a class that represents the smallest unit of aggregated eye data samples with a conceptual meaning.

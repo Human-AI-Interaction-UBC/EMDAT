@@ -917,9 +917,20 @@ def merge_aoi_pupil(maois, new_AOI_Stat):
             maois.features['startpupilsize'] = new_AOI_Stat.features['startpupilsize']
         if maois.endtime < new_AOI_Stat.endtime:
             maois.features['endpupilsize'] = new_AOI_Stat.features['endpupilsize']
-
         maois.numpupilsizes += new_AOI_Stat.numpupilsizes
-
+        
+    if new_AOI_Stat.numpupilvelocity + maois.numpupilvelocity > 1 and new_AOI_Stat.numpupilvelocity> 0:
+        total_numpupilvelocity = maois.numpupilvelocity + new_AOI_Stat.numpupilvelocity
+        aggregate_mean_velocity =  maois.features['meanpupilvelocity'] * float(maois.numpupilvelocity) / total_numpupilvelocity + new_AOI_Stat.features['meanpupilvelocity'] * float(new_AOI_Stat.numpupilvelocity) / total_numpupilvelocity
+        maois.features['stddevpupilvelocity'] = pow(((maois.numpupilvelocity - 1) * pow(maois.features['stddevpupilvelocity'], 2) \
+                                            + (new_AOI_Stat.numpupilvelocity - 1) * pow(new_AOI_Stat.features['stddevpupilvelocity'], 2) + \
+                                            maois.numpupilvelocity *  pow(maois.features['meanpupilvelocity'] - aggregate_mean_velocity, 2) + \
+                                            new_AOI_Stat.numpupilvelocity * pow(new_AOI_Stat.features['meanpupilvelocity'] - aggregate_mean_velocity, 2)) \
+                                            / (total_numpupilvelocity - 1), 0.5)
+        maois.features['maxpupilvelocity'] = max(maois.features['maxpupilvelocity'], new_AOI_Stat.features['maxpupilvelocity'])
+        maois.features['minpupilvelocity'] = min(maois.features['minpupilvelocity'], new_AOI_Stat.features['minpupilvelocity'])
+        maois.features['meanpupilvelocity'] = aggregate_mean_velocity
+    maois.numpupilvelocity += new_AOI_Stat.numpupilvelocity
 
 def merge_aoi_events(maois, new_AOI_Stat, total_time, sc_start):
     """ Merge event features such as

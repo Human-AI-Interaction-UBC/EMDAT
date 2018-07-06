@@ -152,7 +152,7 @@ class Recording:
             print("Warning: No AOIs defined!")
 
         scenes = []
-        for scid, sc in scenelist.iteritems():
+        for scid, sc in scenelist.items():
             if params.VERBOSE != "QUIET":
                 print("Preparing scene:" + str(scid))
             if params.DEBUG or params.VERBOSE == "VERBOSE":

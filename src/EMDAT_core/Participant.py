@@ -378,7 +378,7 @@ def partition(segfile):
     """
     scenelist = read_segs(segfile)
     segcount = 0
-    for l in scenelist.itervalues():
+    for l in scenelist.items():
         segcount += len(l)
     return scenelist, segcount
 
