@@ -839,23 +839,31 @@ def merge_aoi_fixations(maois, new_AOI_Stat, total_time, total_numfixations, sc_
 
             sc_start: start time (timestamp) of the scene
     """
-    maois.features['numfixations'] += new_AOI_Stat.features['numfixations']
-    maois.features['longestfixation'] = max(maois.features['longestfixation'],new_AOI_Stat.features['longestfixation'])
-    maois.features['totaltimespent'] += new_AOI_Stat.features['totaltimespent']
+    total_numfixations = maois.features['numfixations'] + new_AOI_Stat.features['numfixations']
+    if total_numfixations > 1 and new_AOI_Stat.features['numfixations'] > 0:
 
-    maois.features['meanfixationduration'] = maois.features['totaltimespent'] / maois.features['numfixations'] if maois.features['numfixations'] != 0 else -1
+        maois.features['longestfixation'] = max(maois.features['longestfixation'],new_AOI_Stat.features['longestfixation'])
+        maois.features['totaltimespent'] += new_AOI_Stat.features['totaltimespent']
+        aggregate_meanfixationduration = maois.features['totaltimespent'] / maois.features['numfixations']
+        maois.features['stddevfixationduration'] = pow(((maois.features['numfixations'] - 1) * pow(maois.features['stddevfixationduration'], 2) + \
+                                    (new_AOI_Stat.features['numfixations'] - 1) * pow(new_AOI_Stat.features['stddevfixationduration'], 2) + \
+                                    maois.features['numfixations'] * pow(maois.features['meanfixationduration'] - aggregate_meanfixationduration , 2) \
+                                    + new_AOI_Stat.features['numfixations'] * pow(new_AOI_Stat.features['meanfixationduration'] - aggregate_meanfixationduration, 2)) / (total_numfixations - 1), 0.5)
 
-    maois.features['proportiontime'] = float(maois.features['totaltimespent'])/total_time
-    maois.features['proportionnum'] = float(maois.features['numfixations'])/total_numfixations
-    if maois.features['totaltimespent'] > 0:
-        maois.features['fixationrate'] = float(maois.features['numfixations']) / maois.features['totaltimespent']
-    else:
-        maois.features['fixationrate'] = -1
+        maois.features['numfixations'] = total_numfixations
+        maois.features['meanfixationduration'] = aggregate_meanfixationduration
+        maois.features['proportiontime'] = float(maois.features['totaltimespent'])/total_time
+        maois.features['proportionnum'] = float(maois.features['numfixations'])/total_numfixations
 
-    if new_AOI_Stat.features['timetofirstfixation'] != -1:
-        maois.features['timetofirstfixation'] = min(maois.features['timetofirstfixation'], deepcopy(new_AOI_Stat.features['timetofirstfixation']) + new_AOI_Stat.starttime - sc_start)
-    if new_AOI_Stat.features['timetolastfixation'] != -1:
-        maois.features['timetolastfixation'] = max(maois.features['timetolastfixation'], deepcopy(new_AOI_Stat.features['timetolastfixation']) + new_AOI_Stat.starttime - sc_start)
+        if maois.features['totaltimespent'] > 0:
+            maois.features['fixationrate'] = float(maois.features['numfixations']) / maois.features['totaltimespent']
+        else:
+            maois.features['fixationrate'] = -1
+
+        if new_AOI_Stat.features['timetofirstfixation'] != -1:
+            maois.features['timetofirstfixation'] = min(maois.features['timetofirstfixation'], deepcopy(new_AOI_Stat.features['timetofirstfixation']) + new_AOI_Stat.starttime - sc_start)
+        if new_AOI_Stat.features['timetolastfixation'] != -1:
+            maois.features['timetolastfixation'] = max(maois.features['timetolastfixation'], deepcopy(new_AOI_Stat.features['timetolastfixation']) + new_AOI_Stat.starttime - sc_start)
 
 
 def merge_aoi_distance(maois, new_AOI_Stat):
@@ -887,7 +895,6 @@ def merge_aoi_distance(maois, new_AOI_Stat):
             maois.features['enddistance'] = new_AOI_Stat.features['enddistance']
         maois.numdistancedata += new_AOI_Stat.numdistancedata
 
-
 def merge_aoi_pupil(maois, new_AOI_Stat):
     """ Merge pupil features asuch as
             mean_pupil_size:            mean of pupil sizes
@@ -918,7 +925,7 @@ def merge_aoi_pupil(maois, new_AOI_Stat):
         if maois.endtime < new_AOI_Stat.endtime:
             maois.features['endpupilsize'] = new_AOI_Stat.features['endpupilsize']
         maois.numpupilsizes += new_AOI_Stat.numpupilsizes
-        
+
     if new_AOI_Stat.numpupilvelocity + maois.numpupilvelocity > 1 and new_AOI_Stat.numpupilvelocity> 0:
         total_numpupilvelocity = maois.numpupilvelocity + new_AOI_Stat.numpupilvelocity
         aggregate_mean_velocity =  maois.features['meanpupilvelocity'] * float(maois.numpupilvelocity) / total_numpupilvelocity + new_AOI_Stat.features['meanpupilvelocity'] * float(new_AOI_Stat.numpupilvelocity) / total_numpupilvelocity
