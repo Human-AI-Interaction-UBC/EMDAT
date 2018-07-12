@@ -11,7 +11,7 @@ Institution: The University of British Columbia.
 # ####################### Eye tracker type and path ##############################################################
 
 # the folder that has the files exported from eye trackers
-EYELOGDATAFOLDER = "./sampledata/blinks"
+EYELOGDATAFOLDER = "./sampledata"
 
 # the folder that has the external log files
 EXTERNALLOGDATAFOLDER = "./sampledata/external logs"

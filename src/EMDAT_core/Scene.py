@@ -378,6 +378,7 @@ class Scene(Segment):
         self.merge_event_data(event_data, segments)
 
         self.has_aois = False
+
         if aoilist:
             self.set_aois(segments, aoilist)
 
@@ -791,8 +792,7 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
             the updated AOI_Sata object
         """
         maois = main_AOI_Stat
-
-        merge_aoi_fixations(maois, new_AOI_Stat. total_time, total_numfixations, sc_start)
+        merge_aoi_fixations(maois, new_AOI_Stat, total_time, total_numfixations, sc_start)
         #calculating the transitions to and from this AOI and other active AOIs at the moment
         new_AOI_Stat_transition_aois = filter(lambda x: x.startswith('numtransfrom_'), new_AOI_Stat.features.keys())
         if params.DEBUG or params.VERBOSE == "VERBOSE":
@@ -841,7 +841,6 @@ def merge_aoi_fixations(maois, new_AOI_Stat, total_time, total_numfixations, sc_
     """
     total_numfixations = maois.features['numfixations'] + new_AOI_Stat.features['numfixations']
     if total_numfixations > 1 and new_AOI_Stat.features['numfixations'] > 0:
-
         maois.features['longestfixation'] = max(maois.features['longestfixation'],new_AOI_Stat.features['longestfixation'])
         maois.features['totaltimespent'] += new_AOI_Stat.features['totaltimespent']
         aggregate_meanfixationduration = maois.features['totaltimespent'] / maois.features['numfixations']
