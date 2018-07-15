@@ -917,7 +917,7 @@ def merge_aoi_pupil(maois, new_AOI_Stat):
                                             new_AOI_Stat.numpupilsizes * pow(new_AOI_Stat.features['meanpupilsize'] - aggregate_mean_pupil, 2)) \
                                             / (total_numpupilsizes - 1), 0.5)
         maois.features['maxpupilsize'] = max(maois.features['maxpupilsize'], new_AOI_Stat.features['maxpupilsize'])
-        maois.features['minpupilsize'] = min(maois.features['maxpupilsize'], new_AOI_Stat.features['maxpupilsize'])
+        maois.features['minpupilsize'] = min(maois.features['minpupilsize'], new_AOI_Stat.features['minpupilsize'])
         maois.features['meanpupilsize'] = aggregate_mean_pupil
         if maois.starttime > new_AOI_Stat.starttime:
             maois.features['startpupilsize'] = new_AOI_Stat.features['startpupilsize']

@@ -321,7 +321,6 @@ class AOI_Stat():
 
         #get all datapoints where distance is available
         valid_distance_data = filter(lambda x: x.distance > 0, datapoints)
-
         #number of valid pupil sizes
         self.numdistancedata = len(valid_distance_data)
         if self.numdistancedata > 0: #check if the current segment has pupil data available
