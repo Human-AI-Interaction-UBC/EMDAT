@@ -843,7 +843,7 @@ def merge_aoi_fixations(maois, new_AOI_Stat, total_time, total_numfixations, sc_
     if total_numfixations > 1 and new_AOI_Stat.features['numfixations'] > 0:
         maois.features['longestfixation'] = max(maois.features['longestfixation'],new_AOI_Stat.features['longestfixation'])
         maois.features['totaltimespent'] += new_AOI_Stat.features['totaltimespent']
-        aggregate_meanfixationduration = maois.features['totaltimespent'] / maois.features['numfixations']
+        aggregate_meanfixationduration = maois.features['totaltimespent'] / total_numfixations
         maois.features['stddevfixationduration'] = pow(((maois.features['numfixations'] - 1) * pow(maois.features['stddevfixationduration'], 2) + \
                                     (new_AOI_Stat.features['numfixations'] - 1) * pow(new_AOI_Stat.features['stddevfixationduration'], 2) + \
                                     maois.features['numfixations'] * pow(maois.features['meanfixationduration'] - aggregate_meanfixationduration , 2) \
