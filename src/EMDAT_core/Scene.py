@@ -839,16 +839,14 @@ def merge_aoi_fixations(maois, new_AOI_Stat, total_time, total_numfixations, sc_
 
             sc_start: start time (timestamp) of the scene
     """
-    total_numfixations = maois.features['numfixations'] + new_AOI_Stat.features['numfixations']
-    if total_numfixations > 1 and new_AOI_Stat.features['numfixations'] > 0:
-        maois.features['longestfixation'] = max(maois.features['longestfixation'],new_AOI_Stat.features['longestfixation'])
-        maois.features['totaltimespent'] += new_AOI_Stat.features['totaltimespent']
-        aggregate_meanfixationduration = maois.features['totaltimespent'] / maois.features['numfixations']
-        maois.features['stddevfixationduration'] = pow(((maois.features['numfixations'] - 1) * pow(maois.features['stddevfixationduration'], 2) + \
-                                    (new_AOI_Stat.features['numfixations'] - 1) * pow(new_AOI_Stat.features['stddevfixationduration'], 2) + \
-                                    maois.features['numfixations'] * pow(maois.features['meanfixationduration'] - aggregate_meanfixationduration , 2) \
-                                    + new_AOI_Stat.features['numfixations'] * pow(new_AOI_Stat.features['meanfixationduration'] - aggregate_meanfixationduration, 2)) / (total_numfixations - 1), 0.5)
+    if new_AOI_Stat.features['numfixations'] > 0:
+        aoi_list = [maois, new_AOI_Stat]
 
+        total_numfixations = sumfeat(aoi_list, "features['numfixations']")
+        maois.features['longestfixation'] = maxfeat(aoi_list, "features['longestfixation']")
+        maois.features['totaltimespent'] += new_AOI_Stat.features['totaltimespent']
+        aggregate_meanfixationduration = maois.features['totaltimespent'] / total_numfixations
+        maois.features['stddevfixationduration'] = aggregatestddevfeat(aoi_list, "features['numfixations']", "features['stddevfixationduration']", "features['meanfixationduration']", aggregate_meanfixationduration)
         maois.features['numfixations'] = total_numfixations
         maois.features['meanfixationduration'] = aggregate_meanfixationduration
         maois.features['proportiontime'] = float(maois.features['totaltimespent'])/total_time
@@ -878,15 +876,14 @@ def merge_aoi_distance(maois, new_AOI_Stat):
             maois: AOI_Stat object of this Scene (must have been initialised)
             new_AOI_Stat: a new AOI_Stat object
     """
-    if new_AOI_Stat.numdistancedata + maois.numdistancedata > 1 and new_AOI_Stat.numdistancedata > 0:
-        total_distances = maois.numdistancedata + new_AOI_Stat.numdistancedata
-        aggregate_mean_distance = maois.features['meandistance'] * float(maois.numdistancedata) / total_distances + new_AOI_Stat.features['meandistance'] * float(new_AOI_Stat.numdistancedata) / total_distances
-        maois.features['stddevdistance'] = pow(((maois.numdistancedata - 1) * pow(maois.features['stddevdistance'], 2) + \
-                                    (new_AOI_Stat.numdistancedata - 1) * pow(new_AOI_Stat.features['stddevdistance'], 2) + \
-                                    maois.numdistancedata * pow(maois.features['meandistance'] - aggregate_mean_distance , 2) \
-                                    + new_AOI_Stat.numdistancedata * pow(new_AOI_Stat.features['meandistance'] - aggregate_mean_distance, 2)) / (total_distances - 1), 0.5)
-        maois.features['maxdistance'] = max(maois.features['maxdistance'], new_AOI_Stat.features['maxdistance'])
-        maois.features['mindistance'] = min(maois.features['mindistance'], new_AOI_Stat.features['mindistance'])
+    aoi_list = [maois, new_AOI_Stat]
+    if new_AOI_Stat.numdistancedata > 0:
+        total_distances = sumfeat(aoi_list, 'numdistancedata')
+        aggregate_mean_distance = weightedmeanfeat(aoi_list, 'numdistancedata', "features['meandistance']")
+        maois.features['stddevdistance'] = aggregatestddevfeat(aoi_list, 'numdistancedata', "features['stddevdistance']",
+                                                                    "features['meandistance']", aggregate_mean_distance)
+        maois.features['maxdistance'] = maxfeat(aoi_list, "features['maxdistance']")
+        maois.features['mindistance'] = minfeat(aoi_list, "features['mindistance']")
         maois.features['meandistance'] = aggregate_mean_distance
         if maois.starttime > new_AOI_Stat.starttime:
             maois.features['startdistance'] = new_AOI_Stat.features['startdistance']
@@ -908,16 +905,13 @@ def merge_aoi_pupil(maois, new_AOI_Stat):
             maois: AOI_Stat object of this Scene (must have been initialised)
             new_AOI_Stat: a new AOI_Stat object
     """
-    if new_AOI_Stat.numpupilsizes + maois.numpupilsizes > 1 and new_AOI_Stat.numpupilsizes > 0:
-        total_numpupilsizes = maois.numpupilsizes + new_AOI_Stat.numpupilsizes
-        aggregate_mean_pupil =  maois.features['meanpupilsize'] * float(maois.numpupilsizes) / total_numpupilsizes + new_AOI_Stat.features['meanpupilsize'] * float(new_AOI_Stat.numpupilsizes) / total_numpupilsizes
-        maois.features['stddevpupilsize'] = pow(((maois.numpupilsizes - 1) * pow(maois.features['stddevpupilsize'], 2) \
-                                            + (new_AOI_Stat.numpupilsizes - 1) * pow(new_AOI_Stat.features['stddevpupilsize'], 2) + \
-                                            maois.numpupilsizes *  pow(maois.features['meanpupilsize'] - aggregate_mean_pupil, 2) + \
-                                            new_AOI_Stat.numpupilsizes * pow(new_AOI_Stat.features['meanpupilsize'] - aggregate_mean_pupil, 2)) \
-                                            / (total_numpupilsizes - 1), 0.5)
-        maois.features['maxpupilsize'] = max(maois.features['maxpupilsize'], new_AOI_Stat.features['maxpupilsize'])
-        maois.features['minpupilsize'] = min(maois.features['minpupilsize'], new_AOI_Stat.features['minpupilsize'])
+    aoi_list = [maois, new_AOI_Stat]
+    if (new_AOI_Stat.numpupilsizes > 0):
+        aggregate_mean_pupil = weightedmeanfeat(aoi_list, 'numpupilsizes', "features['meanpupilsize']")
+        maois.features['stddevpupilsize'] = aggregatestddevfeat(aoi_list, 'numpupilsizes', "features['stddevpupilsize']",
+                                                                        "features['meanpupilsize']", aggregate_mean_pupil)
+        maois.features['maxpupilsize'] = maxfeat(aoi_list, "features['maxpupilsize']")
+        maois.features['minpupilsize'] = minfeat(aoi_list, "features['minpupilsize']")
         maois.features['meanpupilsize'] = aggregate_mean_pupil
         if maois.starttime > new_AOI_Stat.starttime:
             maois.features['startpupilsize'] = new_AOI_Stat.features['startpupilsize']
@@ -925,18 +919,14 @@ def merge_aoi_pupil(maois, new_AOI_Stat):
             maois.features['endpupilsize'] = new_AOI_Stat.features['endpupilsize']
         maois.numpupilsizes += new_AOI_Stat.numpupilsizes
 
-    if new_AOI_Stat.numpupilvelocity + maois.numpupilvelocity > 1 and new_AOI_Stat.numpupilvelocity> 0:
-        total_numpupilvelocity = maois.numpupilvelocity + new_AOI_Stat.numpupilvelocity
-        aggregate_mean_velocity =  maois.features['meanpupilvelocity'] * float(maois.numpupilvelocity) / total_numpupilvelocity + new_AOI_Stat.features['meanpupilvelocity'] * float(new_AOI_Stat.numpupilvelocity) / total_numpupilvelocity
-        maois.features['stddevpupilvelocity'] = pow(((maois.numpupilvelocity - 1) * pow(maois.features['stddevpupilvelocity'], 2) \
-                                            + (new_AOI_Stat.numpupilvelocity - 1) * pow(new_AOI_Stat.features['stddevpupilvelocity'], 2) + \
-                                            maois.numpupilvelocity *  pow(maois.features['meanpupilvelocity'] - aggregate_mean_velocity, 2) + \
-                                            new_AOI_Stat.numpupilvelocity * pow(new_AOI_Stat.features['meanpupilvelocity'] - aggregate_mean_velocity, 2)) \
-                                            / (total_numpupilvelocity - 1), 0.5)
-        maois.features['maxpupilvelocity'] = max(maois.features['maxpupilvelocity'], new_AOI_Stat.features['maxpupilvelocity'])
-        maois.features['minpupilvelocity'] = min(maois.features['minpupilvelocity'], new_AOI_Stat.features['minpupilvelocity'])
+    if (new_AOI_Stat.numpupilvelocity > 0):
+        aggregate_mean_velocity =  weightedmeanfeat(aoi_list, 'numpupilvelocity', "features['meanpupilvelocity']")
+        maois.features['stddevpupilvelocity'] = aggregatestddevfeat(aoi_list, 'numpupilvelocity', "features['stddevpupilvelocity']",
+                                                                        "features['meanpupilvelocity']", aggregate_mean_velocity)
+        maois.features['maxpupilvelocity'] = maxfeat(aoi_list, "features['maxpupilvelocity']")
+        maois.features['minpupilvelocity'] = minfeat(aoi_list, "features['minpupilvelocity']")
         maois.features['meanpupilvelocity'] = aggregate_mean_velocity
-    maois.numpupilvelocity += new_AOI_Stat.numpupilvelocity
+        maois.numpupilvelocity += new_AOI_Stat.numpupilvelocity
 
 def merge_aoi_events(maois, new_AOI_Stat, total_time, sc_start):
     """ Merge event features such as
