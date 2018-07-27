@@ -86,6 +86,18 @@ class Segment():
         #self.saccade_data = saccade_data
         #self.event_data = event_data
         self.features = {}
+
+        """ If prune_length specified, keep only data from start to start + prune_length
+            of the segment
+        """
+        if prune_length:
+            all_data = filter(lambda x: x.timestamp <= self.start + prune_length, all_data)
+            fixation_data = filter(lambda x: x.timestamp <= self.start + prune_length, fixation_data)
+            if event_data != None:
+                event_data = filter(lambda x: x.timestamp <= self.start + prune_length, event_data)
+            if saccade_data != None:
+                saccade_data = filter(lambda x: x.timestamp <= self.start + prune_length, saccade_data)
+                
         self.completion_time = all_data[-1].timestamp - all_data[0].timestamp
         if self.completion_time == 0:
             raise Exception("Zero length segment")
@@ -105,17 +117,6 @@ class Segment():
         self.validity3 = self.calc_validity3()
         self.is_valid = self.get_validity()
         self.length_invalid = self.get_length_invalid()
-
-        """ If prune_length specified, keep only data from start to start + prune_length
-            of the segment
-        """
-        if prune_length:
-            all_data = filter(lambda x: x.timestamp <= self.start + prune_length, all_data)
-            fixation_data = filter(lambda x: x.timestamp <= self.start + prune_length, fixation_data)
-            if event_data != None:
-                event_data = filter(lambda x: x.timestamp <= self.start + prune_length, event_data)
-            if saccade_data != None:
-                saccade_data = filter(lambda x: x.timestamp <= self.start + prune_length, saccade_data)
 
         self.end = all_data[-1].timestamp
         self.length = self.end - self.start
