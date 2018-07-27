@@ -14,15 +14,15 @@ from EMDAT_core.ValidityProcessing import output_Validity_info_Segments, output_
 
 # user list
 #ul = [7, 19, 26, 36, 38, 52, 57]
-#ul = [16, 17, 18]
-ul = [17]
+ul = [16, 17, 18]
+#ul = [17]
 
 #ul = [38]
 
 # user ids
 uids = ul
 # time offsets from start of the recording
-alogoffset = [0]
+alogoffset = [0, 0, 0]
 
 # Read participants
 ps = read_participants_Basic(user_list = ul, pids = uids, log_time_offsets = alogoffset, datadir = params.EYELOGDATAFOLDER,

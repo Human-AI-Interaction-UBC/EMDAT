@@ -120,7 +120,7 @@ class TobiiV3Recording(Recording):
             nb_sample = 0
 
             for row in reader:
-                if row["MediaName"] != 'ScreenRec':
+                if row["MediaName"] != 'ScreenRec' or not row["EyeTrackerTimestamp"]:
 #                if row["MediaName"] != 'Screen Recordings (1)' or not row["EyeTrackerTimestamp"]:  # ignore non-recording data point
                     continue
 

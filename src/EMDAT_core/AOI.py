@@ -238,34 +238,6 @@ class AOI_Stat():
         self.generate_event_features(seg_event_data, event_data, sum_discarded)
 
         self.generate_transition_features(active_aois, fixation_data, fixation_indices)
-        #calculating the transitions to and from this AOI and other active AOIs at the moment
-        for aoi in active_aois:
-            aid = aoi.aid
-            self.features['numtransfrom_%s'%(aid)] = 0
-
-        sumtransfrom = 0
-        for i in fixation_indices:
-            if i > 0:
-                for aoi in active_aois:
-                    aid = aoi.aid
-                    polyin = aoi.polyin
-                    polyout = aoi.polyout
-                    key = 'numtransfrom_%s'%(aid)
-
-                    if _fixation_inside_aoi(fixation_data[i-1], polyin, polyout):
-                        self.features[key] += 1
-                        sumtransfrom += 1
-
-        for aoi in active_aois:
-            aid = aoi.aid
-
-            if sumtransfrom > 0:
-                val = self.features['numtransfrom_%s'%(aid)]
-                self.features['proptransfrom_%s'%(aid)] = float(val) / sumtransfrom
-            else:
-                self.features['proptransfrom_%s'%(aid)] = 0
-        self.total_trans_from = sumtransfrom
-        ###end of transition calculation
 
 
     def generate_pupil_features(self, datapoints, rest_pupil_size, export_pupilinfo):
