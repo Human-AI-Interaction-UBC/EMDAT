@@ -841,7 +841,6 @@ def merge_aoi_fixations(maois, new_AOI_Stat, total_time, total_numfixations, sc_
     """
     if new_AOI_Stat.features['numfixations'] > 0:
         aoi_list = [maois, new_AOI_Stat]
-
         numfixations = sumfeat(aoi_list, "features['numfixations']")
         maois.features['longestfixation'] = maxfeat(aoi_list, "features['longestfixation']")
         maois.features['totaltimespent'] += new_AOI_Stat.features['totaltimespent']
