@@ -14,7 +14,7 @@ from EMDAT_core.data_structures import *
 from EMDAT_core.Scene import *
 from EMDAT_core.AOI import *
 from EMDAT_core.utils import *
-
+from itertools import groupby
 
 class Recording:
     __metaclass__ = ABCMeta
@@ -139,24 +139,24 @@ class Recording:
         if segfile is not None:
             scenelist = read_segs(segfile)
             if params.VERBOSE != "QUIET":
-                print("Done reading the segments!")
+                print "Done reading the segments!"
         elif scenelist is None:
-            print("Error in scene file.")
+            print "Error in scene file."
 
         if aoifile is not None:
             aoilist = read_aois(aoifile)
             if params.VERBOSE != "QUIET":
-                print("Done reading the AOIs!")
+                print "Done reading the AOIs!"
         elif aoilist is None:
             aoilist = []
-            print("Warning: No AOIs defined!")
+            print "Warning: No AOIs defined!"
 
         scenes = []
-        for scid, sc in scenelist.items():
+        for scid, sc in scenelist.iteritems():
             if params.VERBOSE != "QUIET":
-                print("Preparing scene:" + str(scid))
+                print "Preparing scene:" + str(scid)
             if params.DEBUG or params.VERBOSE == "VERBOSE":
-                print("len(all_data)", len(self.all_data))
+                print "len(all_data)", len(self.all_data)
             try:
                 # get rest pupil size data
                 if rpsdata is not None:
@@ -165,10 +165,10 @@ class Recording:
                     else:
                         scrpsdata = 0
                         if params.DEBUG:
-                            print(rpsdata.keys())
+                            print rpsdata.keys()
                             raise Exception("Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
                         else:
-                            print("Warning: Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
+                            print "Warning: Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0"
                             pass
                 else:
                     scrpsdata = 0
@@ -190,7 +190,6 @@ class Recording:
         for sc in scenes:
             segs.extend(sc.segments)
         return segs, scenes
-
 
     def clean_memory(self):
         self.all_data = []
@@ -255,7 +254,6 @@ def read_aois(aoifile):
 
     return read_aoilines(aoilines)
 
-
 def read_aoilines(aoilines):
     """
     Args:
@@ -266,6 +264,7 @@ def read_aoilines(aoilines):
     """
     aoilist = []
     polyin = []
+    polyout = []
     last_aid = ''
 
     for line in aoilines:
@@ -283,13 +282,14 @@ def read_aoilines(aoilines):
                         existing_aoi = True
                         # dynamic boundaries AOI: we simply add the new shape in the list of polyin and seq
                         exist_aoi.polyin.append(polyin)
-                        exist_aoi.polyout.append([])
+                        exist_aoi.polyout.append(polyout)
                         exist_aoi.timeseq.append(seq)
 
                 if not existing_aoi: # new AOI
-                    aoi = AOI(last_aid, [polyin], [[]], [seq])
+                    aoi = AOI(last_aid, [polyin], [polyout], [seq])
                     aoilist.append(aoi)
                 polyin = []
+                polyout = []
             else:
                 raise Exception('error in the AOI file')
         else:
@@ -302,17 +302,38 @@ def read_aoilines(aoilines):
                         existing_aoi = True
                         # dynamic boundaries AOI: we simply add the new shape in the list of polyin and seq
                         exist_aoi.polyin.append(polyin)
-                        exist_aoi.polyout.append([])
+                        exist_aoi.polyout.append(polyout)
                         exist_aoi.timeseq.append([])
 
                 if not existing_aoi: # new AOI
-                    aoi = AOI(last_aid, [polyin], [[]], [[]])
+                    aoi = AOI(last_aid, [polyin], [polyout], [[]])
                     aoilist.append(aoi)
                 polyin = []
+                polyout = []
 
             last_aid = chunks[0]  # first line
-            for v in chunks[1:]:
+
+            # this code checks to see if there are SUBTRACTIVE AOIS, defined by the splitting character --
+            # and if so, then it splits the line into two substrings, polyin and polyout
+            poly_in_list = chunks
+            poly_out_list = []
+            if ('--' in chunks):
+                a_list = [list(g) for k, g in groupby(chunks, lambda x : x == '--')]
+                poly_in_list = a_list[0]
+                poly_out_list = [list(g) for k, g in groupby(a_list[2], lambda x : x == ';')]
+
+
+            #evaluate the polyin and polyout
+            for v in poly_in_list[1:]:
                 polyin.append((eval(v)))
+
+            #ployout can contain many shapes, separated by ;
+            for w in poly_out_list:
+                if (';' not in w):
+                    tempshape = []
+                    for coord in w:
+                        tempshape.append((eval(coord)))
+                    polyout.append(tempshape)
 
     if polyin:  # last (global) AOI
 
@@ -323,15 +344,14 @@ def read_aoilines(aoilines):
                 existing_aoi = True
                 # dynamic boundaries AOI: we simply add the new shape in the list of polyin and seq
                 exist_aoi.polyin.append(polyin)
-                exist_aoi.polyout.append([])
+                exist_aoi.polyout.append(polyout)
                 exist_aoi.timeseq.append([])
 
         if not existing_aoi: # new AOI
-            aoi = AOI(last_aid, [polyin], [[]], [[]])
+            aoi = AOI(last_aid, [polyin], [polyout], [[]])
             aoilist.append(aoi)
 
     return aoilist
-
 
 def read_rest_pupil_sizes(rpsfile):
     """

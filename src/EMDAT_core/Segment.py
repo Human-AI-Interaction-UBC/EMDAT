@@ -97,7 +97,7 @@ class Segment():
                 event_data = filter(lambda x: x.timestamp <= self.start + prune_length, event_data)
             if saccade_data != None:
                 saccade_data = filter(lambda x: x.timestamp <= self.start + prune_length, saccade_data)
-                
+
         self.completion_time = all_data[-1].timestamp - all_data[0].timestamp
         if self.completion_time == 0:
             raise Exception("Zero length segment")
@@ -378,9 +378,9 @@ class Segment():
         """
         # check if distances are available for all missing points
         invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, all_data)
-        if len(invalid_distance_data) > 0:
-            warn("Distance from screen is unavailable for a valid data sample. \
-                        Number of missing points: " + str(len(invalid_distance_data)))
+#        if len(invalid_distance_data) > 0:
+#            warn("Distance from screen is unavailable for a valid data sample. \
+#                        Number of missing points: " + str(len(invalid_distance_data)))
 
         #get all datapoints where distance is available
         valid_distance_data = filter(lambda x: x.distance > 0, all_data)
@@ -870,7 +870,7 @@ class Segment():
         sequence = []
         for fix in fixdata:
             for aoi in aois:
-                if _fixation_inside_aoi(fix, aoi.polyin, aoi.polyout) and aoi.is_active(fix.timestamp, fix.timestamp) :
+                if _fixation_inside_aoi(fix, aoi.polyin, aoi.polyout, aoi.timeseq) and aoi.is_active(fix.timestamp, fix.timestamp) :
                     sequence.append(aoi.aid)
         return sequence
 

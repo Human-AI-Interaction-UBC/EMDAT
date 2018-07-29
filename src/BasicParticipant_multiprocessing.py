@@ -12,7 +12,7 @@ from math import ceil, floor
 from multiprocessing import Process, Queue
 import os.path
 
-params = __import__('params')
+params=__import__('params')
 from EMDAT_core.data_structures import *
 from EMDAT_core.Participant import *
 from EMDAT_core.Recording import *
@@ -188,11 +188,12 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
             sacfile = None
             segfile = datadir+'/P'+str(rec)+'.seg'
         elif params.EYETRACKERTYPE == "TobiiV3":
-            allfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
-            fixfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
-            sacfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
-            evefile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
-            segfile = "{dir}/TobiiV3_sample_{rec}.seg".format(dir=datadir, rec=rec)
+            allfile = "{dir}/MMD Study 1_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            fixfile = "{dir}/MMD Study 1_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            sacfile = "{dir}/MMD Study 1_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            evefile = "{dir}/MMD Study 1_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            segfile = "{dir}/Segs/{rec}.seg".format(dir=datadir, rec=rec)
+            aoifile = "{dir}/aois/dynamic_{rec}.aoi".format(dir=datadir, rec=rec)
         elif params.EYETRACKERTYPE == "SMI":
             allfile = "{dir}/SMI_Sample_{rec}_Samples.txt".format(dir=datadir, rec=rec)
             fixfile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
@@ -451,3 +452,46 @@ def list_to_string(list, separator = "\t"):
 
     """
     return separator.join(map(str, list))+ "\n"
+
+
+# participants = list of all participants returned by "read_participants_Basic()"
+# filename = file to export the validity information
+# example: prop_valid_fix_per_segs(ps, "infor_valid_participants.txt")
+def prop_valid_fix_per_segs(participants, filename):  # modified
+    count_high = 0
+    count_low = 0
+    mean_high = 0
+    mean_low = 0
+    std_high = 0
+    std_low = 0
+    mean_p = []
+    std_p = []
+    count_p = []
+    fout = open(filename, "w")
+
+    print "======== Segments ==============="
+    for p in participants:  # for all participants
+        mean = 0
+        std = 0
+
+        for s in p.scenes:  # for all scenes, compute total & mean valid fixations per participants
+            print str(p.pid) + '\t' + str(s.scid) + '\t' + str(s.proportion_valid)
+            fout.write(str(p.pid) + '\t' + str(s.scid) + '\t' + str(s.proportion_valid) + '\n')
+            if not str(s.scid).startswith('P'):
+                mean = mean + s.proportion_valid
+        mean = mean / (len(p.scenes))
+
+        for s in p.scenes:  # std dev per participants
+            if not str(s.scid).startswith('P'):
+                std = std + abs(mean - s.proportion_valid)
+        std = std / (len(p.scenes) - 1)
+        mean_p.append(mean)
+        std_p.append(std)
+        count_p.append(len(p.scenes) - 1)
+
+    print "======== Participants ==============="
+    for i in range(0, len(mean_p)):
+        print str(participants[i].pid) + " MEAN=" + str(mean_p[i]) + "; STDDEV=" + str(std_p[i]) + "; COUNT=" + str(
+            count_p[i])
+
+    fout.close()

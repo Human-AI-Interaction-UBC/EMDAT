@@ -227,7 +227,7 @@ class AOI_Stat():
         ## Remove datapoints with invalid gaze coordinates
         datapoints = filter(lambda datapoint: datapoint.gazepointx != -1 and datapoint.gazepointy != -1, all_data)
         # Only keep samples inside AOI
-        datapoints = filter(lambda datapoint: _datapoint_inside_aoi(datapoint, self.aoi.polyin, self.aoi.polyout), datapoints)
+        datapoints = filter(lambda datapoint: _datapoint_inside_aoi(datapoint, self.aoi.polyin, self.aoi.polyout, self.aoi.timeseq), datapoints)
 
         self.generate_pupil_features(datapoints, rest_pupil_size, export_pupilinfo)
 
@@ -288,8 +288,8 @@ class AOI_Stat():
     def generate_distance_features(self, datapoints):
         # check if pupil sizes are available for all missing points
         invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, datapoints)
-        if len(invalid_distance_data) > 0:
-            warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
+#        if len(invalid_distance_data) > 0:
+#            warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
 
         #get all datapoints where distance is available
         valid_distance_data = filter(lambda x: x.distance > 0, datapoints)
@@ -314,7 +314,7 @@ class AOI_Stat():
     def generate_fixation_features(self, datapoints, fixation_data, sum_discarded):
 
         fixation_indices = []
-        fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i], self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
+        fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i], self.aoi.polyin, self.aoi.polyout, self.aoi.timeseq), range(len(fixation_data)))
         fixations = map(lambda i: fixation_data[i], fixation_indices)
         numfixations = len(fixations)
         self.features['numfixations'] = numfixations
@@ -340,7 +340,7 @@ class AOI_Stat():
     def generate_event_features(self, seg_event_data, event_data, sum_discarded):
 
         if seg_event_data != None:
-            events = filter(lambda event: _event_inside_aoi(event,self.aoi.polyin, self.aoi.polyout), event_data)
+            events = filter(lambda event: _event_inside_aoi(event,self.aoi.polyin, self.aoi.polyout, self.aoi.timeseq), event_data)
             leftc, rightc, doublec, _ = generate_event_lists(events)
         if seg_event_data != None:
             self.features['numevents'] = len(events)
@@ -372,8 +372,9 @@ class AOI_Stat():
                     polyin = aoi.polyin
                     polyout = aoi.polyout
                     key = 'numtransfrom_%s'%(aid)
+                    timeseq = aoi.timeseq
 
-                    if _fixation_inside_aoi(fixation_data[i-1], polyin, polyout):
+                    if _fixation_inside_aoi(fixation_data[i-1], polyin, polyout, timeseq):
                         self.features[key] += 1
                         sumtransfrom += 1
         for aoi in active_aois:
@@ -434,32 +435,34 @@ class AOI_Stat():
             print(fn[i],':',fv[i])
         print
 
-def _datapoint_inside_aoi(datapoint, polyin, polyout):
+def _datapoint_inside_aoi(datapoint, polyin, polyout, timeseq):
     """Helper function that checks if a datapoint object is inside the AOI described by extrernal polygon polyin and the internal polygon polyout.
-
     Datapoint object is inside AOI if it is inside polyin but outside polyout
-
     Args:
         datapoint: A Datapoint object
         polyin: the external polygon in form of a list of (x,y) tuples
         polyout: the internal polygon in form of a list of (x,y) tuples
-
     Returns:
         A boolean for whether the Datapoint is inside the AOI or not
     """
     inside = False
-    i = 0
-    for polyin_i in polyin:
-        if point_inside_polygon(datapoint.gazepointx,
-                    datapoint.gazepointy, polyin_i) and not point_inside_polygon(datapoint.gazepointx,
-                    datapoint.gazepointy, polyout[i]):
-                inside = True
-                break
-        i += 1
+    shape_index = 0
+
+    for shape_index in range(0,len(polyin)):
+        if point_inside_polygon(datapoint.gazepointx, datapoint.gazepointy, polyin[shape_index]):
+            for timeseq_i in timeseq[shape_index]:
+                if ((datapoint.timestamp >= timeseq_i[0]) and (datapoint.timestamp <= timeseq_i[1])):
+                    inside = True
+            if (inside is not False):
+                for polyout_i in polyout[shape_index]:
+                    if point_inside_polygon(datapoint.gazepointx, datapoint.gazepointy, polyout_i):
+                        inside = False
+            if (inside):
+                return inside
+
     return inside
 
-
-def _fixation_inside_aoi(fixation, polyin, polyout):
+def _fixation_inside_aoi(fixation, polyin, polyout, timeseq):
     """Helper function that checks if a fixation object is inside the AOI described by external polygon polyin and the internal polygon polyout.
 
     Fixation object is inside AOI if it is inside polyin but outside polyout
@@ -473,18 +476,25 @@ def _fixation_inside_aoi(fixation, polyin, polyout):
         A boolean for whether the Fixation is inside the AOI or not
     """
     inside = False
-    i = 0
-    for polyin_i in polyin:
-        if point_inside_polygon(fixation.mappedfixationpointx,
-                 fixation.mappedfixationpointy, polyin_i) and not point_inside_polygon(fixation.mappedfixationpointx,
-                 fixation.mappedfixationpointy, polyout[i]):
-            inside = True
-            break
-        i += 1
+    shape_index = 0
+
+    for shape_index in range(0,len(polyin)):
+        if point_inside_polygon(fixation.mappedfixationpointx, fixation.mappedfixationpointy, polyin[shape_index]):
+            for timeseq_i in timeseq[shape_index]:
+                if ((fixation.timestamp >= timeseq_i[0]) and (fixation.timestamp <= timeseq_i[1])):
+                    inside = True
+            if (inside is not False):
+                for polyout_i in polyout[shape_index]:
+                    if point_inside_polygon(fixation.mappedfixationpointx, fixation.mappedfixationpointy, polyout_i):
+                        inside = False
+            if (inside):
+                return inside
+
+
 
     return inside
 
-def _event_inside_aoi(event, polyin, polyout):
+def _event_inside_aoi(event, polyin, polyout, timeseq):
     """Helper function that checks if an event (mouse clic) object is inside the AOI described by external polygon polyin and the internal polygon polyout.
 
     Event object is inside AOI if it is inside polyin but outside polyout
@@ -497,12 +507,22 @@ def _event_inside_aoi(event, polyin, polyout):
     Returns:
         A boolean for whether the Fixation is inside the AOI or not
     """
+
     inside = False
+    shape_index = 0
     if event.event == "LeftMouseClick" or event.event == "RightMouseClick": #keep only mouse clics
-        i = 0
-        for polyin_i in polyin:
-            if point_inside_polygon(event.data1, event.data2, polyin_i) and not point_inside_polygon(event.data1, event.data2, polyout[i]):
-                inside = True
-                break
-            i += 1
+
+        for shape_index in range(0, len(polyin)):
+            if point_inside_polygon(event.data1, event.data2, polyin[shape_index]):
+                for timeseq_i in timeseq[shape_index]:
+                    if ((event.timestamp >= timeseq_i[0]) and (event.timestamp <= timeseq_i[1])):
+                        inside = True
+                if (inside is not False):
+                    for polyout_i in polyout[shape_index]:
+                        if point_inside_polygon(event.data1, event.data2,
+                                                polyout_i):
+                            inside = False
+                if (inside):
+                    return inside
+
     return inside
