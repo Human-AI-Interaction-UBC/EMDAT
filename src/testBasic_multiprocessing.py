@@ -36,8 +36,8 @@ for i in range(1, 2):
                                        require_valid_segs = False, auto_partition_low_quality_segments = False, curr_iteration = i)
         #                               rpsfile = "./sampledata/all_rest_pupil_sizes.tsv")
         else:
-            ps = read_participants_Basic_multiprocessing(nbprocess, user_list = ul,pids = uids, log_time_offsets = alogoffset, datadir=params.EYELOGDATAFOLDER,
-                                       prune_length = i * 1000000000000000,
+            ps = read_participants_Basic_multiprocessing(nbprocess, user_list = ul,pids = uids, log_time_offsets = alogoffset, datadir = params.EYELOGDATAFOLDER,
+                                       prune_length = i * 1000,
             #                           aoifile = "./sampledata/general.aoi",
             #                           aoifile = "./sampledata/Dynamic_1.aoi",
                                        require_valid_segs = False, auto_partition_low_quality_segments = False, curr_iteration = i)
@@ -47,11 +47,11 @@ for i in range(1, 2):
         ######
 
         if params.DEBUG or params.VERBOSE == "VERBOSE":
-            #explore_validation_threshold_segments(ps, auto_partition_low_quality_segments = False)
-            #output_Validity_info_Segments(ps, auto_partition_low_quality_segments_flag = False, validity_method = 3)
-            #output_percent_discarded(ps,'./outputfolder/disc_multiprocessing.csv')
-            #output_Validity_info_Segments(ps, auto_partition_low_quality_segments_flag = False, validity_method = 2, threshold_gaps_list = [100, 200, 250, 300],output_file = "./outputfolder/Seg_val_multiprocessing.csv")
-            #output_Validity_info_Participants(ps, include_restored_samples =True, auto_partition_low_quality_segments_flag = False)
+            explore_validation_threshold_segments(ps, auto_partition_low_quality_segments = False)
+            output_Validity_info_Segments(ps, auto_partition_low_quality_segments_flag = False, validity_method = 3)
+            output_percent_discarded(ps,'./outputfolder/disc_multiprocessing.csv')
+            output_Validity_info_Segments(ps, auto_partition_low_quality_segments_flag = False, validity_method = 2, threshold_gaps_list = [100, 200, 250, 300],output_file = "./outputfolder/Seg_val_multiprocessing.csv")
+            output_Validity_info_Participants(ps, include_restored_samples =True, auto_partition_low_quality_segments_flag = False)
             pass
 
 
