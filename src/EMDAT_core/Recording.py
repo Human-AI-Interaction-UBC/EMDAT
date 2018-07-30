@@ -94,7 +94,7 @@ class Recording:
 
     def process_rec(self, segfile=None, scenelist=None, aoifile=None,
                     aoilist=None, prune_length=None, require_valid_segs=True,
-                    auto_partition_low_quality_segments=False, rpsdata=None, export_pupilinfo=False):
+                    auto_partition_low_quality_segments=False, rpsdata=None, export_pupilinfo=False, curr_iteration = 0):
         """Processes the data for one recording (i.e, one complete experiment session)
 
         Args:
@@ -137,7 +137,7 @@ class Recording:
         """
 
         if segfile is not None:
-            scenelist = read_segs(segfile)
+            scenelist = read_segs(segfile, prune_length, curr_iteration)
             if params.VERBOSE != "QUIET":
                 print "Done reading the segments!"
         elif scenelist is None:
@@ -197,7 +197,7 @@ class Recording:
         self.sac_data = []
         self.event_data = []
 
-def read_segs(segfile):
+def read_segs(segfile, prune_length, curr_iteration):
     """Returns a dict with scid as the key and segments as value from a '.seg' file.
 
     A '.seg' file consists of a set of lines with the following format:
@@ -220,10 +220,14 @@ def read_segs(segfile):
     for l in seglines:
         l = l.strip()
         l = l.split('\t')
+        start = int(l[2])
+        end = int(l[3])
         if l[0] in scenes:
-            scenes[l[0]].append((l[1], int(l[2]), int(l[3])))
+            if (prune_length == None or end - start >= prune_length * curr_iteration):
+                scenes[l[0]].append((l[1], int(l[2]), int(l[3])))
         else:
-            scenes[l[0]] = [(l[1], int(l[2]), int(l[3]))]
+            if (prune_length == None or end - start >= prune_length * curr_iteration):
+                scenes[l[0]] = [(l[1], int(l[2]), int(l[3]))]
     return scenes
 
 

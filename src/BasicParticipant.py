@@ -115,7 +115,7 @@ class BasicParticipant(Participant):
             print("Creating partition...")
 
         # In Participant.py: Get the scenes and segments specified in the segfile
-        scenelist, self.numofsegments = partition(segfile)
+        scenelist, self.numofsegments = partition(segfile, prune_length, curr_iteration)
 
         if self.numofsegments == 0:
             raise Exception("No segments found.")
@@ -136,7 +136,10 @@ class BasicParticipant(Participant):
                                                      prune_length=prune_length,
                                                      require_valid_segs=require_valid_segs,
                                                      auto_partition_low_quality_segments=auto_partition_low_quality_segments,
-                                                     rpsdata=rpsdata, export_pupilinfo=export_pupilinfo)
+                                                     rpsdata=rpsdata, export_pupilinfo=export_pupilinfo, curr_iteration = curr_iteration)
+        if (self.segments = []):
+            print("All segments are too short")
+            return
         # Sort segments by their starting timestamp
         all_segs = sorted(self.segments, key=lambda x: x.start)
 

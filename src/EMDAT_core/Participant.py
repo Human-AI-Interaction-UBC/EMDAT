@@ -324,8 +324,8 @@ def export_features_all(participants, featurelist = None, aoifeaturelist = None,
             featnames = fnames
             data += fvals
     else:
-        raise NameError('No participants were passed to the function')
-
+        print('No participants were passed to the function')
+        return None, None
     return featnames, data
 
 
@@ -358,14 +358,14 @@ def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist
     fnames, fvals = export_features_all(participants, featurelist =  featurelist,
                                         aoifeaturelabels = aoifeaturelabels,
                                         aoifeaturelist = aoifeaturelist, id_prefix=id_prefix, require_valid=require_valid)
+    if (fnames != None):
+        with open(outfile, 'w') as f:
+            f.write(string.join(fnames, '\t') + '\n')
+            for l in fvals:
+                f.write(string.join(map(str, l), '\t') + '\n')
 
-    with open(outfile, 'w') as f:
-        f.write(string.join(fnames, '\t') + '\n')
-        for l in fvals:
-            f.write(string.join(map(str, l), '\t') + '\n')
 
-
-def partition(segfile):
+def partition(segfile, prune_length, curr_iteration):
     """Generates the scenelist based on a .seg file
 
     Args:
@@ -376,7 +376,7 @@ def partition(segfile):
             that scene as value
         an integer determining the number of segments
     """
-    scenelist = read_segs(segfile)
+    scenelist = read_segs(segfile, prune_length, curr_iteration)
     segcount = 0
     for l in scenelist.items():
         segcount += len(l)
