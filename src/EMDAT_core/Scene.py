@@ -256,7 +256,6 @@ class Scene(Segment):
                     event_start = None
                     event_end = None
                     event_data_in_seg = None
-
                 if fix_end - fix_start>0:
                     try:
                         new_seg = Segment(segid, all_data[all_start:all_end], fixation_data[fix_start:fix_end], saccade_data = saccade_data_in_seg,
@@ -304,12 +303,13 @@ class Scene(Segment):
 
         self.require_valid_Segments = require_valid
         if require_valid:   #filter out the invalid Segments
-
             segments = filter(lambda x:x.is_valid,self.segments)
         else:
             segments = self.segments
         if len(segments)==0:
-            raise Exception('no segments in scene %s!' %(scid))
+            print("RETURNING")
+            return
+            #raise Exception('no segments in scene %s!' %(scid))
 
         fixationlist = []
         saccadelist = []

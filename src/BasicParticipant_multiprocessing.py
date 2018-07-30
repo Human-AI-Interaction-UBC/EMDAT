@@ -100,7 +100,9 @@ class BasicParticipant(Participant):
         if self.numofsegments == 0:
             print("No segments found.")
             return
-
+        print("SEGMENTS FOUND")
+        print(scenelist)
+        print(self.numofsegments)
         if aoifile is not None:
             aois = read_aois(aoifile)
         else:

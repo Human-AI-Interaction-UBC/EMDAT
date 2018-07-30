@@ -172,6 +172,8 @@ class Recording:
                             pass
                 else:
                     scrpsdata = 0
+                if (scid == '74'):
+                    print(sc)
                 new_scene = Scene(scid, sc, self.all_data, self.fix_data, saccade_data = self.sac_data, event_data=self.event_data, aoilist=aoilist,
                                   prune_length=prune_length,
                                   require_valid=require_valid_segs,
@@ -184,7 +186,7 @@ class Recording:
                     raise
                 else:
                     pass
-            if new_scene:
+            if new_scene and new_scene.segments != []:
                 scenes.append(new_scene)
         segs = []
         for sc in scenes:

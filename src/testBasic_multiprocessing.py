@@ -13,11 +13,16 @@ from BasicParticipant_multiprocessing import *
 from EMDAT_core.Participant import export_features_all, write_features_tsv
 from EMDAT_core.ValidityProcessing import output_Validity_info_Segments, output_percent_discarded, output_Validity_info_Participants
 
-for i in range(1, 2):
+for i in range(5, 6):
     if __name__ == '__main__':
         freeze_support() #for windows
         print("PRUNING %d ms" % (1000 * i))
-        ul =        [1, 9] #12, 16, 18, 19, 21, 25, 26, 30,  31,  36, 38, 40, 42, 45, 46, 50,
+        ul =        [1, 9, 12, 16, 18, 19, 21, 25, 26, 30,  31,  36, 38, 40, 42, 45, 46, 50,
+                        52, 55, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
+                        71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 83, 84, 85, 88, 89,  90,91, 92,
+                        93, 95, 97]    # list of user recordings (files extracted for one participant from Tobii studio)
+
+        #ul =        #[1, 9] 12, 16, 18, 19, 21, 25, 26, 30,  31,  36, 38, 40, 42, 45, 46, 50,
                         #52, 55, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
                         #71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 83, 84, 85, 88, 89,  90,91, 92,
                         #93, 95, 97]    # list of user recordings (files extracted for one participant from Tobii studio)
@@ -47,7 +52,7 @@ for i in range(1, 2):
         ######
 
         if params.DEBUG or params.VERBOSE == "VERBOSE":
-            explore_validation_threshold_segments(ps, auto_partition_low_quality_segments = False)
+            #explore_validation_threshold_segments(ps, auto_partition_low_quality_segments = False)
             output_Validity_info_Segments(ps, auto_partition_low_quality_segments_flag = False, validity_method = 3)
             output_percent_discarded(ps,'./outputfolder/disc_multiprocessing.csv')
             output_Validity_info_Segments(ps, auto_partition_low_quality_segments_flag = False, validity_method = 2, threshold_gaps_list = [100, 200, 250, 300],output_file = "./outputfolder/Seg_val_multiprocessing.csv")
