@@ -102,8 +102,8 @@ class AOI():
         #if (end - start)== 0:
         if start == -1:
             return False, []
-        if params.DEBUG or params.VERBOSE == "VERBOSE":
-            print("in:",self.aid)
+    #    if params.DEBUG or params.VERBOSE == "VERBOSE":
+    #        print("in:",self.aid)
 
         if self.timeseq == [[]]:
             return True, [] #global AOI

@@ -139,6 +139,7 @@ class Scene(Segment):
                 event_inds: a list of tuples of the form (start, end) that detrmines the index of the start and end of each
                     new Segment in the old Segment's event_data field
             """
+            print("\n\n\n\nPARTITIONING SEGS\n\n\n\n")
             timegaps = new_seg.getgaps()
             subsegments = []
             sub_segid = 0

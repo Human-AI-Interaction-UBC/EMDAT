@@ -155,8 +155,8 @@ class Recording:
         for scid, sc in scenelist.iteritems():
             if params.VERBOSE != "QUIET":
                 print "Preparing scene:" + str(scid)
-            if params.DEBUG or params.VERBOSE == "VERBOSE":
-                print "len(all_data)", len(self.all_data)
+    #        if params.DEBUG or params.VERBOSE == "VERBOSE":
+    #            print "len(all_data)", len(self.all_data)
             try:
                 # get rest pupil size data
                 if rpsdata is not None:

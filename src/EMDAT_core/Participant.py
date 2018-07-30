@@ -330,7 +330,7 @@ def export_features_all(participants, featurelist = None, aoifeaturelist = None,
 
 
 def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist =  None,
-                       aoifeaturelabels=None, id_prefix = True):
+                       aoifeaturelabels=None, id_prefix = True, require_valid = True):
     """Returns feature names and their values for a list of "Participant"s in a tsv-format file
 
     This method writes to a multi-line tab separated values (tsv) file with the first
@@ -357,7 +357,7 @@ def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist
     """
     fnames, fvals = export_features_all(participants, featurelist =  featurelist,
                                         aoifeaturelabels = aoifeaturelabels,
-                                        aoifeaturelist = aoifeaturelist, id_prefix=id_prefix)
+                                        aoifeaturelist = aoifeaturelist, id_prefix=id_prefix, require_valid=require_valid)
 
     with open(outfile, 'w') as f:
         f.write(string.join(fnames, '\t') + '\n')

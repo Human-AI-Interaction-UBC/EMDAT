@@ -90,6 +90,8 @@ class Segment():
         """ If prune_length specified, keep only data from start to start + prune_length
             of the segment
         """
+        self.start = all_data[0].timestamp
+        
         if prune_length:
             all_data = filter(lambda x: x.timestamp <= self.start + prune_length, all_data)
             fixation_data = filter(lambda x: x.timestamp <= self.start + prune_length, fixation_data)
@@ -103,7 +105,6 @@ class Segment():
             raise Exception("Zero length segment")
 
         self.features['completion_time'] = self.completion_time
-        self.start = all_data[0].timestamp
         self.numfixations = len(fixation_data)
 
         """ Validity-related features, determining if the segment is valid """
