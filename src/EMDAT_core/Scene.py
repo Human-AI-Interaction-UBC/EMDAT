@@ -234,8 +234,8 @@ class Scene(Segment):
             self.segments = []
 #            print "seglist",seglist
             for (segid, start, end) in seglist:
-                if params.VERBOSE != "QUIET":
-                    print("segid, start, end:", segid, start, end)
+#                if params.VERBOSE != "QUIET":
+    #                print("segid, start, end:", segid, start, end)
                 # Selecting subsets of points belonging only to the current segment
                 if prune_length != None:
                     end = min(end, start+prune_length)
@@ -318,8 +318,8 @@ class Scene(Segment):
         firstseg = None
         for seg in segments:
             sample_st,sample_end,fix_start,fix_end,sac_st,sac_end,event_st,event_end = seg.get_indices()
-            if params.DEBUG or params.VERBOSE == "VERBOSE":
-                print("sample_st,sample_end,fix_start,fix_end",sample_st,sample_end,fix_start,fix_end,sac_st,sac_end,event_st,event_end)
+#            if params.DEBUG or params.VERBOSE == "VERBOSE":
+#                print("sample_st,sample_end,fix_start,fix_end",sample_st,sample_end,fix_start,fix_end,sac_st,sac_end,event_st,event_end)
             fixationlist.append(fixation_data[fix_start:fix_end])
             totalfixations += len(fixationlist[-1])
             if seg.start < firstsegtime:
@@ -795,8 +795,8 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
         merge_aoi_fixations(maois, new_AOI_Stat, total_time, total_numfixations, sc_start)
         #calculating the transitions to and from this AOI and other active AOIs at the moment
         new_AOI_Stat_transition_aois = filter(lambda x: x.startswith('numtransfrom_'), new_AOI_Stat.features.keys())
-        if params.DEBUG or params.VERBOSE == "VERBOSE":
-            print("Segment's transition_aois", new_AOI_Stat_transition_aois)
+#        if params.DEBUG or params.VERBOSE == "VERBOSE":
+    #        print("Segment's transition_aois", new_AOI_Stat_transition_aois)
 
         merge_aoi_events(maois, new_AOI_Stat, total_time, sc_start)
 

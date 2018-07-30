@@ -207,7 +207,7 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
                                 auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = currpsdata)
             participants.append(p)
         else:
-            print "Error reading participant files for: "+pid
+            print("Error reading participant files for: %d" % pid)
     q.put(participants)
     return
 

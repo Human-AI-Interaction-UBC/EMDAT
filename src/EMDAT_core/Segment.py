@@ -213,7 +213,7 @@ class Segment():
         self.aoi_data = {}
         for aoi in aois:
             #print "checking:",aoi.aid
-            print("Generating features for %s AOI in segment %s" % (aoi.aid, self.segid))
+#            print("Generating features for %s AOI in segment %s" % (aoi.aid, self.segid))
             aoistat = AOI_Stat(aoi, all_data, fixation_data, self.start, self.end, self.length_invalid, aois, event_data, rest_pupil_size, export_pupilinfo)
             self.aoi_data[aoi.aid] = aoistat
 
@@ -221,7 +221,7 @@ class Segment():
             if act:
                 active_aois.append(aoi)
                 self.has_aois = True
-        print("SEGMENT: active aois in this segment: %d" % len(active_aois))
+#        print("SEGMENT: active aois in this segment: %d" % len(active_aois))
         if not(active_aois):
             msg = "No active AOIs passed to segment:%s start:%d end:%d" %(self.segid,self.start,self.end)
             warn(msg)

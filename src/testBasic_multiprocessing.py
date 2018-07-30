@@ -13,14 +13,16 @@ from BasicParticipant_multiprocessing import *
 from EMDAT_core.Participant import export_features_all, write_features_tsv
 from EMDAT_core.ValidityProcessing import output_Validity_info_Segments, output_percent_discarded, output_Validity_info_Participants
 
+# No seg data for 24, 32, 35
+# Participant 30  weird scene 28
 for i in range(1):
     if __name__ == '__main__':
         freeze_support() #for windows
         print("PRUNING %d ms" % (1000 * i))
-        ul =        [1] #9, 12, 16, 18, 19, 21, 25, 26, 30,  31,  36, 38, 40, 42, 45, 46, 50,
-                    #    52, 55, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
-                    #    71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 83, 84, 85, 88, 89,  90,91, 92,
-                    #    93, 95, 97]    # list of user recordings (files extracted for one participant from Tobii studio)
+        ul =        [1, 9, 12, 16, 18, 19, 21, 25, 26, 30,  31, 32, 35, 36, 38, 40, 42, 45, 46, 50,
+                        52, 55, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
+                        71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 84, 85, 88, 89,  90,91, 92,
+                        93, 95, 97]    # list of user recordings (files extracted for one participant from Tobii studio)
         uids =      ul    # User ID that is used in the external logs (can be different from above but there should be a 1-1 mapping)
 
         alogoffset = ul    # the time difference between the eye tracker logs and the external log
@@ -51,11 +53,11 @@ for i in range(1):
         if params.VERBOSE != "QUIET":
             print
             print "Exporting:\n--General:", params.featurelist
-        write_features_tsv(ps, './outputfolder/cumulative_withintask/pruning_%d.tsv' % (i * 1000), featurelist=params.featurelist, id_prefix=False)
+        write_features_tsv(ps, './outputfolder/cumulative_withintask/data_pruning_%d.tsv' % (i * 1000), featurelist=params.featurelist, id_prefix=False)
 
         ##### WRITE AOI sequences to file
         aoi_feat_names = (map(lambda x:x, params.aoigeneralfeat))
-        write_features_tsv(ps, './outputfolder/sequences_multiprocessing_nov15.tsv',featurelist = params.aoisequencefeat, aoifeaturelist=aoi_feat_names, id_prefix = False)
+        write_features_tsv(ps, './outputfolder/cumulative_withintask/aoi_sequences/sequences_multiprocessing_pruning_%d.tsv',featurelist = params.aoisequencefeat, aoifeaturelist=aoi_feat_names, id_prefix = False)
 
         #### Export pupil dilations for each scene to a separate file
         #print "--pupil dilation trends"
