@@ -31,7 +31,7 @@ class BasicParticipant(Participant):
     placeholder methods in the Participant class for a basic project
     """
     def __init__(self, pid, eventfile, datafile, fixfile, saccfile, segfile, log_time_offset = None, aoifile = None, prune_length= None,
-                 require_valid_segs = True, auto_partition_low_quality_segments = False, rpsdata = None, export_pupilinfo = False, curr_iteration = 0):
+                 require_valid_segs = True, auto_partition_low_quality_segments = False, rpsdata = None, export_pupilinfo = False):
         """Inits BasicParticipant class
         Args:
             pid: Participant id
@@ -96,7 +96,8 @@ class BasicParticipant(Participant):
         if params.VERBOSE != "QUIET":
             print "Creating partition..."
 
-        scenelist,self.numofsegments = partition(segfile, prune_length, curr_iteration)
+
+        scenelist,self.numofsegments = partition(segfile, prune_length)
         if self.numofsegments == 0:
             print("No segments found.")
             return
@@ -114,7 +115,7 @@ class BasicParticipant(Participant):
             print "Generating features..."
 
         self.segments, self.scenes = rec.process_rec(scenelist = scenelist,aoilist = aois,prune_length = prune_length, require_valid_segs = require_valid_segs,
-                                                     auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = rpsdata, export_pupilinfo=export_pupilinfo, curr_iteration = 0)
+                                                     auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = rpsdata, export_pupilinfo=export_pupilinfo)
         if (self.segments == []):
             print("All segments are too short")
             return
@@ -133,7 +134,7 @@ class BasicParticipant(Participant):
 
 
 def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets=None,
-                          require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None, export_pupilinfo = False, curr_iteration = 0):
+                          require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None, export_pupilinfo = False):
     """Generates list of Participant objects. Relevant information is read from input files
 
     Args:
@@ -210,7 +211,7 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
         if os.path.exists(allfile):
             p = BasicParticipant(rec, evefile, allfile, fixfile, sacfile, segfile, log_time_offset = offset,
                                 aoifile=aoifile, prune_length = prune_length, require_valid_segs = require_valid_segs,
-                                auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = currpsdata, curr_iteration = curr_iteration)
+                                auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = currpsdata)
             if (p.numofsegments != 0):
                 participants.append(p)
         else:
@@ -219,7 +220,7 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
     return
 
 def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets = None,
-                          require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None, export_pupilinfo = False, curr_iteration = 0):
+                          require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None, export_pupilinfo = False):
     """Generates list of Participant objects in parallel computing. Relevant information is read from input files
 
     Args:
@@ -279,10 +280,10 @@ def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pid
         for i in range(0, nbprocesses):
             if log_time_offsets is None:
 			    p = Process(target=read_participants_Basic, args=(q, datadir, user_listsplit[i], pidssplit[i], prune_length, aoifile, log_time_offsets,
-                          require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo, curr_iteration))
+                          require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo))
             else:
 			    p = Process(target=read_participants_Basic, args=(q, datadir, user_listsplit[i], pidssplit[i], prune_length, aoifile, log_time_offsets_list[i],
-                          require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo, curr_iteration))
+                          require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo))
 
             listprocess.append(p)
             p.start() # start the process

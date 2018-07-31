@@ -365,7 +365,7 @@ def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist
                 f.write(string.join(map(str, l), '\t') + '\n')
 
 
-def partition(segfile, prune_length, curr_iteration):
+def partition(segfile, prune_length):
     """Generates the scenelist based on a .seg file
 
     Args:
@@ -376,7 +376,7 @@ def partition(segfile, prune_length, curr_iteration):
             that scene as value
         an integer determining the number of segments
     """
-    scenelist = read_segs(segfile, prune_length, curr_iteration)
+    scenelist = read_segs(segfile, prune_length)
     segcount = 0
     for l in scenelist.items():
         segcount += len(l)

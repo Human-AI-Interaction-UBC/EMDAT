@@ -172,8 +172,6 @@ class Recording:
                             pass
                 else:
                     scrpsdata = 0
-                if (scid == '74'):
-                    print(sc)
                 new_scene = Scene(scid, sc, self.all_data, self.fix_data, saccade_data = self.sac_data, event_data=self.event_data, aoilist=aoilist,
                                   prune_length=prune_length,
                                   require_valid=require_valid_segs,
@@ -199,7 +197,7 @@ class Recording:
         self.sac_data = []
         self.event_data = []
 
-def read_segs(segfile, prune_length, curr_iteration):
+def read_segs(segfile, prune_length):
     """Returns a dict with scid as the key and segments as value from a '.seg' file.
 
     A '.seg' file consists of a set of lines with the following format:
@@ -225,10 +223,10 @@ def read_segs(segfile, prune_length, curr_iteration):
         start = int(l[2])
         end = int(l[3])
         if l[0] in scenes:
-            if (prune_length == None or end - start >= prune_length * curr_iteration):
+            if (prune_length == None or end - start >= prune_length):
                 scenes[l[0]].append((l[1], int(l[2]), int(l[3])))
         else:
-            if (prune_length == None or end - start >= prune_length * curr_iteration):
+            if (prune_length == None or end - start >= prune_length):
                 scenes[l[0]] = [(l[1], int(l[2]), int(l[3]))]
     return scenes
 

@@ -307,7 +307,6 @@ class Scene(Segment):
         else:
             segments = self.segments
         if len(segments)==0:
-            print("RETURNING")
             return
             #raise Exception('no segments in scene %s!' %(scid))
 

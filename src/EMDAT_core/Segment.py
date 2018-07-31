@@ -91,7 +91,7 @@ class Segment():
             of the segment
         """
         self.start = all_data[0].timestamp
-        
+
         if prune_length:
             all_data = filter(lambda x: x.timestamp <= self.start + prune_length, all_data)
             fixation_data = filter(lambda x: x.timestamp <= self.start + prune_length, fixation_data)
