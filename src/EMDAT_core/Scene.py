@@ -1068,8 +1068,7 @@ def minfeat(obj_list, feat, nonevalue = None):
             assigned = True
     if not assigned:
         return nonevalue
-    else:
-        return min
+    return min
 
 def maxfeat(obj_list, feat):
     """a helper method that calculates the max of a target feature over a list of objects

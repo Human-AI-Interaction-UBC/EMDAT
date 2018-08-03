@@ -31,7 +31,8 @@ class BasicParticipant(Participant):
     placeholder methods in the Participant class for a basic project
     """
     def __init__(self, pid, eventfile, datafile, fixfile, saccfile, segfile, log_time_offset = None, aoifile = None, prune_length= None,
-                 require_valid_segs = True, auto_partition_low_quality_segments = False, rpsdata = None, export_pupilinfo = False):
+                 require_valid_segs = True, auto_partition_low_quality_segments = False, rpsdata = None, export_pupilinfo = False,
+                 disjoint_window = False, padding = 0, across_tasks = False):
         """Inits BasicParticipant class
         Args:
             pid: Participant id
@@ -97,32 +98,34 @@ class BasicParticipant(Participant):
             print "Creating partition..."
 
 
-        scenelist,self.numofsegments = partition(segfile, prune_length)
+        scenelist,self.numofsegments = partition(segfile, prune_length, disjoint_window, padding, across_tasks)
         if self.numofsegments == 0:
             print("No segments found.")
             return
-        print("SEGMENTS FOUND")
-        print(scenelist)
-        print(self.numofsegments)
+
+        scenelist,self.numofsegments = self.select_tasks(scenelist, prune_length)
         if aoifile is not None:
             aois = read_aois(aoifile)
         else:
             aois = None
-
+        print("SCENELIST")
+        print(scenelist)
         self.features['numofsegments'] = self.numofsegments
 
         if params.VERBOSE != "QUIET":
             print "Generating features..."
 
         self.segments, self.scenes = rec.process_rec(scenelist = scenelist,aoilist = aois,prune_length = prune_length, require_valid_segs = require_valid_segs,
-                                                     auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = rpsdata, export_pupilinfo=export_pupilinfo)
+                                                     auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = rpsdata, export_pupilinfo=export_pupilinfo,
+                                                     disjoint_window = disjoint_window, padding = padding)
         if (self.segments == []):
             print("All segments are too short")
             return
 
-        all_segs = sorted(self.segments, key=lambda x: x.start)
-        self.whole_scene = Scene(str(pid)+'_allsc',[],rec.all_data,rec.fix_data, saccade_data = rec.sac_data, event_data = rec.event_data, Segments = all_segs, aoilist = aois,prune_length = prune_length, require_valid = require_valid_segs, export_pupilinfo=export_pupilinfo )
-        self.scenes.insert(0,self.whole_scene)
+        # Don't need that for the current task
+        #all_segs = sorted(self.segments, key=lambda x: x.start)
+        #self.whole_scene = Scene(str(pid)+'_allsc',[],rec.all_data,rec.fix_data, saccade_data = rec.sac_data, event_data = rec.event_data, Segments = all_segs, aoilist = aois,prune_length = prune_length, require_valid = require_valid_segs, export_pupilinfo=export_pupilinfo )
+        #self.scenes.insert(0,self.whole_scene)
 
         #Clean memory
         for sc in self.scenes:
@@ -132,9 +135,13 @@ class BasicParticipant(Participant):
         if params.VERBOSE != "QUIET":
             print "Done!"
 
+    def select_tasks(self, scenelist, prune_length):
+
+
 
 def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets=None,
-                          require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None, export_pupilinfo = False):
+                          require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None, export_pupilinfo = False,
+                          disjoint_window = False, padding = 0):
     """Generates list of Participant objects. Relevant information is read from input files
 
     Args:
@@ -211,7 +218,8 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
         if os.path.exists(allfile):
             p = BasicParticipant(rec, evefile, allfile, fixfile, sacfile, segfile, log_time_offset = offset,
                                 aoifile=aoifile, prune_length = prune_length, require_valid_segs = require_valid_segs,
-                                auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = currpsdata)
+                                auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = currpsdata,
+                                disjoint_window = disjoint_window, padding = padding)
             if (p.numofsegments != 0):
                 participants.append(p)
         else:
@@ -220,7 +228,8 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
     return
 
 def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets = None,
-                          require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None, export_pupilinfo = False):
+                          require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None, export_pupilinfo = False,
+                          disjoint_window = False, padding = 0, across_tasks = False):
     """Generates list of Participant objects in parallel computing. Relevant information is read from input files
 
     Args:
@@ -257,6 +266,10 @@ def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pid
         rpsfile: If not None, a string containing the name of the '.tsv' file
             with rest pupil sizes for all scenes and for each user.
 
+        disjoint_window: if true, use padding to pad the beginning of the segments
+            to compute features within the window
+
+        padding: in ms, by how much the segments should be padded
     Returns:
         a list Participant objects
     """
@@ -280,10 +293,10 @@ def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pid
         for i in range(0, nbprocesses):
             if log_time_offsets is None:
 			    p = Process(target=read_participants_Basic, args=(q, datadir, user_listsplit[i], pidssplit[i], prune_length, aoifile, log_time_offsets,
-                          require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo))
+                          require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo, disjoint_window, padding, across_tasks))
             else:
 			    p = Process(target=read_participants_Basic, args=(q, datadir, user_listsplit[i], pidssplit[i], prune_length, aoifile, log_time_offsets_list[i],
-                          require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo))
+                          require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo, disjoint_window, padding, across_tasks))
 
             listprocess.append(p)
             p.start() # start the process
