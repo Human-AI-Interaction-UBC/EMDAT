@@ -1057,11 +1057,17 @@ def minfeat(obj_list, feat, nonevalue = None):
     Returns:
         the min of the target feature over the given list of objects
     """
+    if (len(obj_list) == 0):
+        return nonevalue
     min = float('+infinity')
+    assigned = False
     for obj in obj_list:
         val = eval('obj.'+feat)
         if min > val and val != nonevalue:
             min = val
+            assigned = True
+    if not assigned:
+        return nonevalue
     return min
 
 def maxfeat(obj_list, feat):
