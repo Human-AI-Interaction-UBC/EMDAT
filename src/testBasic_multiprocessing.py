@@ -13,14 +13,16 @@ from BasicParticipant_multiprocessing import *
 from EMDAT_core.Participant import export_features_all, write_features_tsv
 from EMDAT_core.ValidityProcessing import output_Validity_info_Segments, output_percent_discarded, output_Validity_info_Participants
 
-for i in range(20, 21):
+for i in range(0, 60):
     if __name__ == '__main__':
         freeze_support() #for windows
         print("PRUNING %d ms" % (1000 * i))
-        ul =        [9, 12, 16, 18, 19, 21, 25, 26, 30,  31,  36, 38, 40, 42, 45, 46, 50,
+        ul =        [1, 9, 12, 16, 18, 19, 21, 25, 26, 30, 31,  36, 38, 40, 42, 45, 46, 50,
                         52, 55, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
-                        71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 84, 85, 88, 89,  90,91, 92,
+                        71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 84, 85, 88, 89,  90,91, 92,
                         93, 95, 97]    # list of user recordings (files extracted for one participant from Tobii studio)
+
+                        # User 63 - no calibration
 
         #ul =        #[1, 9] 12, 16, 18, 19, 21, 25, 26, 30,  31,  36, 38, 40, 42, 45, 46, 50,
                         #52, 55, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
@@ -38,7 +40,7 @@ for i in range(20, 21):
                                        prune_length = None,
             #                           aoifile = "./sampledata/general.aoi",
             #                           aoifile = "./sampledata/Dynamic_1.aoi",
-                                       require_valid_segs = False, auto_partition_low_quality_segments = False, curr_iteration = i)
+                                       require_valid_segs = False, auto_partition_low_quality_segments = False)
         #                               rpsfile = "./sampledata/all_rest_pupil_sizes.tsv")
         else:
             ps = read_participants_Basic_multiprocessing(nbprocess, user_list = ul,pids = uids, log_time_offsets = alogoffset, datadir = params.EYELOGDATAFOLDER,
