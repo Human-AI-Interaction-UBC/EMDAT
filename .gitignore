@@ -3,6 +3,7 @@
 
 /src/sampledata/blinks
 /src/sampledata/ml_data
+/src/outputfolder
+
 *.ipynb
 *.ipynb_checkpoints
-/src/outputfolder
