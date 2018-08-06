@@ -76,9 +76,11 @@ class Participant():
         Returns:
             True or False
         """
+        if (self.whole_scene == None):
+            return False
         if threshold == None:
             return self.whole_scene.is_valid
-        elif method == None:
+        if method == None:
             method = params.VALIDITY_METHOD
 
         if method == 1:

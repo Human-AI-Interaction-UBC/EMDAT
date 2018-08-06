@@ -151,7 +151,7 @@ was looking at that same point during that period.
 VALIDITY_METHOD = 3
 
 # Validity Threshold for segments (the minimum proportion of valid samples for a Segment or Scene to be considered valid)
-VALID_PROP_THRESH = 0.8
+VALID_PROP_THRESH = 0.6
 
 #the maximum gap size (ms) allowable in samples for a Segment or Scene to be considered valid
 VALID_TIME_THRESH = 3000

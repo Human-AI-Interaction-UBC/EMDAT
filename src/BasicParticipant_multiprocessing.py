@@ -74,42 +74,20 @@ class BasicParticipant(Participant):
                  require_valid_segs, auto_partition_low_quality_segments, rpsdata)   #calling the Participant's constructor
 
         print "Participant \""+str(pid)+"\"..."
-        if params.VERBOSE != "QUIET":
-            print "Reading input files:"
-            print "--Scenes/Segments file: "+segfile
-            print "--Eye tracking samples file: "+datafile
-            print "--Fixations file: "+fixfile
-            print "--Saccades file: "+saccfile if saccfile is not None else "--No saccades file"
-            print "--Events file: "+eventfile if eventfile is not None else "--No events file"
-            print "--AOIs file: "+aoifile if aoifile is not None else "--No AOIs file"
-            print
-
-        self.features={}
-        if params.EYETRACKERTYPE == "TobiiV2":
-            rec = TobiiRecording(datafile, fixfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
-        elif params.EYETRACKERTYPE == "TobiiV3":
-            rec = TobiiV3Recording(datafile, fixfile, saccade_file=saccfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
-        elif params.EYETRACKERTYPE == "SMI":
-            rec = SMIRecording(datafile, fixfile, saccade_file=saccfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
-        else:
-            raise Exception("Unknown eye tracker type.")
-
-        if params.VERBOSE != "QUIET":
-            print "Creating partition..."
 
 
         scenelist,self.numofsegments = partition(segfile, prune_length, disjoint_window, padding, across_tasks)
         if self.numofsegments == 0:
             print("No segments found.")
+            self.whole_scene = None
             return
-
-        scenelist,self.numofsegments = self.select_tasks(scenelist, prune_length)
+        if (across_tasks):
+            scenelist,self.numofsegments = self.select_tasks(scenelist, prune_length)
         if aoifile is not None:
             aois = read_aois(aoifile)
         else:
             aois = None
-        print("SCENELIST")
-        print(scenelist)
+
         self.features['numofsegments'] = self.numofsegments
 
         if params.VERBOSE != "QUIET":
@@ -120,12 +98,13 @@ class BasicParticipant(Participant):
                                                      disjoint_window = disjoint_window, padding = padding)
         if (self.segments == []):
             print("All segments are too short")
+            self.whole_scene = None
             return
 
         # Don't need that for the current task
-        #all_segs = sorted(self.segments, key=lambda x: x.start)
-        #self.whole_scene = Scene(str(pid)+'_allsc',[],rec.all_data,rec.fix_data, saccade_data = rec.sac_data, event_data = rec.event_data, Segments = all_segs, aoilist = aois,prune_length = prune_length, require_valid = require_valid_segs, export_pupilinfo=export_pupilinfo )
-        #self.scenes.insert(0,self.whole_scene)
+        all_segs = sorted(self.segments, key=lambda x: x.start)
+        self.whole_scene = Scene(str(pid)+'_allsc',[],rec.all_data,rec.fix_data, saccade_data = rec.sac_data, event_data = rec.event_data, Segments = all_segs, aoilist = aois,prune_length = prune_length, require_valid = require_valid_segs, export_pupilinfo=export_pupilinfo )
+        self.scenes.insert(0,self.whole_scene)
 
         #Clean memory
         for sc in self.scenes:
@@ -135,13 +114,9 @@ class BasicParticipant(Participant):
         if params.VERBOSE != "QUIET":
             print "Done!"
 
-    def select_tasks(self, scenelist, prune_length):
-
-
-
 def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets=None,
                           require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None, export_pupilinfo = False,
-                          disjoint_window = False, padding = 0):
+                          disjoint_window = False, padding = 0, across_tasks = False):
     """Generates list of Participant objects. Relevant information is read from input files
 
     Args:
@@ -186,12 +161,14 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
         log_time_offsets = [0]*len(pids)
 
     # read rest pupil sizes (rpsvalues) from rpsfile
-    rpsdata = read_rest_pupil_sizes(rpsfile)
+    #rpsdata = read_rest_pupil_sizes(rpsfile)
+    # Dictinary for our data
+    rpsdata = read_rest_pupil_sizes()
 
     for rec,pid,offset in zip(user_list,pids,log_time_offsets):
         #extract pupil sizes for the current user. Set to None if not available
         if rpsdata != None:
-            currpsdata = rpsdata[pid]
+            currpsdata = rpsdata["P%d" % (pid)]
         else:
             currpsdata = None
 
@@ -219,7 +196,7 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
             p = BasicParticipant(rec, evefile, allfile, fixfile, sacfile, segfile, log_time_offset = offset,
                                 aoifile=aoifile, prune_length = prune_length, require_valid_segs = require_valid_segs,
                                 auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = currpsdata,
-                                disjoint_window = disjoint_window, padding = padding)
+                                disjoint_window = disjoint_window, padding = padding, across_tasks = False)
             if (p.numofsegments != 0):
                 participants.append(p)
         else:
@@ -229,7 +206,7 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
 
 def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets = None,
                           require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None, export_pupilinfo = False,
-                          disjoint_window = False, padding = 0, across_tasks = False):
+                          disjoint_window = False, padding = 0, across_tasks = False, time_windows = []):
     """Generates list of Participant objects in parallel computing. Relevant information is read from input files
 
     Args:
@@ -377,21 +354,62 @@ def read_events(evfile):
     return map(Event, lines[(params.EVENTSHEADERLINES+params.NUMBEROFEXTRAHEADERLINES):])
 
 def read_rest_pupil_sizes():
-    return {'P21': 3.294234187140609, 'P35': 3.042856648199449, 'P40': 3.0620283018867944, 'P26': 3.047674205378968,
-            'P30': 3.1034735857877482,'P18': 2.885563282336579, 'P12': 3.364172240802662, 'P58': 3.082895953757233,
-            'P42': 2.4192066805845513, 'P59': 3.688688558446926, 'P60': 2.6284354154032745, 'P25': 3.391893158388006,
-            'P61': 3.125104094378899, 'P16': 2.559051976573942, 'P62': 2.446809078771691, 'P9': 2.7987005988023936,
-            'P63': 2.95377952755906, 'P64': 2.8154315628191973, 'P65': 2.5716238381629233, 'P38': 3.3063704206241504,
-            'P66': 3.268320105820107, 'P67': 3.2290529801324466, 'P36': 2.8757863013698657, 'P68': 3.317506500260017,
-            'P52': 2.5995952023988034, 'P69': 2.780373588184186, 'P70': 3.121313594662215, 'P71': 3.8676908979841182,
-            'P1': 2.660198902606308, 'P55': 3.119199466310872, 'P72': 3.07012006003001, 'P19': 3.4835575167376747,
-            'P73': 2.663658909981633, 'P74': 2.77560419235512, 'P77': 2.488447043534764, 'P45': 3.5782149532710212,
-            'P75': 2.8168278965129296,'P76': 2.9916612200435764,'P31': 3.0412572161642104,'P78': 3.2618630382775113,
-            'P79': 2.692619331742239,'P81': 3.0359703860391334,'P82': 2.610252996005327,'P84': 3.031542176432708,
-            'P85': 2.451942307692308,'P46': 3.2230479643056342,'P50': 3.039736321687549,'P88': 3.1375530660377358,
-            'P91': 2.403347759674135,'P89': 2.5133685800604266,'P92': 2.6111814345991564,'P90': 2.5844733581164823,
-            'P93': 3.207753759398504,'P95': 2.835974102413183,'P97': 2.634023652365236}
-​
+    return {'P21': 3.294234187140609,
+            'P35': 3.042856648199449,
+            'P40': 3.0620283018867944,
+            'P26': 3.047674205378968,
+            'P30': 3.1034735857877482,
+            'P18': 2.885563282336579,
+            'P12': 3.364172240802662,
+            'P58': 3.082895953757233,
+            'P42': 2.4192066805845513,
+            'P59': 3.688688558446926,
+            'P60': 2.6284354154032745,
+            'P25': 3.391893158388006,
+            'P61': 3.125104094378899,
+            'P16': 2.559051976573942,
+            'P62': 2.446809078771691,
+            'P9': 2.7987005988023936,
+            'P63': 2.95377952755906,
+            'P64': 2.8154315628191973,
+            'P65': 2.5716238381629233,
+            'P38': 3.3063704206241504,
+            'P66': 3.268320105820107,
+            'P67': 3.2290529801324466,
+            'P36': 2.8757863013698657,
+            'P68': 3.317506500260017,
+            'P52': 2.5995952023988034,
+            'P69': 2.780373588184186,
+            'P70': 3.121313594662215,
+            'P71': 3.8676908979841182,
+            'P55': 3.119199466310872,
+            'P72': 3.07012006003001,
+            'P19': 3.4835575167376747,
+            'P73': 2.663658909981633,
+            'P74': 2.77560419235512,
+            'P77': 2.488447043534764,
+            'P45': 3.5782149532710212,
+            'P75': 2.8168278965129296,
+            'P76': 2.9916612200435764,
+            'P31': 3.0412572161642104,
+            'P78': 3.2618630382775113,
+            'P79': 2.692619331742239,
+            'P81': 3.0359703860391334,
+            'P82': 2.610252996005327,
+            'P84': 3.031542176432708,
+            'P85': 2.451942307692308,
+            'P46': 3.2230479643056342,
+            'P50': 3.039736321687549,
+            'P88': 3.1375530660377358,
+            'P91': 2.403347759674135,
+            'P89': 2.5133685800604266,
+            'P92': 2.6111814345991564,
+            'P90': 2.5844733581164823,
+            'P93': 3.207753759398504,
+            'P95': 2.835974102413183,
+            'P97': 2.634023652365236,
+            'P80': 2.8079452506596194,
+            'P1': 2.660198902606308 }
 """
 def read_rest_pupil_sizes(rpsfile):
 

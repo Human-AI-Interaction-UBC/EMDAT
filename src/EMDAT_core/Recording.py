@@ -160,17 +160,19 @@ class Recording:
     #            print "len(all_data)", len(self.all_data)
             try:
                 # get rest pupil size data
+#                if rpsdata is not None:
+#                    if scid in rpsdata.keys():
+#                        scrpsdata = rpsdata[scid]
+#                    else:
+#                        scrpsdata = 0
+#                        if params.DEBUG:
+#                            print rpsdata.keys()
+#                            raise Exception("Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
+#                        else:
+#                            print "Warning: Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0"
+#                            pass
                 if rpsdata is not None:
-                    if scid in rpsdata.keys():
-                        scrpsdata = rpsdata[scid]
-                    else:
-                        scrpsdata = 0
-                        if params.DEBUG:
-                            print rpsdata.keys()
-                            raise Exception("Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
-                        else:
-                            print "Warning: Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0"
-                            pass
+                    scrpsdata = rpsdata
                 else:
                     scrpsdata = 0
                 new_scene = Scene(scid, sc, self.all_data, self.fix_data, saccade_data = self.sac_data, event_data=self.event_data, aoilist=aoilist,
@@ -231,8 +233,7 @@ def read_segs(segfile, prune_length, disjoint_window = False, padding = 0, acros
         else:
             if (prune_length == None or end - start >= prune_length):
                 scenes[l[0]] = [(l[1], start, end)]
-        if (across_tasks):
-            
+
     return scenes
 
 
@@ -391,7 +392,6 @@ def read_rest_pupil_sizes(rpsfile):
             rpsdic[pid] = {}
             for scene, rpsvalue in zip(scenelist[1:], linelist[1:]):
                 rpsdic[pid][scene] = cast_int(rpsvalue)
-
         return rpsdic
     else:
         return None

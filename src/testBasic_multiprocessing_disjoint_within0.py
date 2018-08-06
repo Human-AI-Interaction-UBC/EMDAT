@@ -17,8 +17,7 @@ from EMDAT_core.ValidityProcessing import output_Validity_info_Segments, output_
 import os
 time_windows = [1000, 2000, 5000, 10000]
 
-for window in time_windows:
-    for i in range(52, 59000 / window):
+
         if __name__ == '__main__':
             freeze_support() #for windows
             print("WINDOW is %d ms" % window)
@@ -38,7 +37,7 @@ for window in time_windows:
                                            prune_length = window,
                 #                           aoifile = "./sampledata/general.aoi",
                 #                           aoifile = "./sampledata/Dynamic_1.aoi",
-                                           require_valid_segs = False, auto_partition_low_quality_segments = False, disjoint_window = True, padding = i * window)
+                                           require_valid_segs = False, auto_partition_low_quality_segments = False, disjoint_window = True, time_windows = time_windows)
             #                               rpsfile = "./sampledata/all_rest_pupil_sizes.tsv")
             ######
 
