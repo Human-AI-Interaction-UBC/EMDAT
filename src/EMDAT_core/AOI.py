@@ -189,6 +189,30 @@ class AOI_Stat():
         self.features['timetolastrightclic'] = -1
         self.features['timetolastdoubleclic'] = -1
 
+        self.features['meanpupilsize'] = -1
+        self.features['stddevpupilsize'] = -1
+        self.features['maxpupilsize'] = -1
+        self.features['minpupilsize'] = -1
+        self.features['startpupilsize'] = -1
+        self.features['endpupilsize'] = -1
+        self.features['meanpupilvelocity'] = -1
+        self.features['stddevpupilvelocity'] = -1
+        self.features['maxpupilvelocity'] = -1
+        self.features['minpupilvelocity'] = -1
+        self.numpupilsizes = 0
+        self.numpupilvelocity = 0
+        self.features['numevents'] = 0
+        self.numevents = 0
+
+        self.features['meandistance'] = -1
+        self.features['stddevdistance'] = -1
+        self.features['maxdistance'] = -1
+        self.features['mindistance'] = -1
+        self.features['startdistance'] = -1
+        self.features['enddistance'] = -1
+
+        self.numdistancedata = 0
+
         self.total_trans_from = 0
         self.variance = 0
         for aoi in active_aois:
@@ -245,16 +269,6 @@ class AOI_Stat():
         valid_pupil_data = filter(lambda x: x.pupilsize > 0, datapoints)
         valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, datapoints)
         #number of valid pupil sizes
-        self.features['meanpupilsize'] = -1
-        self.features['stddevpupilsize'] = -1
-        self.features['maxpupilsize'] = -1
-        self.features['minpupilsize'] = -1
-        self.features['startpupilsize'] = -1
-        self.features['endpupilsize'] = -1
-        self.features['meanpupilvelocity'] = -1
-        self.features['stddevpupilvelocity'] = -1
-        self.features['maxpupilvelocity'] = -1
-        self.features['minpupilvelocity'] = -1
         self.numpupilsizes = len(valid_pupil_data)
         self.numpupilvelocity = len(valid_pupil_velocity)
 
@@ -288,8 +302,8 @@ class AOI_Stat():
     def generate_distance_features(self, datapoints):
         # check if pupil sizes are available for all missing points
         invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, datapoints)
-        if len(invalid_distance_data) > 0:
-            warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
+#        if len(invalid_distance_data) > 0:
+#            warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
 
         #get all datapoints where distance is available
         valid_distance_data = filter(lambda x: x.distance > 0, datapoints)
@@ -303,13 +317,7 @@ class AOI_Stat():
             self.features['mindistance'] = min(distances_from_screen)
             self.features['startdistance'] = distances_from_screen[0]
             self.features['enddistance'] = distances_from_screen[-1]
-        else:
-            self.features['meandistance'] = -1
-            self.features['stddevdistance'] = -1
-            self.features['maxdistance'] = -1
-            self.features['mindistance'] = -1
-            self.features['startdistance'] = -1
-            self.features['enddistance'] = -1
+
 
     def generate_fixation_features(self, datapoints, fixation_data, sum_discarded):
 
