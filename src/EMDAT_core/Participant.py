@@ -22,7 +22,7 @@ class Participant():
     A class that holds the information for one Participant in the experiment
     """
 
-    def __init__(self, pid, eventfile, datafile, fixfile, segfile, saccfile, log_time_offset = None, aoifile = None, prune_length= None,
+    def __init__(self, pid, segfile, log_time_offset = None, aoifile = None, prune_length= None,
                  require_valid_segs = True, auto_partition_low_quality_segments = False, rpsdata = None):
         """Inits BasicParticipant class
         Args:

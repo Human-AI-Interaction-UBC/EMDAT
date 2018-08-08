@@ -30,9 +30,9 @@ class BasicParticipant(Participant):
     This is a sample child class based on the Participant class that implements all the
     placeholder methods in the Participant class for a basic project
     """
-    def __init__(self, pid, eventfile, datafile, fixfile, saccfile, segfile, log_time_offset = None, aoifile = None, prune_length= None,
+    def __init__(self, rec, pid, segfile, log_time_offset = None, aoifile = None, prune_length= None,
                  require_valid_segs = True, auto_partition_low_quality_segments = False, rpsdata = None, export_pupilinfo = False,
-                 disjoint_window = False, padding = 0, across_tasks = False):
+                 disjoint_window = False, padding = 0, across_tasks = False, tasks_to_include = 0):
         """Inits BasicParticipant class
         Args:
             pid: Participant id
@@ -70,19 +70,21 @@ class BasicParticipant(Participant):
         """
 
 
-        Participant.__init__(self, pid, eventfile, datafile, fixfile, saccfile, segfile, log_time_offset, aoifile, prune_length,
+        Participant.__init__(self, pid, segfile, log_time_offset, aoifile, prune_length,
                  require_valid_segs, auto_partition_low_quality_segments, rpsdata)   #calling the Participant's constructor
 
         print "Participant \""+str(pid)+"\"..."
 
-
+        self.features={}
         scenelist,self.numofsegments = partition(segfile, prune_length, disjoint_window, padding, across_tasks)
         if self.numofsegments == 0:
             print("No segments found.")
             self.whole_scene = None
             return
         if (across_tasks):
-            scenelist,self.numofsegments = self.select_tasks(scenelist, prune_length)
+            print(scenelist)
+            scenelist,self.numofsegments = select_tasks(scenelist, tasks_to_include)
+            print(scenelist)
         if aoifile is not None:
             aois = read_aois(aoifile)
         else:
@@ -92,6 +94,10 @@ class BasicParticipant(Participant):
 
         if params.VERBOSE != "QUIET":
             print "Generating features..."
+        if (len(rec.all_data) == 0):
+            print("WRONG")
+            print("WRONG")
+            print("WRONG")
 
         self.segments, self.scenes = rec.process_rec(scenelist = scenelist,aoilist = aois,prune_length = prune_length, require_valid_segs = require_valid_segs,
                                                      auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = rpsdata, export_pupilinfo=export_pupilinfo,
@@ -104,19 +110,33 @@ class BasicParticipant(Participant):
         # Don't need that for the current task
         all_segs = sorted(self.segments, key=lambda x: x.start)
         self.whole_scene = Scene(str(pid)+'_allsc',[],rec.all_data,rec.fix_data, saccade_data = rec.sac_data, event_data = rec.event_data, Segments = all_segs, aoilist = aois,prune_length = prune_length, require_valid = require_valid_segs, export_pupilinfo=export_pupilinfo )
+        if (across_tasks):
+            self.scenes = []
         self.scenes.insert(0,self.whole_scene)
 
         #Clean memory
         for sc in self.scenes:
             sc.clean_memory()
-        rec.clean_memory()
+        #rec.clean_memory()
 
         if params.VERBOSE != "QUIET":
             print "Done!"
 
+def select_tasks(scenelist, tasks_to_include):
+    included_tasks = {}
+    task_names = ['3', '5', '9', '11', '18', '20', '27', '28',
+                  '30', '60', '62', '66', '72', '74', '76']
+    for task in task_names:
+        if (tasks_to_include > 0):
+            included_tasks[task] = scenelist[task]
+            tasks_to_include -= 1
+        else:
+            break
+    return included_tasks, len(included_tasks)
+
 def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets=None,
                           require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None, export_pupilinfo = False,
-                          disjoint_window = False, padding = 0, across_tasks = False):
+                          disjoint_window = False, across_tasks = False, tasks_to_include = 0, time_windows = []):
     """Generates list of Participant objects. Relevant information is read from input files
 
     Args:
@@ -156,21 +176,12 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
     Returns:
         a list Participant objects (in queue)
     """
-    participants = []
+    recordings_dict = {}
     if log_time_offsets == None:    #setting the default offset which is 1 sec
         log_time_offsets = [0]*len(pids)
 
-    # read rest pupil sizes (rpsvalues) from rpsfile
-    #rpsdata = read_rest_pupil_sizes(rpsfile)
-    # Dictinary for our data
-    rpsdata = read_rest_pupil_sizes()
-
     for rec,pid,offset in zip(user_list,pids,log_time_offsets):
         #extract pupil sizes for the current user. Set to None if not available
-        if rpsdata != None:
-            currpsdata = rpsdata["P%d" % (pid)]
-        else:
-            currpsdata = None
 
         if params.EYETRACKERTYPE == "TobiiV2":
             allfile = datadir+'/P'+str(rec)+'-All-Data.tsv'
@@ -184,7 +195,7 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
             sacfile = "{dir}/MMD Study 1_Rec {rec}.tsv".format(dir=datadir, rec=rec)
             evefile = "{dir}/MMD Study 1_Rec {rec}.tsv".format(dir=datadir, rec=rec)
             segfile = "{dir}/Segs/{rec}.seg".format(dir=datadir, rec=rec)
-            aoifile = "{dir}/aois/dynamic_{rec}.aoi".format(dir=datadir, rec=rec)
+            aoifile = "{dir}/aois_refined/dynamic_{rec}.aoi".format(dir=datadir, rec=rec)
         elif params.EYETRACKERTYPE == "SMI":
             allfile = "{dir}/SMI_Sample_{rec}_Samples.txt".format(dir=datadir, rec=rec)
             fixfile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
@@ -192,16 +203,103 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
             evefile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
             segfile = "{dir}/SMI_Sample_{rec}.seg".format(dir=datadir, rec=rec)
 
-        if os.path.exists(allfile):
-            p = BasicParticipant(rec, evefile, allfile, fixfile, sacfile, segfile, log_time_offset = offset,
-                                aoifile=aoifile, prune_length = prune_length, require_valid_segs = require_valid_segs,
-                                auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = currpsdata,
-                                disjoint_window = disjoint_window, padding = padding, across_tasks = False)
-            if (p.numofsegments != 0):
-                participants.append(p)
+        if params.VERBOSE != "QUIET":
+            print "Reading input files:"
+            print "--Scenes/Segments file: "+segfile
+            print "--Eye tracking samples file: "+allfile
+            print "--Fixations file: "+fixfile
+            print "--Saccades file: "+sacfile if sacfile is not None else "--No saccades file"
+            print "--Events file: "+evefile if evefile is not None else "--No events file"
+            print "--AOIs file: "+aoifile if aoifile is not None else "--No AOIs file"
+            print
+
+        if params.EYETRACKERTYPE == "TobiiV2":
+            rec = TobiiRecording(allfile, fixfile, event_file=sacfile, media_offset=params.MEDIA_OFFSET , segfile=segfile, aoifile = aoifile)
+        elif params.EYETRACKERTYPE == "TobiiV3":
+            rec = TobiiV3Recording(allfile, fixfile, saccade_file=sacfile, event_file=evefile, media_offset=params.MEDIA_OFFSET, segfile=segfile, aoifile = aoifile)
+        elif params.EYETRACKERTYPE == "SMI":
+            rec = SMIRecording(allfile, fixfile, saccade_file=sacfile, event_file=evefile, media_offset=params.MEDIA_OFFSET)
         else:
-            print("Error reading participant files for: %d" % pid)
-    q.put(participants)
+            raise Exception("Unknown eye tracker type.")
+        recordings_dict[pid] = rec
+        print("PID:%d, ALL_data size %d" % (pid, len(rec.all_data)))
+
+    rpsdata = read_rest_pupil_sizes()
+    if (disjoint_window):
+        participants_window_lists = {}
+        for window in time_windows:
+            participants_window_lists[window] = {}
+            for i in range(0, 59001 / window):
+                participants_window_lists[window][i] = []
+                participants = []
+                for pid in pids:
+                    participants_window_lists[window][i] = {}
+
+                    if rpsdata != None:
+                        currpsdata = rpsdata["P%d" % (pid)]
+                    else:
+                        currpsdata = None
+
+                    if os.path.exists(allfile):
+                        print("PID:%d inside loop, ALL_data size %d" % (pid, len(recordings_dict[pid].all_data)))
+
+                        p = BasicParticipant(recordings_dict[pid], pid, recordings_dict[pid].segfile, log_time_offset = offset,
+                                            aoifile=recordings_dict[pid].aoifile, prune_length = window, require_valid_segs = require_valid_segs,
+                                            auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = currpsdata,
+                                            disjoint_window = disjoint_window, padding = window * i, across_tasks = False)
+                        if (p.numofsegments != 0):
+                            participants.append(p)
+                    else:
+                        print("Error reading participant files for: %d" % pid)
+                participants_window_lists[window][i] = participants
+        q.put(participants_window_lists)
+    elif(not across_tasks):
+        participants_lists = {}
+        for i in range(1, 59001 / 1000):
+            participants_lists[i] = []
+            participants = []
+            for pid in pids:
+                if rpsdata != None:
+                    currpsdata = rpsdata["P%d" % (pid)]
+                else:
+                    currpsdata = None
+                if os.path.exists(allfile):
+                    print("PID:%d inside loop, ALL_data size %d" % (pid, len(recordings_dict[pid].all_data)))
+
+                    p = BasicParticipant(recordings_dict[pid], pid, recordings_dict[pid].segfile, log_time_offset = offset,
+                                        aoifile=recordings_dict[pid].aoifile, prune_length = 1000 * i, require_valid_segs = require_valid_segs,
+                                        auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = currpsdata,
+                                        disjoint_window = False, padding = 0, across_tasks = across_tasks)
+                    if (p.numofsegments != 0):
+                        participants.append(p)
+                else:
+                    print("Error reading participant files for: %d" % pid)
+            participants_lists[i] = participants
+        q.put(participants_lists)
+    else:
+        participants_lists = {}
+        for i in range(1, 16):
+            participants_lists[i] = []
+            participants = []
+            for pid in pids:
+                if rpsdata != None:
+                    currpsdata = rpsdata["P%d" % (pid)]
+                else:
+                    currpsdata = None
+                if os.path.exists(allfile):
+                    print("PID:%d inside loop, ALL_data size %d" % (pid, len(recordings_dict[pid].all_data)))
+
+                    p = BasicParticipant(recordings_dict[pid], pid, recordings_dict[pid].segfile, log_time_offset = offset,
+                                            aoifile=recordings_dict[pid].aoifile, prune_length = None, require_valid_segs = require_valid_segs,
+                                        auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = currpsdata,
+                                        disjoint_window = False, padding = 0, across_tasks = across_tasks, tasks_to_include = i)
+                    if (p.numofsegments != 0):
+                        participants.append(p)
+                else:
+                    print("Error reading participant files for: %d" % pid)
+            participants_lists[i] = participants
+        q.put(participants_lists)
+
     return
 
 def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets = None,
@@ -259,7 +357,6 @@ def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pid
         nbprocesses = 1
     if nbprocesses > len(user_list):
         nbprocesses = len(user_list)
-
     for i in range(0, nbprocesses): #create a sublist of participants for each process
         user_listsplit = chunks(user_list, nbprocesses)
         pidssplit = chunks(pids, nbprocesses)
@@ -270,16 +367,16 @@ def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pid
         for i in range(0, nbprocesses):
             if log_time_offsets is None:
 			    p = Process(target=read_participants_Basic, args=(q, datadir, user_listsplit[i], pidssplit[i], prune_length, aoifile, log_time_offsets,
-                          require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo, disjoint_window, padding, across_tasks))
+                          require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo, disjoint_window,  across_tasks, time_windows))
             else:
 			    p = Process(target=read_participants_Basic, args=(q, datadir, user_listsplit[i], pidssplit[i], prune_length, aoifile, log_time_offsets_list[i],
-                          require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo, disjoint_window, padding, across_tasks))
+                          require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo, disjoint_window,  across_tasks, time_windows))
 
             listprocess.append(p)
             p.start() # start the process
 
         for i in range(0, nbprocesses):
-            participants = participants + q.get(True) # wait for the results of all processes
+            participants.append(q.get(True)) # wait for the results of all processes
 
         for pr in listprocess:
             pr.terminate()
@@ -289,6 +386,36 @@ def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pid
         exc_type, exc_obj, exc_tb = sys.exc_info()
         print "Exception", sys.exc_info()
         print "Line ", exc_tb.tb_lineno
+    if (disjoint_window):
+        for window in time_windows:
+            for i in range(0, 59001 / window):
+                cur_participants = []
+                for j in range(len(participants)):
+                    print(i, j)
+                    cur_participants = cur_participants + participants[j][window][i]
+                if params.VERBOSE != "QUIET":
+                    print
+                    print "Exporting:\n--General:", params.featurelist
+                write_features_tsv(cur_participants, './outputfolder/disjoint_refined/window_%d/chunk_%d.tsv' % (window, i), featurelist=params.featurelist, id_prefix=False, require_valid = True)
+    elif (not across_tasks):
+        for i in range(1, 59001 / 1000):
+            cur_participants = []
+            for j in range(len(participants)):
+                cur_participants = cur_participants + participants[j][i]
+            if params.VERBOSE != "QUIET":
+                print
+                print "Exporting:\n--General:", params.featurelist
+            write_features_tsv(cur_participants, './outputfolder/cumul_3/pruning_%d.tsv' % (1000 * i), featurelist=params.featurelist, id_prefix=False, require_valid = True)
+    else:
+        # Number of tasks
+        for i in range(1, 16):
+            cur_participants = []
+            for j in range(len(participants)):
+                cur_participants = cur_participants + participants[j][i]
+            if params.VERBOSE != "QUIET":
+                print
+                print "Exporting:\n--General:", params.featurelist
+            write_features_tsv(cur_participants, './outputfolder/across_tasks/tasks_included_%d.tsv' % (i), featurelist=params.featurelist, id_prefix=False, require_valid = True)
 
     return participants
 

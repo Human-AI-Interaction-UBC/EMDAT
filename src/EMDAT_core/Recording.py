@@ -19,7 +19,7 @@ from itertools import groupby
 class Recording:
     __metaclass__ = ABCMeta
 
-    def __init__(self, all_file, fixation_file, saccade_file=None, event_file=None, media_offset=(0, 0)):
+    def __init__(self, all_file, fixation_file, saccade_file=None, event_file=None, media_offset=(0, 0), segfile = None, aoifile = None):
         """
         :param all_file: path to file that contains all gaze points
         :param fixation_file :path to file that contains all gaze points
@@ -28,7 +28,8 @@ class Recording:
         (0,0) if the interface was in full screen (default value).
         """
         self.media_offset = media_offset
-
+        self.segfile = segfile
+        self.aoifile = aoifile
         self.all_data = self.read_all_data(all_file)
         if len(self.all_data) == 0:
             raise Exception("The file '" + all_file + "' has no samples!")
