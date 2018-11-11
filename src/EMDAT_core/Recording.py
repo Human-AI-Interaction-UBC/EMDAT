@@ -201,7 +201,7 @@ class Recording:
         self.sac_data = []
         self.event_data = []
 
-def read_segs(segfile, prune_length, disjoint_window = False, padding = 0, across_tasks = False):
+def read_segs(segfile, prune_length, disjoint_window = False, padding = 0, across_tasks = False, tasks_to_include = 0):
     """Returns a dict with scid as the key and segments as value from a '.seg' file.
 
     A '.seg' file consists of a set of lines with the following format:
@@ -220,7 +220,7 @@ def read_segs(segfile, prune_length, disjoint_window = False, padding = 0, acros
     scenes = {}
     with open(segfile, 'r') as f:
         seglines = f.readlines()
-
+    print("Working on segfile ", segfile)
     for l in seglines:
         l = l.strip()
         l = l.split('\t')
@@ -228,13 +228,15 @@ def read_segs(segfile, prune_length, disjoint_window = False, padding = 0, acros
         if disjoint_window:
             start += padding
         end = int(l[3])
-        if l[0] in scenes:
-            if (prune_length == None or end - start >= prune_length):
-                scenes[l[0]].append((l[1], start, end))
+        if (across_tasks):
+            if (tasks_to_include > 0):
+                scenes[l[0]] = [(l[1], start, end)]
+                tasks_to_include -= 1
+            else:
+                break
         else:
             if (prune_length == None or end - start >= prune_length):
                 scenes[l[0]] = [(l[1], start, end)]
-
     return scenes
 
 

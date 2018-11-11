@@ -24,7 +24,10 @@ if __name__ == '__main__':
     ul =        [ 1, 9, 12, 16, 18, 19, 21, 25, 26, 30,  31,  36, 38, 40, 42, 45, 46, 50,
                 52, 55, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
                 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 84, 85, 88, 89,  90,91, 92,
-                93, 95, 97 ]    # list of user recordings (files extracted for one participant from Tobii studio)
+                93, 95, 97, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212,
+                213, 214, 215, 217, 218, 219, 220, 221, 223, 224, 225, 226, 227, 228, 229, 231,
+                233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 244, 245, 246, 247, 248, 249,
+                250, 251, 252, 253, 254, 256, 257 ]    # list of user recordings (files extracted for one participant from Tobii studio)
     uids =      ul    # User ID that is used in the external logs (can be different from above but there should be a 1-1 mapping)
 
     alogoffset = ul    # the time difference between the eye tracker logs and the external log
