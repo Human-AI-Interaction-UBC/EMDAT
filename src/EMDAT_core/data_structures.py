@@ -3,7 +3,7 @@ UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
 
 Basic data structures used in EMDAT.
 
-Authors: Nicholas FitzGerald (creator), Oliver Schmid, Samad Kardan, Sebastien Lalle.
+Authors: Nicholas FitzGerald (creator), Oliver Schmid, Samad Kardan, Sebastien Lalle. 
 Institution: The University of British Columbia.
 """
 from warnings import warn
@@ -11,12 +11,12 @@ from warnings import warn
 
 class Datapoint:
     """
-    A class that holds the information for one eye gaze data sample (one line of data logs)
-
+    A class that holds the information for one eye gaze data sample (one line of data logs) 
+    
     Attributes:
         segid: a string indicating the Segment that this Datapoint belongs to
         is_valid: a boolean indicating whether this sample is valid
-
+    
         Please refer to the Tobii manual for the description of the rest of the attributes
     """
 
@@ -37,33 +37,31 @@ class Datapoint:
         self.pupilvelocity = data.get("pupilvelocity", None)
         self.distance = data.get("distance", None)
         self.is_valid = data.get("is_valid", None)
-        self.is_valid_blink = data.get("is_valid_blink", None)
         self.stimuliname = data.get("stimuliname", None)
         self.fixationindex = data.get("fixationindex", None)
-        self.gazepointx = data.get("gazepointx", None)
-        self.gazepointy = data.get("gazepointy", None)
+        self.gazepointxleft = data.get("gazepointxleft", None)
         self.segid = None
-
-    def get_string(self, sep='\t'):
+		
+    def get_string(self, sep='\t'): 
         return str(self.timestamp)+sep+str(self.pupilsize)+sep+str(self.pupilvelocity)+sep+str(self.distance)+sep+str(self.is_valid)+sep+str(self.stimuliname)+sep+str(self.fixationindex)#+sep+str(self.gazepointxleft)
 
 class Fixation:
     """
     A class that holds the information for one Fixation
-
+    
     Attributes:
         segid: a string indicating the Segment to which this Fixation belongs
     """
 
     def __init__(self, data, media_offset = (0, 0)):
         """Initializes a Fixation with attributes
-
+        
         Args:
             data: a dictionary containing attributes of a fixation
             media_offset: the coordinates of the top left corner of the window
                 showing the interface under study. (0,0) if the interface was
                 in full screen (default value)
-
+            
         Yields:
             a Fixation object
         """
@@ -87,7 +85,7 @@ class Fixation:
 
     def set_segid(self, segid):
         """Sets the "Segment" id for this Fixation
-
+        
         Args:
             segid: a string containing the "Segment" id
         """
@@ -95,10 +93,10 @@ class Fixation:
 
     def get_segid(self):
         """Returns the "Segment" id for this Fixation
-
+            
         Returns:
             a string containing the "Segment" id
-
+            
         Raises:
             Exception: if the segid is not set before reading it an Exception will be thrown
         """
@@ -106,26 +104,26 @@ class Fixation:
             return self.segid
         raise Exception('The segid is accessed before setting the initial value in a fixation point.')
 
-    def get_string(self, sep='\t'):
+    def get_string(self, sep='\t'): 
         return str(self.fixationindex)+sep+str(self.timestamp)+sep+str(self.fixationduration)+sep+str(self.mappedfixationpointx)+sep+str(self.mappedfixationpointy)
-
+		
 class Saccade:
     """
     A class that holds the information for one Saccade
-
+    
     Attributes:
         segid: a string indicating the Segment to which this Saccade belongs
     """
 
     def __init__(self, data, media_offset = (0, 0)):
         """Initializes a Saccade with attributes
-
+        
         Args:
             data: a dictionary containing attributes of a Saccade
             media_offset: the coordinates of the top left corner of the window
                 showing the interface under study. (0,0) if the interface was
                 in full screen (default value)
-
+            
         Yields:
             a Sacade object
         """
@@ -157,7 +155,7 @@ class Saccade:
 
     def set_segid(self, segid):
         """Sets the "Segment" id for this Saccade
-
+        
         Args:
             segid: a string containing the "Segment" id
         """
@@ -165,10 +163,10 @@ class Saccade:
 
     def get_segid(self):
         """Returns the "Segment" id for this Saccade
-
+            
         Returns:
             a string containing the "Segment" id
-
+            
         Raises:
             Exception: if the segid is not set before reading it an Exception will be thrown
         """
@@ -176,7 +174,7 @@ class Saccade:
             return self.segid
         raise Exception('The segid is accessed before setting the initial value in a fixation point.')
 
-    def get_string(self, sep='\t'):
+    def get_string(self, sep='\t'): 
         return str(self.saccadeindex)+sep+str(self.timestamp)+sep+str(self.saccadeduration)+sep+str(self.saccadedistance)+sep+str(self.saccadespeed)+sep+str(self.saccadeacceleration)+sep+str(
               self.saccadestartpointx)+sep+str(self.saccadestartpointy)+sep+str(self.saccadeendpointx)+sep+str(self.saccadeendpointy)+sep+str(self.saccadequality)
 
@@ -189,7 +187,7 @@ class Event:
 
         Args:
             data: a dictionary containing attributes of an event.
-
+            
         Yields:
             an Event object
         """
@@ -215,7 +213,7 @@ class Event:
 
     def set_segid(self, segid):
         """Sets the "Segment" id for this Event
-
+        
         Args:
             segid: a string containing the "Segment" id
         """
@@ -223,18 +221,18 @@ class Event:
 
     def get_segid(self):
         """Returns the "Segment" id for this Event
-
+            
         Returns:
             a string containing the "Segment" id
-
+            
         Raises:
             Exception: if the segid is not set before reading it an Exception will be thrown
         """
         if self.segid is not None:
             return self.segid
         raise Exception('The segid is accessed before setting the initial value in an event.')
-
-    def get_string(self, sep='\t'):
+		
+    def get_string(self, sep='\t'): 
         return str(self.timestamp)+sep+str(self.event)+sep+str(self.eventKey)+sep+str(self.x_coord)+sep+str(self.y_coord)+sep+str(self.key_code)+sep+str(self.key_name)+sep+str(self.description)
 
 def cast_int(str):

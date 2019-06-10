@@ -4,7 +4,7 @@ Created on 2015-08-15
 
 Class to read Tobii data (exported with Tobii Studio V3 and higher). See sample data in the "sampledata" folder.
 
-Authors: Mike Wu (creator), Sebastien Lalle.
+Authors: Mike Wu (creator), Sebastien Lalle. 
 Institution: The University of British Columbia.
 """
 
@@ -31,31 +31,25 @@ class TobiiV3Recording(Recording):
             last_pupil_left = -1
             last_pupil_right = -1
             last_time = -1
-
+			
             for row in reader:
-                if row["MediaName"] != 'ScreenRec':
-#                if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
+                if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
                     continue
                 if not row["ValidityLeft"] or not row["ValidityRight"]: #ignore data point with no validity information
                     continue
-                gaze_point_x = EMDAT_core.utils.cast_float(row["GazePointX (MCSpx)"], -1)
-                gaze_point_y = EMDAT_core.utils.cast_float(row["GazePointY (MCSpx)"], -1)
                 pupil_left = EMDAT_core.utils.cast_float(row["PupilLeft"], -1)
                 pupil_right = EMDAT_core.utils.cast_float(row["PupilRight"], -1)
                 distance_left = EMDAT_core.utils.cast_float(row["DistanceLeft"], -1)
                 distance_right = EMDAT_core.utils.cast_float(row["DistanceRight"], -1)
                 timestamp = EMDAT_core.utils.cast_int(row["RecordingTimestamp"])
-                data = {'participant_name': row["ParticipantName"],
-                        "timestamp": timestamp,
+                data = {"timestamp": timestamp,
                         "pupilsize": EMDAT_core.Recording.get_pupil_size(pupil_left, pupil_right),
                         "pupilvelocity": EMDAT_core.Recording.get_pupil_velocity(last_pupil_left, last_pupil_right, pupil_left, pupil_right, (timestamp-last_time) ),
                         "distance": EMDAT_core.Recording.get_distance(distance_left, distance_right),
                         "is_valid": EMDAT_core.utils.cast_int(row["ValidityRight"]) < 2 or EMDAT_core.utils.cast_int(row["ValidityLeft"]) < 2,
-                        "is_valid_blink": EMDAT_core.utils.cast_int(row["ValidityRight"]) < 2 and EMDAT_core.utils.cast_int(row["ValidityLeft"]) < 2,
                         "stimuliname": row["MediaName"],
                         "fixationindex": EMDAT_core.utils.cast_int(row["FixationIndex"]),
-                        "gazepointx": gaze_point_x,
-                        "gazepointy": gaze_point_y}
+                        "gazepointxleft": EMDAT_core.utils.cast_float(row["GazePointLeftX (ADCSpx)"])}
                 all_data.append(Datapoint(data))
                 last_pupil_left = pupil_left
                 last_pupil_right = pupil_right
@@ -78,8 +72,7 @@ class TobiiV3Recording(Recording):
             currentfix = 0
             reader = csv.DictReader(f, delimiter='\t')
             for row in reader:
-                if row["MediaName"] != 'ScreenRec':
-#                if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
+                if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
                     continue
                 if not row["ValidityLeft"] or not row["ValidityRight"] or not row["FixationPointX (MCSpx)"] or not row["FixationPointY (MCSpx)"]: #ignore data point with no information
                     continue
@@ -94,7 +87,7 @@ class TobiiV3Recording(Recording):
                 currentfix = row["FixationIndex"]
 
         return all_fixation
-
+        
     def read_saccade_data(self, saccade_file):
         """Returns a list of "Saccade"s read from the data file file.
 
@@ -114,16 +107,15 @@ class TobiiV3Recording(Recording):
             saccade_vect = []
             saccade_duration = 0
             current_index = 0
-
+            
             nb_invalid_temp = 0
             nb_valid_sample = 0
             nb_sample = 0
-
+            
             for row in reader:
-                if row["MediaName"] != 'ScreenRec' or not row["EyeTrackerTimestamp"]:
-#                if row["MediaName"] != 'Screen Recordings (1)' or not row["EyeTrackerTimestamp"]:  # ignore non-recording data point
+                if row["MediaName"] != 'Screen Recordings (1)' or not row["EyeTrackerTimestamp"]:  # ignore non-recording data point
                     continue
-
+                    
                 if in_fixation:
                     if row["GazeEventType"] == "Fixation":
                         nb_invalid_temp = 0
@@ -133,20 +125,20 @@ class TobiiV3Recording(Recording):
                         current_index = row["SaccadeIndex"]
                         saccade_vect = [last_gaze_coord]
                         nb_valid_sample = 0
-
+						
                         #add current sample
                         if (EMDAT_core.utils.cast_int(row["ValidityLeft"])<2 or EMDAT_core.utils.cast_int(row["ValidityRight"])<2) and row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]: #ignore data point with no valid data
                             saccade_vect.append( [EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"])] )
                             nb_valid_sample += 1
-
+                        
                         if last_valid:
                             nb_valid_sample += 1
-
+                            
                         nb_sample = 2 + nb_invalid_temp #current gaze sample + last gaze sample of the previous fixation + eventually all unclasified gaze samples in between
                         nb_invalid_temp = 0
                     else: #unclassified gaze samples
                         nb_invalid_temp += 1
-
+                        
                 elif in_saccade:
                     if row["GazeEventType"] == "Fixation":
                         in_fixation = True
@@ -160,7 +152,7 @@ class TobiiV3Recording(Recording):
                             saccade_vect.append( [EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["FixationPointX (MCSpx)"]), EMDAT_core.utils.cast_int(row["FixationPointY (MCSpx)"])] )
                             nb_valid_sample += 1
                         nb_sample += 1
-
+                        
                         rate_valid_sample = float(nb_valid_sample) / nb_sample
                         if rate_valid_sample >= params.VALID_SAMPLES_PROP_SACCADE: #if saccade quality is above the threshold
                             saccade_duration = EMDAT_core.utils.cast_int(row["RecordingTimestamp"]) - saccade_vect[0][0]
@@ -171,9 +163,9 @@ class TobiiV3Recording(Recording):
                                     "timestamp": saccade_vect[0][0],
                                     "saccadeduration": EMDAT_core.utils.cast_int(saccade_duration),
                                     "saccadestartpointx": saccade_vect[0][1],
-                                    "saccadestartpointy": saccade_vect[0][2],
+                                    "saccadestartpointy": saccade_vect[0][2], 
                                     "saccadeendpointx": saccade_vect[-1][1],
-                                    "saccadeendpointy": saccade_vect[-1][2],
+                                    "saccadeendpointy": saccade_vect[-1][2], 
                                     "saccadedistance": dist,
                                     "saccadespeed": speed,
                                     "saccadeacceleration": accel,
@@ -182,7 +174,7 @@ class TobiiV3Recording(Recording):
                             all_saccade.append(Saccade(data, self.media_offset))
                             nb_valid_sample = 0
                             nb_sample = 0
-
+                        
                     elif row["GazeEventType"] == "Saccade":
                         if (EMDAT_core.utils.cast_int(row["ValidityLeft"])<2 or EMDAT_core.utils.cast_int(row["ValidityRight"])<2) and row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]: #ignore data point with no valid data
                             saccade_vect.append( [EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"])] )
@@ -191,21 +183,21 @@ class TobiiV3Recording(Recording):
                     else: #unclassified gaze samples
                         nb_sample += 1
                     nb_invalid_temp = 0
-
+                    
                 else: #wait for the first fixation
                     if row["GazeEventType"] == "Fixation":
-                        in_fixation = True
-
-                if row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]:
+						in_fixation = True
+						
+                if row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]: 
                     last_gaze_coord = (EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"]))
                     last_valid = (EMDAT_core.utils.cast_int(row["ValidityLeft"])<2 or EMDAT_core.utils.cast_int(row["ValidityRight"])<2)
                 elif row["GazeEventType"] == "Fixation" and row["FixationPointX (MCSpx)"] and row["FixationPointY (MCSpx)"]: #if last sample not valid, at least check if valid data about the fixation
                     last_gaze_coord = (EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["FixationPointX (MCSpx)"]), EMDAT_core.utils.cast_int(row["FixationPointY (MCSpx)"]))
                     last_valid = True
-
+                        
         return all_saccade
 
-
+        
     def read_event_data(self, event_file):
         """Returns a list of "Event"s read from an data file.
 
@@ -220,8 +212,7 @@ class TobiiV3Recording(Recording):
         with open(event_file, 'r') as f:
             reader = csv.DictReader(f, delimiter='\t')
             for row in reader:
-                if row["MediaName"] != 'ScreenRec':
-                #if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
+                if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
                     continue
                 if row["MouseEventIndex"] : #mouse event
                     data = {"timestamp": EMDAT_core.utils.cast_int(row["RecordingTimestamp"]),

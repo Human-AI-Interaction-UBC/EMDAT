@@ -4,7 +4,7 @@ Created on 2014-09-16
 
 Sample code showing how to instantiate the "Participant" class for a given experiment (multiprocessing version).
 
-Authors: Sebastien Lalle (creator), Samad Kardan.
+Authors: Sebastien Lalle (creator), Samad Kardan. 
 Institution: The University of British Columbia.
 """
 
@@ -12,7 +12,7 @@ from math import ceil, floor
 from multiprocessing import Process, Queue
 import os.path
 
-params = __import__('params')
+params=__import__('params')
 from EMDAT_core.data_structures import *
 from EMDAT_core.Participant import *
 from EMDAT_core.Recording import *
@@ -27,51 +27,51 @@ from EMDAT_eyetracker.SMIRecording import SMIRecording
 
 class BasicParticipant(Participant):
     """
-    This is a sample child class based on the Participant class that implements all the
+    This is a sample child class based on the Participant class that implements all the 
     placeholder methods in the Participant class for a basic project
     """
-    def __init__(self, pid, eventfile, datafile, fixfile, saccfile, segfile, log_time_offset = None, aoifile = None, prune_length= None,
+    def __init__(self, pid, eventfile, datafile, fixfile, saccfile, segfile, log_time_offset = None, aoifile = None, prune_length= None, 
                  require_valid_segs = True, auto_partition_low_quality_segments = False, rpsdata = None, export_pupilinfo = False):
         """Inits BasicParticipant class
         Args:
             pid: Participant id
-
+            
             eventfile: a string containing the name of the "Event-Data.tsv" file for this participant
-
+            
             datafile: a string containing the name of the "All-Data.tsv" file for this participant
-
+            
             fixfile: a string containing the name of the "Fixation-Data.tsv" file for this participant
-
+            
             segfile: a string containing the name of the '.seg' file for this participant
-
-            log_time_offset: If not None, an integer indicating the time offset between the
+            
+            log_time_offset: If not None, an integer indicating the time offset between the 
                 external log file and eye tracking logs
-
-            aoifile: If not None, a string containing the name of the '.aoi' file
+            
+            aoifile: If not None, a string containing the name of the '.aoi' file 
                 with definitions of the "AOI"s.
-
-            prune_length: If not None, an integer that specifies the time
+            
+            prune_length: If not None, an integer that specifies the time 
                 interval (in ms) from the beginning of each Segment in which
-                samples are considered in calculations.  This can be used if,
-                for example, you only wish to consider data in the first
+                samples are considered in calculations.  This can be used if, 
+                for example, you only wish to consider data in the first 
                 1000 ms of each Segment. In this case (prune_length = 1000),
                 all data beyond the first 1000ms of the start of the "Segment"s
                 will be disregarded.
-
-            auto_partition_low_quality_segments: a boolean indicating whether EMDAT should
-                split the "Segment"s which have low sample quality, into two new
+                
+            auto_partition_low_quality_segments: a boolean indicating whether EMDAT should 
+                split the "Segment"s which have low sample quality, into two new 
                 sub "Segment"s discarding the largest gap of invalid samples.
-
+            
             rpsdata: rest pupil sizes for all scenes if available
-
+            
         Yields:
             a BasicParticipant object
         """
+        
 
-
-        Participant.__init__(self, pid, eventfile, datafile, fixfile, saccfile, segfile, log_time_offset, aoifile, prune_length,
+        Participant.__init__(self, pid, eventfile, datafile, fixfile, saccfile, segfile, log_time_offset, aoifile, prune_length, 
                  require_valid_segs, auto_partition_low_quality_segments, rpsdata)   #calling the Participant's constructor
-
+        
         print "Participant \""+str(pid)+"\"..."
         if params.VERBOSE != "QUIET":
             print "Reading input files:"
@@ -81,8 +81,8 @@ class BasicParticipant(Participant):
             print "--Saccades file: "+saccfile if saccfile is not None else "--No saccades file"
             print "--Events file: "+eventfile if eventfile is not None else "--No events file"
             print "--AOIs file: "+aoifile if aoifile is not None else "--No AOIs file"
-            print
-
+            print 
+		    	
         self.features={}
         if params.EYETRACKERTYPE == "TobiiV2":
             rec = TobiiRecording(datafile, fixfile, event_file=eventfile, media_offset=params.MEDIA_OFFSET)
@@ -95,24 +95,24 @@ class BasicParticipant(Participant):
 
         if params.VERBOSE != "QUIET":
             print "Creating partition..."
-
+        
         scenelist,self.numofsegments = partition(segfile)
         if self.numofsegments == 0:
             raise Exception("No segments found.")
-
+			
         if aoifile is not None:
             aois = read_aois(aoifile)
         else:
             aois = None
-
+        
         self.features['numofsegments'] = self.numofsegments
-
+        
         if params.VERBOSE != "QUIET":
             print "Generating features..."
-
-        self.segments, self.scenes = rec.process_rec(scenelist = scenelist,aoilist = aois,prune_length = prune_length, require_valid_segs = require_valid_segs,
+			
+        self.segments, self.scenes = rec.process_rec(scenelist = scenelist,aoilist = aois,prune_length = prune_length, require_valid_segs = require_valid_segs, 
                                                      auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = rpsdata, export_pupilinfo=export_pupilinfo)
-
+        
         all_segs = sorted(self.segments, key=lambda x: x.start)
         self.whole_scene = Scene(str(pid)+'_allsc',[],rec.all_data,rec.fix_data, saccade_data = rec.sac_data, event_data = rec.event_data, Segments = all_segs, aoilist = aois,prune_length = prune_length, require_valid = require_valid_segs, export_pupilinfo=export_pupilinfo )
         self.scenes.insert(0,self.whole_scene)
@@ -121,49 +121,49 @@ class BasicParticipant(Participant):
         for sc in self.scenes:
             sc.clean_memory()
         rec.clean_memory()
-
+		
         if params.VERBOSE != "QUIET":
             print "Done!"
 
-
-def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets=None,
+			
+def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets=None, 
                           require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None, export_pupilinfo = False):
     """Generates list of Participant objects. Relevant information is read from input files
-
+    
     Args:
         q: Queue to which all processes must add return values.
-
-        datadir: directory with user data (including "All-Data.tsv", "Fixation-Data.tsv", "Event-Data.tsv" files)
+		
+        datadir: directory with user data (including "All-Data.tsv", "Fixation-Data.tsv", "Event-Data.tsv" files) 
         for all participants
-
+        
         user_list: list of user recordings (files extracted for one participant from Tobii studio)
-
+        
         pids: User ID that is used in the external logs (can be different from above but there should be a 1-1 mapping)
-
-        prune_length: If not None, an integer that specifies the time
+        
+        prune_length: If not None, an integer that specifies the time 
             interval (in ms) from the beginning of each Segment in which
-            samples are considered in calculations.  This can be used if,
-            for example, you only wish to consider data in the first
+            samples are considered in calculations.  This can be used if, 
+            for example, you only wish to consider data in the first 
             1000 ms of each Segment. In this case (prune_length = 1000),
             all data beyond the first 1000ms of the start of the "Segment"s
             will be disregarded.
-
-        aoifile: If not None, a string containing the name of the '.aoi' file
+        
+        aoifile: If not None, a string containing the name of the '.aoi' file 
             with definitions of the "AOI"s.
-
-        log_time_offset: If not None, an integer indicating the time offset between the
+        
+        log_time_offset: If not None, an integer indicating the time offset between the 
             external log file and eye tracking logs
-
+    
         require_valid_segs: a boolean determining whether invalid "Segment"s
-            will be ignored when calculating the features or not. default = True
-
-        auto_partition_low_quality_segments: a boolean indicating whether EMDAT should
-            split the "Segment"s which have low sample quality, into two new
+            will be ignored when calculating the features or not. default = True 
+        
+        auto_partition_low_quality_segments: a boolean indicating whether EMDAT should 
+            split the "Segment"s which have low sample quality, into two new 
             sub "Segment"s discarding the largest gap of invalid samples.
-
-        rpsfile: If not None, a string containing the name of the '.tsv' file
-            with rest pupil sizes for all scenes and for each user.
-
+        
+        rpsfile: If not None, a string containing the name of the '.tsv' file 
+            with rest pupil sizes for all scenes and for each user. 
+        
     Returns:
         a list Participant objects (in queue)
     """
@@ -173,14 +173,14 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
 
     # read rest pupil sizes (rpsvalues) from rpsfile
     rpsdata = read_rest_pupil_sizes(rpsfile)
-
-    for rec,pid,offset in zip(user_list,pids,log_time_offsets):
+    
+    for rec,pid,offset in zip(user_list,pids,log_time_offsets):        
         #extract pupil sizes for the current user. Set to None if not available
         if rpsdata != None:
             currpsdata = rpsdata[pid]
         else:
             currpsdata = None
-
+        
         if params.EYETRACKERTYPE == "TobiiV2":
             allfile = datadir+'/P'+str(rec)+'-All-Data.tsv'
             fixfile = datadir+'/P'+str(rec)+'-Fixation-Data.tsv'
@@ -188,11 +188,12 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
             sacfile = None
             segfile = datadir+'/P'+str(rec)+'.seg'
         elif params.EYETRACKERTYPE == "TobiiV3":
-            allfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
-            fixfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
-            sacfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
-            evefile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
-            segfile = "{dir}/TobiiV3_sample_{rec}.seg".format(dir=datadir, rec=rec)
+            allfile = "{dir}/IN MSNV Study_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            fixfile = "{dir}/IN MSNV Study_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            sacfile = "{dir}/IN MSNV Study_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            evefile = "{dir}/IN MSNV Study_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            segfile = "{dir}/Segs/{rec}.seg".format(dir=datadir, rec=rec)
+            aoifile = "{dir}/aois_refined/Dynamic/dynamic_{rec}.aoi".format(dir=datadir, rec=rec)
         elif params.EYETRACKERTYPE == "SMI":
             allfile = "{dir}/SMI_Sample_{rec}_Samples.txt".format(dir=datadir, rec=rec)
             fixfile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
@@ -201,7 +202,7 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
             segfile = "{dir}/SMI_Sample_{rec}.seg".format(dir=datadir, rec=rec)
 
         if os.path.exists(allfile):
-            p = BasicParticipant(rec, evefile, allfile, fixfile, sacfile, segfile, log_time_offset = offset,
+            p = BasicParticipant(rec, evefile, allfile, fixfile, sacfile, segfile, log_time_offset = offset, 
                                 aoifile=aoifile, prune_length = prune_length, require_valid_segs = require_valid_segs,
                                 auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = currpsdata)
             participants.append(p)
@@ -209,79 +210,79 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
             print "Error reading participant files for: "+pid
     q.put(participants)
     return
-
-def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets = None,
+			
+def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets = None, 
                           require_valid_segs = True, auto_partition_low_quality_segments = False, rpsfile = None, export_pupilinfo = False):
     """Generates list of Participant objects in parallel computing. Relevant information is read from input files
-
+    
     Args:
         nbprocesses: number of processes to run in parallel (number of CPU cores is a good option).
-
-        datadir: directory with user data (including "All-Data.tsv", "Fixation-Data.tsv", "Event-Data.tsv" files)
+		
+        datadir: directory with user data (including "All-Data.tsv", "Fixation-Data.tsv", "Event-Data.tsv" files) 
         for all participants
-
+        
         user_list: list of user recordings (files extracted for one participant from Tobii studio)
-
+        
         pids: User ID that is used in the external logs (can be different from above but there should be a 1-1 mapping)
-
-        prune_length: If not None, an integer that specifies the time
+        
+        prune_length: If not None, an integer that specifies the time 
             interval (in ms) from the beginning of each Segment in which
-            samples are considered in calculations.  This can be used if,
-            for example, you only wish to consider data in the first
+            samples are considered in calculations.  This can be used if, 
+            for example, you only wish to consider data in the first 
             1000 ms of each Segment. In this case (prune_length = 1000),
             all data beyond the first 1000ms of the start of the "Segment"s
             will be disregarded.
-
-        aoifile: If not None, a string containing the name of the '.aoi' file
+        
+        aoifile: If not None, a string containing the name of the '.aoi' file 
             with definitions of the "AOI"s.
-
-        log_time_offset: If not None, an integer indicating the time offset between the
+        
+        log_time_offset: If not None, an integer indicating the time offset between the 
             external log file and eye tracking logs
-
+    
         require_valid_segs: a boolean determining whether invalid "Segment"s
-            will be ignored when calculating the features or not. default = True
-
-        auto_partition_low_quality_segments: a boolean indicating whether EMDAT should
-            split the "Segment"s which have low sample quality, into two new
+            will be ignored when calculating the features or not. default = True 
+        
+        auto_partition_low_quality_segments: a boolean indicating whether EMDAT should 
+            split the "Segment"s which have low sample quality, into two new 
             sub "Segment"s discarding the largest gap of invalid samples.
-
-        rpsfile: If not None, a string containing the name of the '.tsv' file
-            with rest pupil sizes for all scenes and for each user.
-
+        
+        rpsfile: If not None, a string containing the name of the '.tsv' file 
+            with rest pupil sizes for all scenes and for each user. 
+        
     Returns:
         a list Participant objects
     """
-
-    q = Queue()
+    
+    q = Queue() 
     listprocess = []
     participants = []
-
+	
     if nbprocesses < 1:
         nbprocesses = 1
     if nbprocesses > len(user_list):
         nbprocesses = len(user_list)
-
+	
     for i in range(0, nbprocesses): #create a sublist of participants for each process
         user_listsplit = chunks(user_list, nbprocesses)
         pidssplit = chunks(pids, nbprocesses)
         log_time_offsets_list = chunks(log_time_offsets, nbprocesses) if log_time_offsets is not None else None
-
+	
     print user_listsplit
     try:
         for i in range(0, nbprocesses):
             if log_time_offsets is None:
-			    p = Process(target=read_participants_Basic, args=(q, datadir, user_listsplit[i], pidssplit[i], prune_length, aoifile, log_time_offsets,
+			    p = Process(target=read_participants_Basic, args=(q, datadir, user_listsplit[i], pidssplit[i], prune_length, aoifile, log_time_offsets, 
                           require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo))
             else:
-			    p = Process(target=read_participants_Basic, args=(q, datadir, user_listsplit[i], pidssplit[i], prune_length, aoifile, log_time_offsets_list[i],
+			    p = Process(target=read_participants_Basic, args=(q, datadir, user_listsplit[i], pidssplit[i], prune_length, aoifile, log_time_offsets_list[i], 
                           require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo))
-
+						  
             listprocess.append(p)
             p.start() # start the process
-
+	
         for i in range(0, nbprocesses):
             participants = participants + q.get(True) # wait for the results of all processes
-
+		
         for pr in listprocess:
             pr.terminate()
             pr.join() #kill the process
@@ -290,17 +291,17 @@ def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pid
         exc_type, exc_obj, exc_tb = sys.exc_info()
         print "Exception", sys.exc_info()
         print "Line ", exc_tb.tb_lineno
-
+    
     return participants
-
+	
 def chunks(l, n):
     """Split a list in balanced sub-lists. If equal sublits are not possible, remaining elements are distribute evenly among sublists.
-
+    
     Args:
         l: the list to split.
-
+		
         n: the number of sublists to generate.
-
+        
     Returns:
         a list of n sublists
     """
@@ -308,7 +309,7 @@ def chunks(l, n):
         n = 1
     if len(l) < n:
         n = len(l)
-
+		
     nsize = len(l)/n #number of elements in the sublists
     if len(l)%n == 0:
         return [l[i:i + nsize] for i in range(0, len(l), nsize)]
@@ -322,10 +323,10 @@ def chunks(l, n):
 
 def partition_Basic(segfile):
     """Generates the scenelist based on a .seg file
-
+    
     Args:
         segfile: a string containing the name of the '.seg' file
-
+    
     Returns:
         a dict with scid as the key and tuples of (segid, start , end) for segments that belong to
             that scene as value
@@ -335,17 +336,17 @@ def partition_Basic(segfile):
     segcount = 0
     for l in scenelist.itervalues():
         segcount += len(l)
-    return scenelist, segcount
+    return scenelist, segcount 
 
-
+    
 
 def read_events(evfile):
     """Returns a list of Event objects read from an 'Event-Data.tsv' file.
 
     Args:
-        evfile: a string containing the name of the 'Event-Data.tsv' file exported by
+        evfile: a string containing the name of the 'Event-Data.tsv' file exported by 
             Tobii software
-
+    
     Returns:
         a list of Event objects
     """
@@ -362,12 +363,12 @@ def read_rest_pupil_sizes(rpsfile):
         <pid 1>\t<rest pupil size 1>\t<rest pupil size 2>
 
     Args:
-        rpsfile: a string containing the name of the '.tsv' file
-            with rest pupil sizes for all partiicpants and all scenes.
-
+        rpsfile: a string containing the name of the '.tsv' file 
+            with rest pupil sizes for all partiicpants and all scenes. 
+    
     Returns:
         a dictionary of rest pupil sizes. None otherwise
-
+    
     """
     if rpsfile != None:
         with open(rpsfile, 'r') as f:
@@ -383,26 +384,26 @@ def read_rest_pupil_sizes(rpsfile):
             rpsdic[pid] = {}
             for scene, rpsvalue in zip(scenelist[1:], linelist[1:]):
                 rpsdic[pid][scene] = cast_int(rpsvalue)
-
+        
         return rpsdic
     else:
         return None
 
-
-
+    
+    
 def plot_pupil_dilation_all(participants, outdir, scene):
     """
-    Plots adjusted pupil dilations to
-
+    Plots adjusted pupil dilations to 
+    
     Args:
         participants: collection of Participant objects
-
+        
         outdir: directory where files should be exported
-
-        scene: name of scene to be exported
-
+        
+        scene: name of scene to be exported  
+    
     Returns:
-
+    
     """
     lines = []
     for participant in participants:
@@ -413,17 +414,17 @@ def plot_pupil_dilation_all(participants, outdir, scene):
                     fout.write(line)
             else:
                 fout.write("There is no scene " + str(scene) + " in the participant " + str(participant.pid) + " record ")
-
+    
 
 def export_pupil_dilation_from_scene(participant, scene, separator = "\t"):
     """
     Exports pupil dilation information from  pupilinfo_for_export for a scene of a participant
-
+    
     Args:
-        participant: a Participant object
-
+        participant: a Participant object 
+        
         scene: name of scene to be exported
-
+    
     Returns:
         a collection of lines to be written in the file
     """
@@ -440,14 +441,57 @@ def export_pupil_dilation_from_scene(participant, scene, separator = "\t"):
 def list_to_string(list, separator = "\t"):
     """
     Converts a list of values to a string using SEPARATOR for joints
-
+    
     Args:
-        list: a list of values to be converted to a string
-
+        list: a list of values to be converted to a string 
+        
         separator:  a separator to be used for joints
-
+    
     Returns:
-        a string
-
+        a string 
+        
     """
     return separator.join(map(str, list))+ "\n"
+
+
+# participants = list of all participants returned by "read_participants_Basic()"
+# filename = file to export the validity information
+# example: prop_valid_fix_per_segs(ps, "infor_valid_participants.txt")
+def prop_valid_fix_per_segs(participants, filename):  # modified
+    count_high = 0
+    count_low = 0
+    mean_high = 0
+    mean_low = 0
+    std_high = 0
+    std_low = 0
+    mean_p = []
+    std_p = []
+    count_p = []
+    fout = open(filename, "w")
+
+    print "======== Segments ==============="
+    for p in participants:  # for all participants
+        mean = 0
+        std = 0
+
+        for s in p.scenes:  # for all scenes, compute total & mean valid fixations per participants
+            print str(p.pid) + '\t' + str(s.scid) + '\t' + str(s.proportion_valid)
+            fout.write(str(p.pid) + '\t' + str(s.scid) + '\t' + str(s.proportion_valid) + '\n')
+            if not str(s.scid).startswith('P'):
+                mean = mean + s.proportion_valid
+        mean = mean / (len(p.scenes))
+
+        for s in p.scenes:  # std dev per participants
+            if not str(s.scid).startswith('P'):
+                std = std + abs(mean - s.proportion_valid)
+        std = std / (len(p.scenes) - 1)
+        mean_p.append(mean)
+        std_p.append(std)
+        count_p.append(len(p.scenes) - 1)
+
+    print "======== Participants ==============="
+    for i in range(0, len(mean_p)):
+        print str(participants[i].pid) + " MEAN=" + str(mean_p[i]) + "; STDDEV=" + str(std_p[i]) + "; COUNT=" + str(
+            count_p[i])
+
+    fout.close()

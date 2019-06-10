@@ -77,11 +77,10 @@ def add_random_scatter(target, mag):
 def rads2degrees(angle):
     return angle*180/math.pi
 
-def simpledotproduct(pt1, pt2):
-
-    x1 = float(pt1[0])
-    x2 = float(pt2[0])
-    y1 = float(pt1[1])
-    y2 = float(pt2[1])
+def simpledotproduct((x1,y1), (x2,y2)):
+    x1 = float(x1)
+    x2 = float(x2)
+    y1 = float(y1)
+    y2 = float(y2)
 
     return x1*x2 + y1*y2

@@ -11,10 +11,10 @@ Institution: The University of British Columbia.
 # ####################### Eye tracker type and path ##############################################################
 
 # the folder that has the files exported from eye trackers
-EYELOGDATAFOLDER = "./sampledata"
+EYELOGDATAFOLDER = "C:/Users/admin/Desktop/BT_EyeTracking/Tobii Export"
 
 # the folder that has the external log files
-EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
+EXTERNALLOGDATAFOLDER = "./"
 
 # the eye tracker and/or software used to collect and export the data
 #EYETRACKERTYPE = "TobiiV2" #Tobii Studio version 1x and 2x
@@ -75,11 +75,6 @@ featurelist = ['numsegments','length','numsamples','numfixations','fixationrate'
 			   'eyemovementvelocity', 'abspathanglesrate', 'relpathanglesrate',
 			   'sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
 
-# Blink features to generate and export
-featurelist.extend(['blinknum', 'blinkdurationtotal', 'blinkdurationmean', 'blinkdurationstd', 'blinkdurationmin',
-                    'blinkdurationmax', 'blinkrate', 'blinktimedistancemean', 'blinktimedistancestd',
-                    'blinktimedistancemax', 'blinktimedistancemin'])
-
 # Pupil features to generate and export
 featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize',
                'meanpupilvelocity', 'stddevpupilvelocity', 'maxpupilvelocity', 'minpupilvelocity'])
@@ -93,8 +88,10 @@ featurelist.extend(['numsaccades', 'sumsaccadedistance', 'meansaccadedistance', 
                'meansaccadespeed', 'stddevsaccadespeed','minsaccadespeed', 'maxsaccadespeed',
 			   'fixationsaccadetimeratio'])
 
+
+
 # Events features to generate and export
-featurelist.extend(['numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'numkeypressed', 'leftclicrate', 'rightclicrate', 'doubleclicrate', 'keypressedrate',
+featurelist.extend(['numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'numkeypressed', 'leftclicrate', 'rightclicrate', 'doubleclicrate', #'keypressedrate',
                'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic', 'timetofirstkeypressed'])
 
 # Generate AOI-sequence
@@ -102,19 +99,13 @@ aoisequencefeat = ['aoisequence']
 
 # AOI features to generate and export
 aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum',
-                  'proportiontime','longestfixation', 'meanfixationduration', 'stddevfixationduration', 'timetofirstfixation','timetolastfixation',
-				  'numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'leftclicrate', 'rightclicrate', 'doubleclicrate',
-                  'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic', 'timetolastleftclic', 'timetolastrightclic', 'timetolastdoubleclic']
+                  'proportiontime','longestfixation', 'meanfixationduration', 'stddevfixationduration', 'timetofirstfixation','timetolastfixation']
+#				  'numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'leftclicrate', 'rightclicrate', 'doubleclicrate',
+#                  'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic', 'timetolastleftclic', 'timetolastrightclic', 'timetolastdoubleclic']
 
-# Pupil features to generate and export
-aoigeneralfeat.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize',
-               'meanpupilvelocity', 'stddevpupilvelocity', 'maxpupilvelocity', 'minpupilvelocity'])
-
-# Head distance for AIO features to generate and export
-aoigeneralfeat.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
 
 #list of the AOI names
-aoinames = ['Top','Bottom','Graph','Toolbar']
+aoinames = ['Non-Bars','Bars','Legend','Labels']
 
 #list of transition-based AOI features (count)
 aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames)
@@ -122,8 +113,6 @@ aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames)
 #list of transition-based AOI features (proportion)
 aoiproportion = map(lambda x:'proptransfrom_'+x, aoinames)
 
-# lower and  upper bound on size of invalid data gaps to be treated as blinks
-blink_threshold = (100, 300)
 
 # Generating a list of all AOI-based features (including transitions)
 aoifeaturelist =[]
@@ -165,7 +154,7 @@ quality, into two new sub "Segment"s discarding the largest gap of invalid sampl
 a "Segment". EMDAT will continue to perform the splitting on the Segments until there is not
 any gap larger than MAX_SEG_TIMEGAP left in the data.
 """
-MAX_SEG_TIMEGAP = 10
+MAX_SEG_TIMEGAP = 300
 
 
 #proportion of valid gaze samples required per saccade. If less than 1, missing gaze sample will be extrapolated.
@@ -179,8 +168,8 @@ MINSEGSIZE = 0
 INCLUDE_HALF_FIXATIONS = False
 
 #Pupil adjustment to minimize the pupil size differences among individual users, if Rest Pupil Size (RPS) is provided. Possible values:
-#PUPIL_ADJUSTMENT = None 		#no adjustment;
-PUPIL_ADJUSTMENT = "rpscenter"	#Rps-centering (substraction of the rps from the raw pupil size)
+PUPIL_ADJUSTMENT = None 		#no adjustment;
+#PUPIL_ADJUSTMENT = "rpscenter"	#Rps-centering (substraction of the rps from the raw pupil size)
 #PUPIL_ADJUSTMENT = "PCPS" 		#Normalization of pupil size based on the rsp following [Iqbal et al., 2005, doi>10.1145/1054972.1055016]
 
 
@@ -188,7 +177,7 @@ PUPIL_ADJUSTMENT = "rpscenter"	#Rps-centering (substraction of the rps from the 
 
 #Enable/disable debug mode. In debug mode warnings are treated as errors, and the verbosity level is automatically set to "VERBOSE" (see below)
 #DEBUG = True
-DEBUG = True
+DEBUG = False
 
 #Verbosity level
 #VERBOSE = "QUIET"		#prints nothing except errors and warnings

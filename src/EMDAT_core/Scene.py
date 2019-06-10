@@ -9,9 +9,9 @@ Authors: Samad Kardan (creator), Sebastien Lalle.
 Institution: The University of British Columbia.
 """
 
-import math, EMDAT_core.geometry
-from EMDAT_core.utils import *
-from EMDAT_core.Segment import *
+import math, geometry
+from utils import *
+from Segment import *
 from copy import deepcopy
 
 
@@ -91,7 +91,7 @@ class Scene(Segment):
             require_valid: a boolean determining whether invalid "Segment"s
                 will be ignored when calculating the features or not. default = True
 
-            auto_partition: a boolean flag determining whether
+            auto_partition_low_quality_segments: a boolean flag determining whether
                 EMDAT should automatically split the "Segment"s which have low sample quality
                 into two new ssub "Segment"s discarding the largest invalid sample gap in
                 the "Segment". default = False
@@ -141,7 +141,7 @@ class Scene(Segment):
             """
             timegaps = new_seg.getgaps()
             subsegments = []
-            sub_segid = 0
+            sub_segid=0
             samp_inds = []
             fix_inds = []
             saccade_inds = []
@@ -235,26 +235,26 @@ class Scene(Segment):
 #            print "seglist",seglist
             for (segid, start, end) in seglist:
                 if params.VERBOSE != "QUIET":
-                    print("segid, start, end:", segid, start, end)
-                # Selecting subsets of points belonging only to the current segment
+                    print "segid, start, end:", segid, start, end
+
                 if prune_length != None:
-                    end = min(end, start+prune_length)
+				    end = min(end, start+prune_length)
                 _, all_start, all_end = get_chunk(all_data, 0, start, end)
                 _, fix_start, fix_end = get_chunk(fixation_data, 0, start, end)
                 if saccade_data != None:
                     _, sac_start, sac_end = get_chunk(saccade_data, 0, start, end)
                     saccade_data_in_seg = saccade_data[sac_start:sac_end]
                 else:
-                    sac_start = None
-                    sac_end = None
-                    saccade_data_in_seg = None
+				    sac_start = None
+				    sac_end = None
+				    saccade_data_in_seg = None
                 if event_data != None:
                     _, event_start, event_end = get_chunk(event_data, 0, start, end)
                     event_data_in_seg = event_data[event_start:event_end]
                 else:
-                    event_start = None
-                    event_end = None
-                    event_data_in_seg = None
+				    event_start = None
+				    event_end = None
+				    event_data_in_seg = None
 
                 if fix_end - fix_start>0:
                     try:
@@ -303,7 +303,6 @@ class Scene(Segment):
 
         self.require_valid_Segments = require_valid
         if require_valid:   #filter out the invalid Segments
-
             segments = filter(lambda x:x.is_valid,self.segments)
         else:
             segments = self.segments
@@ -319,7 +318,7 @@ class Scene(Segment):
         for seg in segments:
             sample_st,sample_end,fix_start,fix_end,sac_st,sac_end,event_st,event_end = seg.get_indices()
             if params.DEBUG or params.VERBOSE == "VERBOSE":
-                print("sample_st,sample_end,fix_start,fix_end",sample_st,sample_end,fix_start,fix_end,sac_st,sac_end,event_st,event_end)
+                print "sample_st,sample_end,fix_start,fix_end",sample_st,sample_end,fix_start,fix_end,sac_st,sac_end,event_st,event_end
             fixationlist.append(fixation_data[fix_start:fix_end])
             totalfixations += len(fixationlist[-1])
             if seg.start < firstsegtime:
@@ -356,6 +355,9 @@ class Scene(Segment):
         self.numsamples = sumfeat(segments, 'numsamples')
         self.features['numsamples'] = self.numsamples
 
+        self.numfixations = sumfeat(segments, 'numfixations')
+        self.features['numfixations'] = self.numfixations
+
         if prune_length == None:
             if self.numfixations != totalfixations:
                 if params.DEBUG:
@@ -363,110 +365,6 @@ class Scene(Segment):
                 else:
                     warn('Error in fixation count for scene: '+self.scid)
 
-        self.merge_fixation_features(segments)
-
-        self.merge_path_angle_features(segments)
-
-        self.merge_blink_features(segments)
-
-        self.merge_pupil_features(export_pupilinfo, segments)
-
-        self.merge_distance_data(segments)
-
-        self.merge_saccade_data(saccade_data, segments)
-
-        self.merge_event_data(event_data, segments)
-
-        self.has_aois = False
-
-        if aoilist:
-            self.set_aois(segments, aoilist)
-
-        self.features['aoisequence'] = self.merge_aoisequences(segments)
-
-    def getid(self):
-        """Returns the scid for this Scene
-
-        Returns: a string conataining the scid for this Scene
-        """
-        return self.scid
-
-    def set_aois(self, segments, aois):
-        """Sets the "AOI"s relevant to this Scene
-
-        Args:
-            segments: a list of "Segment"s which belong to this Scene.
-
-            aois: a list of "AOI"s relevant to this Scene
-        """
-        if len(aois) == 0 and params.VERBOSE != "QUIET":
-            print("No AOI in segment ", self.segid)
-
-        self.aoi_data={}
-        for seg in segments:
-            for aid in seg.aoi_data.keys():
-                    if aid in self.aoi_data:
-                        if seg.aoi_data[aid].isActive:
-                            self.aoi_data[aid] = merge_aoistats(self.aoi_data[aid],seg.aoi_data[aid], self.features['length'], self.numfixations, self.start)
-                    else:
-                        self.aoi_data[aid] = deepcopy(seg.aoi_data[aid])
-                        if seg.aoi_data[aid].isActive:
-                            self.aoi_data[aid].features['timetofirstfixation'] += self.aoi_data[aid].starttime - self.start
-                            self.aoi_data[aid].features['timetolastfixation'] += self.aoi_data[aid].starttime - self.start
-
-                            if self.firstseg.aoi_data[aid].features['timetofirstleftclic'] != -1:
-                                self.aoi_data[aid].features['timetofirstleftclic'] += self.aoi_data[aid].starttime - self.start
-                            if self.firstseg.aoi_data[aid].features['timetofirstrightclic'] != -1:
-                                self.aoi_data[aid].features['timetofirstrightclic'] += self.aoi_data[aid].starttime - self.start
-                            if self.firstseg.aoi_data[aid].features['timetofirstdoubleclic'] != -1:
-                                self.aoi_data[aid].features['timetofirstdoubleclic'] += self.aoi_data[aid].starttime - self.start
-
-                            if self.firstseg.aoi_data[aid].features['timetolastleftclic'] != -1:
-                                self.aoi_data[aid].features['timetolastleftclic'] += self.aoi_data[aid].starttime - self.start
-                            if self.firstseg.aoi_data[aid].features['timetolastrightclic'] != -1:
-                                self.aoi_data[aid].features['timetolastrightclic'] += self.aoi_data[aid].starttime - self.start
-                            if self.firstseg.aoi_data[aid].features['timetolastdoubleclic'] != -1:
-                                self.aoi_data[aid].features['timetolastdoubleclic'] += self.aoi_data[aid].starttime - self.start
-        #Merge stdev
-        #For each seg, compute: T = [(numfix-1) * Variance + numfix * power( meanfixduration_in_seg - meanfixduration_in_scene, 2)]
-        #At the Scene level: [ SQRT( SUM(T_seg1...Tsegn) / (numfix-1) ]
-        for aid in self.aoi_data.keys():
-            temp = 0
-            numdata = 0
-            for seg in segments:
-                    temp += (seg.aoi_data[aid].features['numfixations']-1) * seg.aoi_data[aid].variance + seg.aoi_data[aid].features['numfixations'] * math.pow(seg.aoi_data[aid].features['meanfixationduration'] - self.aoi_data[aid].features['meanfixationduration'], 2)
-                    numdata += seg.aoi_data[aid].features['numfixations']
-            self.aoi_data[aid].features['stddevfixationduration'] = math.sqrt(temp / (numdata-1) ) if numdata > 1 else 0
-        """
-        firstsegaois = self.firstseg.aoi_data.keys()
-        for aid in self.aoi_data.keys():
-            if aid in firstsegaois:
-                self.aoi_data[aid].features['timetofirstfixation'] = deepcopy(self.firstseg.aoi_data[aid].features['timetofirstfixation'])
-                if self.firstseg.aoi_data[aid].features['timetofirstleftclic'] != -1:
-                    self.aoi_data[aid].features['timetofirstleftclic'] = deepcopy(self.firstseg.aoi_data[aid].features['timetofirstleftclic'])
-                    self.aoi_data[aid].features['timetofirstrightclic'] = deepcopy(self.firstseg.aoi_data[aid].features['timetofirstrightclic'])
-                    self.aoi_data[aid].features['timetofirstdoubleclic'] = deepcopy(self.firstseg.aoi_data[aid].features['timetofirstdoubleclic'])
-            else:
-                self.aoi_data[aid].features['timetofirstfixation'] = float('inf')
-                self.aoi_data[aid].features['timetofirstleftclic'] = float('inf')
-                self.aoi_data[aid].features['timetofirstrightclic'] = float('inf')
-                self.aoi_data[aid].features['timetofirstdoubleclic'] = float('inf')
-        """
-        if len(self.aoi_data) > 0:
-            self.has_aois = True
-
-
-    def merge_fixation_features(self, segments):
-        """ Merge fixation features such as
-                meanfixationduration:     mean duration of fixations
-                stddevfixationduration    standard deviation of duration of fixations
-                sumfixationduration:      sum of durations of fixations
-                fixationrate:             rate of fixation datapoints relative to all datapoints
-            Args:
-                segments: The list of Segments for this Scene with pre-calculated features
-        """
-        self.numfixations = sumfeat(segments, 'numfixations')
-        self.features['numfixations'] = self.numfixations
         self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
 
         if self.numfixations > 0:
@@ -480,21 +378,6 @@ class Scene(Segment):
             self.features['sumfixationduration'] = -1
             self.features['fixationrate'] = -1
 
-
-    def merge_path_angle_features(self, segments):
-        """ Merge path and angle features such as
-                meanpathdistance:         mean of path distances
-                sumpathdistance:          sum of path distances
-                eyemovementvelocity:      average eye movement velocity
-                sumabspathangles:         sum of absolute path angles
-                abspathanglesrate:        ratio of absolute path angles relative to all datapoints
-                stddevabspathangles:      standard deviation of absolute path angles
-                sumrelpathangles:         sum of relative path angles
-                relpathanglesrate:        ratio of relative path angles relative to all datapoints
-                stddevrelpathangles:      standard deviation of relative path angles
-            Args:
-                segments: The list of Segments for this Scene with pre-calculated features
-        """
         self.numfixdistances = sumfeat(segments, "numfixdistances")
         self.numabsangles = sumfeat(segments, "numabsangles")
         self.numrelangles = sumfeat(segments, "numrelangles")
@@ -526,67 +409,9 @@ class Scene(Segment):
             self.features['meanrelpathangles']= -1
             self.features['stddevrelpathangles'] = -1
 
+        """ calculate pupil dilation features (no rest pupil size adjustments yet)"""
 
-    def merge_blink_features(self, segments):
-        """ Merge blink features asuch as
-                blink_num:                 number of blinks
-                blink_duration_total:       sum of the blink durations
-                blink_duration_mean:        mean of the blink durations
-                blink_duration_std:         standard deviation of blink durations
-                blink_duration_max:         maximal blink duration
-                blink_duration_min:         minimal blink duration
-                blink_rate:                 rate of blinks
-                blink_time_distance_mean:   mean time difference between consequtive blinks
-                blink_time_distance_std:    std time difference between consequtive blinks
-                blink_time_distance_min:    minimal time difference between consequtive blinks
-                blink_time_distance_max:    maximal time difference between consequtive blinks
-            Args:
-                segments: The list of Segments for this Scene with pre-calculated features
-        """
-        self.features['blinknum'] = sumfeat(segments, "features['blinknum']")
-        if self.features['blinknum'] > 0:
-            self.features['blinkdurationtotal']     = sumfeat(segments, "features['blinkdurationtotal']")
-            self.features['blinkdurationmean']      = weightedmeanfeat(segments, "features['blinknum']", "features['blinkdurationmean']")
-            self.features['blinkdurationstd']       = aggregatestddevfeat(segments, "features['blinknum']", "features['blinkdurationstd']",
-                                                      "features['blinkdurationmean']", self.features['blinkdurationmean'])
-            self.features['blinkdurationmin']       = minfeat(segments, "features['blinkdurationmin']", -1)
-            self.features['blinkdurationmax']       = maxfeat(segments, "features['blinkdurationmax']")
-            self.features['blinkrate']              = float(self.features['blinknum']) / (self.length - self.length_invalid)
-            self.features['blinktimedistancemean']  = weightedmeanfeat(segments,
-                                                      "features['blinknum']", "features['blinktimedistancemean']")
-            self.features['blinktimedistancestd']   = aggregatestddevfeat(segments, "features['blinknum']",
-                                                      "features['blinktimedistancestd']", "features['blinktimedistancemean']",
-                                                      self.features['blinktimedistancemean'])
-            self.features['blinktimedistancemin']   = minfeat(segments, "features['blinktimedistancemin']", -1)
-            self.features['blinktimedistancemax']   = maxfeat(segments, "features['blinktimedistancemax']")
-        else:
-            self.features['blinkdurationtotal']     = -1
-            self.features['blinkdurationmean']      = -1
-            self.features['blinkdurationstd']       = -1
-            self.features['blinkdurationmin']       = -1
-            self.features['blinkdurationmax']       = -1
-            self.features['blinkrate']              = -1
-            self.features['blinktimedistancemean']  = -1
-            self.features['blinktimedistancestd']   = -1
-            self.features['blinktimedistancemin']   = -1
-            self.features['blinktimedistancemax']   = -1
-
-
-    def merge_pupil_features(self, export_pupilinfo, segments):
-        """ Merge pupil features asuch as
-                mean_pupil_size:            mean of pupil sizes
-                stddev_pupil_size:          standard deviation of pupil sizes
-                min_pupil_size:             smallest pupil size
-                max_pupil_size:             largest pupil size
-                mean_pupil_velocity:        mean of pupil velocities
-                stddev_pupil_velocity:      standard deviation of pupil velocities
-                min_pupil_velocity:         smallest pupil velocity
-                max_pupil_velocity:         largest pupil velocity
-            Args:
-                segments: The list of Segments for this Scene with pre-calculated features
-                export_pupilinfo: True to export raw pupil data in EMDAT output (False by default).
-        """
-        self.numpupilsizes    = sumfeat(segments,'numpupilsizes')
+        self.numpupilsizes = sumfeat(segments,'numpupilsizes')
         self.numpupilvelocity = sumfeat(segments,'numpupilvelocity')
 
         if self.numpupilsizes > 0: # check if scene has any pupil data
@@ -617,20 +442,8 @@ class Scene(Segment):
             self.features['stddevpupilvelocity'] = -1
             self.features['maxpupilvelocity'] = -1
             self.features['minpupilvelocity'] = -1
+        """end """
 
-
-    def merge_distance_data(self, segments):
-        """ Merge distance features such as
-                mean_distance:            mean of distances from the screen
-                stddev_distance:          standard deviation of distances from the screen
-                min_distance:             smallest distance from the screen
-                max_distance:             largest distance from the screen
-                start_distance:           distance from the screen in the beginning of this scene
-                end_distance:             distance from the screen in the end of this scene
-
-            Args:
-                segments: The list of Segments for this Scene with pre-calculated features
-        """
         self.numdistancedata = sumfeat(segments,'numdistancedata') #Distance
         if self.numdistancedata > 0: # check if scene has any pupil data
             self.features['meandistance'] = weightedmeanfeat(segments, 'numdistancedata', "features['meandistance']")
@@ -646,28 +459,9 @@ class Scene(Segment):
             self.features['mindistance'] = -1
             self.features['startdistance'] = -1
             self.features['enddistance'] = -1
+        """end """
 
-
-    def merge_saccade_data(self, saccade_data, segments):
-        """ Merge saccade features such as
-                numsaccades:              number of saccades in the segment
-                sumsaccadedistance:       sum of distances during each saccade
-                meansaccadedistance:      mean of distances during each saccade
-                stddevsaccadedistance:    standard deviation of distances during each saccade
-                longestsaccadedistance:   distance of longest saccade
-                sumsaccadeduration:       total time spent on saccades in this segment
-                meansaccadeduration:      average saccade duration
-                stddevsaccadeduration:    standard deviation of saccade durations
-                longestsaccadeduration:   longest duration of saccades in this segment
-                meansaccadespeed:         average speed of saccades in this segment
-                stddevsaccadespeed:       standard deviation of speed of saccades in this segment
-                maxsaccadespeed:          highest saccade speed in this segment
-                minsaccadespeed:          lowest saccade speed in this  segment
-                fixationsaccadetimeratio: fixation to saccade time ratio for this segment
-            Args:
-                saccade_data: The list of saccade datapoints for this Scene
-                segments: The list of Segments for this Scene with pre-calculated features
-        """
+        """ calculate saccades features if available """
         if saccade_data != None:
             self.features['numsaccades'] = sumfeat(segments,'numsaccades')
             self.features['sumsaccadedistance'] = sumfeat(segments, "features['sumsaccadedistance']")
@@ -698,27 +492,8 @@ class Scene(Segment):
             self.features['maxsaccadespeed'] = -1
             self.features['minsaccadespeed'] = -1
             self.features['fixationsaccadetimeratio'] = -1
+        """ end saccade """
 
-
-    def merge_event_data(self, event_data, segments):
-        """ Merge event features such as
-                numevents:                number of events in the segment
-                numleftclic:              number of left clinks in the segment
-                numrightclic:             number of right clinks in the segment
-                numdoubleclic:            number of double clinks in the segment
-                numkeypressed:            number of times a key was pressed in the segment
-                leftclicrate:             the rate of left clicks (relative to all datapoints) in this segment
-                rightclicrate:            the rate of right clicks (relative to all datapoints) in this segment
-                doubleclicrate:           the rate of double clicks (relative to all datapoints) in this segment
-                keypressedrate:           the rate of key presses (relative to all datapoints) in this segment
-                timetofirstleftclic:      time until the first left click in this segment
-                timetofirstrightclic:     time until the first right click in this segment
-                timetofirstdoubleclic:    time until the first double click in this segment
-                timetofirstkeypressed:    time until the first key pressed in this segment
-            Args:
-                event_data: The list of events for this Scene
-                segments: The list of Segments for this Scene with pre-calculated features
-        """
         if event_data != None:
             self.features['numevents'] = sumfeat(segments,'numevents')
             self.features['numleftclic'] = sumfeat(segments,"features['numleftclic']")
@@ -747,6 +522,89 @@ class Scene(Segment):
             self.features['timetofirstrightclic'] = -1
             self.features['timetofirstdoubleclic'] = -1
             self.features['timetofirstkeypressed'] = -1
+        """end """
+
+        self.has_aois = False
+        if aoilist:
+            self.set_aois(segments, aoilist)
+
+        self.features['aoisequence'] = self.merge_aoisequences(segments)
+
+    def getid(self):
+        """Returns the scid for this Scene
+
+        Returns: a string conataining the scid for this Scene
+        """
+        return self.scid
+
+    def set_aois(self, segments, aois):
+        """Sets the "AOI"s relevant to this Scene
+
+        Args:
+            segments: a list of "Segment"s which belong to this Scene.
+
+            aois: a list of "AOI"s relevant to this Scene
+        """
+        if len(aois) == 0 and params.VERBOSE != "QUIET":
+            print "No AOI in segment ", self.segid
+
+        self.aoi_data={}
+        for seg in segments:
+            for aid in seg.aoi_data.keys():
+                    if aid in self.aoi_data:
+                        if seg.aoi_data[aid].isActive:
+                            self.aoi_data[aid] = merge_aoistats(self.aoi_data[aid],seg.aoi_data[aid], self.features['length'], self.numfixations, self.start)
+                    else:
+                        self.aoi_data[aid] = deepcopy(seg.aoi_data[aid])
+                        if seg.aoi_data[aid].isActive:
+                            self.aoi_data[aid].features['timetofirstfixation'] += self.aoi_data[aid].starttime - self.start
+                            self.aoi_data[aid].features['timetolastfixation'] += self.aoi_data[aid].starttime - self.start
+
+                            if self.firstseg.aoi_data[aid].features['timetofirstleftclic'] != -1:
+                                self.aoi_data[aid].features['timetofirstleftclic'] += self.aoi_data[aid].starttime - self.start
+                            if self.firstseg.aoi_data[aid].features['timetofirstrightclic'] != -1:
+                                self.aoi_data[aid].features['timetofirstrightclic'] += self.aoi_data[aid].starttime - self.start
+                            if self.firstseg.aoi_data[aid].features['timetofirstdoubleclic'] != -1:
+                                self.aoi_data[aid].features['timetofirstdoubleclic'] += self.aoi_data[aid].starttime - self.start
+
+                            if self.firstseg.aoi_data[aid].features['timetolastleftclic'] != -1:
+                                self.aoi_data[aid].features['timetolastleftclic'] += self.aoi_data[aid].starttime - self.start
+                            if self.firstseg.aoi_data[aid].features['timetolastrightclic'] != -1:
+                                self.aoi_data[aid].features['timetolastrightclic'] += self.aoi_data[aid].starttime - self.start
+                            if self.firstseg.aoi_data[aid].features['timetolastdoubleclic'] != -1:
+                                self.aoi_data[aid].features['timetolastdoubleclic'] += self.aoi_data[aid].starttime - self.start
+
+
+        #Merge stdev
+        #For each seg, compute: T = [(numfix-1) * Variance + numfix * power( meanfixduration_in_seg - meanfixduration_in_scene, 2)]
+        #At the Scene level: [ SQRT( SUM(T_seg1...Tsegn) / (numfix-1) ]
+        for aid in self.aoi_data.keys():
+            temp = 0
+            numdata = 0
+            for seg in segments:
+                    temp += (seg.aoi_data[aid].features['numfixations']-1) * seg.aoi_data[aid].variance + seg.aoi_data[aid].features['numfixations'] * math.pow(seg.aoi_data[aid].features['meanfixationduration'] - self.aoi_data[aid].features['meanfixationduration'], 2)
+                    numdata += seg.aoi_data[aid].features['numfixations']
+            self.aoi_data[aid].features['stddevfixationduration'] = math.sqrt(temp / (numdata-1) ) if numdata > 1 else 0
+
+        """
+        firstsegaois = self.firstseg.aoi_data.keys()
+        for aid in self.aoi_data.keys():
+            if aid in firstsegaois:
+                self.aoi_data[aid].features['timetofirstfixation'] = deepcopy(self.firstseg.aoi_data[aid].features['timetofirstfixation'])
+                if self.firstseg.aoi_data[aid].features['timetofirstleftclic'] != -1:
+                    self.aoi_data[aid].features['timetofirstleftclic'] = deepcopy(self.firstseg.aoi_data[aid].features['timetofirstleftclic'])
+                    self.aoi_data[aid].features['timetofirstrightclic'] = deepcopy(self.firstseg.aoi_data[aid].features['timetofirstrightclic'])
+                    self.aoi_data[aid].features['timetofirstdoubleclic'] = deepcopy(self.firstseg.aoi_data[aid].features['timetofirstdoubleclic'])
+            else:
+                self.aoi_data[aid].features['timetofirstfixation'] = float('inf')
+                self.aoi_data[aid].features['timetofirstleftclic'] = float('inf')
+                self.aoi_data[aid].features['timetofirstrightclic'] = float('inf')
+                self.aoi_data[aid].features['timetofirstdoubleclic'] = float('inf')
+        """
+
+        if len(self.aoi_data) > 0:
+            self.has_aois = True
+
 
     def merge_aoisequences(self, segments):
         """returns the AOI sequence merged from the AOI sequences in the "Segment"s
@@ -792,65 +650,14 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
             the updated AOI_Sata object
         """
         maois = main_AOI_Stat
-        merge_aoi_fixations(maois, new_AOI_Stat, total_time, total_numfixations, sc_start)
-        #calculating the transitions to and from this AOI and other active AOIs at the moment
-        new_AOI_Stat_transition_aois = filter(lambda x: x.startswith('numtransfrom_'), new_AOI_Stat.features.keys())
-        if params.DEBUG or params.VERBOSE == "VERBOSE":
-            print("Segment's transition_aois", new_AOI_Stat_transition_aois)
-
-        merge_aoi_events(maois, new_AOI_Stat, total_time, sc_start)
-
-        maois.total_trans_from += new_AOI_Stat.total_trans_from   #updating the total number of transition from this AOI
-        for feat in new_AOI_Stat_transition_aois:
-            if feat in maois.features:
-                maois.features[feat] += new_AOI_Stat.features[feat]
-            else:
-                maois.features[feat] = new_AOI_Stat.features[feat]
-#               sumtransfrom += maois.features[feat]
-
-        merge_aoi_distance(maois, new_AOI_Stat)
-        merge_aoi_pupil(maois, new_AOI_Stat)
-        # updating the proportion tansition features based on new transitions to and from this AOI
-        maois_transition_aois = filter(lambda x: x.startswith('numtransfrom_'),maois.features.keys()) #all the transition features for this AOI should be aupdated even if they are not active for this segment
-        for feat in maois_transition_aois:
-            aid = feat[len('numtransfrom_'):]
-            if maois.total_trans_from > 0:
-                maois.features['proptransfrom_%s'%(aid)] = float(maois.features[feat]) / maois.total_trans_from
-            else:
-                maois.features['proptransfrom_%s'%(aid)] = 0
-        ###endof transition calculation
-        return maois
-
-
-def merge_aoi_fixations(maois, new_AOI_Stat, total_time, total_numfixations, sc_start):
-    """ Merge fixation features such as
-            meanfixationduration:     mean duration of fixations
-            stddevfixationduration    standard deviation of duration of fixations
-            sumfixationduration:      sum of durations of fixations
-            fixationrate:             rate of fixation datapoints relative to all datapoints
-        Args:
-            main_AOI_Stat: AOI_Stat object of this Scene (must have been initialised)
-
-            new_AOI_Stat: a new AOI_Stat object
-
-            total_time: duration of the scene
-
-            total_numfixations: number of fixations in the scene
-
-            sc_start: start time (timestamp) of the scene
-    """
-    if new_AOI_Stat.features['numfixations'] > 0:
-        aoi_list = [maois, new_AOI_Stat]
-        numfixations = sumfeat(aoi_list, "features['numfixations']")
-        maois.features['longestfixation'] = maxfeat(aoi_list, "features['longestfixation']")
+        maois.features['numfixations'] += new_AOI_Stat.features['numfixations']
+        maois.features['longestfixation'] = max(maois.features['longestfixation'],new_AOI_Stat.features['longestfixation'])
         maois.features['totaltimespent'] += new_AOI_Stat.features['totaltimespent']
-        aggregate_meanfixationduration = maois.features['totaltimespent'] / numfixations
-        maois.features['stddevfixationduration'] = aggregatestddevfeat(aoi_list, "features['numfixations']", "features['stddevfixationduration']", "features['meanfixationduration']", aggregate_meanfixationduration)
-        maois.features['numfixations'] +=  new_AOI_Stat.features['numfixations']
-        maois.features['meanfixationduration'] = aggregate_meanfixationduration
+
+        maois.features['meanfixationduration'] = maois.features['totaltimespent'] / maois.features['numfixations'] if maois.features['numfixations'] != 0 else -1
+
         maois.features['proportiontime'] = float(maois.features['totaltimespent'])/total_time
         maois.features['proportionnum'] = float(maois.features['numfixations'])/total_numfixations
-
         if maois.features['totaltimespent'] > 0:
             maois.features['fixationrate'] = float(maois.features['numfixations']) / maois.features['totaltimespent']
         else:
@@ -861,116 +668,54 @@ def merge_aoi_fixations(maois, new_AOI_Stat, total_time, total_numfixations, sc_
         if new_AOI_Stat.features['timetolastfixation'] != -1:
             maois.features['timetolastfixation'] = max(maois.features['timetolastfixation'], deepcopy(new_AOI_Stat.features['timetolastfixation']) + new_AOI_Stat.starttime - sc_start)
 
+        #merge events
+        if new_AOI_Stat.features['numevents']>0:
+            maois.features['numevents'] += new_AOI_Stat.features['numevents']
+            maois.features['numleftclic'] += new_AOI_Stat.features['numleftclic']
+            maois.features['numrightclic'] += new_AOI_Stat.features['numrightclic']
+            maois.features['numdoubleclic'] += new_AOI_Stat.features['numdoubleclic']
+            maois.features['leftclicrate'] = float(maois.features['numleftclic'])/total_time
+            maois.features['rightclicrate'] = float(maois.features['numrightclic'])/total_time
+            maois.features['doubleclicrate'] = float(maois.features['numdoubleclic'])/total_time
 
-def merge_aoi_distance(maois, new_AOI_Stat):
-    """ Merge distance features such as
-            mean_distance:            mean of distances from the screen
-            stddev_distance:          standard deviation of distances from the screen
-            min_distance:             smallest distance from the screen
-            max_distance:             largest distance from the screen
-            start_distance:           distance from the screen in the beginning of this scene
-            end_distance:             distance from the screen in the end of this scene
+            if new_AOI_Stat.features['timetofirstleftclic'] != -1:
+                maois.features['timetofirstleftclic'] = min(maois.features['timetofirstleftclic'], deepcopy(new_AOI_Stat.features['timetofirstleftclic']) + new_AOI_Stat.starttime - sc_start)
+            if new_AOI_Stat.features['timetofirstrightclic'] != -1:
+                maois.features['timetofirstrightclic'] = min(maois.features['timetofirstrightclic'], deepcopy(new_AOI_Stat.features['timetofirstrightclic']) + new_AOI_Stat.starttime - sc_start)
+            if new_AOI_Stat.features['timetofirstdoubleclic'] != -1:
+                maois.features['timetofirstdoubleclic'] = min(maois.features['timetofirstdoubleclic'], deepcopy(new_AOI_Stat.features['timetofirstdoubleclic']) + new_AOI_Stat.starttime - sc_start)
 
-        Args:
-            maois: AOI_Stat object of this Scene (must have been initialised)
-            new_AOI_Stat: a new AOI_Stat object
-    """
-    aoi_list = [maois, new_AOI_Stat]
-    if new_AOI_Stat.numdistancedata > 0:
-        total_distances = sumfeat(aoi_list, 'numdistancedata')
-        aggregate_mean_distance = weightedmeanfeat(aoi_list, 'numdistancedata', "features['meandistance']")
-        maois.features['stddevdistance'] = aggregatestddevfeat(aoi_list, 'numdistancedata', "features['stddevdistance']",
-                                                                    "features['meandistance']", aggregate_mean_distance)
-        maois.features['maxdistance'] = maxfeat(aoi_list, "features['maxdistance']")
-        maois.features['mindistance'] = minfeat(aoi_list, "features['mindistance']")
-        maois.features['meandistance'] = aggregate_mean_distance
-        if maois.starttime > new_AOI_Stat.starttime:
-            maois.features['startdistance'] = new_AOI_Stat.features['startdistance']
-        if maois.endtime < new_AOI_Stat.endtime:
-            maois.features['enddistance'] = new_AOI_Stat.features['enddistance']
-        maois.numdistancedata += new_AOI_Stat.numdistancedata
+            if new_AOI_Stat.features['timetolastleftclic'] != -1:
+                maois.features['timetolastleftclic'] = max(maois.features['timetolastleftclic'], deepcopy(new_AOI_Stat.features['timetolastleftclic']) + new_AOI_Stat.starttime - sc_start)
+            if new_AOI_Stat.features['timetolastrightclic'] != -1:
+                maois.features['timetolastrightclic'] = max(maois.features['timetolastrightclic'], deepcopy(new_AOI_Stat.features['timetolastrightclic']) + new_AOI_Stat.starttime - sc_start)
+            if new_AOI_Stat.features['timetolastdoubleclic'] != -1:
+                maois.features['timetolastdoubleclic'] = max(maois.features['timetolastdoubleclic'], deepcopy(new_AOI_Stat.features['timetolastdoubleclic']) + new_AOI_Stat.starttime - sc_start)
 
-def merge_aoi_pupil(maois, new_AOI_Stat):
-    """ Merge pupil features asuch as
-            mean_pupil_size:            mean of pupil sizes
-            stddev_pupil_size:          standard deviation of pupil sizes
-            min_pupil_size:             smallest pupil size
-            max_pupil_size:             largest pupil size
-            mean_pupil_velocity:        mean of pupil velocities
-            stddev_pupil_velocity:      standard deviation of pupil velocities
-            min_pupil_velocity:         smallest pupil velocity
-            max_pupil_velocity:         largest pupil velocity
-        Args:
-            maois: AOI_Stat object of this Scene (must have been initialised)
-            new_AOI_Stat: a new AOI_Stat object
-    """
-    aoi_list = [maois, new_AOI_Stat]
-    if (new_AOI_Stat.numpupilsizes > 0):
-        aggregate_mean_pupil = weightedmeanfeat(aoi_list, 'numpupilsizes', "features['meanpupilsize']")
-        maois.features['stddevpupilsize'] = aggregatestddevfeat(aoi_list, 'numpupilsizes', "features['stddevpupilsize']",
-                                                                        "features['meanpupilsize']", aggregate_mean_pupil)
-        maois.features['maxpupilsize'] = maxfeat(aoi_list, "features['maxpupilsize']")
-        maois.features['minpupilsize'] = minfeat(aoi_list, "features['minpupilsize']")
-        maois.features['meanpupilsize'] = aggregate_mean_pupil
-        if maois.starttime > new_AOI_Stat.starttime:
-            maois.features['startpupilsize'] = new_AOI_Stat.features['startpupilsize']
-        if maois.endtime < new_AOI_Stat.endtime:
-            maois.features['endpupilsize'] = new_AOI_Stat.features['endpupilsize']
-        maois.numpupilsizes += new_AOI_Stat.numpupilsizes
+        #calculating the transitions to and from this AOI and other active AOIs at the moment
+        new_AOI_Stat_transition_aois = filter(lambda x: x.startswith('numtransfrom_'), new_AOI_Stat.features.keys())
+        if params.DEBUG or params.VERBOSE == "VERBOSE":
+            print "Segment's transition_aois", new_AOI_Stat_transition_aois
 
-    if (new_AOI_Stat.numpupilvelocity > 0):
-        aggregate_mean_velocity =  weightedmeanfeat(aoi_list, 'numpupilvelocity', "features['meanpupilvelocity']")
-        maois.features['stddevpupilvelocity'] = aggregatestddevfeat(aoi_list, 'numpupilvelocity', "features['stddevpupilvelocity']",
-                                                                        "features['meanpupilvelocity']", aggregate_mean_velocity)
-        maois.features['maxpupilvelocity'] = maxfeat(aoi_list, "features['maxpupilvelocity']")
-        maois.features['minpupilvelocity'] = minfeat(aoi_list, "features['minpupilvelocity']")
-        maois.features['meanpupilvelocity'] = aggregate_mean_velocity
-        maois.numpupilvelocity += new_AOI_Stat.numpupilvelocity
+        maois.total_trans_from += new_AOI_Stat.total_trans_from   #updating the total number of transition from this AOI
+        for feat in new_AOI_Stat_transition_aois:
+            if feat in maois.features:
+                maois.features[feat] += new_AOI_Stat.features[feat]
+            else:
+                maois.features[feat] = new_AOI_Stat.features[feat]
+#               sumtransfrom += maois.features[feat]
 
-def merge_aoi_events(maois, new_AOI_Stat, total_time, sc_start):
-    """ Merge event features such as
-            numevents:                number of events in the segment
-            numleftclic:              number of left clinks in the segment
-            numrightclic:             number of right clinks in the segment
-            numdoubleclic:            number of double clinks in the segment
-            numkeypressed:            number of times a key was pressed in the segment
-            leftclicrate:             the rate of left clicks (relative to all datapoints) in this segment
-            rightclicrate:            the rate of right clicks (relative to all datapoints) in this segment
-            doubleclicrate:           the rate of double clicks (relative to all datapoints) in this segment
-            keypressedrate:           the rate of key presses (relative to all datapoints) in this segment
-            timetofirstleftclic:      time until the first left click in this segment
-            timetofirstrightclic:     time until the first right click in this segment
-            timetofirstdoubleclic:    time until the first double click in this segment
-            timetofirstkeypressed:    time until the first key pressed in this segment
-        Args:
-            maois: AOI_Stat object of this Scene (must have been initialised)
-            new_AOI_Stat: a new AOI_Stat object
-            total_time: duration of the scene
-            sc_start: start time (timestamp) of the scene
-    """
-    if new_AOI_Stat.features['numevents']>0:
-        maois.features['numevents'] += new_AOI_Stat.features['numevents']
-        maois.features['numleftclic'] += new_AOI_Stat.features['numleftclic']
-        maois.features['numrightclic'] += new_AOI_Stat.features['numrightclic']
-        maois.features['numdoubleclic'] += new_AOI_Stat.features['numdoubleclic']
-        maois.features['leftclicrate'] = float(maois.features['numleftclic'])/total_time
-        maois.features['rightclicrate'] = float(maois.features['numrightclic'])/total_time
-        maois.features['doubleclicrate'] = float(maois.features['numdoubleclic'])/total_time
 
-        if new_AOI_Stat.features['timetofirstleftclic'] != -1:
-            maois.features['timetofirstleftclic'] = min(maois.features['timetofirstleftclic'], deepcopy(new_AOI_Stat.features['timetofirstleftclic']) + new_AOI_Stat.starttime - sc_start)
-        if new_AOI_Stat.features['timetofirstrightclic'] != -1:
-            maois.features['timetofirstrightclic'] = min(maois.features['timetofirstrightclic'], deepcopy(new_AOI_Stat.features['timetofirstrightclic']) + new_AOI_Stat.starttime - sc_start)
-        if new_AOI_Stat.features['timetofirstdoubleclic'] != -1:
-            maois.features['timetofirstdoubleclic'] = min(maois.features['timetofirstdoubleclic'], deepcopy(new_AOI_Stat.features['timetofirstdoubleclic']) + new_AOI_Stat.starttime - sc_start)
-
-        if new_AOI_Stat.features['timetolastleftclic'] != -1:
-            maois.features['timetolastleftclic'] = max(maois.features['timetolastleftclic'], deepcopy(new_AOI_Stat.features['timetolastleftclic']) + new_AOI_Stat.starttime - sc_start)
-        if new_AOI_Stat.features['timetolastrightclic'] != -1:
-            maois.features['timetolastrightclic'] = max(maois.features['timetolastrightclic'], deepcopy(new_AOI_Stat.features['timetolastrightclic']) + new_AOI_Stat.starttime - sc_start)
-        if new_AOI_Stat.features['timetolastdoubleclic'] != -1:
-            maois.features['timetolastdoubleclic'] = max(maois.features['timetolastdoubleclic'], deepcopy(new_AOI_Stat.features['timetolastdoubleclic']) + new_AOI_Stat.starttime - sc_start)
-
+        # updating the proportion tansition features based on new transitions to and from this AOI
+        maois_transition_aois = filter(lambda x: x.startswith('numtransfrom_'),maois.features.keys()) #all the transition features for this AOI should be aupdated even if they are not active for this segment
+        for feat in maois_transition_aois:
+            aid = feat[len('numtransfrom_'):]
+            if maois.total_trans_from > 0:
+                maois.features['proptransfrom_%s'%(aid)] = float(maois.features[feat]) / maois.total_trans_from
+            else:
+                maois.features['proptransfrom_%s'%(aid)] = 0
+        ###endof trnsition calculation
+        return maois
 
 def weightedmeanfeat(obj_list, totalfeat,ratefeat):
     """a helper method that calculates the weighted average of a target feature over a list of Segments

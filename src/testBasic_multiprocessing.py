@@ -15,26 +15,21 @@ from EMDAT_core.ValidityProcessing import output_Validity_info_Segments, output_
 
 if __name__ == '__main__':
     freeze_support() #for windows
-    ul =        [61, 62]    # list of user recordings (files extracted for one participant from Tobii studio)
-    uids =      [61, 62]    # User ID that is used in the external logs (can be different from above but there should be a 1-1 mapping)
+    ul =        [97]    # list of user recordings (files extracted for one participant from Tobii studio)
+    uids =      ul    # User ID that is used in the external logs (can be different from above but there should be a 1-1 mapping)
 
-    alogoffset = [0, 0]    # the time sifference between the eye tracker logs and the external log
+    alogoffset = ul    # the time sifference between the eye tracker logs and the external log
 
-    ####### Testing error handling
-    #ul =        [61, 62, 63]    # list of user recordings (files extracted for one participant from Tobii studio)
-    #uids =      [61, 62, 63]    # User ID that is used in the external logs (can be different from above but there should be a 1-1 mapping)
-    #
-    #alogoffset =[ 3,  2, 2]    # the time sifference between the eye tracker logs and the external log
-
+    
     ###### Read participants
     nbprocess = cpu_count()
     ps = read_participants_Basic_multiprocessing(nbprocess, user_list = ul,pids = uids, log_time_offsets = alogoffset, datadir=params.EYELOGDATAFOLDER, 
                                prune_length = None, 
-                               aoifile = "./sampledata/general.aoi",
+    #                           aoifile = "./sampledata/general.aoi",
     #                           aoifile = "./sampledata/Dynamic_1.aoi",
-                               require_valid_segs = False, auto_partition_low_quality_segments = True,
-                               rpsfile = "./sampledata/all_rest_pupil_sizes.tsv")
-    print
+                               require_valid_segs = False, auto_partition_low_quality_segments = False)
+#                               rpsfile = "./sampledata/all_rest_pupil_sizes.tsv")
+    
     ######
 
     if params.DEBUG or params.VERBOSE == "VERBOSE":
@@ -45,14 +40,17 @@ if __name__ == '__main__':
         output_Validity_info_Participants(ps, include_restored_samples =True, auto_partition_low_quality_segments_flag = False)
 
 
-    ##### WRITE features to file
-    print
-    aoi_feat_names = (map(lambda x:x, params.aoigeneralfeat))
-    print "Exporting features:\n--General:", params.featurelist, "\n--AOI:", aoi_feat_names, "\n--Sequences:", params.aoisequencefeat
-    write_features_tsv(ps, './outputfolder/sample_features_multiprocessing.tsv',featurelist = params.featurelist, aoifeaturelist=aoi_feat_names, id_prefix = False)
-
+    
+     
+    # WRITE features to file
+    if params.VERBOSE != "QUIET":
+        print
+        print "Exporting:\n--General:", params.featurelist
+    write_features_tsv(ps, './outputfolder/tobiiv3_nov15.tsv', featurelist=params.featurelist, id_prefix=False)
+    
     ##### WRITE AOI sequences to file
-    write_features_tsv(ps, './outputfolder/sample_sequences_multiprocessing.tsv',featurelist = params.aoisequencefeat, aoifeaturelist=aoi_feat_names, id_prefix = False)
+    aoi_feat_names = (map(lambda x:x, params.aoigeneralfeat))
+    write_features_tsv(ps, './outputfolder/sequences_multiprocessing_nov15.tsv',featurelist = params.aoisequencefeat, aoifeaturelist=aoi_feat_names, id_prefix = False)
 
     #### Export pupil dilations for each scene to a separate file
     #print "--pupil dilation trends" 
