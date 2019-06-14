@@ -1,52 +1,34 @@
 
-# Format Seg files into EMDAT style
-#
-# Author: Dereck Toker
-# Last Update: October 26, 2017
+# Takes static ref viz aoi files and makes them dynamic, with time invervals
+# taken from trigger (intervention) seg files. Generated files can only be used 
+# by the subtractive and dynamic boundaries EMDAT version. 
 
 library(data.table)
 
+setwd("/Users/kristys/Documents/MSNV_Adapt_Gaze_Analysis_2019/Eye_Tracking_Processing")
+users <- fread("study2_user_list.csv")
+msnv_ids <- as.character(c(27, 60, 11, 30, 62, 72, 28, 74, 5, 20, 76, 66, 9, 3))
 
-# export: check, comma, quote, CR+LF
-#mmd_order <- fread("User_data.csv")
-#mmd_order <- subset(mmd_order, sel = -c(date_created))
-
-#Master user_list
-users <- data.frame(user_id = c("1","9","12","16","18","19","21","25","26","30","31","32","35","36",
-                                "38","40","42","45","52","55","58","59","60","61","62","63","64","65",
-                                "66","67","68","69","70","71","72","73","74","75","76","77","78","79","80",
-                                "81","46","50","82","84","85","88","89","90","91","92","93","95","97")) ########
-
-
-length <- nrow(users)
-
-
-for (i in 1:length) {
+for (user in users$user_id) {
+  setwd("/Users/kristys/Documents/MSNV_Adapt_Gaze_Analysis_2019/Eye_Tracking_Processing")
+  #segs <- fread(paste0("segs/", user, ".seg"), sep="\t") 
+  segs <- fread(paste0("segs_control/", user, ".seg"), sep="\t") 
   
-  a_user <- as.character(users[i,1])
+  setwd("../../EMDAT-subtractive")
+  fileConn <- file(paste0('ref_viz_dynamic_aois_per_user/dynamic_' , user, ".aoi"))
   
-  #get the seg data
-  setwd("c:/Users/admin/Desktop/Tobii Export/Segs")
-  seg_export <- fread(paste(a_user, ".csv", sep=""), sep=",")
-  
-  fileConn<-file(paste("dynamic_",a_user, ".aoi", sep=""))
-  segs <- c()
-  
-  for (j in 1:nrow(seg_export)) {
-  
-    a_row <- seg_export[j]
-    
-    setwd("c:/Users/admin/Desktop/Tobii Export/aois_refsentences")
-    an_mmd <- a_row[,mmd_id]
-    aois <- fread(paste0("formatted", an_mmd, ".aoi"), sep="\n", header=FALSE)
-    
-    for (k in 1 :nrow(aois)) {
-      segs <- c(segs, aois[k,])
-      segs <- c(segs, paste("#\t",a_row[,start],",",a_row[,end],"\t", sep=""))
+  dyn_aois <- c()
+  for (msnv in msnv_ids) {
+    ref_viz <- fread(paste0('ref_viz/ref_viz_', msnv,".aoi"), sep="\n", header = FALSE)
+    for (i in 1:nrow(ref_viz)) {
+      seg_start <- segs[V1==msnv]$V3
+      seg_end <- segs[V1==msnv]$V4
+      aoi <- paste0(ref_viz[i], '\n#\t', seg_start, ',', seg_end)
+      dyn_aois <- c(dyn_aois, aoi)
     }
   }
   
-  writeLines(paste(segs, collapse="\n"), sep="", fileConn)
+  writeLines(paste(dyn_aois, collapse="\n"), sep="", fileConn)
   close(fileConn)
 }
 
