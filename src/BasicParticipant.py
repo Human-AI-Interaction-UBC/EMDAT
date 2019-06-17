@@ -186,12 +186,14 @@ def read_participants_Basic(datadir, user_list, pids, prune_length = None, aoifi
             sacfile = None
             segfile = datadir+'/P'+str(rec)+'.seg'
         elif params.EYETRACKERTYPE == "TobiiV3":
-            allfile = "{dir}/MMD Study 1_Rec {rec}.tsv".format(dir=datadir, rec=rec)
-            fixfile = "{dir}/MMD Study 1_Rec {rec}.tsv".format(dir=datadir, rec=rec)
-            sacfile = "{dir}/MMD Study 1_Rec {rec}.tsv".format(dir=datadir, rec=rec)
-            evefile = "{dir}/MMD Study 1_Rec {rec}.tsv".format(dir=datadir, rec=rec)
-            segfile = "{dir}/Segs/{rec}.seg".format(dir=datadir, rec=rec)
-            aoifile = "{dir}/aois_vizrefined/dynamic_{rec}.aoi".format(dir=datadir, rec=rec)
+            allfile = "{dir}/Tobii Export/AdaptiveMSNV_Bar_Study_New test_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            fixfile = "{dir}/Tobii Export/AdaptiveMSNV_Bar_Study_New test_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            sacfile = "{dir}/Tobii Export/AdaptiveMSNV_Bar_Study_New test_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            evefile = "{dir}/Tobii Export/AdaptiveMSNV_Bar_Study_New test_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            segfile = "{dir}/segs/{rec}.seg".format(dir=datadir, rec=rec)
+            aoifile = "{dir}/ref_viz_dynamic_aois_per_user/dynamic_{rec}.aoi".format(dir=datadir, rec=rec)
+            #aoifile = "{dir}/intervention_aois_per_user_msnv/dynamic_{rec}_3.aoi".format(dir=datadir, rec=rec)
+
         elif params.EYETRACKERTYPE == "SMI":
             allfile = "{dir}/SMI_Sample_{rec}_Samples.txt".format(dir=datadir, rec=rec)
             fixfile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)

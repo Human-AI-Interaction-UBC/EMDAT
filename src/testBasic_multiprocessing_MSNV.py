@@ -45,7 +45,7 @@ if __name__ == '__main__':
     if params.VERBOSE != "QUIET":
         print
         print "Exporting:\n--General:", params.featurelist
-    write_features_tsv(ps, './outputfolder/tobiiv3_BT_september10_full.tsv', featurelist=params.featurelist, id_prefix=False)
+    write_features_tsv(ps, './outputfolder/testing.tsv', featurelist=params.featurelist, id_prefix=False)
 
     #prop_valid_fix_per_segs(ps, './outputfolder/validity_function_Nov27_80.txt')
 

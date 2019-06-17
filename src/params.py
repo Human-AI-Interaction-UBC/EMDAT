@@ -11,7 +11,7 @@ Institution: The University of British Columbia.
 # ####################### Eye tracker type and path ##############################################################
 
 # the folder that has the files exported from eye trackers
-EYELOGDATAFOLDER = "C:/Users/admin/Desktop/BT_EyeTracking/Tobii Export"
+EYELOGDATAFOLDER = "../../EMDAT_input"
 
 # the folder that has the external log files
 EXTERNALLOGDATAFOLDER = "./"

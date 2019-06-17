@@ -20,14 +20,14 @@ for (mmd in mmd_list) {
   
   nr_bars <- fread(paste0('../MSNV_Adapt_Gaze_Analysis_2019/Eye_Tracking_Processing/non_relevant_aois_adjusted/', mmd, '_NR.aoi'), sep="\n", header = FALSE)
   nr_bars <- nr_bars[nrow(nr_bars)]
-  nr_bars_combined <- gsub('overall_list', 'Bar', nr_bars)
+  nr_bars_combined <- gsub('overall_list', 'Bars', nr_bars)
   nr_bars_combined <- strtrim(nr_bars_combined, nchar(nr_bars_combined)-1)
-  nr_bars_combined <- gsub(';', '\nBar', nr_bars_combined)
+  nr_bars_combined <- gsub(';', '\nBars', nr_bars_combined)
   rel_bars <- fread(paste0('../MSNV_Adapt_Gaze_Analysis_2019/Eye_Tracking_Processing/relevant_aois_adjusted/', mmd, '_Relevant.aoi'), sep="\n", header = FALSE)
   rel_bars <- rel_bars[nrow(rel_bars)]
-  rel_bars_combined <- gsub('overall_list', '\nBar', rel_bars)
+  rel_bars_combined <- gsub('overall_list', '\nBars', rel_bars)
   rel_bars_combined <- strtrim(rel_bars_combined, nchar(rel_bars_combined)-1)
-  rel_bars_combined <- gsub(';', '\nBar', rel_bars_combined)
+  rel_bars_combined <- gsub(';', '\nBars', rel_bars_combined)
   bars_combined <- paste0(nr_bars_combined, rel_bars_combined)
   
   Bars_subtractive <- paste0(nr_bars[1], rel_bars[1])
@@ -37,9 +37,9 @@ for (mmd in mmd_list) {
   #refs <- fread(paste0('../AOI_ATUAV_Experimenter_Platform/ref_aois_adaptive/', mmd, '.aoi'), sep="\n", header = FALSE)
   refs <- fread(paste0('../AOI_ATUAV_Experimenter_Platform/ref_aois_control/', mmd, '.aoi'), sep="\n", header = FALSE)
   refs <- refs[nrow(refs)]
-  refs_combined <- gsub(paste0('overall_', mmd), 'Ref', refs)
+  refs_combined <- gsub(paste0('overall_', mmd), 'Refs', refs)
   refs_combined <- paste0(strtrim(refs_combined, nchar(refs_combined)-1), '\n')
-  refs_combined <- gsub(';', '\nRef', refs_combined)
+  refs_combined <- gsub(';', '\nRefs', refs_combined)
   
   Refs_subtractive <- gsub(paste0('overall_', mmd), '', refs[1])
   Refs_subtractive <- strtrim(Refs_subtractive, nchar(Refs_subtractive)-1)
