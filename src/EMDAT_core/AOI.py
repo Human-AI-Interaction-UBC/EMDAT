@@ -192,7 +192,11 @@ class AOI_Stat():
             aid = aoi.aid
             self.features['numtransfrom_%s'%(aid)] = 0
             self.features['proptransfrom_%s'%(aid)] = 0
-
+        
+        if self.aoi.timeseq == [[(-1, -1)]]:
+            #print 'Setting numfixations for not triggered AOI to -1'
+            self.features['numfixations'] = -1
+        
         if not(self.isActive):
             return
 

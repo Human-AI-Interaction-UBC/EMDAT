@@ -99,20 +99,21 @@ aoisequencefeat = ['aoisequence']
 
 # AOI features to generate and export
 aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum',
-                  'proportiontime','longestfixation', 'meanfixationduration', 'stddevfixationduration', 'timetofirstfixation','timetolastfixation']
+                  'proportiontime','longestfixation', 'meanfixationduration', 'stddevfixationduration', 'timetofirstfixation','timetolastfixation',
+                  'numtransfrom', 'proptransfrom'
+                  ]
 #				  'numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'leftclicrate', 'rightclicrate', 'doubleclicrate',
 #                  'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic', 'timetolastleftclic', 'timetolastrightclic', 'timetolastdoubleclic']
 
-
+### all the rest for param aoifeaturelabels 
 #list of the AOI names
-aoinames = ['Non-Bars','Bars','Legend','Labels']
+aoinames = ['Non-Bars','Bars','Legend','Labels']  
 
 #list of transition-based AOI features (count)
 aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames)
 
 #list of transition-based AOI features (proportion)
 aoiproportion = map(lambda x:'proptransfrom_'+x, aoinames)
-
 
 # Generating a list of all AOI-based features (including transitions)
 aoifeaturelist =[]

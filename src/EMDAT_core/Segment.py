@@ -389,7 +389,7 @@ class Segment():
         active_aois=[]
         self.aoi_data = {}
         for aoi in aois:
-            #print "checking:",aoi.aid
+            #print "set_aois:", aoi.aid, aoi.timeseq
             aoistat = AOI_Stat(aoi, fixation_data, self.start, self.end, self.length_invalid, aois, event_data)
             self.aoi_data[aoi.aid] = aoistat
 
@@ -670,7 +670,7 @@ class Segment():
         for fix in fixdata:
             for aoi in aois:
                 if _fixation_inside_aoi(fix, aoi.polyin, aoi.polyout, aoi.timeseq) and aoi.is_active(fix.timestamp, fix.timestamp) :
-                    sequence.append(aoi.aid)
+                    sequence.append((aoi.aid, fix.timestamp, fix.fixationduration))
         return sequence
 
     def getid(self):

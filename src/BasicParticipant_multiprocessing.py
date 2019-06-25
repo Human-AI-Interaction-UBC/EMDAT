@@ -188,13 +188,24 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
             sacfile = None
             segfile = datadir+'/P'+str(rec)+'.seg'
         elif params.EYETRACKERTYPE == "TobiiV3":
+            #'''
             allfile = "{dir}/Tobii Export/AdaptiveMSNV_Bar_Study_New test_Rec {rec}.tsv".format(dir=datadir, rec=rec)
             fixfile = "{dir}/Tobii Export/AdaptiveMSNV_Bar_Study_New test_Rec {rec}.tsv".format(dir=datadir, rec=rec)
             sacfile = "{dir}/Tobii Export/AdaptiveMSNV_Bar_Study_New test_Rec {rec}.tsv".format(dir=datadir, rec=rec)
             evefile = "{dir}/Tobii Export/AdaptiveMSNV_Bar_Study_New test_Rec {rec}.tsv".format(dir=datadir, rec=rec)
             segfile = "{dir}/segs/{rec}.seg".format(dir=datadir, rec=rec)
-            aoifile = "{dir}/ref_viz_dynamic_aois_per_user/dynamic_{rec}.aoi".format(dir=datadir, rec=rec)
+            aoifile = "{dir}/finegrained_aois_per_user/dynamic_{rec}.aoi".format(dir=datadir, rec=rec)
             #aoifile = "{dir}/intervention_aois_per_user_msnv/dynamic_{rec}_3.aoi".format(dir=datadir, rec=rec)
+            #'''
+            '''
+            allfile = "{dir}/Control Tobii Export/MMD Study 1_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            fixfile = "{dir}/Control Tobii Export/MMD Study 1_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            sacfile = "{dir}/Control Tobii Export/MMD Study 1_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            evefile = "{dir}/Control Tobii Export/MMD Study 1_Rec {rec}.tsv".format(dir=datadir, rec=rec)
+            segfile = "{dir}/Control_segs/{rec}.seg".format(dir=datadir, rec=rec)
+            aoifile = "{dir}/control_finegrained_aois_per_user/dynamic_{rec}.aoi".format(dir=datadir, rec=rec)
+            #aoifile = "{dir}/intervention_aois_per_user_msnv/dynamic_{rec}_3.aoi".format(dir=datadir, rec=rec)
+            '''
 
         elif params.EYETRACKERTYPE == "SMI":
             allfile = "{dir}/SMI_Sample_{rec}_Samples.txt".format(dir=datadir, rec=rec)
