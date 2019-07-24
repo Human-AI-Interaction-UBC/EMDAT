@@ -346,6 +346,7 @@ class Scene(Segment):
             raise Exception('Zero length segments!')
 
         self.length_invalid = self.get_length_invalid()
+        self.features['length_invalid'] = self.length_invalid
 
         self.features['numsegments'] = len(segments)
         self.features['length'] = self.length

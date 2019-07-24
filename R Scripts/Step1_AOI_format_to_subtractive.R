@@ -6,6 +6,7 @@
 library(magick)
 library(stringr)
 library(data.table)
+library(readr)
 
 setwd("/Users/kristys/Documents/EMDAT-subtractive")
 
@@ -19,6 +20,10 @@ for (mmd in mmd_list) {
   Text_all <- gsub('Text', 'Text_all', Text)
   Viz <- as.character(txt_viz[2,])
   Viz_all <- gsub('Viz', 'Viz_all', Viz)
+  
+  fg <- fread(paste0('../MSNV_Adapt_Gaze_Analysis_2019/Eye_Tracking_Processing/finegrained_aois_adjusted/', mmd, '.aoi'), sep="\n", header = FALSE)
+  if (strsplit(as.character(fg[1]), '\t')[[1]][1]=='legend') legend <- as.character(fg[1]) else legend <- ''
+  labels <- read_file(paste0('../MSNV_Adapt_Gaze_Analysis_2019/Eye_Tracking_Processing/labels_aois/', mmd, '.aoi'))
   
   nr_bars <- fread(paste0('../MSNV_Adapt_Gaze_Analysis_2019/Eye_Tracking_Processing/non_relevant_aois_adjusted/', mmd, '_NR.aoi'), sep="\n", header = FALSE)
   nr_bars <- nr_bars[nrow(nr_bars)]
@@ -46,8 +51,8 @@ for (mmd in mmd_list) {
   Bars_subtractive <- gsub('overall_list', '', Bars_subtractive)
   Bars_subtractive <- strtrim(Bars_subtractive, nchar(Bars_subtractive)-2)
   
-  #refs <- fread(paste0('../AOI_ATUAV_Experimenter_Platform/ref_aois_adaptive/', mmd, '.aoi'), sep="\n", header = FALSE)
-  refs <- fread(paste0('../AOI_ATUAV_Experimenter_Platform/ref_aois_control/', mmd, '.aoi'), sep="\n", header = FALSE)
+  refs <- fread(paste0('../AOI_ATUAV_Experimenter_Platform/ref_aois_adaptive/', mmd, '.aoi'), sep="\n", header = FALSE)
+  #refs <- fread(paste0('../AOI_ATUAV_Experimenter_Platform/ref_aois_control/', mmd, '.aoi'), sep="\n", header = FALSE)
   refs <- refs[nrow(refs)]
   refs_combined <- gsub(paste0('overall_', mmd), 'Refs', refs)
   refs_combined <- strtrim(refs_combined, nchar(refs_combined)-2)
@@ -59,9 +64,14 @@ for (mmd in mmd_list) {
   Text <- paste0(Text, "\t--",Refs_subtractive)
   Viz <- paste0(Viz, "\t--",Bars_subtractive)
   
-  #fileConn<-file(paste0("ref_viz/ref_viz_",mmd, ".aoi"))
-  fileConn<-file(paste0("ref_viz_control/ref_viz_",mmd, ".aoi"))
-  results <- c(Text_all, Viz_all, Text, Viz, refs_combined, bars_combined)
+  fileConn<-file(paste0("ref_viz_adaptive/ref_viz_",mmd, ".aoi"))
+  #fileConn<-file(paste0("ref_viz_control/ref_viz_",mmd, ".aoi"))
+  
+  if (legend == '') {
+    results <- c(Text_all, Viz_all, Text, Viz, refs_combined, bars_combined, labels)
+  } else {
+    results <- c(Text_all, Viz_all, Text, Viz, refs_combined, bars_combined, legend, labels)
+  }
   writeLines(paste(results, collapse = '\n'), sep='', fileConn)
   close(fileConn)
 
