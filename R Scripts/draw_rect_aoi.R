@@ -4,8 +4,8 @@ library(stringr)
 
 setwd("/Users/kristys/Documents/EMDAT-subtractive")
 
-mmd_list <- as.character(c(3,5,9,11,20,27,28,30,60,62,66,72,74,76))
-#mmd_list <- as.character(c(76))
+#mmd_list <- as.character(c(3,5,9,11,20,27,28,30,60,62,66,72,74,76))
+mmd_list <- as.character(c(76))
 
 for (msnv in mmd_list) {
   
