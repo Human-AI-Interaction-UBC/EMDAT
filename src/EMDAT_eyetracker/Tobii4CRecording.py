@@ -59,7 +59,6 @@ class Tobii4CRecording(Recording):
                 last_pupil_right = pupil_right
                 last_time = timestamp
                 currentfix += 1
-                print(data)
 
         return all_data
 
@@ -87,7 +86,6 @@ class Tobii4CRecording(Recording):
                         "fixationpointy": EMDAT_core.utils.cast_float(row["y"])}
                 all_fixation.append(Fixation(data, self.media_offset))
                 currentfix += 1
-                print(data)
 
         return all_fixation
 
@@ -102,56 +100,58 @@ class Tobii4CRecording(Recording):
         """
 
         all_saccade = []
-        with open(Recording.all_file, 'r') as all_data:
-            all_reader = list(csv.DictReader(all_data, delimiter=','))
+        with open("/Users/tiffany/Downloads/test4C_raw_data_2.csv", 'r') as all_data:
+            all_reader = list(csv.DictReader(all_data, delimiter=';'))
 
             with open(saccade_file, 'r') as f:
-                reader = csv.DictReader(f, delimiter=',')
-            current_index = 0
+                reader = list(csv.DictReader(f, delimiter=','))
+                current_index = 0
 
-            for row in reader:
-                if row["label"] == "Saccade":
-                    start = EMDAT_core.utils.cast_float(row["start"])
-                    end = EMDAT_core.utils.cast_float(row["end"])
-                    # search for start
-                    saccade_vect = []
-                    is_valid_sample = 0
+                for row in reader:
+                    if row["label"] == "saccade":
+                        start = EMDAT_core.utils.cast_float(row["start"])
+                        end = EMDAT_core.utils.cast_float(row["end"])
+                        # search for start
+                        saccade_vect = []
+                        is_valid_sample = 0
 
-                    # iterate through all_reader with loop
-                    i = np.searchsorted(map(lambda all_data_row: EMDAT_core.utils.cast_float(all_data_row["system_timestamp"]), all_reader), start)
-                    i_start = i
-                    while EMDAT_core.utils.cast_float(all_reader[i]["system_timestamp"]) <= end:
-                        right_gaze = list(map(lambda point: EMDAT_core.utils.cast_float(point, -1),
-                                              row["right_gaze_point_on_display_area"].strip("()").split(",")))
-                        left_gaze = list(map(lambda point: EMDAT_core.utils.cast_float(point, -1),
-                                            row["left_gaze_point_on_display_area"].strip("()").split(",")))
-                        gaze_point_x = EMDAT_core.utils.cast_float((left_gaze[0] + right_gaze[0])/2, -1)
-                        gaze_point_y = EMDAT_core.utils.cast_float((left_gaze[1] + right_gaze[1])/2, -1)
-                        saccade_vect.append([EMDAT_core.utils.cast_float(row["system_timestamp"]),
-                                             gaze_point_x, gaze_point_y])
-                        if EMDAT_core.utils.cast_int(row["right_gaze_origin_validity"]) == 1 or EMDAT_core.utils.cast_int(row["left_gaze_origin_validity"]) == 1:
-                            is_valid_sample += 1
-                        i += 1
+                        # iterate through all_reader with loop
+                        i = np.searchsorted(list(map(lambda all_data_row: EMDAT_core.utils.cast_float(all_data_row["system_time_stamp"]), all_reader)), start)
+                        i_start = i
+                        while EMDAT_core.utils.cast_float(all_reader[i]["system_time_stamp"]) <= end:
+                            right_gaze = list(map(lambda point: EMDAT_core.utils.cast_float(point, -1),
+                                                  all_reader[i]["right_gaze_point_on_display_area"].strip("()").split(",")))
+                            left_gaze = list(map(lambda point: EMDAT_core.utils.cast_float(point, -1),
+                                                 all_reader[i]["left_gaze_point_on_display_area"].strip("()").split(",")))
+                            gaze_point_x = EMDAT_core.utils.cast_float((left_gaze[0] + right_gaze[0])/2, -1)
+                            gaze_point_y = EMDAT_core.utils.cast_float((left_gaze[1] + right_gaze[1])/2, -1)
+                            saccade_vect.append([EMDAT_core.utils.cast_float(all_reader[i]["system_time_stamp"]),
+                                                 gaze_point_x, gaze_point_y])
 
-                    rate_valid_sample = is_valid_sample/(i - i_start)
-                    saccade_duration = EMDAT_core.utils.cast_int(row["duration"])
-                    dist = EMDAT_core.Recording.get_saccade_distance(saccade_vect)
-                    accel = -1#Recording.get_saccade_acceleration(saccade_vect)
-                    speed = float(dist) / EMDAT_core.utils.cast_int(saccade_duration)
-                    data = {"saccadeindex": EMDAT_core.utils.cast_int(current_index),
-                            "timestamp": start,
-                            "saccadeduration": EMDAT_core.utils.cast_int(saccade_duration),
-                            "saccadestartpointx": saccade_vect[0][1],
-                            "saccadestartpointy": saccade_vect[0][2],
-                            "saccadeendpointx": saccade_vect[-1][1],
-                            "saccadeendpointy": saccade_vect[-1][2],
-                            "saccadedistance": dist,
-                            "saccadespeed": speed,
-                            "saccadeacceleration": accel,
-                            "saccadequality": rate_valid_sample
-                            }
-                    all_saccade.append(Saccade(data, self.media_offset))
-                    current_index += 1
+                            if EMDAT_core.utils.cast_int(all_reader[i]["right_gaze_origin_validity"]) == 1 or \
+                                    EMDAT_core.utils.cast_int(all_reader[i]["left_gaze_origin_validity"]) == 1:
+                                is_valid_sample += 1
+                            i += 1
+
+                        rate_valid_sample = is_valid_sample/(i - i_start)
+                        saccade_duration = EMDAT_core.utils.cast_int(row["duration"])
+                        dist = EMDAT_core.Recording.get_saccade_distance(saccade_vect)
+                        accel = -1#Recording.get_saccade_acceleration(saccade_vect)
+                        speed = float(dist) / EMDAT_core.utils.cast_int(saccade_duration)
+                        data = {"saccadeindex": EMDAT_core.utils.cast_int(current_index),
+                                "timestamp": start,
+                                "saccadeduration": EMDAT_core.utils.cast_int(saccade_duration),
+                                "saccadestartpointx": saccade_vect[0][1],
+                                "saccadestartpointy": saccade_vect[0][2],
+                                "saccadeendpointx": saccade_vect[-1][1],
+                                "saccadeendpointy": saccade_vect[-1][2],
+                                "saccadedistance": dist,
+                                "saccadespeed": speed,
+                                "saccadeacceleration": accel,
+                                "saccadequality": rate_valid_sample
+                                }
+                        all_saccade.append(Saccade(data, self.media_offset))
+                        current_index += 1
 
         return all_saccade
 
@@ -160,4 +160,5 @@ if __name__ == "__main__":
     tobii = Tobii4CRecording("/Users/tiffany/Downloads/test4C_raw_data_2.csv","/Users/tiffany/Downloads/test4C_fixation_saccade.csv")
     tobii.read_all_data("/Users/tiffany/Downloads/test4C_raw_data_2.csv")
     tobii.read_fixation_data("/Users/tiffany/Downloads/test4C_fixation_saccade.csv")
+    tobii.read_saccade_data("/Users/tiffany/Downloads/test4C_fixation_saccade_aligned (1).csv")
 
