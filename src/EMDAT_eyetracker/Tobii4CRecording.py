@@ -89,7 +89,7 @@ class Tobii4CRecording(Recording):
 
         return all_fixation
 
-    def read_saccade_data(self, saccade_file):
+    def read_saccade_data(self, saccade_file, all_file):
         """Returns a list of "Saccade"s read from the data file file.
 
         Args:
@@ -100,7 +100,7 @@ class Tobii4CRecording(Recording):
         """
 
         all_saccade = []
-        with open("/Users/tiffany/Downloads/test4C_raw_data_2.csv", 'r') as all_data:
+        with open(all_file, 'r') as all_data:
             all_reader = list(csv.DictReader(all_data, delimiter=';'))
 
             with open(saccade_file, 'r') as f:
@@ -160,5 +160,5 @@ if __name__ == "__main__":
     tobii = Tobii4CRecording("/Users/tiffany/Downloads/test4C_raw_data_2.csv","/Users/tiffany/Downloads/test4C_fixation_saccade.csv")
     tobii.read_all_data("/Users/tiffany/Downloads/test4C_raw_data_2.csv")
     tobii.read_fixation_data("/Users/tiffany/Downloads/test4C_fixation_saccade.csv")
-    tobii.read_saccade_data("/Users/tiffany/Downloads/test4C_fixation_saccade_aligned (1).csv")
+    tobii.read_saccade_data("/Users/tiffany/Downloads/test4C_fixation_saccade_aligned (1).csv","/Users/tiffany/Downloads/test4C_raw_data_2.csv")
 
