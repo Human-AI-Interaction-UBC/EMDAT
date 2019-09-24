@@ -134,7 +134,7 @@ class Tobii4CRecording(Recording):
                             i += 1
 
                         rate_valid_sample = is_valid_sample/(i - i_start)
-                        saccade_duration = EMDAT_core.utils.cast_int(row["duration"])
+                        saccade_duration = EMDAT_core.utils.cast_int(EMDAT_core.utils.cast_float(row["duration"]))
                         dist = EMDAT_core.Recording.get_saccade_distance(saccade_vect)
                         accel = -1#Recording.get_saccade_acceleration(saccade_vect)
                         speed = float(dist) / EMDAT_core.utils.cast_int(saccade_duration)
@@ -156,9 +156,10 @@ class Tobii4CRecording(Recording):
         return all_saccade
 
 
+# for testing purposes:
 if __name__ == "__main__":
-    tobii = Tobii4CRecording("/Users/tiffany/Downloads/test4C_raw_data_2.csv","/Users/tiffany/Downloads/test4C_fixation_saccade.csv")
-    tobii.read_all_data("/Users/tiffany/Downloads/test4C_raw_data_2.csv")
-    tobii.read_fixation_data("/Users/tiffany/Downloads/test4C_fixation_saccade.csv")
-    tobii.read_saccade_data("/Users/tiffany/Downloads/test4C_fixation_saccade_aligned (1).csv","/Users/tiffany/Downloads/test4C_raw_data_2.csv")
+    tobii = Tobii4CRecording("/Users/tiffany/Downloads/123456.csv", "/Users/tiffany/Downloads/123456_fixation.csv")
+    tobii.read_all_data("/Users/tiffany/Downloads/123456.csv")
+    tobii.read_fixation_data("/Users/tiffany/Downloads/123456_fixation.csv")
+    tobii.read_saccade_data("/Users/tiffany/Downloads/123456_fixation.csv", "/Users/tiffany/Downloads/123456.csv")
 
