@@ -158,8 +158,12 @@ class Tobii4CRecording(Recording):
 
 # for testing purposes:
 if __name__ == "__main__":
-    tobii = Tobii4CRecording("/Users/tiffany/Downloads/123456.csv", "/Users/tiffany/Downloads/123456_fixation.csv")
-    tobii.read_all_data("/Users/tiffany/Downloads/123456.csv")
-    tobii.read_fixation_data("/Users/tiffany/Downloads/123456_fixation.csv")
-    tobii.read_saccade_data("/Users/tiffany/Downloads/123456_fixation.csv", "/Users/tiffany/Downloads/123456.csv")
+
+    raw_file = "your_file_name"
+    fixation_file = "your_file_name"
+
+    tobii = Tobii4CRecording(raw_file, fixation_file)
+    tobii.read_all_data(raw_file)
+    tobii.read_fixation_data(fixation_file)
+    tobii.read_saccade_data(fixation_file, raw_file)
 
