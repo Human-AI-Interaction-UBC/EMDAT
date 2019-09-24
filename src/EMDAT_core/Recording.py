@@ -28,7 +28,6 @@ class Recording:
         (0,0) if the interface was in full screen (default value).
         """
         self.media_offset = media_offset
-        self.all_file = all_file
 
         self.all_data = self.read_all_data(all_file)
         if len(self.all_data) == 0:
