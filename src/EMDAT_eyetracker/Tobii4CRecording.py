@@ -159,11 +159,17 @@ class Tobii4CRecording(Recording):
 # for testing purposes:
 if __name__ == "__main__":
 
-    raw_file = "your_file_name"
-    fixation_file = "your_file_name"
+    raw_file = "sampledata/4Ctest.csv"
+    fixation_file = "sampledata/4Ctest_fixation.csv"
 
     tobii = Tobii4CRecording(raw_file, fixation_file)
-    tobii.read_all_data(raw_file)
-    tobii.read_fixation_data(fixation_file)
-    tobii.read_saccade_data(fixation_file, raw_file)
+    alldata = tobii.read_all_data(raw_file)
+    print("all_data: ")
+    print([data.get_string(",") for data in alldata])
+    fixations = tobii.read_fixation_data(fixation_file)
+    print("fixation_data: ")
+    print([data.get_string(",") for data in fixations])
+    saccades = tobii.read_saccade_data(fixation_file, raw_file)
+    print("saccade_data: ")
+    print([data.get_string(",") for data in saccades])
 
