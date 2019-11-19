@@ -99,6 +99,7 @@ class Tobii4CRecording(Recording):
             a list of "Saccade"s
         """
 
+
         all_saccades = []
         with open(saccade_file, 'r') as f:
             currentfix = 0
@@ -146,7 +147,9 @@ class Tobii4CRecording(Recording):
         return all_event
 
 
+# for testing purposes:
 if __name__ == "__main__":
+
     tobii = Tobii4CRecording("../sampledata/Tobii4C/P123456_Data_Export.tsv",
                              "../sampledata/Tobii4C/P123456_Data_Fixations.tsv",
                              "../sampledata/Tobii4C/P123456_Data_Fixations.tsv",
@@ -154,4 +157,20 @@ if __name__ == "__main__":
     tobii.read_all_data("../sampledata/Tobii4C/P123456_Data_Export.tsv")
     tobii.read_fixation_data("../sampledata/Tobii4C/P123456_Data_Fixations.tsv")
     tobii.read_saccade_data("../sampledata/Tobii4C/P123456_Data_Fixations.tsv")
+
+
+#     raw_file = "sampledata/4Ctest.csv"
+#     fixation_file = "sampledata/4Ctest_fixation.csv"
+
+#     tobii = Tobii4CRecording(raw_file, fixation_file)
+#     alldata = tobii.read_all_data(raw_file)
+#     print("all_data: ")
+#     print([data.get_string(",") for data in alldata])
+#     fixations = tobii.read_fixation_data(fixation_file)
+#     print("fixation_data: ")
+#     print([data.get_string(",") for data in fixations])
+#     saccades = tobii.read_saccade_data(fixation_file, raw_file)
+#     print("saccade_data: ")
+#     print([data.get_string(",") for data in saccades])
+
 
