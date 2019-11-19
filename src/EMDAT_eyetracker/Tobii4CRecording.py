@@ -1,10 +1,10 @@
 """
 UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
-Created on 2015-08-15
+Created on 2019
 
-Class to read Tobii data (exported with Tobii Studio V3 and higher). See sample data in the "sampledata" folder.
+Class to read Tobii data (exported with Tobii 4C and higher). See sample data in the Tobii 4C folder
 
-Authors: Mike Wu (creator), Sebastien Lalle.
+Authors: Tiffany , Martijn Millecamp
 Institution: The University of British Columbia.
 """
 
@@ -28,7 +28,7 @@ class Tobii4CRecording(Recording):
         """
         all_data = []
         with open(all_file, 'r') as f:
-            reader = csv.DictReader(f, delimiter=";")
+            reader = csv.DictReader(f, delimiter="\t")
             last_pupil_left = -1
             last_pupil_right = -1
             last_time = -1
@@ -75,9 +75,9 @@ class Tobii4CRecording(Recording):
         all_fixation = []
         with open(fixation_file, 'r') as f:
             currentfix = 0
-            reader = csv.DictReader(f, delimiter=',')
+            reader = csv.DictReader(f, delimiter='\t')
             for row in reader:
-                if row["label"] != "fixation": #if not a fixation or the current fixation
+                if row['label'] != "fixation": #if not a fixation or the current fixation
                     continue
                 data = {"fixationindex": currentfix,
                         "timestamp": EMDAT_core.utils.cast_int(EMDAT_core.utils.cast_float(row["start"])),
@@ -89,7 +89,7 @@ class Tobii4CRecording(Recording):
 
         return all_fixation
 
-    def read_saccade_data(self, saccade_file, all_file):
+    def read_saccade_data(self, saccade_file):
         """Returns a list of "Saccade"s read from the data file file.
 
         Args:
@@ -99,66 +99,59 @@ class Tobii4CRecording(Recording):
             a list of "Saccade"s
         """
 
-        all_saccade = []
-        with open(all_file, 'r') as all_data:
-            all_reader = list(csv.DictReader(all_data, delimiter=';'))
+        all_saccades = []
+        with open(saccade_file, 'r') as f:
+            currentfix = 0
+            reader = csv.DictReader(f, delimiter='\t')
+            for row in reader:
+                if row["label"] != "saccade":  # if not a fixation or the current fixation
+                    continue
+                data = {"fixationindex": currentfix,
+                        "timestamp": EMDAT_core.utils.cast_int(EMDAT_core.utils.cast_float(row["start"])),
+                        "fixationduration": EMDAT_core.utils.cast_int(EMDAT_core.utils.cast_float(row["duration"])),
+                        "fixationpointx": EMDAT_core.utils.cast_float(row["x"]),
+                        "fixationpointy": EMDAT_core.utils.cast_float(row["y"])}
+                all_saccades.append(Fixation(data, self.media_offset))
+                currentfix += 1
 
-            with open(saccade_file, 'r') as f:
-                reader = list(csv.DictReader(f, delimiter=','))
-                current_index = 0
+        return all_saccades
 
-                for row in reader:
-                    if row["label"] == "saccade":
-                        start = EMDAT_core.utils.cast_float(row["start"])
-                        end = EMDAT_core.utils.cast_float(row["end"])
-                        # search for start
-                        saccade_vect = []
-                        is_valid_sample = 0
+    def read_event_data(self, event_file):
+        """Returns a list of "Event"s read from an "Event-Data" file.
 
-                        # iterate through all_reader with loop
-                        i = np.searchsorted(list(map(lambda all_data_row: EMDAT_core.utils.cast_float(all_data_row["system_time_stamp"]), all_reader)), start)
-                        i_start = i
-                        while EMDAT_core.utils.cast_float(all_reader[i]["system_time_stamp"]) <= end:
-                            right_gaze = list(map(lambda point: EMDAT_core.utils.cast_float(point, -1),
-                                                  all_reader[i]["right_gaze_point_on_display_area"].strip("()").split(",")))
-                            left_gaze = list(map(lambda point: EMDAT_core.utils.cast_float(point, -1),
-                                                 all_reader[i]["left_gaze_point_on_display_area"].strip("()").split(",")))
-                            gaze_point_x = EMDAT_core.utils.cast_float((left_gaze[0] + right_gaze[0])/2, -1)
-                            gaze_point_y = EMDAT_core.utils.cast_float((left_gaze[1] + right_gaze[1])/2, -1)
-                            saccade_vect.append([EMDAT_core.utils.cast_float(all_reader[i]["system_time_stamp"]),
-                                                 gaze_point_x, gaze_point_y])
+        Args:
+            event_file: A string containing the name of the 'Event-Data.tsv' file output by the Tobii software.
 
-                            if EMDAT_core.utils.cast_int(all_reader[i]["right_gaze_origin_validity"]) == 1 or \
-                                    EMDAT_core.utils.cast_int(all_reader[i]["left_gaze_origin_validity"]) == 1:
-                                is_valid_sample += 1
-                            i += 1
+        Returns:
+            a list of "Event"s
+        """
 
-                        rate_valid_sample = is_valid_sample/(i - i_start)
-                        saccade_duration = EMDAT_core.utils.cast_int(row["duration"])
-                        dist = EMDAT_core.Recording.get_saccade_distance(saccade_vect)
-                        accel = -1#Recording.get_saccade_acceleration(saccade_vect)
-                        speed = float(dist) / EMDAT_core.utils.cast_int(saccade_duration)
-                        data = {"saccadeindex": EMDAT_core.utils.cast_int(current_index),
-                                "timestamp": start,
-                                "saccadeduration": EMDAT_core.utils.cast_int(saccade_duration),
-                                "saccadestartpointx": saccade_vect[0][1],
-                                "saccadestartpointy": saccade_vect[0][2],
-                                "saccadeendpointx": saccade_vect[-1][1],
-                                "saccadeendpointy": saccade_vect[-1][2],
-                                "saccadedistance": dist,
-                                "saccadespeed": speed,
-                                "saccadeacceleration": accel,
-                                "saccadequality": rate_valid_sample
-                                }
-                        all_saccade.append(Saccade(data, self.media_offset))
-                        current_index += 1
+        all_event = []
+        with open(event_file, 'r') as f:
+            for _ in xrange(params.EVENTSHEADERLINES - 1):
+                next(f)
+            reader = csv.DictReader(f, delimiter='\t')
+            for row in reader:
+                data = {"timestamp": int(row["Timestamp"]),
+                        "event": row["Event"],
+                        "event_key": int(row["EventKey"])}
+                if data["event"] == "LeftMouseClick" or data["event"] == "RightMouseClick":
+                    data.update({"x_coord": int(row["Data1"]), "y_coord": int(row["Data2"])})
+                elif data["event"] == "KeyPress":
+                    data.update({"key_code": int(row["Data1"]), "key_name": row["Descriptor"]})
+                elif data["event"] == "LogData":
+                    data.update({"description": row["Data1"]})
+                all_event.append(Event(data, self.media_offset))
 
-        return all_saccade
+        return all_event
 
 
 if __name__ == "__main__":
-    tobii = Tobii4CRecording("/Users/tiffany/Downloads/test4C_raw_data_2.csv","/Users/tiffany/Downloads/test4C_fixation_saccade.csv")
-    tobii.read_all_data("/Users/tiffany/Downloads/test4C_raw_data_2.csv")
-    tobii.read_fixation_data("/Users/tiffany/Downloads/test4C_fixation_saccade.csv")
-    tobii.read_saccade_data("/Users/tiffany/Downloads/test4C_fixation_saccade_aligned (1).csv","/Users/tiffany/Downloads/test4C_raw_data_2.csv")
+    tobii = Tobii4CRecording("../sampledata/Tobii4C/P123456_Data_Export.tsv",
+                             "../sampledata/Tobii4C/P123456_Data_Fixations.tsv",
+                             "../sampledata/Tobii4C/P123456_Data_Fixations.tsv",
+                             None)
+    tobii.read_all_data("../sampledata/Tobii4C/P123456_Data_Export.tsv")
+    tobii.read_fixation_data("../sampledata/Tobii4C/P123456_Data_Fixations.tsv")
+    tobii.read_saccade_data("../sampledata/Tobii4C/P123456_Data_Fixations.tsv")
 

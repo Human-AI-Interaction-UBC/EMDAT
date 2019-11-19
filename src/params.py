@@ -11,31 +11,32 @@ Institution: The University of British Columbia.
 # ####################### Eye tracker type and path ##############################################################
 
 # the folder that has the files exported from eye trackers
-EYELOGDATAFOLDER = "./sampledata"
+EYELOGDATAFOLDER = "./sampledata/Tobii4C"
 
 # the folder that has the external log files
 EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
 
 # the eye tracker and/or software used to collect and export the data
 #EYETRACKERTYPE = "TobiiV2" #Tobii Studio version 1x and 2x
-EYETRACKERTYPE = "TobiiV3" #Tobii Studio version 3x
+# EYETRACKERTYPE = "TobiiV3" #Tobii Studio version 3x
 #EYETRACKERTYPE = "SMI" # SMI/BeGaze
+EYETRACKERTYPE = "Tobii4CTest"
 
 
 # ####################### Eye tracker specific parameters ##############################################################
 
 # number of extra lines at the beginning of the files exported from Tobii
 # this is specific to study and is based on the number of variables defined in Tobii studio for the experiment
-NUMBEROFEXTRAHEADERLINES = 8
+NUMBEROFEXTRAHEADERLINES = 0
 
 # number of lines at the beginning of the 'Fixation-Data' files exported from Tobii before the actual data
-FIXATIONHEADERLINES = 19
+FIXATIONHEADERLINES = 0
 
 # number of lines at the beginning of the 'All-Data' files exported from Tobii before the actual data
-ALLDATAHEADERLINES = 26
+ALLDATAHEADERLINES = 0
 
 # number of lines at the beginning of the 'Event-Data' files exported from Tobii before the actual data
-EVENTSHEADERLINES = 27
+EVENTSHEADERLINES = 0
 
 # number of lines at the beginning of the external log files before the actual data
 ACTIONHEADERLINES = 0
@@ -114,7 +115,7 @@ aoigeneralfeat.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minp
 aoigeneralfeat.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
 
 #list of the AOI names
-aoinames = ['Top','Bottom','Graph','Toolbar']
+aoinames = ['Top','Bottom']
 
 #list of transition-based AOI features (count)
 aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames)
@@ -123,7 +124,7 @@ aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames)
 aoiproportion = map(lambda x:'proptransfrom_'+x, aoinames)
 
 # lower and  upper bound on size of invalid data gaps to be treated as blinks
-blink_threshold = (100, 300)
+blink_threshold = (100000, 300000)
 
 # Generating a list of all AOI-based features (including transitions)
 aoifeaturelist =[]
@@ -148,13 +149,13 @@ The idea is that if the user was looking at a certain point and then we loose th
 a short period of time and afterwards the user is looking at the same point we can assume that user
 was looking at that same point during that period.
 """
-VALIDITY_METHOD = 3
+VALIDITY_METHOD = 2
 
 # Validity Threshold for segments (the minimum proportion of valid samples for a Segment or Scene to be considered valid)
 VALID_PROP_THRESH = 0.8
 
 #the maximum gap size (ms) allowable in samples for a Segment or Scene to be considered valid
-VALID_TIME_THRESH = 3000
+VALID_TIME_THRESH = 3000000
 
 
 """
@@ -165,14 +166,14 @@ quality, into two new sub "Segment"s discarding the largest gap of invalid sampl
 a "Segment". EMDAT will continue to perform the splitting on the Segments until there is not
 any gap larger than MAX_SEG_TIMEGAP left in the data.
 """
-MAX_SEG_TIMEGAP = 10
+MAX_SEG_TIMEGAP = 1000000
 
 
 #proportion of valid gaze samples required per saccade. If less than 1, missing gaze sample will be extrapolated.
 VALID_SAMPLES_PROP_SACCADE = 1
 
 #minimum segment size in ms that is considered meaningful for this experiment
-MINSEGSIZE = 0
+MINSEGSIZE = 1
 
 #A boolean value determining if a Fixation extends between two consecutive Segments, should it be
 #included in those Segments or not
@@ -192,5 +193,5 @@ DEBUG = True
 
 #Verbosity level
 #VERBOSE = "QUIET"		#prints nothing except errors and warnings
-VERBOSE = "NORMAL"		#prints essential information
-#VERBOSE = "VERBOSE"	#prints information useful for debugging
+# VERBOSE = "NORMAL"		#prints essential information
+VERBOSE = "VERBOSE"	#prints information useful for debugging

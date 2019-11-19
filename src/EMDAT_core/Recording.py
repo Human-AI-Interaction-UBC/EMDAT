@@ -218,10 +218,10 @@ def read_segs(segfile):
     scenes = {}
     with open(segfile, 'r') as f:
         seglines = f.readlines()
-
     for l in seglines:
         l = l.strip()
         l = l.split('\t')
+        print(l)
         if l[0] in scenes:
             scenes[l[0]].append((l[1], int(l[2]), int(l[3])))
         else:
@@ -253,6 +253,7 @@ def read_aois(aoifile):
     """
     with open(aoifile, 'r') as f:
         aoilines = f.readlines()
+        print(aoilines)
 
     return read_aoilines(aoilines)
 

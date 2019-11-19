@@ -227,12 +227,10 @@ class Scene(Segment):
         ######################################## end partition_segment()
 
 
-
         if len(all_data)<=0:
             raise Exception('A scene with no sample data!')
         if Segments == None:
             self.segments = []
-#            print "seglist",seglist
             for (segid, start, end) in seglist:
                 if params.VERBOSE != "QUIET":
                     print("segid, start, end:", segid, start, end)
@@ -256,7 +254,7 @@ class Scene(Segment):
                     event_end = None
                     event_data_in_seg = None
 
-                if fix_end - fix_start>0:
+                if fix_end - fix_start > 0:
                     try:
                         new_seg = Segment(segid, all_data[all_start:all_end], fixation_data[fix_start:fix_end], saccade_data = saccade_data_in_seg,
 							        event_data=event_data_in_seg, aois=aoilist, prune_length=prune_length, rest_pupil_size = rest_pupil_size, export_pupilinfo = export_pupilinfo)
@@ -268,10 +266,11 @@ class Scene(Segment):
                             continue
                 else:
                     continue
-
                 if (new_seg.largest_data_gap > params.MAX_SEG_TIMEGAP) and auto_partition: #low quality segment that needs to be partitioned!
                     try:
+                        print('----------------')
                         new_segs, samp_inds, fix_inds, sac_inds, event_inds = partition_segment(new_seg, start, end, rest_pupil_size, export_pupilinfo=export_pupilinfo)
+                        print(saccade_data, event_data)
                         if saccade_data != None and event_data != None:
                             for nseg,samp,fix,sac,eve in zip(new_segs, samp_inds, fix_inds, sac_inds, event_inds):
                                 if nseg.length > params.MINSEGSIZE:
@@ -303,11 +302,10 @@ class Scene(Segment):
 
         self.require_valid_Segments = require_valid
         if require_valid:   #filter out the invalid Segments
-
             segments = filter(lambda x:x.is_valid,self.segments)
         else:
             segments = self.segments
-        if len(segments)==0:
+        if len(segments) == 0:
             raise Exception('no segments in scene %s!' %(scid))
 
         fixationlist = []
