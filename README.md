@@ -3,3 +3,7 @@ Eye Movement Data Analysis Toolkit (EMDAT) is a library for processing eye gaze 
 In order to run EMDAT you will need a Python version 2.6.* or 2.7.* distribution with the NumPy package.
 
 Getting started and documentation: please see http://www.cs.ubc.ca/~skardan/EMDAT/
+
+License: BSD 2-Clause "Simplified" License (see License.md)
+
+To cite: Samad Kardan, Sébastien Lallé, Dereck Toker, and Cristina Conati. 2021. EMDAT: Eye Movement Data Analysis Toolkit (1.x). The University of British Columbia. DOI: 10.5281/zenodo.4699774
