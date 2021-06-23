@@ -28,8 +28,8 @@ alogoffset = [0, 0]    # the time sifference between the eye tracker logs and th
 ###### Read participants
 ps = read_participants_Basic(user_list = ul,pids = uids, log_time_offsets = alogoffset, datadir=params.EYELOGDATAFOLDER, 
                            prune_length = None, 
-                           aoifile = "./sampledata/general.aoi",
-#                           aoifile = "./sampledata/Dynamic_1.aoi",
+                           aoifile = "./sampledata/AOIs/general.aoi",
+#                           aoifile = "./sampledata/AOIs/Dynamic_1.aoi",
                            require_valid_segs = False, auto_partition_low_quality_segments = True,
                            rpsfile = "./sampledata/all_rest_pupil_sizes.tsv")
 print

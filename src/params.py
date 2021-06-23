@@ -17,8 +17,8 @@ EYELOGDATAFOLDER = "./sampledata"
 EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
 
 # the eye tracker and/or software used to collect and export the data
-#EYETRACKERTYPE = "TobiiV2" #Tobii Studio version 1x and 2x
-EYETRACKERTYPE = "TobiiV3" #Tobii Studio version 3x
+EYETRACKERTYPE = "TobiiV2" #Tobii Studio version 1x and 2x
+#EYETRACKERTYPE = "TobiiV3" #Tobii Studio version 3x
 #EYETRACKERTYPE = "SMI" # SMI/BeGaze
 
 
@@ -188,7 +188,7 @@ PUPIL_ADJUSTMENT = "rpscenter"	#Rps-centering (substraction of the rps from the 
 
 #Enable/disable debug mode. In debug mode warnings are treated as errors, and the verbosity level is automatically set to "VERBOSE" (see below)
 #DEBUG = True
-DEBUG = True
+DEBUG = False
 
 #Verbosity level
 #VERBOSE = "QUIET"		#prints nothing except errors and warnings

@@ -30,8 +30,8 @@ if __name__ == '__main__':
     nbprocess = cpu_count()
     ps = read_participants_Basic_multiprocessing(nbprocess, user_list = ul,pids = uids, log_time_offsets = alogoffset, datadir=params.EYELOGDATAFOLDER, 
                                prune_length = None, 
-                               aoifile = "./sampledata/general.aoi",
-    #                           aoifile = "./sampledata/Dynamic_1.aoi",
+                               aoifile = "./sampledata/AOIs/general.aoi",
+    #                           aoifile = "./sampledata/AOIs/Dynamic_1.aoi",
                                require_valid_segs = False, auto_partition_low_quality_segments = True,
                                rpsfile = "./sampledata/all_rest_pupil_sizes.tsv")
     print

@@ -212,24 +212,24 @@ def read_participants_Basic(datadir, user_list, pids, prune_length=None, aoifile
             currpsdata = None
 
         if params.EYETRACKERTYPE == "TobiiV2":
-            allfile = datadir+'/P'+str(rec)+'-All-Data.tsv'
-            fixfile = datadir+'/P'+str(rec)+'-Fixation-Data.tsv'
-            evefile = datadir+'/P'+str(rec)+'-Event-Data.tsv'
+            allfile = datadir+'/TobiiV2/P'+str(rec)+'-All-Data.tsv'
+            fixfile = datadir+'/TobiiV2/P'+str(rec)+'-Fixation-Data.tsv'
+            evefile = datadir+'/TobiiV2/P'+str(rec)+'-Event-Data.tsv'
             sacfile = None
-            segfile = datadir+'/P'+str(rec)+'.seg'
+            segfile = datadir+'/TobiiV2/P'+str(rec)+'.seg'
         elif params.EYETRACKERTYPE == "TobiiV3":
-            allfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
-            fixfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
-            sacfile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
-            evefile = "{dir}/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
-            segfile = "{dir}/TobiiV3_sample_{rec}.seg".format(dir=datadir, rec=rec)
-            #segfile = "{dir}/TobiiV3_sample_{rec}.segs".format(dir=datadir, rec=rec)
+            allfile = "{dir}/TobiiV3/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
+            fixfile = "{dir}/TobiiV3/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
+            sacfile = "{dir}/TobiiV3/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
+            evefile = "{dir}/TobiiV3/P{rec}_Data_Export.tsv".format(dir=datadir, rec=rec)
+            segfile = "{dir}/TobiiV3/TobiiV3_sample_{rec}.seg".format(dir=datadir, rec=rec)
+            #aoifile = "{dir}/TobiiV3/TobiiV3_sample_{rec}.aoi".format(dir=datadir, rec=rec)
         elif params.EYETRACKERTYPE == "SMI":
-            allfile = "{dir}/SMI_Sample_{rec}_Samples.txt".format(dir=datadir, rec=rec)
-            fixfile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
-            sacfile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
-            evefile = "{dir}/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
-            segfile = "{dir}/SMI_Sample_{rec}.seg".format(dir=datadir, rec=rec)
+            allfile = "{dir}/SMI/SMI_Sample_{rec}_Samples.txt".format(dir=datadir, rec=rec)
+            fixfile = "{dir}/SMI/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
+            sacfile = "{dir}/SMI/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
+            evefile = "{dir}/SMI/SMI_Sample_{rec}_Events.txt".format(dir=datadir, rec=rec)
+            segfile = "{dir}/SMI/SMI_Sample_{rec}.seg".format(dir=datadir, rec=rec)
 
         if os.path.exists(allfile):
             p = BasicParticipant(rec, evefile, allfile, fixfile, sacfile, segfile, log_time_offset=offset,

@@ -27,7 +27,7 @@ alogoffset = [0, 0, 0]
 # Read participants
 ps = read_participants_Basic(user_list = ul, pids = uids, log_time_offsets = alogoffset, datadir = params.EYELOGDATAFOLDER,
                              prune_length = None,
-                             aoifile = "./sampledata/general.aoi",
+                             aoifile = "./sampledata/AOIs/general.aoi",
                              require_valid_segs = False,
                              auto_partition_low_quality_segments = False)
 
