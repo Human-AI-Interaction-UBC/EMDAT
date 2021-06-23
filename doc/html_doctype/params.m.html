@@ -1,0 +1,1536 @@
+<!doctype html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+
+    <title>params API documentation</title>
+    <meta name="description" content="UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+
+Module that contains all global parameter..." />
+
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
+  
+  <style type="text/css">
+  
+* {
+  box-sizing: border-box;
+}
+/*! normalize.css v1.1.1 | MIT License | git.io/normalize */
+
+/* ==========================================================================
+   HTML5 display definitions
+   ========================================================================== */
+
+/**
+ * Correct `block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+    display: block;
+}
+
+/**
+ * Correct `inline-block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+audio,
+canvas,
+video {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+
+audio:not([controls]) {
+    display: none;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Firefox 3, and Safari 4.
+ * Known issue: no IE 6 support.
+ */
+
+[hidden] {
+    display: none;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+/**
+ * 1. Prevent system color scheme's background color being used in Firefox, IE,
+ *    and Opera.
+ * 2. Prevent system color scheme's text color being used in Firefox, IE, and
+ *    Opera.
+ * 3. Correct text resizing oddly in IE 6/7 when body `font-size` is set using
+ *    `em` units.
+ * 4. Prevent iOS text size adjust after orientation change, without disabling
+ *    user zoom.
+ */
+
+html {
+    background: #fff; /* 1 */
+    color: #000; /* 2 */
+    font-size: 100%; /* 3 */
+    -webkit-text-size-adjust: 100%; /* 4 */
+    -ms-text-size-adjust: 100%; /* 4 */
+}
+
+/**
+ * Address `font-family` inconsistency between `textarea` and other form
+ * elements.
+ */
+
+html,
+button,
+input,
+select,
+textarea {
+    font-family: sans-serif;
+}
+
+/**
+ * Address margins handled incorrectly in IE 6/7.
+ */
+
+body {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Links
+   ========================================================================== */
+
+/**
+ * Address `outline` inconsistency between Chrome and other browsers.
+ */
+
+a:focus {
+    outline: thin dotted;
+}
+
+/**
+ * Improve readability when focused and also mouse hovered in all browsers.
+ */
+
+a:active,
+a:hover {
+    outline: 0;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+/**
+ * Address font sizes and margins set differently in IE 6/7.
+ * Address font sizes within `section` and `article` in Firefox 4+, Safari 5,
+ * and Chrome.
+ */
+
+h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin: 0.83em 0;
+}
+
+h3 {
+    font-size: 1.17em;
+    margin: 1em 0;
+}
+
+h4 {
+    font-size: 1em;
+    margin: 1.33em 0;
+}
+
+h5 {
+    font-size: 0.83em;
+    margin: 1.67em 0;
+}
+
+h6 {
+    font-size: 0.67em;
+    margin: 2.33em 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Safari 5, and Chrome.
+ */
+
+abbr[title] {
+    border-bottom: 1px dotted;
+}
+
+/**
+ * Address style set to `bolder` in Firefox 3+, Safari 4/5, and Chrome.
+ */
+
+b,
+strong {
+    font-weight: bold;
+}
+
+blockquote {
+    margin: 1em 40px;
+}
+
+/**
+ * Address styling not present in Safari 5 and Chrome.
+ */
+
+dfn {
+    font-style: italic;
+}
+
+/**
+ * Address differences between Firefox and other browsers.
+ * Known issue: no IE 6/7 normalization.
+ */
+
+hr {
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 6/7/8/9.
+ */
+
+mark {
+    background: #ff0;
+    color: #000;
+}
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+p,
+pre {
+    margin: 1em 0;
+}
+
+/**
+ * Correct font family set oddly in IE 6, Safari 4/5, and Chrome.
+ */
+
+code,
+kbd,
+pre,
+samp {
+    font-family: monospace, serif;
+    _font-family: 'courier new', monospace;
+    font-size: 1em;
+}
+
+/**
+ * Improve readability of pre-formatted text in all browsers.
+ */
+
+pre {
+    white-space: pre;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/**
+ * Address CSS quotes not supported in IE 6/7.
+ */
+
+q {
+    quotes: none;
+}
+
+/**
+ * Address `quotes` property not supported in Safari 4.
+ */
+
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+
+/**
+ * Address inconsistent and variable font size in all browsers.
+ */
+
+small {
+    font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+ */
+
+sub,
+sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sup {
+    top: -0.5em;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+/* ==========================================================================
+   Lists
+   ========================================================================== */
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+dl,
+menu,
+ol,
+ul {
+    margin: 1em 0;
+}
+
+dd {
+    margin: 0 0 0 40px;
+}
+
+/**
+ * Address paddings set differently in IE 6/7.
+ */
+
+menu,
+ol,
+ul {
+    padding: 0 0 0 40px;
+}
+
+/**
+ * Correct list images handled incorrectly in IE 7.
+ */
+
+nav ul,
+nav ol {
+    list-style: none;
+    list-style-image: none;
+}
+
+/* ==========================================================================
+   Embedded content
+   ========================================================================== */
+
+/**
+ * 1. Remove border when inside `a` element in IE 6/7/8/9 and Firefox 3.
+ * 2. Improve image quality when scaled in IE 7.
+ */
+
+img {
+    border: 0; /* 1 */
+    -ms-interpolation-mode: bicubic; /* 2 */
+}
+
+/**
+ * Correct overflow displayed oddly in IE 9.
+ */
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Figures
+   ========================================================================== */
+
+/**
+ * Address margin not present in IE 6/7/8/9, Safari 5, and Opera 11.
+ */
+
+figure {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+
+/**
+ * Correct margin displayed oddly in IE 6/7.
+ */
+
+form {
+    margin: 0;
+}
+
+/**
+ * Define consistent border, margin, and padding.
+ */
+
+fieldset {
+    border: 1px solid #c0c0c0;
+    margin: 0 2px;
+    padding: 0.35em 0.625em 0.75em;
+}
+
+/**
+ * 1. Correct color not being inherited in IE 6/7/8/9.
+ * 2. Correct text not wrapping in Firefox 3.
+ * 3. Correct alignment displayed oddly in IE 6/7.
+ */
+
+legend {
+    border: 0; /* 1 */
+    padding: 0;
+    white-space: normal; /* 2 */
+    *margin-left: -7px; /* 3 */
+}
+
+/**
+ * 1. Correct font size not being inherited in all browsers.
+ * 2. Address margins set differently in IE 6/7, Firefox 3+, Safari 5,
+ *    and Chrome.
+ * 3. Improve appearance and consistency in all browsers.
+ */
+
+button,
+input,
+select,
+textarea {
+    font-size: 100%; /* 1 */
+    margin: 0; /* 2 */
+    vertical-align: baseline; /* 3 */
+    *vertical-align: middle; /* 3 */
+}
+
+/**
+ * Address Firefox 3+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+
+button,
+input {
+    line-height: normal;
+}
+
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Chrome, Safari 5+, and IE 6+.
+ * Correct `select` style inheritance in Firefox 4+ and Opera.
+ */
+
+button,
+select {
+    text-transform: none;
+}
+
+/**
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Correct inability to style clickable `input` types in iOS.
+ * 3. Improve usability and consistency of cursor style between image-type
+ *    `input` and others.
+ * 4. Remove inner spacing in IE 7 without affecting normal text inputs.
+ *    Known issue: inner spacing remains in IE 6.
+ */
+
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+    -webkit-appearance: button; /* 2 */
+    cursor: pointer; /* 3 */
+    *overflow: visible;  /* 4 */
+}
+
+/**
+ * Re-set default cursor for disabled elements.
+ */
+
+button[disabled],
+html input[disabled] {
+    cursor: default;
+}
+
+/**
+ * 1. Address box sizing set to content-box in IE 8/9.
+ * 2. Remove excess padding in IE 8/9.
+ * 3. Remove excess padding in IE 7.
+ *    Known issue: excess padding remains in IE 6.
+ */
+
+input[type="checkbox"],
+input[type="radio"] {
+    box-sizing: border-box; /* 1 */
+    padding: 0; /* 2 */
+    *height: 13px; /* 3 */
+    *width: 13px; /* 3 */
+}
+
+/**
+ * 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome.
+ * 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome
+ *    (include `-moz` to future-proof).
+ */
+
+input[type="search"] {
+    -webkit-appearance: textfield; /* 1 */
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box; /* 2 */
+    box-sizing: content-box;
+}
+
+/**
+ * Remove inner padding and search cancel button in Safari 5 and Chrome
+ * on OS X.
+ */
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+}
+
+/**
+ * Remove inner padding and border in Firefox 3+.
+ */
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+/**
+ * 1. Remove default vertical scrollbar in IE 6/7/8/9.
+ * 2. Improve readability and alignment in all browsers.
+ */
+
+textarea {
+    overflow: auto; /* 1 */
+    vertical-align: top; /* 2 */
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+/**
+ * Remove most spacing between table cells.
+ */
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+  </style>
+
+  <style type="text/css">
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+  }
+  body {
+    background: #fff;
+    font-family: "Source Sans Pro", "Helvetica Neueue", Helvetica, sans;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.6em;
+  }
+  #content {
+    width: 70%;
+    max-width: 850px;
+    float: left;
+    padding: 30px 60px;
+    border-left: 1px solid #ddd;
+  }
+  #sidebar {
+    width: 25%;
+    float: left;
+    padding: 30px;
+    overflow: hidden;
+  }
+  #nav {
+    font-size: 130%;
+    margin: 0 0 15px 0;
+  }
+
+  #top {
+    display: block;
+    position: fixed;
+    bottom: 5px;
+    left: 5px;
+    font-size: .85em;
+    text-transform: uppercase;
+  }
+
+  #footer {
+    font-size: .75em;
+    padding: 5px 30px;
+    border-top: 1px solid #ddd;
+    text-align: right;
+  }
+    #footer p {
+      margin: 0 0 0 30px;
+      display: inline-block;
+    }
+
+  h1, h2, h3, h4, h5 {
+    font-weight: 300;
+  }
+  h1 {
+    font-size: 2.5em;
+    line-height: 1.1em;
+    margin: 0 0 .50em 0;
+  }
+
+  h2 {
+    font-size: 1.75em;
+    margin: 1em 0 .50em 0;
+  }
+
+  h3 {
+    margin: 25px 0 10px 0;
+  }
+
+  h4 {
+    margin: 0;
+    font-size: 105%;
+  }
+
+  a {
+    color: #058;
+    text-decoration: none;
+    transition: color .3s ease-in-out;
+  }
+
+  a:hover {
+    color: #e08524;
+    transition: color .3s ease-in-out;
+  }
+
+  pre, code, .mono, .name {
+    font-family: "Ubuntu Mono", "Cousine", "DejaVu Sans Mono", monospace;
+  }
+
+  .title .name {
+    font-weight: bold;
+  }
+  .section-title {
+    margin-top: 2em;
+  }
+  .ident {
+    color: #900;
+  }
+
+  code {
+    background: #f9f9f9;
+  } 
+
+  pre {
+    background: #fefefe;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 0 #f3f3f3;
+    margin: 0 30px;
+    padding: 15px 30px;
+  }
+
+  .codehilite {
+    margin: 0 30px 10px 30px;
+  }
+
+    .codehilite pre {
+      margin: 0;
+    }
+    .codehilite .err { background: #ff3300; color: #fff !important; } 
+
+  table#module-list {
+    font-size: 110%;
+  }
+
+    table#module-list tr td:first-child {
+      padding-right: 10px;
+      white-space: nowrap;
+    }
+
+    table#module-list td {
+      vertical-align: top;
+      padding-bottom: 8px;
+    }
+
+      table#module-list td p {
+        margin: 0 0 7px 0;
+      }
+
+  .def {
+    display: table;
+  }
+
+    .def p {
+      display: table-cell;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .def p:first-child {
+      white-space: nowrap;
+    }
+
+    .def p:last-child {
+      width: 100%;
+    }
+
+
+  #index {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+    ul#index .class_name {
+      /* font-size: 110%; */
+      font-weight: bold;
+    }
+    #index ul {
+      margin: 0;
+    }
+
+  .item {
+    margin: 0 0 15px 0;
+  }
+
+    .item .class {
+      margin: 0 0 25px 30px;
+    }
+
+      .item .class ul.class_list {
+        margin: 0 0 20px 0;
+      }
+
+    .item .name {
+      background: #fafafa;
+      margin: 0;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 3px;
+      display: inline-block;
+      min-width: 40%;
+    }
+      .item .name:hover {
+        background: #f6f6f6;
+      }
+
+    .item .empty_desc {
+      margin: 0 0 5px 0;
+      padding: 0;
+    }
+
+    .item .inheritance {
+      margin: 3px 0 0 30px;
+    }
+
+    .item .inherited {
+      color: #666;
+    }
+
+    .item .desc {
+      padding: 0 8px;
+      margin: 0;
+    }
+
+      .item .desc p {
+        margin: 0 0 10px 0;
+      }
+
+    .source_cont {
+      margin: 0;
+      padding: 0;
+    }
+
+    .source_link a {
+      background: #ffc300;
+      font-weight: 400;
+      font-size: .75em;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 1px 1px 0 #f4b700;
+      
+      padding: 3px 8px;
+      border-radius: 2px;
+      transition: background .3s ease-in-out;
+    }
+      .source_link a:hover {
+        background: #FF7200;
+        text-shadow: none;
+        transition: background .3s ease-in-out;
+      }
+
+    .source {
+      display: none;
+      max-height: 600px;
+      overflow-y: scroll;
+      margin-bottom: 15px;
+    }
+
+      .source .codehilite {
+        margin: 0;
+      }
+
+  .desc h1, .desc h2, .desc h3 {
+    font-size: 100% !important;
+  }
+  .clear {
+    clear: both;
+  }
+
+  @media all and (max-width: 950px) {
+    #sidebar {
+      width: 35%;
+    }
+    #content {
+      width: 65%;
+    }
+  }
+  @media all and (max-width: 650px) {
+    #top {
+      display: none;
+    }
+    #sidebar {
+      float: none;
+      width: auto;
+    }
+    #content {
+      float: none;
+      width: auto;
+      padding: 30px;
+    }
+
+    #index ul {
+      padding: 0;
+      margin-bottom: 15px;
+    }
+    #index ul li {
+      display: inline-block;
+      margin-right: 30px;
+    }
+    #footer {
+      text-align: left;
+    }
+    #footer p {
+      display: block;
+      margin: inherit;
+    }
+  }
+
+  /*****************************/
+
+  </style>
+
+
+  <style type="text/css">
+  
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   These examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+    /* Style adjustments for viewports that meet the condition */
+}
+
+@media print,
+       (-o-min-device-pixel-ratio: 5/4),
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 120dpi) {
+    /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid required HTTP connection: h5bp.com/r
+   ========================================================================== */
+
+@media print {
+    * {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster: h5bp.com/s */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links for images, or javascript/internal links
+     */
+
+    .ir a:after,
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group; /* h5bp.com/t */
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
+
+  </style>
+
+  <script type="text/javascript">
+  function toggle(id, $link) {
+    $node = document.getElementById(id);
+    if (!$node)
+    return;
+    if (!$node.style.display || $node.style.display == 'none') {
+    $node.style.display = 'block';
+    $link.innerHTML = 'Hide source &nequiv;';
+    } else {
+    $node.style.display = 'none';
+    $link.innerHTML = 'Show source &equiv;';
+    }
+  }
+  </script>
+</head>
+<body>
+<a href="#" id="top">Top</a>
+
+<div id="container">
+    
+  
+  <div id="sidebar">
+    <h1>Index</h1>
+    <ul id="index">
+    <li class="set"><h3><a href="#header-variables">Module variables</a></h3>
+      
+  <ul>
+    <li class="mono"><a href="#params.ACTIONHEADERLINES">ACTIONHEADERLINES</a></li>
+    <li class="mono"><a href="#params.ALLDATAHEADERLINES">ALLDATAHEADERLINES</a></li>
+    <li class="mono"><a href="#params.DEBUG">DEBUG</a></li>
+    <li class="mono"><a href="#params.EVENTSHEADERLINES">EVENTSHEADERLINES</a></li>
+    <li class="mono"><a href="#params.EVENTS_FIRST_DATA_LINE">EVENTS_FIRST_DATA_LINE</a></li>
+    <li class="mono"><a href="#params.EXTERNALLOGDATAFOLDER">EXTERNALLOGDATAFOLDER</a></li>
+    <li class="mono"><a href="#params.EYELOGDATAFOLDER">EYELOGDATAFOLDER</a></li>
+    <li class="mono"><a href="#params.EYETRACKERTYPE">EYETRACKERTYPE</a></li>
+    <li class="mono"><a href="#params.FIXATIONHEADERLINES">FIXATIONHEADERLINES</a></li>
+    <li class="mono"><a href="#params.FIXATION_HEADER_LINE">FIXATION_HEADER_LINE</a></li>
+    <li class="mono"><a href="#params.INCLUDE_HALF_FIXATIONS">INCLUDE_HALF_FIXATIONS</a></li>
+    <li class="mono"><a href="#params.MAX_SEG_TIMEGAP">MAX_SEG_TIMEGAP</a></li>
+    <li class="mono"><a href="#params.MEDIA_OFFSET">MEDIA_OFFSET</a></li>
+    <li class="mono"><a href="#params.MINSEGSIZE">MINSEGSIZE</a></li>
+    <li class="mono"><a href="#params.MONOCULAR_EYE">MONOCULAR_EYE</a></li>
+    <li class="mono"><a href="#params.NUMBEROFEXTRAHEADERLINES">NUMBEROFEXTRAHEADERLINES</a></li>
+    <li class="mono"><a href="#params.PUPIL_ADJUSTMENT">PUPIL_ADJUSTMENT</a></li>
+    <li class="mono"><a href="#params.RAW_HEADER_LINE">RAW_HEADER_LINE</a></li>
+    <li class="mono"><a href="#params.SACCADE_HEADER_LINE">SACCADE_HEADER_LINE</a></li>
+    <li class="mono"><a href="#params.USER_EVENT_HEADER_LINE">USER_EVENT_HEADER_LINE</a></li>
+    <li class="mono"><a href="#params.VALIDITY_METHOD">VALIDITY_METHOD</a></li>
+    <li class="mono"><a href="#params.VALID_PROP_THRESH">VALID_PROP_THRESH</a></li>
+    <li class="mono"><a href="#params.VALID_SAMPLES_PROP_SACCADE">VALID_SAMPLES_PROP_SACCADE</a></li>
+    <li class="mono"><a href="#params.VALID_TIME_THRESH">VALID_TIME_THRESH</a></li>
+    <li class="mono"><a href="#params.VERBOSE">VERBOSE</a></li>
+    <li class="mono"><a href="#params.aoifeaturelist">aoifeaturelist</a></li>
+    <li class="mono"><a href="#params.aoigeneralfeat">aoigeneralfeat</a></li>
+    <li class="mono"><a href="#params.aoin">aoin</a></li>
+    <li class="mono"><a href="#params.aoinames">aoinames</a></li>
+    <li class="mono"><a href="#params.aoiproportion">aoiproportion</a></li>
+    <li class="mono"><a href="#params.aoisequencefeat">aoisequencefeat</a></li>
+    <li class="mono"><a href="#params.aoitransfrom">aoitransfrom</a></li>
+    <li class="mono"><a href="#params.blink_threshold">blink_threshold</a></li>
+    <li class="mono"><a href="#params.featurelist">featurelist</a></li>
+  </ul>
+
+    </li>
+
+
+
+    </ul>
+  </div>
+
+    <article id="content">
+      
+  
+
+  
+
+
+  <header id="section-intro">
+  <h1 class="title"><span class="name">params</span> module</h1>
+  <p>UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3</p>
+<p>Module that contains all global parameters. Values of parameters are specific to the project.</p>
+<p>@author: Samad Kardan (creator), Sebastien Lalle
+Institution: The University of British Columbia.</p>
+  
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-params', this);">Show source &equiv;</a></p>
+  <div id="source-params" class="source">
+    <pre><code>"""
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+
+Module that contains all global parameters. Values of parameters are specific to the project.
+
+@author: Samad Kardan (creator), Sebastien Lalle
+Institution: The University of British Columbia.
+"""
+
+
+# ####################### Eye tracker type and path ##############################################################
+
+# the folder that has the files exported from eye trackers
+EYELOGDATAFOLDER = "./sampledata"
+
+# the folder that has the external log files
+EXTERNALLOGDATAFOLDER = "./sampledata/external logs"
+
+# the eye tracker and/or software used to collect and export the data
+EYETRACKERTYPE = "TobiiV2" #Tobii Studio version 1x and 2x
+#EYETRACKERTYPE = "TobiiV3" #Tobii Studio version 3x
+#EYETRACKERTYPE = "SMI" # SMI/BeGaze
+
+
+# ####################### Eye tracker specific parameters ##############################################################
+
+# number of extra lines at the beginning of the files exported from Tobii
+# this is specific to study and is based on the number of variables defined in Tobii studio for the experiment
+NUMBEROFEXTRAHEADERLINES = 8
+
+# number of lines at the beginning of the 'Fixation-Data' files exported from Tobii before the actual data
+FIXATIONHEADERLINES = 19
+
+# number of lines at the beginning of the 'All-Data' files exported from Tobii before the actual data
+ALLDATAHEADERLINES = 26
+
+# number of lines at the beginning of the 'Event-Data' files exported from Tobii before the actual data
+EVENTSHEADERLINES = 27
+
+# number of lines at the beginning of the external log files before the actual data
+ACTIONHEADERLINES = 0
+
+# ### SMI-specific parameters
+# the line number of the first data row in Events file
+EVENTS_FIRST_DATA_LINE = 22
+
+# the line number of the row that contains the table header for fixations
+FIXATION_HEADER_LINE = 11
+
+# the line number of the row that contains the table header for fixations
+SACCADE_HEADER_LINE = 14
+
+# the line number of the row that contains the table header for user events
+USER_EVENT_HEADER_LINE = 20
+
+# the line number of the first data row in Raw file
+RAW_HEADER_LINE = 1
+
+#L or R for using left/right eye event when averaging both eyes measures is not possible
+MONOCULAR_EYE = "L"
+
+
+
+# ####################### Features generation ##############################################################
+
+# the coordinates of the top left corner of the window showing the interface under study.
+# (0,0) if the interface was in full screen (default value).
+MEDIA_OFFSET = (0, 0)
+
+
+#Overall gaze features to generate and export
+featurelist = ['numsegments','length','numsamples','numfixations','fixationrate','meanabspathangles',
+               'meanfixationduration','meanpathdistance','meanrelpathangles','stddevabspathangles',
+               'stddevfixationduration','stddevpathdistance','stddevrelpathangles',
+			   'eyemovementvelocity', 'abspathanglesrate', 'relpathanglesrate',
+			   'sumabspathangles','sumfixationduration','sumpathdistance','sumrelpathangles']
+
+# Blink features to generate and export
+featurelist.extend(['blinknum', 'blinkdurationtotal', 'blinkdurationmean', 'blinkdurationstd', 'blinkdurationmin',
+                    'blinkdurationmax', 'blinkrate', 'blinktimedistancemean', 'blinktimedistancestd',
+                    'blinktimedistancemax', 'blinktimedistancemin'])
+
+# Pupil features to generate and export
+featurelist.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize',
+               'meanpupilvelocity', 'stddevpupilvelocity', 'maxpupilvelocity', 'minpupilvelocity'])
+
+# Head distance features to generate and export
+featurelist.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
+
+# Saccade features to generate and export
+featurelist.extend(['numsaccades', 'sumsaccadedistance', 'meansaccadedistance', 'stddevsaccadedistance', 'longestsaccadedistance',
+               'sumsaccadeduration','meansaccadeduration', 'stddevsaccadeduration', 'longestsaccadeduration',
+               'meansaccadespeed', 'stddevsaccadespeed','minsaccadespeed', 'maxsaccadespeed',
+			   'fixationsaccadetimeratio'])
+
+# Events features to generate and export
+featurelist.extend(['numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'numkeypressed', 'leftclicrate', 'rightclicrate', 'doubleclicrate', 'keypressedrate',
+               'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic', 'timetofirstkeypressed'])
+
+# Generate AOI-sequence
+aoisequencefeat = ['aoisequence']
+
+# AOI features to generate and export
+aoigeneralfeat = ['fixationrate','numfixations','totaltimespent','proportionnum',
+                  'proportiontime','longestfixation', 'meanfixationduration', 'stddevfixationduration', 'timetofirstfixation','timetolastfixation',
+				  'numevents', 'numleftclic', 'numrightclic', 'numdoubleclic', 'leftclicrate', 'rightclicrate', 'doubleclicrate',
+                  'timetofirstleftclic', 'timetofirstrightclic', 'timetofirstdoubleclic', 'timetolastleftclic', 'timetolastrightclic', 'timetolastdoubleclic']
+
+# Pupil features to generate and export
+aoigeneralfeat.extend(['meanpupilsize', 'stddevpupilsize', 'maxpupilsize', 'minpupilsize', 'startpupilsize','endpupilsize',
+               'meanpupilvelocity', 'stddevpupilvelocity', 'maxpupilvelocity', 'minpupilvelocity'])
+
+# Head distance for AIO features to generate and export
+aoigeneralfeat.extend(['meandistance', 'stddevdistance', 'maxdistance', 'mindistance', 'startdistance', 'enddistance'])
+
+#list of the AOI names
+aoinames = ['Top','Bottom','Graph','Toolbar']
+
+#list of transition-based AOI features (count)
+aoitransfrom = map(lambda x:'numtransfrom_'+x, aoinames)
+
+#list of transition-based AOI features (proportion)
+aoiproportion = map(lambda x:'proptransfrom_'+x, aoinames)
+
+# lower and  upper bound on size of invalid data gaps to be treated as blinks
+blink_threshold = (100, 300)
+
+# Generating a list of all AOI-based features (including transitions)
+aoifeaturelist =[]
+for aoin in aoinames:
+    aoifeaturelist.extend(map(lambda x:aoin+'_'+x, aoigeneralfeat))
+    aoifeaturelist.extend(map(lambda x:aoin+'_'+x, aoitransfrom))
+    aoifeaturelist.extend(map(lambda x:aoin+'_'+x, aoiproportion))
+
+
+# ####################### Data processing, restoration and validation ##############################################################
+
+"""
+Validity method to control for data quality:
+ 1 = Proportion of valid gaze samples
+ 2 = No gap size abvoe a given threshold
+ 3 =  Proportion of valid gaze samples (including restored samples, see below)
+
+Methods 1 and 3 use VALID_PROP_THRESH and method 2 uses VALID_TIME_THRESH as validity threshold
+
+Restored samples are the samples which are not valid but they are part of a Fixation.
+The idea is that if the user was looking at a certain point and then we loose the eye data for
+a short period of time and afterwards the user is looking at the same point we can assume that user
+was looking at that same point during that period.
+"""
+VALIDITY_METHOD = 3
+
+# Validity Threshold for segments (the minimum proportion of valid samples for a Segment or Scene to be considered valid)
+VALID_PROP_THRESH = 0.8
+
+#the maximum gap size (ms) allowable in samples for a Segment or Scene to be considered valid
+VALID_TIME_THRESH = 3000
+
+
+"""
+Maximum gap size (ms) allowable in a segment with auto-partition option
+
+Auto-partition option is when EMDAT automatically splits the "Segment"s which have low sample
+quality, into two new sub "Segment"s discarding the largest gap of invalid samples for
+a "Segment". EMDAT will continue to perform the splitting on the Segments until there is not
+any gap larger than MAX_SEG_TIMEGAP left in the data.
+"""
+MAX_SEG_TIMEGAP = 10
+
+
+#proportion of valid gaze samples required per saccade. If less than 1, missing gaze sample will be extrapolated.
+VALID_SAMPLES_PROP_SACCADE = 1
+
+#minimum segment size in ms that is considered meaningful for this experiment
+MINSEGSIZE = 0
+
+#A boolean value determining if a Fixation extends between two consecutive Segments, should it be
+#included in those Segments or not
+INCLUDE_HALF_FIXATIONS = False
+
+#Pupil adjustment to minimize the pupil size differences among individual users, if Rest Pupil Size (RPS) is provided. Possible values:
+#PUPIL_ADJUSTMENT = None 		#no adjustment;
+PUPIL_ADJUSTMENT = "rpscenter"	#Rps-centering (substraction of the rps from the raw pupil size)
+#PUPIL_ADJUSTMENT = "PCPS" 		#Normalization of pupil size based on the rsp following [Iqbal et al., 2005, doi>10.1145/1054972.1055016]
+
+
+# ####################### Verbose/Debug mode ##############################################################
+
+#Enable/disable debug mode. In debug mode warnings are treated as errors, and the verbosity level is automatically set to "VERBOSE" (see below)
+#DEBUG = True
+DEBUG = False
+
+#Verbosity level
+#VERBOSE = "QUIET"		#prints nothing except errors and warnings
+VERBOSE = "NORMAL"		#prints essential information
+#VERBOSE = "VERBOSE"	#prints information useful for debugging
+</code></pre>
+  </div>
+
+  </header>
+
+  <section id="section-items">
+    <h2 class="section-title" id="header-variables">Module variables</h2>
+      <div class="item">
+      <p id="params.ACTIONHEADERLINES" class="name">var <span class="ident">ACTIONHEADERLINES</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.ALLDATAHEADERLINES" class="name">var <span class="ident">ALLDATAHEADERLINES</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.DEBUG" class="name">var <span class="ident">DEBUG</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.EVENTSHEADERLINES" class="name">var <span class="ident">EVENTSHEADERLINES</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.EVENTS_FIRST_DATA_LINE" class="name">var <span class="ident">EVENTS_FIRST_DATA_LINE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.EXTERNALLOGDATAFOLDER" class="name">var <span class="ident">EXTERNALLOGDATAFOLDER</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.EYELOGDATAFOLDER" class="name">var <span class="ident">EYELOGDATAFOLDER</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.EYETRACKERTYPE" class="name">var <span class="ident">EYETRACKERTYPE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.FIXATIONHEADERLINES" class="name">var <span class="ident">FIXATIONHEADERLINES</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.FIXATION_HEADER_LINE" class="name">var <span class="ident">FIXATION_HEADER_LINE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.INCLUDE_HALF_FIXATIONS" class="name">var <span class="ident">INCLUDE_HALF_FIXATIONS</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.MAX_SEG_TIMEGAP" class="name">var <span class="ident">MAX_SEG_TIMEGAP</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.MEDIA_OFFSET" class="name">var <span class="ident">MEDIA_OFFSET</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.MINSEGSIZE" class="name">var <span class="ident">MINSEGSIZE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.MONOCULAR_EYE" class="name">var <span class="ident">MONOCULAR_EYE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.NUMBEROFEXTRAHEADERLINES" class="name">var <span class="ident">NUMBEROFEXTRAHEADERLINES</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.PUPIL_ADJUSTMENT" class="name">var <span class="ident">PUPIL_ADJUSTMENT</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.RAW_HEADER_LINE" class="name">var <span class="ident">RAW_HEADER_LINE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.SACCADE_HEADER_LINE" class="name">var <span class="ident">SACCADE_HEADER_LINE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.USER_EVENT_HEADER_LINE" class="name">var <span class="ident">USER_EVENT_HEADER_LINE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.VALIDITY_METHOD" class="name">var <span class="ident">VALIDITY_METHOD</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.VALID_PROP_THRESH" class="name">var <span class="ident">VALID_PROP_THRESH</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.VALID_SAMPLES_PROP_SACCADE" class="name">var <span class="ident">VALID_SAMPLES_PROP_SACCADE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.VALID_TIME_THRESH" class="name">var <span class="ident">VALID_TIME_THRESH</span></p>
+      
+  
+    <div class="desc"><p>Maximum gap size (ms) allowable in a segment with auto-partition option</p>
+<p>Auto-partition option is when EMDAT automatically splits the "Segment"s which have low sample
+quality, into two new sub "Segment"s discarding the largest gap of invalid samples for
+a "Segment". EMDAT will continue to perform the splitting on the Segments until there is not
+any gap larger than MAX_SEG_TIMEGAP left in the data.</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.VERBOSE" class="name">var <span class="ident">VERBOSE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.aoifeaturelist" class="name">var <span class="ident">aoifeaturelist</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.aoigeneralfeat" class="name">var <span class="ident">aoigeneralfeat</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.aoin" class="name">var <span class="ident">aoin</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.aoinames" class="name">var <span class="ident">aoinames</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.aoiproportion" class="name">var <span class="ident">aoiproportion</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.aoisequencefeat" class="name">var <span class="ident">aoisequencefeat</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.aoitransfrom" class="name">var <span class="ident">aoitransfrom</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.blink_threshold" class="name">var <span class="ident">blink_threshold</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="params.featurelist" class="name">var <span class="ident">featurelist</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+
+
+
+  </section>
+
+    </article>
+  <div class="clear"> </div>
+  <footer id="footer">
+    <p>
+      Documentation generated by
+      <a href="https://github.com/BurntSushi/pdoc">pdoc 0.3.2</a>
+    </p>
+
+    <p>pdoc is in the public domain with the
+      <a href="http://unlicense.org">UNLICENSE</a></p>
+
+    <p>Design by <a href="http://nadh.in">Kailash Nadh</a></p>
+  </footer>
+</div>
+</body>
+</html>

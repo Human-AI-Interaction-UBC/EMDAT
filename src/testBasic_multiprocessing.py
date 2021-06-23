@@ -7,7 +7,9 @@ Sample code to run EMDAT for a given experiment (multiprocessing version).
 @author: Sebastien Lalle (creator), Samad Kardan
 Institution: The University of British Columbia.
 """
-
+import sys
+sys.path.append('.')
+sys.path.append('./EMDAT_core')
 from multiprocessing import freeze_support, cpu_count
 from BasicParticipant_multiprocessing import *
 from EMDAT_core.Participant import export_features_all, write_features_tsv

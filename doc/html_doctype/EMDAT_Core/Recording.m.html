@@ -1,0 +1,2511 @@
+<!doctype html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+
+    <title>Recording API documentation</title>
+    <meta name="description" content="UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+Created on 2011-09-30
+
+Regcording class: h..." />
+
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
+  
+  <style type="text/css">
+  
+* {
+  box-sizing: border-box;
+}
+/*! normalize.css v1.1.1 | MIT License | git.io/normalize */
+
+/* ==========================================================================
+   HTML5 display definitions
+   ========================================================================== */
+
+/**
+ * Correct `block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+    display: block;
+}
+
+/**
+ * Correct `inline-block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+audio,
+canvas,
+video {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+
+audio:not([controls]) {
+    display: none;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Firefox 3, and Safari 4.
+ * Known issue: no IE 6 support.
+ */
+
+[hidden] {
+    display: none;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+/**
+ * 1. Prevent system color scheme's background color being used in Firefox, IE,
+ *    and Opera.
+ * 2. Prevent system color scheme's text color being used in Firefox, IE, and
+ *    Opera.
+ * 3. Correct text resizing oddly in IE 6/7 when body `font-size` is set using
+ *    `em` units.
+ * 4. Prevent iOS text size adjust after orientation change, without disabling
+ *    user zoom.
+ */
+
+html {
+    background: #fff; /* 1 */
+    color: #000; /* 2 */
+    font-size: 100%; /* 3 */
+    -webkit-text-size-adjust: 100%; /* 4 */
+    -ms-text-size-adjust: 100%; /* 4 */
+}
+
+/**
+ * Address `font-family` inconsistency between `textarea` and other form
+ * elements.
+ */
+
+html,
+button,
+input,
+select,
+textarea {
+    font-family: sans-serif;
+}
+
+/**
+ * Address margins handled incorrectly in IE 6/7.
+ */
+
+body {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Links
+   ========================================================================== */
+
+/**
+ * Address `outline` inconsistency between Chrome and other browsers.
+ */
+
+a:focus {
+    outline: thin dotted;
+}
+
+/**
+ * Improve readability when focused and also mouse hovered in all browsers.
+ */
+
+a:active,
+a:hover {
+    outline: 0;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+/**
+ * Address font sizes and margins set differently in IE 6/7.
+ * Address font sizes within `section` and `article` in Firefox 4+, Safari 5,
+ * and Chrome.
+ */
+
+h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin: 0.83em 0;
+}
+
+h3 {
+    font-size: 1.17em;
+    margin: 1em 0;
+}
+
+h4 {
+    font-size: 1em;
+    margin: 1.33em 0;
+}
+
+h5 {
+    font-size: 0.83em;
+    margin: 1.67em 0;
+}
+
+h6 {
+    font-size: 0.67em;
+    margin: 2.33em 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Safari 5, and Chrome.
+ */
+
+abbr[title] {
+    border-bottom: 1px dotted;
+}
+
+/**
+ * Address style set to `bolder` in Firefox 3+, Safari 4/5, and Chrome.
+ */
+
+b,
+strong {
+    font-weight: bold;
+}
+
+blockquote {
+    margin: 1em 40px;
+}
+
+/**
+ * Address styling not present in Safari 5 and Chrome.
+ */
+
+dfn {
+    font-style: italic;
+}
+
+/**
+ * Address differences between Firefox and other browsers.
+ * Known issue: no IE 6/7 normalization.
+ */
+
+hr {
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 6/7/8/9.
+ */
+
+mark {
+    background: #ff0;
+    color: #000;
+}
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+p,
+pre {
+    margin: 1em 0;
+}
+
+/**
+ * Correct font family set oddly in IE 6, Safari 4/5, and Chrome.
+ */
+
+code,
+kbd,
+pre,
+samp {
+    font-family: monospace, serif;
+    _font-family: 'courier new', monospace;
+    font-size: 1em;
+}
+
+/**
+ * Improve readability of pre-formatted text in all browsers.
+ */
+
+pre {
+    white-space: pre;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/**
+ * Address CSS quotes not supported in IE 6/7.
+ */
+
+q {
+    quotes: none;
+}
+
+/**
+ * Address `quotes` property not supported in Safari 4.
+ */
+
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+
+/**
+ * Address inconsistent and variable font size in all browsers.
+ */
+
+small {
+    font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+ */
+
+sub,
+sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sup {
+    top: -0.5em;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+/* ==========================================================================
+   Lists
+   ========================================================================== */
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+dl,
+menu,
+ol,
+ul {
+    margin: 1em 0;
+}
+
+dd {
+    margin: 0 0 0 40px;
+}
+
+/**
+ * Address paddings set differently in IE 6/7.
+ */
+
+menu,
+ol,
+ul {
+    padding: 0 0 0 40px;
+}
+
+/**
+ * Correct list images handled incorrectly in IE 7.
+ */
+
+nav ul,
+nav ol {
+    list-style: none;
+    list-style-image: none;
+}
+
+/* ==========================================================================
+   Embedded content
+   ========================================================================== */
+
+/**
+ * 1. Remove border when inside `a` element in IE 6/7/8/9 and Firefox 3.
+ * 2. Improve image quality when scaled in IE 7.
+ */
+
+img {
+    border: 0; /* 1 */
+    -ms-interpolation-mode: bicubic; /* 2 */
+}
+
+/**
+ * Correct overflow displayed oddly in IE 9.
+ */
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Figures
+   ========================================================================== */
+
+/**
+ * Address margin not present in IE 6/7/8/9, Safari 5, and Opera 11.
+ */
+
+figure {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+
+/**
+ * Correct margin displayed oddly in IE 6/7.
+ */
+
+form {
+    margin: 0;
+}
+
+/**
+ * Define consistent border, margin, and padding.
+ */
+
+fieldset {
+    border: 1px solid #c0c0c0;
+    margin: 0 2px;
+    padding: 0.35em 0.625em 0.75em;
+}
+
+/**
+ * 1. Correct color not being inherited in IE 6/7/8/9.
+ * 2. Correct text not wrapping in Firefox 3.
+ * 3. Correct alignment displayed oddly in IE 6/7.
+ */
+
+legend {
+    border: 0; /* 1 */
+    padding: 0;
+    white-space: normal; /* 2 */
+    *margin-left: -7px; /* 3 */
+}
+
+/**
+ * 1. Correct font size not being inherited in all browsers.
+ * 2. Address margins set differently in IE 6/7, Firefox 3+, Safari 5,
+ *    and Chrome.
+ * 3. Improve appearance and consistency in all browsers.
+ */
+
+button,
+input,
+select,
+textarea {
+    font-size: 100%; /* 1 */
+    margin: 0; /* 2 */
+    vertical-align: baseline; /* 3 */
+    *vertical-align: middle; /* 3 */
+}
+
+/**
+ * Address Firefox 3+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+
+button,
+input {
+    line-height: normal;
+}
+
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Chrome, Safari 5+, and IE 6+.
+ * Correct `select` style inheritance in Firefox 4+ and Opera.
+ */
+
+button,
+select {
+    text-transform: none;
+}
+
+/**
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Correct inability to style clickable `input` types in iOS.
+ * 3. Improve usability and consistency of cursor style between image-type
+ *    `input` and others.
+ * 4. Remove inner spacing in IE 7 without affecting normal text inputs.
+ *    Known issue: inner spacing remains in IE 6.
+ */
+
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+    -webkit-appearance: button; /* 2 */
+    cursor: pointer; /* 3 */
+    *overflow: visible;  /* 4 */
+}
+
+/**
+ * Re-set default cursor for disabled elements.
+ */
+
+button[disabled],
+html input[disabled] {
+    cursor: default;
+}
+
+/**
+ * 1. Address box sizing set to content-box in IE 8/9.
+ * 2. Remove excess padding in IE 8/9.
+ * 3. Remove excess padding in IE 7.
+ *    Known issue: excess padding remains in IE 6.
+ */
+
+input[type="checkbox"],
+input[type="radio"] {
+    box-sizing: border-box; /* 1 */
+    padding: 0; /* 2 */
+    *height: 13px; /* 3 */
+    *width: 13px; /* 3 */
+}
+
+/**
+ * 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome.
+ * 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome
+ *    (include `-moz` to future-proof).
+ */
+
+input[type="search"] {
+    -webkit-appearance: textfield; /* 1 */
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box; /* 2 */
+    box-sizing: content-box;
+}
+
+/**
+ * Remove inner padding and search cancel button in Safari 5 and Chrome
+ * on OS X.
+ */
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+}
+
+/**
+ * Remove inner padding and border in Firefox 3+.
+ */
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+/**
+ * 1. Remove default vertical scrollbar in IE 6/7/8/9.
+ * 2. Improve readability and alignment in all browsers.
+ */
+
+textarea {
+    overflow: auto; /* 1 */
+    vertical-align: top; /* 2 */
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+/**
+ * Remove most spacing between table cells.
+ */
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+  </style>
+
+  <style type="text/css">
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+  }
+  body {
+    background: #fff;
+    font-family: "Source Sans Pro", "Helvetica Neueue", Helvetica, sans;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.6em;
+  }
+  #content {
+    width: 70%;
+    max-width: 850px;
+    float: left;
+    padding: 30px 60px;
+    border-left: 1px solid #ddd;
+  }
+  #sidebar {
+    width: 25%;
+    float: left;
+    padding: 30px;
+    overflow: hidden;
+  }
+  #nav {
+    font-size: 130%;
+    margin: 0 0 15px 0;
+  }
+
+  #top {
+    display: block;
+    position: fixed;
+    bottom: 5px;
+    left: 5px;
+    font-size: .85em;
+    text-transform: uppercase;
+  }
+
+  #footer {
+    font-size: .75em;
+    padding: 5px 30px;
+    border-top: 1px solid #ddd;
+    text-align: right;
+  }
+    #footer p {
+      margin: 0 0 0 30px;
+      display: inline-block;
+    }
+
+  h1, h2, h3, h4, h5 {
+    font-weight: 300;
+  }
+  h1 {
+    font-size: 2.5em;
+    line-height: 1.1em;
+    margin: 0 0 .50em 0;
+  }
+
+  h2 {
+    font-size: 1.75em;
+    margin: 1em 0 .50em 0;
+  }
+
+  h3 {
+    margin: 25px 0 10px 0;
+  }
+
+  h4 {
+    margin: 0;
+    font-size: 105%;
+  }
+
+  a {
+    color: #058;
+    text-decoration: none;
+    transition: color .3s ease-in-out;
+  }
+
+  a:hover {
+    color: #e08524;
+    transition: color .3s ease-in-out;
+  }
+
+  pre, code, .mono, .name {
+    font-family: "Ubuntu Mono", "Cousine", "DejaVu Sans Mono", monospace;
+  }
+
+  .title .name {
+    font-weight: bold;
+  }
+  .section-title {
+    margin-top: 2em;
+  }
+  .ident {
+    color: #900;
+  }
+
+  code {
+    background: #f9f9f9;
+  } 
+
+  pre {
+    background: #fefefe;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 0 #f3f3f3;
+    margin: 0 30px;
+    padding: 15px 30px;
+  }
+
+  .codehilite {
+    margin: 0 30px 10px 30px;
+  }
+
+    .codehilite pre {
+      margin: 0;
+    }
+    .codehilite .err { background: #ff3300; color: #fff !important; } 
+
+  table#module-list {
+    font-size: 110%;
+  }
+
+    table#module-list tr td:first-child {
+      padding-right: 10px;
+      white-space: nowrap;
+    }
+
+    table#module-list td {
+      vertical-align: top;
+      padding-bottom: 8px;
+    }
+
+      table#module-list td p {
+        margin: 0 0 7px 0;
+      }
+
+  .def {
+    display: table;
+  }
+
+    .def p {
+      display: table-cell;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .def p:first-child {
+      white-space: nowrap;
+    }
+
+    .def p:last-child {
+      width: 100%;
+    }
+
+
+  #index {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+    ul#index .class_name {
+      /* font-size: 110%; */
+      font-weight: bold;
+    }
+    #index ul {
+      margin: 0;
+    }
+
+  .item {
+    margin: 0 0 15px 0;
+  }
+
+    .item .class {
+      margin: 0 0 25px 30px;
+    }
+
+      .item .class ul.class_list {
+        margin: 0 0 20px 0;
+      }
+
+    .item .name {
+      background: #fafafa;
+      margin: 0;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 3px;
+      display: inline-block;
+      min-width: 40%;
+    }
+      .item .name:hover {
+        background: #f6f6f6;
+      }
+
+    .item .empty_desc {
+      margin: 0 0 5px 0;
+      padding: 0;
+    }
+
+    .item .inheritance {
+      margin: 3px 0 0 30px;
+    }
+
+    .item .inherited {
+      color: #666;
+    }
+
+    .item .desc {
+      padding: 0 8px;
+      margin: 0;
+    }
+
+      .item .desc p {
+        margin: 0 0 10px 0;
+      }
+
+    .source_cont {
+      margin: 0;
+      padding: 0;
+    }
+
+    .source_link a {
+      background: #ffc300;
+      font-weight: 400;
+      font-size: .75em;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 1px 1px 0 #f4b700;
+      
+      padding: 3px 8px;
+      border-radius: 2px;
+      transition: background .3s ease-in-out;
+    }
+      .source_link a:hover {
+        background: #FF7200;
+        text-shadow: none;
+        transition: background .3s ease-in-out;
+      }
+
+    .source {
+      display: none;
+      max-height: 600px;
+      overflow-y: scroll;
+      margin-bottom: 15px;
+    }
+
+      .source .codehilite {
+        margin: 0;
+      }
+
+  .desc h1, .desc h2, .desc h3 {
+    font-size: 100% !important;
+  }
+  .clear {
+    clear: both;
+  }
+
+  @media all and (max-width: 950px) {
+    #sidebar {
+      width: 35%;
+    }
+    #content {
+      width: 65%;
+    }
+  }
+  @media all and (max-width: 650px) {
+    #top {
+      display: none;
+    }
+    #sidebar {
+      float: none;
+      width: auto;
+    }
+    #content {
+      float: none;
+      width: auto;
+      padding: 30px;
+    }
+
+    #index ul {
+      padding: 0;
+      margin-bottom: 15px;
+    }
+    #index ul li {
+      display: inline-block;
+      margin-right: 30px;
+    }
+    #footer {
+      text-align: left;
+    }
+    #footer p {
+      display: block;
+      margin: inherit;
+    }
+  }
+
+  /*****************************/
+
+  </style>
+
+
+  <style type="text/css">
+  
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   These examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+    /* Style adjustments for viewports that meet the condition */
+}
+
+@media print,
+       (-o-min-device-pixel-ratio: 5/4),
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 120dpi) {
+    /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid required HTTP connection: h5bp.com/r
+   ========================================================================== */
+
+@media print {
+    * {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster: h5bp.com/s */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links for images, or javascript/internal links
+     */
+
+    .ir a:after,
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group; /* h5bp.com/t */
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
+
+  </style>
+
+  <script type="text/javascript">
+  function toggle(id, $link) {
+    $node = document.getElementById(id);
+    if (!$node)
+    return;
+    if (!$node.style.display || $node.style.display == 'none') {
+    $node.style.display = 'block';
+    $link.innerHTML = 'Hide source &nequiv;';
+    } else {
+    $node.style.display = 'none';
+    $link.innerHTML = 'Show source &equiv;';
+    }
+  }
+  </script>
+</head>
+<body>
+<a href="#" id="top">Top</a>
+
+<div id="container">
+    
+  
+  <div id="sidebar">
+    <h1>Index</h1>
+    <ul id="index">
+
+    <li class="set"><h3><a href="#header-functions">Functions</a></h3>
+      
+  <ul>
+    <li class="mono"><a href="#Recording.get_distance">get_distance</a></li>
+    <li class="mono"><a href="#Recording.get_pupil_size">get_pupil_size</a></li>
+    <li class="mono"><a href="#Recording.get_pupil_velocity">get_pupil_velocity</a></li>
+    <li class="mono"><a href="#Recording.get_saccade_acceleration">get_saccade_acceleration</a></li>
+    <li class="mono"><a href="#Recording.get_saccade_distance">get_saccade_distance</a></li>
+    <li class="mono"><a href="#Recording.read_aoilines">read_aoilines</a></li>
+    <li class="mono"><a href="#Recording.read_aois">read_aois</a></li>
+    <li class="mono"><a href="#Recording.read_rest_pupil_sizes">read_rest_pupil_sizes</a></li>
+    <li class="mono"><a href="#Recording.read_segs">read_segs</a></li>
+  </ul>
+
+    </li>
+
+    <li class="set"><h3><a href="#header-classes">Classes</a></h3>
+      <ul>
+        <li class="mono">
+        <span class="class_name"><a href="#Recording.Recording">Recording</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#Recording.Recording.__init__">__init__</a></li>
+    <li class="mono"><a href="#Recording.Recording.clean_memory">clean_memory</a></li>
+    <li class="mono"><a href="#Recording.Recording.process_rec">process_rec</a></li>
+    <li class="mono"><a href="#Recording.Recording.read_all_data">read_all_data</a></li>
+    <li class="mono"><a href="#Recording.Recording.read_event_data">read_event_data</a></li>
+    <li class="mono"><a href="#Recording.Recording.read_fixation_data">read_fixation_data</a></li>
+    <li class="mono"><a href="#Recording.Recording.read_saccade_data">read_saccade_data</a></li>
+  </ul>
+
+        </li>
+      </ul>
+    </li>
+
+    </ul>
+  </div>
+
+    <article id="content">
+      
+  
+
+  
+
+
+  <header id="section-intro">
+  <h1 class="title"><span class="name">Recording</span> module</h1>
+  <p>UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+Created on 2011-09-30</p>
+<p>Regcording class: hold all the data from one recording (i.e, one complete experiment session)
+for one participant</p>
+<p>Authors: Nicholas FitzGerald (creator), Samad Kardan, Sebastien Lalle, Mike Wu.
+Institution: The University of British Columbia.</p>
+  
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording', this);">Show source &equiv;</a></p>
+  <div id="source-Recording" class="source">
+    <pre><code>"""
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+Created on 2011-09-30
+
+Regcording class: hold all the data from one recording (i.e, one complete experiment session)
+for one participant
+
+Authors: Nicholas FitzGerald (creator), Samad Kardan, Sebastien Lalle, Mike Wu.
+Institution: The University of British Columbia.
+"""
+import sys
+sys.path.append('.')
+sys.path.append('./EMDAT_core')
+from abc import ABCMeta, abstractmethod
+from EMDAT_core.data_structures import *
+from EMDAT_core.Scene import *
+from EMDAT_core.AOI import *
+from EMDAT_core.utils import *
+
+
+class Recording:
+    __metaclass__ = ABCMeta
+
+    def __init__(self, all_file, fixation_file, saccade_file=None, event_file=None, media_offset=(0, 0)):
+        """
+        :param all_file: path to file that contains all gaze points
+        :param fixation_file :path to file that contains all gaze points
+        :param event_file :path to file that contains all events
+        :param media_offset: the coordinates of the top left corner of the window showing the interface under study.
+        (0,0) if the interface was in full screen (default value).
+        """
+        self.media_offset = media_offset
+
+        self.all_data = self.read_all_data(all_file)
+        if len(self.all_data) == 0:
+            raise Exception("The file '" + all_file + "' has no samples!")
+
+        self.fix_data = self.read_fixation_data(fixation_file)
+        if len(self.fix_data) == 0:
+            raise Exception("The file '" + fixation_file + "' has no fixations!")
+
+        if saccade_file is not None:
+            self.sac_data = self.read_saccade_data(saccade_file)
+            if len(self.sac_data) == 0:
+                raise Exception("The file '" + saccade_file + "' has no saccades!")
+
+        else:
+            self.sac_data = None
+
+        if event_file is not None:
+            self.event_data = self.read_event_data(event_file)
+            if len(self.event_data) == 0:
+                raise Exception("The file '" + event_file + "' has no events!")
+        else:
+            self.event_data = None
+
+    @abstractmethod
+    def read_all_data(self, all_file):
+        """ Read the data file that contains all gaze points.
+
+        :param all_file: path to file that contains all gaze points
+        :return: a list of Datapoints
+        :rtype: list[Datapoint]
+        """
+        pass
+
+    @abstractmethod
+    def read_fixation_data(self, fixation_file):
+        """ Read the data file that contains all fixations.
+
+        :param fixation_file :path to file that contains all fixations points
+        :return: a list of Fixations
+        :rtype: list[Fixation]
+        """
+        pass
+
+    @abstractmethod
+    def read_saccade_data(self, saccade_file):
+        """ Read the data file that contains all saccades.
+
+        :param saccade_file :path to file that contains all saccade_file points
+        :return: a list of Saccades
+        :rtype: list[Saccade]
+        """
+        pass
+
+    @abstractmethod
+    def read_event_data(self, event_file):
+        """ Read the data file that contains all events.
+
+        :param event_file :path to file that contains all events
+        :return: a list of Events
+        :rtype: list[Event]
+        """
+        pass
+
+    def process_rec(self, segfile=None, scenelist=None, aoifile=None,
+                    aoilist=None, prune_length=None, require_valid_segs=True,
+                    auto_partition_low_quality_segments=False, rpsdata=None, export_pupilinfo=False):
+        """Processes the data for one recording (i.e, one complete experiment session)
+
+        Args:
+            segfile: If not None, a string containing the name of the segfile
+                with segment definitions in following format:
+                Scene_ID<tab>Segment_ID<tab>start time<tab>end time<newline>
+                e.g.:
+                s1    seg1    0    5988013
+                With one segment definition per line
+            scenelist: If not None, a list of Scene objects
+            *Note: At least one of segfile and scenelist should be not None
+
+            aoifile: If not None, a string containing the name of the aoifile
+                with definitions of the "AOI"s.
+            aoilist: If not None, a list of "AOI"s.
+            *Note:  if aoifile is not None, aoilist will be ignored
+                    if both aoifile and aoilist are none AOIs are ignored
+
+            prune_length: If not None, an integer that specifies the time
+                interval (in ms) from the beginning of each Segment in which
+                samples are considered in calculations.  This can be used if,
+                for example, you only wish to consider data in the first
+                1000 ms of each Segment. In this case (prune_length = 1000),
+                all data beyond the first 1000ms of the start of the "Segment"s
+                will be disregarded.
+
+            require_valid_segs: a boolean determining whether invalid "Segment"s
+                will be ignored when calculating the features or not. default = True
+
+            auto_partition_low_quality_segments: a boolean flag determining whether
+                EMDAT should automatically split the "Segment"s which have low sample quality
+                into two new sub "Segment"s discarding the largest invalid sample gap in
+                the "Segment". default = False
+
+            rpsdata: a dictionary with rest pupil sizes: (scene name is a key, rest pupil size is a value)
+        Returns:
+            a list of Scene objects for this Recording
+            a list of Segment objects for this recording. This is an aggregated list
+            of the "Segment"s of all "Scene"s in the Recording
+        """
+
+        if segfile is not None:
+            scenelist = read_segs(segfile)
+            if params.VERBOSE != "QUIET":
+                print("Done reading the segments!")
+        elif scenelist is None:
+            print("Error in scene file.")
+
+        if aoifile is not None:
+            aoilist = read_aois(aoifile)
+            if params.VERBOSE != "QUIET":
+                print("Done reading the AOIs!")
+        elif aoilist is None:
+            aoilist = []
+            print("Warning: No AOIs defined!")
+
+        scenes = []
+        for scid, sc in scenelist.items():
+            if params.VERBOSE != "QUIET":
+                print("Preparing scene:" + str(scid))
+            if params.DEBUG or params.VERBOSE == "VERBOSE":
+                print("len(all_data)", len(self.all_data))
+            try:
+                # get rest pupil size data
+                if rpsdata is not None:
+                    if scid in rpsdata.keys():
+                        scrpsdata = rpsdata[scid]
+                    else:
+                        scrpsdata = 0
+                        if params.DEBUG:
+                            print(rpsdata.keys())
+                            raise Exception("Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
+                        else:
+                            print("Warning: Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
+                            pass
+                else:
+                    scrpsdata = 0
+                new_scene = Scene(scid, sc, self.all_data, self.fix_data, saccade_data = self.sac_data, event_data=self.event_data, aoilist=aoilist,
+                                  prune_length=prune_length,
+                                  require_valid=require_valid_segs,
+                                  auto_partition=auto_partition_low_quality_segments, rest_pupil_size=scrpsdata,
+                                  export_pupilinfo=export_pupilinfo)
+            except Exception as e:
+                warn(str(e))
+                new_scene = None
+                if params.DEBUG:
+                    raise
+                else:
+                    pass
+            if new_scene:
+                scenes.append(new_scene)
+        segs = []
+        for sc in scenes:
+            segs.extend(sc.segments)
+        return segs, scenes
+
+
+    def clean_memory(self):
+        self.all_data = []
+        self.fix_data = []
+        self.sac_data = []
+        self.event_data = []
+
+def read_segs(segfile):
+    """Returns a dict with scid as the key and segments as value from a '.seg' file.
+
+    A '.seg' file consists of a set of lines with the following format:
+    scene_name[\t]segment_name[\t]start_time[\t]end_time[\n]
+
+    scene_name is the id of the Scene that this Segment belongs to,
+    segment_name is the id of the Segment,
+    and start_time and end_time determines the time interval for the Segment
+
+    Args:
+        segfile: A string containing the name of the '.seg' file
+
+    Returns:
+        a dict with scid as the key and segments as value
+    """
+    scenes = {}
+    with open(segfile, 'r') as f:
+        seglines = f.readlines()
+
+    for l in seglines:
+        l = l.strip()
+        l = l.split('\t')
+        if l[0] in scenes:
+            scenes[l[0]].append((l[1], int(l[2]), int(l[3])))
+        else:
+            scenes[l[0]] = [(l[1], int(l[2]), int(l[3]))]
+    return scenes
+
+
+def read_aois(aoifile):
+    """Returns a list of "AOI"s read from a '.aoi' file.
+
+    The '.aoi' files have pairs of lines of the form:
+    aoiname[tab]point1x,point1y[tab]point2x,point2y[tab]...[new line]
+    #[tab]start1,end1[tab]...[new line]
+
+    The first line determines name of the AOI and the coordinates of each vertex of
+    the polygon that determines the boundaries of the AOI.
+    The second line which starts with a '#' is optional and determines the time
+    intervals when the AOI is active. If the second line does not exist the AOI will
+    be active throughout the whole session (global AOI).
+    *Note: If the AOIs are exported from Tobii software the '.aoi' file will only have the
+    first line for each AOI and you need to override this method to generate AOIs that are
+    active only at certain times (non-global AOI).
+
+    Args:
+        aoifile: A string containing the name of the '.aoi' file
+
+    Returns:
+        a list of "AOI"s
+    """
+    with open(aoifile, 'r') as f:
+        aoilines = f.readlines()
+
+    return read_aoilines(aoilines)
+
+
+def read_aoilines(aoilines):
+    """
+    Args:
+        aoilines: List of lines from a '.aoi' file
+
+    Returns:
+        list of AOIs
+    """
+    aoilist = []
+    polyin = []
+    last_aid = ''
+
+    for line in aoilines:
+        chunks = line.strip().split('\t')
+        if chunks[0].startswith('#'):  # second line
+            if polyin:
+                seq = []
+                for v in chunks[1:]:
+                    seq.append((eval(v)))
+
+                existing_aoi = False
+                # first we check if the AOI doesn't already exist (it would be a dynamic boundaries AOI)
+                for exist_aoi in aoilist:
+                    if last_aid == exist_aoi.aid:
+                        existing_aoi = True
+                        # dynamic boundaries AOI: we simply add the new shape in the list of polyin and seq
+                        exist_aoi.polyin.append(polyin)
+                        exist_aoi.polyout.append([])
+                        exist_aoi.timeseq.append(seq)
+
+                if not existing_aoi: # new AOI
+                    aoi = AOI(last_aid, [polyin], [[]], [seq])
+                    aoilist.append(aoi)
+                polyin = []
+            else:
+                raise Exception('error in the AOI file')
+        else:
+            if polyin:  # global AOI
+
+                existing_aoi = False
+                # first we check if the AOI doesn't already exist (it would be a dynamic boundaries AOI)
+                for exist_aoi in aoilist:
+                    if last_aid == exist_aoi.aid:
+                        existing_aoi = True
+                        # dynamic boundaries AOI: we simply add the new shape in the list of polyin and seq
+                        exist_aoi.polyin.append(polyin)
+                        exist_aoi.polyout.append([])
+                        exist_aoi.timeseq.append([])
+
+                if not existing_aoi: # new AOI
+                    aoi = AOI(last_aid, [polyin], [[]], [[]])
+                    aoilist.append(aoi)
+                polyin = []
+
+            last_aid = chunks[0]  # first line
+            for v in chunks[1:]:
+                polyin.append((eval(v)))
+
+    if polyin:  # last (global) AOI
+
+        existing_aoi = False
+        # first we check if the AOI doesn't already exist (it would be a dynamic boundaries AOI)
+        for exist_aoi in aoilist:
+            if last_aid == exist_aoi.aid:
+                existing_aoi = True
+                # dynamic boundaries AOI: we simply add the new shape in the list of polyin and seq
+                exist_aoi.polyin.append(polyin)
+                exist_aoi.polyout.append([])
+                exist_aoi.timeseq.append([])
+
+        if not existing_aoi: # new AOI
+            aoi = AOI(last_aid, [polyin], [[]], [[]])
+            aoilist.append(aoi)
+
+    return aoilist
+
+
+def read_rest_pupil_sizes(rpsfile):
+    """
+    Returns a dictionary of rest pupil sizes for all scenes if rpsfile is provided. None otherwise
+    The input file has the following format:
+        pid\t<scene name 1>\t<scene name 2>....\n
+        <pid 1>\t<rest pupil size 1>\t<rest pupil size 2>
+
+    Args:
+        rpsfile: a string containing the name of the '.tsv' file
+            with rest pupil sizes for all partiicpants and all scenes.
+
+    Returns:
+        a dictionary of rest pupil sizes. None otherwise
+
+    """
+    if rpsfile != None:
+        with open(rpsfile, 'r') as f:
+            lines = f.readlines()
+        rpsdic = {}
+        import re
+        scenelist = re.findall('\w+', lines[0])
+        for line in lines[1:]:
+            linelist = re.findall('\w+', line)
+            pid = cast_int(linelist[0])
+            if pid == None: #if casting didn't work
+                pid = linelist[0]
+            rpsdic[pid] = {}
+            for scene, rpsvalue in zip(scenelist[1:], linelist[1:]):
+                rpsdic[pid][scene] = cast_int(rpsvalue)
+
+        return rpsdic
+    else:
+        return None
+
+
+def get_pupil_size(pupilleft, pupilright):
+    '''
+    If recordings for both eyes are available, return their average,
+    else return value for a recorded eye (if any)
+    Args:
+        pupilleft - recording of pupil size on left eye
+        pupilright - recording of pupil size on right eye
+    Returns:
+        pupil size to generate pupil features with.
+    '''
+    if pupilleft is None and pupilright is None:
+        return -1
+    if pupilleft is None:
+        return pupilright
+    if pupilright is None:
+        return pupilleft
+    return (pupilleft + pupilright) / 2.0
+
+
+def get_pupil_velocity(last_pupilleft, last_pupilright, pupilleft, pupilright, time):
+    if (last_pupilleft is None or pupilleft is None) and (last_pupilright is None or pupilright is None):
+        return -1
+    if (last_pupilleft is None or pupilleft is None):
+        return abs(pupilright - last_pupilright) / time
+    if (last_pupilright is None or pupilright is None):
+        return abs(pupilleft - last_pupilleft) / time
+    return abs( (pupilleft + pupilright) / 2 - (last_pupilleft + last_pupilright) / 2 ) / time
+
+
+def get_distance(distanceleft, distanceright):
+    if distanceleft is None and distanceright is None:
+        return -1
+    if distanceleft is None:
+        return distanceright
+    if distanceright is None:
+        return distanceleft
+    return (distanceleft + distanceright) / 2.0
+
+
+def get_saccade_distance(saccade_gaze_points):
+    distance = 0.0
+    try:
+        for i in range(0, len(saccade_gaze_points)-1):
+            (timestamp1, point1x, point1y) = saccade_gaze_points[i]
+            (timestamp2, point2x, point2y) = saccade_gaze_points[i+1]
+            distance += float(math.sqrt( float(math.pow(point1x - point2x, 2) + math.pow(point1y - point2y, 2)) ))
+    except Exception as e:
+        warn(str(e))
+
+    return (distance)
+
+
+def get_saccade_acceleration(saccade_gaze_points):
+    mean_accel = 0
+    prev_temp_speed = 0 #initial speed = 0
+    try:
+	    for i in range(0, len(saccade_gaze_points)-1):
+	        (timestamp1, point1x, point1y) = saccade_gaze_points[i]
+	        (timestamp2, point2x, point2y) = saccade_gaze_points[i+1]
+	        if i+1 == len(saccade_gaze_points)-1:
+	            temp_speed = 0
+	        else:
+	            temp_speed = math.sqrt(math.pow(point1x - point2x, 2) + math.pow(point1y - point2y, 2))
+	        mean_accel += (temp_speed-prev_temp_speed) / (timestamp2-timestamp1)
+	        prev_temp_speed = temp_speed
+		#last gaze point
+    except Exception as e:
+	    warn(str(e))
+    return (mean_accel / (float(len(saccade_gaze_points)-1)) )
+</code></pre>
+  </div>
+
+  </header>
+
+  <section id="section-items">
+
+    <h2 class="section-title" id="header-functions">Functions</h2>
+      
+  <div class="item">
+    <div class="name def" id="Recording.get_distance">
+    <p>def <span class="ident">get_distance</span>(</p><p>distanceleft, distanceright)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.get_distance', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.get_distance" class="source">
+    <pre><code>def get_distance(distanceleft, distanceright):
+    if distanceleft is None and distanceright is None:
+        return -1
+    if distanceleft is None:
+        return distanceright
+    if distanceright is None:
+        return distanceleft
+    return (distanceleft + distanceright) / 2.0
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="Recording.get_pupil_size">
+    <p>def <span class="ident">get_pupil_size</span>(</p><p>pupilleft, pupilright)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>If recordings for both eyes are available, return their average,
+else return value for a recorded eye (if any)
+Args:
+    pupilleft - recording of pupil size on left eye
+    pupilright - recording of pupil size on right eye
+Returns:
+    pupil size to generate pupil features with.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.get_pupil_size', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.get_pupil_size" class="source">
+    <pre><code>def get_pupil_size(pupilleft, pupilright):
+    '''
+    If recordings for both eyes are available, return their average,
+    else return value for a recorded eye (if any)
+    Args:
+        pupilleft - recording of pupil size on left eye
+        pupilright - recording of pupil size on right eye
+    Returns:
+        pupil size to generate pupil features with.
+    '''
+    if pupilleft is None and pupilright is None:
+        return -1
+    if pupilleft is None:
+        return pupilright
+    if pupilright is None:
+        return pupilleft
+    return (pupilleft + pupilright) / 2.0
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="Recording.get_pupil_velocity">
+    <p>def <span class="ident">get_pupil_velocity</span>(</p><p>last_pupilleft, last_pupilright, pupilleft, pupilright, time)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.get_pupil_velocity', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.get_pupil_velocity" class="source">
+    <pre><code>def get_pupil_velocity(last_pupilleft, last_pupilright, pupilleft, pupilright, time):
+    if (last_pupilleft is None or pupilleft is None) and (last_pupilright is None or pupilright is None):
+        return -1
+    if (last_pupilleft is None or pupilleft is None):
+        return abs(pupilright - last_pupilright) / time
+    if (last_pupilright is None or pupilright is None):
+        return abs(pupilleft - last_pupilleft) / time
+    return abs( (pupilleft + pupilright) / 2 - (last_pupilleft + last_pupilright) / 2 ) / time
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="Recording.get_saccade_acceleration">
+    <p>def <span class="ident">get_saccade_acceleration</span>(</p><p>saccade_gaze_points)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.get_saccade_acceleration', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.get_saccade_acceleration" class="source">
+    <pre><code>def get_saccade_acceleration(saccade_gaze_points):
+    mean_accel = 0
+    prev_temp_speed = 0 #initial speed = 0
+    try:
+	    for i in range(0, len(saccade_gaze_points)-1):
+	        (timestamp1, point1x, point1y) = saccade_gaze_points[i]
+	        (timestamp2, point2x, point2y) = saccade_gaze_points[i+1]
+	        if i+1 == len(saccade_gaze_points)-1:
+	            temp_speed = 0
+	        else:
+	            temp_speed = math.sqrt(math.pow(point1x - point2x, 2) + math.pow(point1y - point2y, 2))
+	        mean_accel += (temp_speed-prev_temp_speed) / (timestamp2-timestamp1)
+	        prev_temp_speed = temp_speed
+		#last gaze point
+    except Exception as e:
+	    warn(str(e))
+    return (mean_accel / (float(len(saccade_gaze_points)-1)) )
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="Recording.get_saccade_distance">
+    <p>def <span class="ident">get_saccade_distance</span>(</p><p>saccade_gaze_points)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.get_saccade_distance', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.get_saccade_distance" class="source">
+    <pre><code>def get_saccade_distance(saccade_gaze_points):
+    distance = 0.0
+    try:
+        for i in range(0, len(saccade_gaze_points)-1):
+            (timestamp1, point1x, point1y) = saccade_gaze_points[i]
+            (timestamp2, point2x, point2y) = saccade_gaze_points[i+1]
+            distance += float(math.sqrt( float(math.pow(point1x - point2x, 2) + math.pow(point1y - point2y, 2)) ))
+    except Exception as e:
+        warn(str(e))
+
+    return (distance)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="Recording.read_aoilines">
+    <p>def <span class="ident">read_aoilines</span>(</p><p>aoilines)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Args:
+    aoilines: List of lines from a '.aoi' file</p>
+<p>Returns:
+    list of AOIs</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.read_aoilines', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.read_aoilines" class="source">
+    <pre><code>def read_aoilines(aoilines):
+    """
+    Args:
+        aoilines: List of lines from a '.aoi' file
+
+    Returns:
+        list of AOIs
+    """
+    aoilist = []
+    polyin = []
+    last_aid = ''
+
+    for line in aoilines:
+        chunks = line.strip().split('\t')
+        if chunks[0].startswith('#'):  # second line
+            if polyin:
+                seq = []
+                for v in chunks[1:]:
+                    seq.append((eval(v)))
+
+                existing_aoi = False
+                # first we check if the AOI doesn't already exist (it would be a dynamic boundaries AOI)
+                for exist_aoi in aoilist:
+                    if last_aid == exist_aoi.aid:
+                        existing_aoi = True
+                        # dynamic boundaries AOI: we simply add the new shape in the list of polyin and seq
+                        exist_aoi.polyin.append(polyin)
+                        exist_aoi.polyout.append([])
+                        exist_aoi.timeseq.append(seq)
+
+                if not existing_aoi: # new AOI
+                    aoi = AOI(last_aid, [polyin], [[]], [seq])
+                    aoilist.append(aoi)
+                polyin = []
+            else:
+                raise Exception('error in the AOI file')
+        else:
+            if polyin:  # global AOI
+
+                existing_aoi = False
+                # first we check if the AOI doesn't already exist (it would be a dynamic boundaries AOI)
+                for exist_aoi in aoilist:
+                    if last_aid == exist_aoi.aid:
+                        existing_aoi = True
+                        # dynamic boundaries AOI: we simply add the new shape in the list of polyin and seq
+                        exist_aoi.polyin.append(polyin)
+                        exist_aoi.polyout.append([])
+                        exist_aoi.timeseq.append([])
+
+                if not existing_aoi: # new AOI
+                    aoi = AOI(last_aid, [polyin], [[]], [[]])
+                    aoilist.append(aoi)
+                polyin = []
+
+            last_aid = chunks[0]  # first line
+            for v in chunks[1:]:
+                polyin.append((eval(v)))
+
+    if polyin:  # last (global) AOI
+
+        existing_aoi = False
+        # first we check if the AOI doesn't already exist (it would be a dynamic boundaries AOI)
+        for exist_aoi in aoilist:
+            if last_aid == exist_aoi.aid:
+                existing_aoi = True
+                # dynamic boundaries AOI: we simply add the new shape in the list of polyin and seq
+                exist_aoi.polyin.append(polyin)
+                exist_aoi.polyout.append([])
+                exist_aoi.timeseq.append([])
+
+        if not existing_aoi: # new AOI
+            aoi = AOI(last_aid, [polyin], [[]], [[]])
+            aoilist.append(aoi)
+
+    return aoilist
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="Recording.read_aois">
+    <p>def <span class="ident">read_aois</span>(</p><p>aoifile)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns a list of "AOI"s read from a '.aoi' file.</p>
+<p>The '.aoi' files have pairs of lines of the form:
+aoiname[tab]point1x,point1y[tab]point2x,point2y[tab]...[new line]</p>
+<h1>[tab]start1,end1[tab]...[new line]</h1>
+<p>The first line determines name of the AOI and the coordinates of each vertex of
+the polygon that determines the boundaries of the AOI.
+The second line which starts with a '#' is optional and determines the time
+intervals when the AOI is active. If the second line does not exist the AOI will
+be active throughout the whole session (global AOI).
+*Note: If the AOIs are exported from Tobii software the '.aoi' file will only have the
+first line for each AOI and you need to override this method to generate AOIs that are
+active only at certain times (non-global AOI).</p>
+<p>Args:
+    aoifile: A string containing the name of the '.aoi' file</p>
+<p>Returns:
+    a list of "AOI"s</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.read_aois', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.read_aois" class="source">
+    <pre><code>def read_aois(aoifile):
+    """Returns a list of "AOI"s read from a '.aoi' file.
+
+    The '.aoi' files have pairs of lines of the form:
+    aoiname[tab]point1x,point1y[tab]point2x,point2y[tab]...[new line]
+    #[tab]start1,end1[tab]...[new line]
+
+    The first line determines name of the AOI and the coordinates of each vertex of
+    the polygon that determines the boundaries of the AOI.
+    The second line which starts with a '#' is optional and determines the time
+    intervals when the AOI is active. If the second line does not exist the AOI will
+    be active throughout the whole session (global AOI).
+    *Note: If the AOIs are exported from Tobii software the '.aoi' file will only have the
+    first line for each AOI and you need to override this method to generate AOIs that are
+    active only at certain times (non-global AOI).
+
+    Args:
+        aoifile: A string containing the name of the '.aoi' file
+
+    Returns:
+        a list of "AOI"s
+    """
+    with open(aoifile, 'r') as f:
+        aoilines = f.readlines()
+
+    return read_aoilines(aoilines)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="Recording.read_rest_pupil_sizes">
+    <p>def <span class="ident">read_rest_pupil_sizes</span>(</p><p>rpsfile)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns a dictionary of rest pupil sizes for all scenes if rpsfile is provided. None otherwise
+The input file has the following format:
+    pid     <scene name 1>  <scene name 2>....</p>
+<pre><code>&lt;pid 1&gt; &lt;rest pupil size 1&gt;     &lt;rest pupil size 2&gt;
+</code></pre>
+<p>Args:
+    rpsfile: a string containing the name of the '.tsv' file
+        with rest pupil sizes for all partiicpants and all scenes.</p>
+<p>Returns:
+    a dictionary of rest pupil sizes. None otherwise</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.read_rest_pupil_sizes', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.read_rest_pupil_sizes" class="source">
+    <pre><code>def read_rest_pupil_sizes(rpsfile):
+    """
+    Returns a dictionary of rest pupil sizes for all scenes if rpsfile is provided. None otherwise
+    The input file has the following format:
+        pid\t<scene name 1>\t<scene name 2>....\n
+        <pid 1>\t<rest pupil size 1>\t<rest pupil size 2>
+
+    Args:
+        rpsfile: a string containing the name of the '.tsv' file
+            with rest pupil sizes for all partiicpants and all scenes.
+
+    Returns:
+        a dictionary of rest pupil sizes. None otherwise
+
+    """
+    if rpsfile != None:
+        with open(rpsfile, 'r') as f:
+            lines = f.readlines()
+        rpsdic = {}
+        import re
+        scenelist = re.findall('\w+', lines[0])
+        for line in lines[1:]:
+            linelist = re.findall('\w+', line)
+            pid = cast_int(linelist[0])
+            if pid == None: #if casting didn't work
+                pid = linelist[0]
+            rpsdic[pid] = {}
+            for scene, rpsvalue in zip(scenelist[1:], linelist[1:]):
+                rpsdic[pid][scene] = cast_int(rpsvalue)
+
+        return rpsdic
+    else:
+        return None
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="Recording.read_segs">
+    <p>def <span class="ident">read_segs</span>(</p><p>segfile)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns a dict with scid as the key and segments as value from a '.seg' file.</p>
+<pre><code>A '.seg' file consists of a set of lines with the following format:
+scene_name[ ]segment_name[  ]start_time[    ]end_time[
+</code></pre>
+<p>]</p>
+<pre><code>scene_name is the id of the Scene that this Segment belongs to,
+segment_name is the id of the Segment,
+and start_time and end_time determines the time interval for the Segment
+
+Args:
+    segfile: A string containing the name of the '.seg' file
+
+Returns:
+    a dict with scid as the key and segments as value
+</code></pre></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.read_segs', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.read_segs" class="source">
+    <pre><code>def read_segs(segfile):
+    """Returns a dict with scid as the key and segments as value from a '.seg' file.
+
+    A '.seg' file consists of a set of lines with the following format:
+    scene_name[\t]segment_name[\t]start_time[\t]end_time[\n]
+
+    scene_name is the id of the Scene that this Segment belongs to,
+    segment_name is the id of the Segment,
+    and start_time and end_time determines the time interval for the Segment
+
+    Args:
+        segfile: A string containing the name of the '.seg' file
+
+    Returns:
+        a dict with scid as the key and segments as value
+    """
+    scenes = {}
+    with open(segfile, 'r') as f:
+        seglines = f.readlines()
+
+    for l in seglines:
+        l = l.strip()
+        l = l.split('\t')
+        if l[0] in scenes:
+            scenes[l[0]].append((l[1], int(l[2]), int(l[3])))
+        else:
+            scenes[l[0]] = [(l[1], int(l[2]), int(l[3]))]
+    return scenes
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+
+    <h2 class="section-title" id="header-classes">Classes</h2>
+      
+      <div class="item">
+      <p id="Recording.Recording" class="name">class <span class="ident">Recording</span></p>
+      
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.Recording', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.Recording" class="source">
+    <pre><code>class Recording:
+    __metaclass__ = ABCMeta
+
+    def __init__(self, all_file, fixation_file, saccade_file=None, event_file=None, media_offset=(0, 0)):
+        """
+        :param all_file: path to file that contains all gaze points
+        :param fixation_file :path to file that contains all gaze points
+        :param event_file :path to file that contains all events
+        :param media_offset: the coordinates of the top left corner of the window showing the interface under study.
+        (0,0) if the interface was in full screen (default value).
+        """
+        self.media_offset = media_offset
+
+        self.all_data = self.read_all_data(all_file)
+        if len(self.all_data) == 0:
+            raise Exception("The file '" + all_file + "' has no samples!")
+
+        self.fix_data = self.read_fixation_data(fixation_file)
+        if len(self.fix_data) == 0:
+            raise Exception("The file '" + fixation_file + "' has no fixations!")
+
+        if saccade_file is not None:
+            self.sac_data = self.read_saccade_data(saccade_file)
+            if len(self.sac_data) == 0:
+                raise Exception("The file '" + saccade_file + "' has no saccades!")
+
+        else:
+            self.sac_data = None
+
+        if event_file is not None:
+            self.event_data = self.read_event_data(event_file)
+            if len(self.event_data) == 0:
+                raise Exception("The file '" + event_file + "' has no events!")
+        else:
+            self.event_data = None
+
+    @abstractmethod
+    def read_all_data(self, all_file):
+        """ Read the data file that contains all gaze points.
+
+        :param all_file: path to file that contains all gaze points
+        :return: a list of Datapoints
+        :rtype: list[Datapoint]
+        """
+        pass
+
+    @abstractmethod
+    def read_fixation_data(self, fixation_file):
+        """ Read the data file that contains all fixations.
+
+        :param fixation_file :path to file that contains all fixations points
+        :return: a list of Fixations
+        :rtype: list[Fixation]
+        """
+        pass
+
+    @abstractmethod
+    def read_saccade_data(self, saccade_file):
+        """ Read the data file that contains all saccades.
+
+        :param saccade_file :path to file that contains all saccade_file points
+        :return: a list of Saccades
+        :rtype: list[Saccade]
+        """
+        pass
+
+    @abstractmethod
+    def read_event_data(self, event_file):
+        """ Read the data file that contains all events.
+
+        :param event_file :path to file that contains all events
+        :return: a list of Events
+        :rtype: list[Event]
+        """
+        pass
+
+    def process_rec(self, segfile=None, scenelist=None, aoifile=None,
+                    aoilist=None, prune_length=None, require_valid_segs=True,
+                    auto_partition_low_quality_segments=False, rpsdata=None, export_pupilinfo=False):
+        """Processes the data for one recording (i.e, one complete experiment session)
+
+        Args:
+            segfile: If not None, a string containing the name of the segfile
+                with segment definitions in following format:
+                Scene_ID<tab>Segment_ID<tab>start time<tab>end time<newline>
+                e.g.:
+                s1    seg1    0    5988013
+                With one segment definition per line
+            scenelist: If not None, a list of Scene objects
+            *Note: At least one of segfile and scenelist should be not None
+
+            aoifile: If not None, a string containing the name of the aoifile
+                with definitions of the "AOI"s.
+            aoilist: If not None, a list of "AOI"s.
+            *Note:  if aoifile is not None, aoilist will be ignored
+                    if both aoifile and aoilist are none AOIs are ignored
+
+            prune_length: If not None, an integer that specifies the time
+                interval (in ms) from the beginning of each Segment in which
+                samples are considered in calculations.  This can be used if,
+                for example, you only wish to consider data in the first
+                1000 ms of each Segment. In this case (prune_length = 1000),
+                all data beyond the first 1000ms of the start of the "Segment"s
+                will be disregarded.
+
+            require_valid_segs: a boolean determining whether invalid "Segment"s
+                will be ignored when calculating the features or not. default = True
+
+            auto_partition_low_quality_segments: a boolean flag determining whether
+                EMDAT should automatically split the "Segment"s which have low sample quality
+                into two new sub "Segment"s discarding the largest invalid sample gap in
+                the "Segment". default = False
+
+            rpsdata: a dictionary with rest pupil sizes: (scene name is a key, rest pupil size is a value)
+        Returns:
+            a list of Scene objects for this Recording
+            a list of Segment objects for this recording. This is an aggregated list
+            of the "Segment"s of all "Scene"s in the Recording
+        """
+
+        if segfile is not None:
+            scenelist = read_segs(segfile)
+            if params.VERBOSE != "QUIET":
+                print("Done reading the segments!")
+        elif scenelist is None:
+            print("Error in scene file.")
+
+        if aoifile is not None:
+            aoilist = read_aois(aoifile)
+            if params.VERBOSE != "QUIET":
+                print("Done reading the AOIs!")
+        elif aoilist is None:
+            aoilist = []
+            print("Warning: No AOIs defined!")
+
+        scenes = []
+        for scid, sc in scenelist.items():
+            if params.VERBOSE != "QUIET":
+                print("Preparing scene:" + str(scid))
+            if params.DEBUG or params.VERBOSE == "VERBOSE":
+                print("len(all_data)", len(self.all_data))
+            try:
+                # get rest pupil size data
+                if rpsdata is not None:
+                    if scid in rpsdata.keys():
+                        scrpsdata = rpsdata[scid]
+                    else:
+                        scrpsdata = 0
+                        if params.DEBUG:
+                            print(rpsdata.keys())
+                            raise Exception("Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
+                        else:
+                            print("Warning: Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
+                            pass
+                else:
+                    scrpsdata = 0
+                new_scene = Scene(scid, sc, self.all_data, self.fix_data, saccade_data = self.sac_data, event_data=self.event_data, aoilist=aoilist,
+                                  prune_length=prune_length,
+                                  require_valid=require_valid_segs,
+                                  auto_partition=auto_partition_low_quality_segments, rest_pupil_size=scrpsdata,
+                                  export_pupilinfo=export_pupilinfo)
+            except Exception as e:
+                warn(str(e))
+                new_scene = None
+                if params.DEBUG:
+                    raise
+                else:
+                    pass
+            if new_scene:
+                scenes.append(new_scene)
+        segs = []
+        for sc in scenes:
+            segs.extend(sc.segments)
+        return segs, scenes
+
+
+    def clean_memory(self):
+        self.all_data = []
+        self.fix_data = []
+        self.sac_data = []
+        self.event_data = []
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#Recording.Recording">Recording</a></li>
+          <li>__builtin__.object</li>
+          </ul>
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="Recording.Recording.all_data" class="name">var <span class="ident">all_data</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="Recording.Recording.fix_data" class="name">var <span class="ident">fix_data</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="Recording.Recording.media_offset" class="name">var <span class="ident">media_offset</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+          <h3>Methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="Recording.Recording.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, all_file, fixation_file, saccade_file=None, event_file=None, media_offset=(0, 0))</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>:param all_file: path to file that contains all gaze points
+:param fixation_file :path to file that contains all gaze points
+:param event_file :path to file that contains all events
+:param media_offset: the coordinates of the top left corner of the window showing the interface under study.
+(0,0) if the interface was in full screen (default value).</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.Recording.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.Recording.__init__" class="source">
+    <pre><code>def __init__(self, all_file, fixation_file, saccade_file=None, event_file=None, media_offset=(0, 0)):
+    """
+    :param all_file: path to file that contains all gaze points
+    :param fixation_file :path to file that contains all gaze points
+    :param event_file :path to file that contains all events
+    :param media_offset: the coordinates of the top left corner of the window showing the interface under study.
+    (0,0) if the interface was in full screen (default value).
+    """
+    self.media_offset = media_offset
+    self.all_data = self.read_all_data(all_file)
+    if len(self.all_data) == 0:
+        raise Exception("The file '" + all_file + "' has no samples!")
+    self.fix_data = self.read_fixation_data(fixation_file)
+    if len(self.fix_data) == 0:
+        raise Exception("The file '" + fixation_file + "' has no fixations!")
+    if saccade_file is not None:
+        self.sac_data = self.read_saccade_data(saccade_file)
+        if len(self.sac_data) == 0:
+            raise Exception("The file '" + saccade_file + "' has no saccades!")
+    else:
+        self.sac_data = None
+    if event_file is not None:
+        self.event_data = self.read_event_data(event_file)
+        if len(self.event_data) == 0:
+            raise Exception("The file '" + event_file + "' has no events!")
+    else:
+        self.event_data = None
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="Recording.Recording.clean_memory">
+    <p>def <span class="ident">clean_memory</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.Recording.clean_memory', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.Recording.clean_memory" class="source">
+    <pre><code>def clean_memory(self):
+    self.all_data = []
+    self.fix_data = []
+    self.sac_data = []
+    self.event_data = []
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="Recording.Recording.process_rec">
+    <p>def <span class="ident">process_rec</span>(</p><p>self, segfile=None, scenelist=None, aoifile=None, aoilist=None, prune_length=None, require_valid_segs=True, auto_partition_low_quality_segments=False, rpsdata=None, export_pupilinfo=False)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Processes the data for one recording (i.e, one complete experiment session)</p>
+<p>Args:
+    segfile: If not None, a string containing the name of the segfile
+        with segment definitions in following format:
+        Scene_ID<tab>Segment_ID<tab>start time<tab>end time<newline>
+        e.g.:
+        s1    seg1    0    5988013
+        With one segment definition per line
+    scenelist: If not None, a list of Scene objects
+    *Note: At least one of segfile and scenelist should be not None</p>
+<pre><code>aoifile: If not None, a string containing the name of the aoifile
+    with definitions of the "AOI"s.
+aoilist: If not None, a list of "AOI"s.
+*Note:  if aoifile is not None, aoilist will be ignored
+        if both aoifile and aoilist are none AOIs are ignored
+
+prune_length: If not None, an integer that specifies the time
+    interval (in ms) from the beginning of each Segment in which
+    samples are considered in calculations.  This can be used if,
+    for example, you only wish to consider data in the first
+    1000 ms of each Segment. In this case (prune_length = 1000),
+    all data beyond the first 1000ms of the start of the "Segment"s
+    will be disregarded.
+
+require_valid_segs: a boolean determining whether invalid "Segment"s
+    will be ignored when calculating the features or not. default = True
+
+auto_partition_low_quality_segments: a boolean flag determining whether
+    EMDAT should automatically split the "Segment"s which have low sample quality
+    into two new sub "Segment"s discarding the largest invalid sample gap in
+    the "Segment". default = False
+
+rpsdata: a dictionary with rest pupil sizes: (scene name is a key, rest pupil size is a value)
+</code></pre>
+<p>Returns:
+    a list of Scene objects for this Recording
+    a list of Segment objects for this recording. This is an aggregated list
+    of the "Segment"s of all "Scene"s in the Recording</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.Recording.process_rec', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.Recording.process_rec" class="source">
+    <pre><code>def process_rec(self, segfile=None, scenelist=None, aoifile=None,
+                aoilist=None, prune_length=None, require_valid_segs=True,
+                auto_partition_low_quality_segments=False, rpsdata=None, export_pupilinfo=False):
+    """Processes the data for one recording (i.e, one complete experiment session)
+    Args:
+        segfile: If not None, a string containing the name of the segfile
+            with segment definitions in following format:
+            Scene_ID<tab>Segment_ID<tab>start time<tab>end time<newline>
+            e.g.:
+            s1    seg1    0    5988013
+            With one segment definition per line
+        scenelist: If not None, a list of Scene objects
+        *Note: At least one of segfile and scenelist should be not None
+        aoifile: If not None, a string containing the name of the aoifile
+            with definitions of the "AOI"s.
+        aoilist: If not None, a list of "AOI"s.
+        *Note:  if aoifile is not None, aoilist will be ignored
+                if both aoifile and aoilist are none AOIs are ignored
+        prune_length: If not None, an integer that specifies the time
+            interval (in ms) from the beginning of each Segment in which
+            samples are considered in calculations.  This can be used if,
+            for example, you only wish to consider data in the first
+            1000 ms of each Segment. In this case (prune_length = 1000),
+            all data beyond the first 1000ms of the start of the "Segment"s
+            will be disregarded.
+        require_valid_segs: a boolean determining whether invalid "Segment"s
+            will be ignored when calculating the features or not. default = True
+        auto_partition_low_quality_segments: a boolean flag determining whether
+            EMDAT should automatically split the "Segment"s which have low sample quality
+            into two new sub "Segment"s discarding the largest invalid sample gap in
+            the "Segment". default = False
+        rpsdata: a dictionary with rest pupil sizes: (scene name is a key, rest pupil size is a value)
+    Returns:
+        a list of Scene objects for this Recording
+        a list of Segment objects for this recording. This is an aggregated list
+        of the "Segment"s of all "Scene"s in the Recording
+    """
+    if segfile is not None:
+        scenelist = read_segs(segfile)
+        if params.VERBOSE != "QUIET":
+            print("Done reading the segments!")
+    elif scenelist is None:
+        print("Error in scene file.")
+    if aoifile is not None:
+        aoilist = read_aois(aoifile)
+        if params.VERBOSE != "QUIET":
+            print("Done reading the AOIs!")
+    elif aoilist is None:
+        aoilist = []
+        print("Warning: No AOIs defined!")
+    scenes = []
+    for scid, sc in scenelist.items():
+        if params.VERBOSE != "QUIET":
+            print("Preparing scene:" + str(scid))
+        if params.DEBUG or params.VERBOSE == "VERBOSE":
+            print("len(all_data)", len(self.all_data))
+        try:
+            # get rest pupil size data
+            if rpsdata is not None:
+                if scid in rpsdata.keys():
+                    scrpsdata = rpsdata[scid]
+                else:
+                    scrpsdata = 0
+                    if params.DEBUG:
+                        print(rpsdata.keys())
+                        raise Exception("Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
+                    else:
+                        print("Warning: Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
+                        pass
+            else:
+                scrpsdata = 0
+            new_scene = Scene(scid, sc, self.all_data, self.fix_data, saccade_data = self.sac_data, event_data=self.event_data, aoilist=aoilist,
+                              prune_length=prune_length,
+                              require_valid=require_valid_segs,
+                              auto_partition=auto_partition_low_quality_segments, rest_pupil_size=scrpsdata,
+                              export_pupilinfo=export_pupilinfo)
+        except Exception as e:
+            warn(str(e))
+            new_scene = None
+            if params.DEBUG:
+                raise
+            else:
+                pass
+        if new_scene:
+            scenes.append(new_scene)
+    segs = []
+    for sc in scenes:
+        segs.extend(sc.segments)
+    return segs, scenes
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="Recording.Recording.read_all_data">
+    <p>def <span class="ident">read_all_data</span>(</p><p>self, all_file)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Read the data file that contains all gaze points.</p>
+<p>:param all_file: path to file that contains all gaze points
+:return: a list of Datapoints
+:rtype: list[Datapoint]</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.Recording.read_all_data', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.Recording.read_all_data" class="source">
+    <pre><code>@abstractmethod
+def read_all_data(self, all_file):
+    """ Read the data file that contains all gaze points.
+    :param all_file: path to file that contains all gaze points
+    :return: a list of Datapoints
+    :rtype: list[Datapoint]
+    """
+    pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="Recording.Recording.read_event_data">
+    <p>def <span class="ident">read_event_data</span>(</p><p>self, event_file)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Read the data file that contains all events.</p>
+<p>:param event_file :path to file that contains all events
+:return: a list of Events
+:rtype: list[Event]</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.Recording.read_event_data', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.Recording.read_event_data" class="source">
+    <pre><code>@abstractmethod
+def read_event_data(self, event_file):
+    """ Read the data file that contains all events.
+    :param event_file :path to file that contains all events
+    :return: a list of Events
+    :rtype: list[Event]
+    """
+    pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="Recording.Recording.read_fixation_data">
+    <p>def <span class="ident">read_fixation_data</span>(</p><p>self, fixation_file)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Read the data file that contains all fixations.</p>
+<p>:param fixation_file :path to file that contains all fixations points
+:return: a list of Fixations
+:rtype: list[Fixation]</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.Recording.read_fixation_data', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.Recording.read_fixation_data" class="source">
+    <pre><code>@abstractmethod
+def read_fixation_data(self, fixation_file):
+    """ Read the data file that contains all fixations.
+    :param fixation_file :path to file that contains all fixations points
+    :return: a list of Fixations
+    :rtype: list[Fixation]
+    """
+    pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="Recording.Recording.read_saccade_data">
+    <p>def <span class="ident">read_saccade_data</span>(</p><p>self, saccade_file)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Read the data file that contains all saccades.</p>
+<p>:param saccade_file :path to file that contains all saccade_file points
+:return: a list of Saccades
+:rtype: list[Saccade]</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Recording.Recording.read_saccade_data', this);">Show source &equiv;</a></p>
+  <div id="source-Recording.Recording.read_saccade_data" class="source">
+    <pre><code>@abstractmethod
+def read_saccade_data(self, saccade_file):
+    """ Read the data file that contains all saccades.
+    :param saccade_file :path to file that contains all saccade_file points
+    :return: a list of Saccades
+    :rtype: list[Saccade]
+    """
+    pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+
+  </section>
+
+    </article>
+  <div class="clear"> </div>
+  <footer id="footer">
+    <p>
+      Documentation generated by
+      <a href="https://github.com/BurntSushi/pdoc">pdoc 0.3.2</a>
+    </p>
+
+    <p>pdoc is in the public domain with the
+      <a href="http://unlicense.org">UNLICENSE</a></p>
+
+    <p>Design by <a href="http://nadh.in">Kailash Nadh</a></p>
+  </footer>
+</div>
+</body>
+</html>

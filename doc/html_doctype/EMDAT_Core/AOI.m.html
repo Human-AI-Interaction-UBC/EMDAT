@@ -1,0 +1,2812 @@
+<!doctype html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+
+    <title>AOI API documentation</title>
+    <meta name="description" content="UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+The Generic Area of Interest Classes
+Creat..." />
+
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
+  
+  <style type="text/css">
+  
+* {
+  box-sizing: border-box;
+}
+/*! normalize.css v1.1.1 | MIT License | git.io/normalize */
+
+/* ==========================================================================
+   HTML5 display definitions
+   ========================================================================== */
+
+/**
+ * Correct `block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+    display: block;
+}
+
+/**
+ * Correct `inline-block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+audio,
+canvas,
+video {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+
+audio:not([controls]) {
+    display: none;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Firefox 3, and Safari 4.
+ * Known issue: no IE 6 support.
+ */
+
+[hidden] {
+    display: none;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+/**
+ * 1. Prevent system color scheme's background color being used in Firefox, IE,
+ *    and Opera.
+ * 2. Prevent system color scheme's text color being used in Firefox, IE, and
+ *    Opera.
+ * 3. Correct text resizing oddly in IE 6/7 when body `font-size` is set using
+ *    `em` units.
+ * 4. Prevent iOS text size adjust after orientation change, without disabling
+ *    user zoom.
+ */
+
+html {
+    background: #fff; /* 1 */
+    color: #000; /* 2 */
+    font-size: 100%; /* 3 */
+    -webkit-text-size-adjust: 100%; /* 4 */
+    -ms-text-size-adjust: 100%; /* 4 */
+}
+
+/**
+ * Address `font-family` inconsistency between `textarea` and other form
+ * elements.
+ */
+
+html,
+button,
+input,
+select,
+textarea {
+    font-family: sans-serif;
+}
+
+/**
+ * Address margins handled incorrectly in IE 6/7.
+ */
+
+body {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Links
+   ========================================================================== */
+
+/**
+ * Address `outline` inconsistency between Chrome and other browsers.
+ */
+
+a:focus {
+    outline: thin dotted;
+}
+
+/**
+ * Improve readability when focused and also mouse hovered in all browsers.
+ */
+
+a:active,
+a:hover {
+    outline: 0;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+/**
+ * Address font sizes and margins set differently in IE 6/7.
+ * Address font sizes within `section` and `article` in Firefox 4+, Safari 5,
+ * and Chrome.
+ */
+
+h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin: 0.83em 0;
+}
+
+h3 {
+    font-size: 1.17em;
+    margin: 1em 0;
+}
+
+h4 {
+    font-size: 1em;
+    margin: 1.33em 0;
+}
+
+h5 {
+    font-size: 0.83em;
+    margin: 1.67em 0;
+}
+
+h6 {
+    font-size: 0.67em;
+    margin: 2.33em 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Safari 5, and Chrome.
+ */
+
+abbr[title] {
+    border-bottom: 1px dotted;
+}
+
+/**
+ * Address style set to `bolder` in Firefox 3+, Safari 4/5, and Chrome.
+ */
+
+b,
+strong {
+    font-weight: bold;
+}
+
+blockquote {
+    margin: 1em 40px;
+}
+
+/**
+ * Address styling not present in Safari 5 and Chrome.
+ */
+
+dfn {
+    font-style: italic;
+}
+
+/**
+ * Address differences between Firefox and other browsers.
+ * Known issue: no IE 6/7 normalization.
+ */
+
+hr {
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 6/7/8/9.
+ */
+
+mark {
+    background: #ff0;
+    color: #000;
+}
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+p,
+pre {
+    margin: 1em 0;
+}
+
+/**
+ * Correct font family set oddly in IE 6, Safari 4/5, and Chrome.
+ */
+
+code,
+kbd,
+pre,
+samp {
+    font-family: monospace, serif;
+    _font-family: 'courier new', monospace;
+    font-size: 1em;
+}
+
+/**
+ * Improve readability of pre-formatted text in all browsers.
+ */
+
+pre {
+    white-space: pre;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/**
+ * Address CSS quotes not supported in IE 6/7.
+ */
+
+q {
+    quotes: none;
+}
+
+/**
+ * Address `quotes` property not supported in Safari 4.
+ */
+
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+
+/**
+ * Address inconsistent and variable font size in all browsers.
+ */
+
+small {
+    font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+ */
+
+sub,
+sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sup {
+    top: -0.5em;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+/* ==========================================================================
+   Lists
+   ========================================================================== */
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+dl,
+menu,
+ol,
+ul {
+    margin: 1em 0;
+}
+
+dd {
+    margin: 0 0 0 40px;
+}
+
+/**
+ * Address paddings set differently in IE 6/7.
+ */
+
+menu,
+ol,
+ul {
+    padding: 0 0 0 40px;
+}
+
+/**
+ * Correct list images handled incorrectly in IE 7.
+ */
+
+nav ul,
+nav ol {
+    list-style: none;
+    list-style-image: none;
+}
+
+/* ==========================================================================
+   Embedded content
+   ========================================================================== */
+
+/**
+ * 1. Remove border when inside `a` element in IE 6/7/8/9 and Firefox 3.
+ * 2. Improve image quality when scaled in IE 7.
+ */
+
+img {
+    border: 0; /* 1 */
+    -ms-interpolation-mode: bicubic; /* 2 */
+}
+
+/**
+ * Correct overflow displayed oddly in IE 9.
+ */
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Figures
+   ========================================================================== */
+
+/**
+ * Address margin not present in IE 6/7/8/9, Safari 5, and Opera 11.
+ */
+
+figure {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+
+/**
+ * Correct margin displayed oddly in IE 6/7.
+ */
+
+form {
+    margin: 0;
+}
+
+/**
+ * Define consistent border, margin, and padding.
+ */
+
+fieldset {
+    border: 1px solid #c0c0c0;
+    margin: 0 2px;
+    padding: 0.35em 0.625em 0.75em;
+}
+
+/**
+ * 1. Correct color not being inherited in IE 6/7/8/9.
+ * 2. Correct text not wrapping in Firefox 3.
+ * 3. Correct alignment displayed oddly in IE 6/7.
+ */
+
+legend {
+    border: 0; /* 1 */
+    padding: 0;
+    white-space: normal; /* 2 */
+    *margin-left: -7px; /* 3 */
+}
+
+/**
+ * 1. Correct font size not being inherited in all browsers.
+ * 2. Address margins set differently in IE 6/7, Firefox 3+, Safari 5,
+ *    and Chrome.
+ * 3. Improve appearance and consistency in all browsers.
+ */
+
+button,
+input,
+select,
+textarea {
+    font-size: 100%; /* 1 */
+    margin: 0; /* 2 */
+    vertical-align: baseline; /* 3 */
+    *vertical-align: middle; /* 3 */
+}
+
+/**
+ * Address Firefox 3+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+
+button,
+input {
+    line-height: normal;
+}
+
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Chrome, Safari 5+, and IE 6+.
+ * Correct `select` style inheritance in Firefox 4+ and Opera.
+ */
+
+button,
+select {
+    text-transform: none;
+}
+
+/**
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Correct inability to style clickable `input` types in iOS.
+ * 3. Improve usability and consistency of cursor style between image-type
+ *    `input` and others.
+ * 4. Remove inner spacing in IE 7 without affecting normal text inputs.
+ *    Known issue: inner spacing remains in IE 6.
+ */
+
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+    -webkit-appearance: button; /* 2 */
+    cursor: pointer; /* 3 */
+    *overflow: visible;  /* 4 */
+}
+
+/**
+ * Re-set default cursor for disabled elements.
+ */
+
+button[disabled],
+html input[disabled] {
+    cursor: default;
+}
+
+/**
+ * 1. Address box sizing set to content-box in IE 8/9.
+ * 2. Remove excess padding in IE 8/9.
+ * 3. Remove excess padding in IE 7.
+ *    Known issue: excess padding remains in IE 6.
+ */
+
+input[type="checkbox"],
+input[type="radio"] {
+    box-sizing: border-box; /* 1 */
+    padding: 0; /* 2 */
+    *height: 13px; /* 3 */
+    *width: 13px; /* 3 */
+}
+
+/**
+ * 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome.
+ * 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome
+ *    (include `-moz` to future-proof).
+ */
+
+input[type="search"] {
+    -webkit-appearance: textfield; /* 1 */
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box; /* 2 */
+    box-sizing: content-box;
+}
+
+/**
+ * Remove inner padding and search cancel button in Safari 5 and Chrome
+ * on OS X.
+ */
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+}
+
+/**
+ * Remove inner padding and border in Firefox 3+.
+ */
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+/**
+ * 1. Remove default vertical scrollbar in IE 6/7/8/9.
+ * 2. Improve readability and alignment in all browsers.
+ */
+
+textarea {
+    overflow: auto; /* 1 */
+    vertical-align: top; /* 2 */
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+/**
+ * Remove most spacing between table cells.
+ */
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+  </style>
+
+  <style type="text/css">
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+  }
+  body {
+    background: #fff;
+    font-family: "Source Sans Pro", "Helvetica Neueue", Helvetica, sans;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.6em;
+  }
+  #content {
+    width: 70%;
+    max-width: 850px;
+    float: left;
+    padding: 30px 60px;
+    border-left: 1px solid #ddd;
+  }
+  #sidebar {
+    width: 25%;
+    float: left;
+    padding: 30px;
+    overflow: hidden;
+  }
+  #nav {
+    font-size: 130%;
+    margin: 0 0 15px 0;
+  }
+
+  #top {
+    display: block;
+    position: fixed;
+    bottom: 5px;
+    left: 5px;
+    font-size: .85em;
+    text-transform: uppercase;
+  }
+
+  #footer {
+    font-size: .75em;
+    padding: 5px 30px;
+    border-top: 1px solid #ddd;
+    text-align: right;
+  }
+    #footer p {
+      margin: 0 0 0 30px;
+      display: inline-block;
+    }
+
+  h1, h2, h3, h4, h5 {
+    font-weight: 300;
+  }
+  h1 {
+    font-size: 2.5em;
+    line-height: 1.1em;
+    margin: 0 0 .50em 0;
+  }
+
+  h2 {
+    font-size: 1.75em;
+    margin: 1em 0 .50em 0;
+  }
+
+  h3 {
+    margin: 25px 0 10px 0;
+  }
+
+  h4 {
+    margin: 0;
+    font-size: 105%;
+  }
+
+  a {
+    color: #058;
+    text-decoration: none;
+    transition: color .3s ease-in-out;
+  }
+
+  a:hover {
+    color: #e08524;
+    transition: color .3s ease-in-out;
+  }
+
+  pre, code, .mono, .name {
+    font-family: "Ubuntu Mono", "Cousine", "DejaVu Sans Mono", monospace;
+  }
+
+  .title .name {
+    font-weight: bold;
+  }
+  .section-title {
+    margin-top: 2em;
+  }
+  .ident {
+    color: #900;
+  }
+
+  code {
+    background: #f9f9f9;
+  } 
+
+  pre {
+    background: #fefefe;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 0 #f3f3f3;
+    margin: 0 30px;
+    padding: 15px 30px;
+  }
+
+  .codehilite {
+    margin: 0 30px 10px 30px;
+  }
+
+    .codehilite pre {
+      margin: 0;
+    }
+    .codehilite .err { background: #ff3300; color: #fff !important; } 
+
+  table#module-list {
+    font-size: 110%;
+  }
+
+    table#module-list tr td:first-child {
+      padding-right: 10px;
+      white-space: nowrap;
+    }
+
+    table#module-list td {
+      vertical-align: top;
+      padding-bottom: 8px;
+    }
+
+      table#module-list td p {
+        margin: 0 0 7px 0;
+      }
+
+  .def {
+    display: table;
+  }
+
+    .def p {
+      display: table-cell;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .def p:first-child {
+      white-space: nowrap;
+    }
+
+    .def p:last-child {
+      width: 100%;
+    }
+
+
+  #index {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+    ul#index .class_name {
+      /* font-size: 110%; */
+      font-weight: bold;
+    }
+    #index ul {
+      margin: 0;
+    }
+
+  .item {
+    margin: 0 0 15px 0;
+  }
+
+    .item .class {
+      margin: 0 0 25px 30px;
+    }
+
+      .item .class ul.class_list {
+        margin: 0 0 20px 0;
+      }
+
+    .item .name {
+      background: #fafafa;
+      margin: 0;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 3px;
+      display: inline-block;
+      min-width: 40%;
+    }
+      .item .name:hover {
+        background: #f6f6f6;
+      }
+
+    .item .empty_desc {
+      margin: 0 0 5px 0;
+      padding: 0;
+    }
+
+    .item .inheritance {
+      margin: 3px 0 0 30px;
+    }
+
+    .item .inherited {
+      color: #666;
+    }
+
+    .item .desc {
+      padding: 0 8px;
+      margin: 0;
+    }
+
+      .item .desc p {
+        margin: 0 0 10px 0;
+      }
+
+    .source_cont {
+      margin: 0;
+      padding: 0;
+    }
+
+    .source_link a {
+      background: #ffc300;
+      font-weight: 400;
+      font-size: .75em;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 1px 1px 0 #f4b700;
+      
+      padding: 3px 8px;
+      border-radius: 2px;
+      transition: background .3s ease-in-out;
+    }
+      .source_link a:hover {
+        background: #FF7200;
+        text-shadow: none;
+        transition: background .3s ease-in-out;
+      }
+
+    .source {
+      display: none;
+      max-height: 600px;
+      overflow-y: scroll;
+      margin-bottom: 15px;
+    }
+
+      .source .codehilite {
+        margin: 0;
+      }
+
+  .desc h1, .desc h2, .desc h3 {
+    font-size: 100% !important;
+  }
+  .clear {
+    clear: both;
+  }
+
+  @media all and (max-width: 950px) {
+    #sidebar {
+      width: 35%;
+    }
+    #content {
+      width: 65%;
+    }
+  }
+  @media all and (max-width: 650px) {
+    #top {
+      display: none;
+    }
+    #sidebar {
+      float: none;
+      width: auto;
+    }
+    #content {
+      float: none;
+      width: auto;
+      padding: 30px;
+    }
+
+    #index ul {
+      padding: 0;
+      margin-bottom: 15px;
+    }
+    #index ul li {
+      display: inline-block;
+      margin-right: 30px;
+    }
+    #footer {
+      text-align: left;
+    }
+    #footer p {
+      display: block;
+      margin: inherit;
+    }
+  }
+
+  /*****************************/
+
+  </style>
+
+
+  <style type="text/css">
+  
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   These examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+    /* Style adjustments for viewports that meet the condition */
+}
+
+@media print,
+       (-o-min-device-pixel-ratio: 5/4),
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 120dpi) {
+    /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid required HTTP connection: h5bp.com/r
+   ========================================================================== */
+
+@media print {
+    * {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster: h5bp.com/s */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links for images, or javascript/internal links
+     */
+
+    .ir a:after,
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group; /* h5bp.com/t */
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
+
+  </style>
+
+  <script type="text/javascript">
+  function toggle(id, $link) {
+    $node = document.getElementById(id);
+    if (!$node)
+    return;
+    if (!$node.style.display || $node.style.display == 'none') {
+    $node.style.display = 'block';
+    $link.innerHTML = 'Hide source &nequiv;';
+    } else {
+    $node.style.display = 'none';
+    $link.innerHTML = 'Show source &equiv;';
+    }
+  }
+  </script>
+</head>
+<body>
+<a href="#" id="top">Top</a>
+
+<div id="container">
+    
+  
+  <div id="sidebar">
+    <h1>Index</h1>
+    <ul id="index">
+
+
+    <li class="set"><h3><a href="#header-classes">Classes</a></h3>
+      <ul>
+        <li class="mono">
+        <span class="class_name"><a href="#AOI.AOI">AOI</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#AOI.AOI.__init__">__init__</a></li>
+    <li class="mono"><a href="#AOI.AOI.is_active">is_active</a></li>
+    <li class="mono"><a href="#AOI.AOI.is_active_partition">is_active_partition</a></li>
+    <li class="mono"><a href="#AOI.AOI.set_coordinates">set_coordinates</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#AOI.AOI_Stat">AOI_Stat</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#AOI.AOI_Stat.__init__">__init__</a></li>
+    <li class="mono"><a href="#AOI.AOI_Stat.generate_distance_features">generate_distance_features</a></li>
+    <li class="mono"><a href="#AOI.AOI_Stat.generate_event_features">generate_event_features</a></li>
+    <li class="mono"><a href="#AOI.AOI_Stat.generate_fixation_features">generate_fixation_features</a></li>
+    <li class="mono"><a href="#AOI.AOI_Stat.generate_pupil_features">generate_pupil_features</a></li>
+    <li class="mono"><a href="#AOI.AOI_Stat.generate_transition_features">generate_transition_features</a></li>
+    <li class="mono"><a href="#AOI.AOI_Stat.get_features">get_features</a></li>
+    <li class="mono"><a href="#AOI.AOI_Stat.print_">print_</a></li>
+  </ul>
+
+        </li>
+      </ul>
+    </li>
+
+    </ul>
+  </div>
+
+    <article id="content">
+      
+  
+
+  
+
+
+  <header id="section-intro">
+  <h1 class="title"><span class="name">AOI</span> module</h1>
+  <p>UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+The Generic Area of Interest Classes
+Created on 2011-08-26</p>
+<p>In EMDAT, the bounderies of an Area of Interest (AOI) is defined as a polygon on the screen. You can
+optionally define a second polygone inside the first polygone to be excluded from an AOI.
+An AOI can be always active (a global AOI) or can be active during certain time intervals.
+In order to calculate the features for an AOI instance, you need to create an AOI_Stat instance and
+map it to a target AOI object by passing it to the AOI_Stat constructor. The resulting AOI_Stat
+will calculate all features related to the given AOI and store them for later reference</p>
+<p>Authors: Samad Kardan (creator), Sebastien Lalle.
+Institution: The University of British Columbia.</p>
+  
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-AOI', this);">Show source &equiv;</a></p>
+  <div id="source-AOI" class="source">
+    <pre><code>"""
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+The Generic Area of Interest Classes
+Created on 2011-08-26
+
+In EMDAT, the bounderies of an Area of Interest (AOI) is defined as a polygon on the screen. You can
+optionally define a second polygone inside the first polygone to be excluded from an AOI.
+An AOI can be always active (a global AOI) or can be active during certain time intervals.
+In order to calculate the features for an AOI instance, you need to create an AOI_Stat instance and
+map it to a target AOI object by passing it to the AOI_Stat constructor. The resulting AOI_Stat
+will calculate all features related to the given AOI and store them for later reference
+
+
+Authors: Samad Kardan (creator), Sebastien Lalle.
+Institution: The University of British Columbia.
+"""
+import sys
+sys.path.append('.')
+sys.path.append('./EMDAT_core')
+from EMDAT_core.utils import *
+from warnings import warn
+
+
+class AOI():
+
+    def __init__(self, aid, polyin, polyout=[[]], timeseq=[[]]):
+        """Inits AOI class
+        Args:
+            aid: AOI id
+
+            polyin: a list of all the polygons defining the boundaries of the AOI, each in form of a list of (x,y) tuples
+
+            polyout: a list of optional polygon inside the boundaries of the AOI that is not part of
+                the AOI in form of a list of (x,y) tuples
+
+            timeseq: a list of the time sequence of the format [(start1, end1), (start2, end2), ...] that
+                specifies the intervals when the shape corresponding in polyin is active
+
+        Yields:
+            an AOI object
+
+        note: for each i, polyin[i] is linked to polyout[i] and timeseq[i]
+        """
+        self.aid = aid
+        self.polyin = polyin
+        self.polyout = polyout
+        self.timeseq = timeseq
+#            self.partial = True
+
+    def set_coordinates(self, polyin, polyout=[]):
+        """Sets the coordiantes of the AOI
+
+        Args:
+            polyin: the polygon defining the bounderies of the AOI in form of a list of (x,y) tuples
+            polyout: optional polygon inside the bounderies of the AOI that is not part of the AOI
+                in form of a list of (x,y) tuples
+        """
+
+        self.polyin = polyin
+        self.polyout = polyout
+
+    def is_active(self,start,end):
+        """Determines if an AOI is active during the whole given time interval
+
+
+        Args:
+            start: time interval start
+            end: time interval end
+
+        Returns:
+            true if the AOI is always active within the given time interval
+        """
+        if start == -1:
+            return False
+
+        if self.timeseq == [[]]:
+            return True #global AOI
+
+        for seq in self.timeseq:
+            if seq == []:
+                return True #one shape at least is global
+            for intr in seq:
+                if (start>=intr[0] and start<intr[1])or(end>intr[0] and end<=intr[1]):
+                    return True
+                elif (start<intr[0] and start<intr[1])and(end>intr[0] and end>intr[1]):
+                    warn("Incorrect definition of Dynamic AOI and Segments, AOI info not calculated for AOI:"+self.aid)
+        return False #not active
+
+    def is_active_partition(self,start,end):
+        """Determines if an AOI is partially active during a given time interval
+
+        If the AOI is active at any sub-interval of the given time interval returns true
+        if such sub-interval exists it also returns its start and end that AOI is active otherwise returns False, []
+
+        Args:
+            start: time interval start
+            end: time interval start
+
+        Returns:
+            A boolean for whether the AOI is active or not
+            ovelap_part: The subset of the time interval [sub_start,sub_end] that AOI is active or
+            [] if it is active during the whole interval or not active at all.
+        """
+        #if (end - start)== 0:
+        if start == -1:
+            return False, []
+        if params.DEBUG or params.VERBOSE == "VERBOSE":
+            print("in:",self.aid)
+
+        if self.timeseq == [[]]:
+            return True, [] #global AOI
+
+        ovelap_part = []
+        is_active = False
+        for seq in self.timeseq:
+            if seq == []:
+                return True, [] #one shape at least is global
+            for intr in seq:
+                if (start>=intr[0] and end<=intr[1]):
+                    return True, [] #active during the whole interval
+                else:
+                    if start<=intr[1] and end>=intr[0]:
+                        if params.DEBUG or params.VERBOSE == "VERBOSE":
+                            print("partial:",start,end,":",intr[0],intr[1])
+                        ovstart = max(start,intr[0])
+                        ovend  = min(end,intr[1])
+                        ovelap_part.append( (ovstart,ovend) )
+                        is_active = True
+
+        # optimization of ovelap_part (no intervals intersecting each others)
+        ovelap_part_opt = []
+        for nseq in ovelap_part:
+            intersection = False
+            for oseq in ovelap_part_opt:
+                if (oseq[0] < nseq[1] and oseq[1] > nseq[0]) or (oseq[0] < nseq[1] and oseq[1] > nseq[0]): #intersection in the intervals: merging them
+                    intersection = True
+                    oseq[0] = min(oseq[0], nseq[0])
+                    oseq[1] = max(oseq[1], nseq[1])
+            if not intersection: #new interval
+                ovelap_part_opt.append([nseq[0],nseq[1]])
+        return is_active, ovelap_part_opt #partially or not active
+
+
+class AOI_Stat():
+    """Methods of AOI_Stat calculate and store all features related to the given AOI object
+    """
+
+    def __init__(self,aoi, seg_all_data, seg_fixation_data, starttime, endtime, sum_discarded, active_aois, seg_event_data=None, rest_pupil_size = 0, export_pupilinfo = False):
+        """Inits AOI_Stat class
+
+        Args:
+            aoi: the aoi object for which the statistics are calculated
+            seg_all_data: datapoints for this segment
+            seg_fixation_data: fixations for current segment
+            starttime:
+            endtime:
+            active_aois:list of the AOI objects that will be used for calculating the transitions between this AOI and other AOIs
+
+        Yields:
+            an AOI_Stat object
+        """
+        self.aoi = aoi
+        self.isActive, partition = self.aoi.is_active_partition(starttime, endtime)
+
+        #init features
+        self.features = {}
+        self.starttime = starttime
+        self.endtime = endtime
+        self.length = endtime - starttime
+        self.features['numfixations'] = 0
+        self.features['longestfixation'] = -1
+        self.features['meanfixationduration'] = -1
+        self.features['stddevfixationduration'] = -1
+        self.features['timetofirstfixation'] = -1
+        self.features['timetolastfixation'] = -1
+        self.features['proportionnum'] = 0
+        self.features['proportiontime'] = 0
+        self.features['fixationrate'] = 0
+        self.features['totaltimespent'] = 0
+        self.features['numevents'] = 0
+        self.features['numleftclic'] = 0
+        self.features['numrightclic'] = 0
+        self.features['numdoubleclic'] = 0
+        self.features['leftclicrate'] = 0
+        self.features['rightclicrate'] = 0
+        self.features['doubleclicrate'] = 0
+        self.features['timetofirstleftclic'] = -1
+        self.features['timetofirstrightclic'] = -1
+        self.features['timetofirstdoubleclic'] = -1
+        self.features['timetolastleftclic'] = -1
+        self.features['timetolastrightclic'] = -1
+        self.features['timetolastdoubleclic'] = -1
+
+        self.features['meanpupilsize'] = -1
+        self.features['stddevpupilsize'] = -1
+        self.features['maxpupilsize'] = -1
+        self.features['minpupilsize'] = -1
+        self.features['startpupilsize'] = -1
+        self.features['endpupilsize'] = -1
+        self.features['meanpupilvelocity'] = -1
+        self.features['stddevpupilvelocity'] = -1
+        self.features['maxpupilvelocity'] = -1
+        self.features['minpupilvelocity'] = -1
+        self.numpupilsizes = 0
+        self.numpupilvelocity = 0
+        self.features['numevents'] = 0
+        self.numevents = 0
+
+        self.features['meandistance'] = -1
+        self.features['stddevdistance'] = -1
+        self.features['maxdistance'] = -1
+        self.features['mindistance'] = -1
+        self.features['startdistance'] = -1
+        self.features['enddistance'] = -1
+
+        self.numdistancedata = 0
+
+        self.total_trans_from = 0
+        self.variance = 0
+        for aoi in active_aois:
+            aid = aoi.aid
+            self.features['numtransfrom_%s'%(aid)] = 0
+            self.features['proptransfrom_%s'%(aid)] = 0
+
+        if not(self.isActive):
+            return
+        all_data = []
+        fixation_data = []
+        event_data = []
+
+        if partition:
+            if params.DEBUG or params.VERBOSE == "VERBOSE":
+                print("partition",partition)
+            for intr in partition:
+                if starttime <= intr[1] and endtime >= intr[0]:
+                    _,st,en = get_chunk(seg_all_data, 0, intr[0], intr[1])
+                    all_data += seg_all_data[st:en]
+                    _,st,en = get_chunk(seg_fixation_data, 0, intr[0],intr[1])
+                    fixation_data += seg_fixation_data[st:en]
+                    if seg_event_data != None:
+                        _,st,en = get_chunk(seg_event_data, 0, intr[0],intr[1])
+                        event_data += seg_event_data[st:en]
+            if params.DEBUG or params.VERBOSE == "VERBOSE":
+                print("len(seg_all_data)",seg_all_data)
+                print("len(seg_fixation_data)",seg_fixation_data)
+                print("len(fixation_data)",fixation_data)
+        else:  #global AOI (always active)
+            all_data = seg_all_data
+            fixation_data = seg_fixation_data
+            if seg_event_data != None:
+                event_data = seg_event_data
+
+        ## Remove datapoints with invalid gaze coordinates
+        datapoints = filter(lambda datapoint: datapoint.gazepointx != -1 and datapoint.gazepointy != -1, all_data)
+        # Only keep samples inside AOI
+        datapoints = filter(lambda datapoint: _datapoint_inside_aoi(datapoint, self.aoi.polyin, self.aoi.polyout), datapoints)
+
+        self.generate_pupil_features(datapoints, rest_pupil_size, export_pupilinfo)
+
+        self.generate_distance_features(datapoints)
+
+        fixation_indices = self.generate_fixation_features(datapoints, fixation_data, sum_discarded)
+
+        self.generate_event_features(seg_event_data, event_data, sum_discarded)
+
+        self.generate_transition_features(active_aois, fixation_data, fixation_indices)
+
+
+    def generate_pupil_features(self, datapoints, rest_pupil_size, export_pupilinfo):
+        #get all datapoints where pupil size is available
+        valid_pupil_data = filter(lambda x: x.pupilsize > 0, datapoints)
+        valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, datapoints)
+        #number of valid pupil sizes
+        self.numpupilsizes = len(valid_pupil_data)
+        self.numpupilvelocity = len(valid_pupil_velocity)
+
+        if self.numpupilsizes > 0: #check if the current segment has pupil data available
+            if params.PUPIL_ADJUSTMENT == "rpscenter":
+                adjvalidpupilsizes = map(lambda x: x.pupilsize - rest_pupil_size, valid_pupil_data)
+            elif params.PUPIL_ADJUSTMENT == "PCPS":
+                adjvalidpupilsizes = map(lambda x: (x.pupilsize - rest_pupil_size) / (1.0 * rest_pupil_size), valid_pupil_data)
+            else:
+                adjvalidpupilsizes = map(lambda x: x.pupilsize, valid_pupil_data)#valid_pupil_data
+
+            valid_pupil_velocity = map(lambda x: x.pupilvelocity, valid_pupil_velocity)#valid_pupil_data
+
+            if export_pupilinfo:
+                self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, rest_pupil_size], valid_pupil_data)
+
+            self.features['meanpupilsize'] = mean(adjvalidpupilsizes)
+            self.features['stddevpupilsize'] = stddev(adjvalidpupilsizes)
+            self.features['maxpupilsize'] = max(adjvalidpupilsizes)
+            self.features['minpupilsize'] = min(adjvalidpupilsizes)
+            self.features['startpupilsize'] = adjvalidpupilsizes[0]
+            self.features['endpupilsize'] = adjvalidpupilsizes[-1]
+
+            if len(valid_pupil_velocity) > 0:
+                self.features['meanpupilvelocity'] = mean(valid_pupil_velocity)
+                self.features['stddevpupilvelocity'] = stddev(valid_pupil_velocity)
+                self.features['maxpupilvelocity'] = max(valid_pupil_velocity)
+                self.features['minpupilvelocity'] = min(valid_pupil_velocity)
+
+
+    def generate_distance_features(self, datapoints):
+        # check if pupil sizes are available for all missing points
+        invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, datapoints)
+#        if len(invalid_distance_data) > 0:
+#            warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
+
+        #get all datapoints where distance is available
+        valid_distance_data = filter(lambda x: x.distance > 0, datapoints)
+        #number of valid pupil sizes
+        self.numdistancedata = len(valid_distance_data)
+        if self.numdistancedata > 0: #check if the current segment has pupil data available
+            distances_from_screen = map(lambda x: x.distance, valid_distance_data)
+            self.features['meandistance'] = mean(distances_from_screen)
+            self.features['stddevdistance'] = stddev(distances_from_screen)
+            self.features['maxdistance'] = max(distances_from_screen)
+            self.features['mindistance'] = min(distances_from_screen)
+            self.features['startdistance'] = distances_from_screen[0]
+            self.features['enddistance'] = distances_from_screen[-1]
+
+
+    def generate_fixation_features(self, datapoints, fixation_data, sum_discarded):
+
+        fixation_indices = []
+        fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i], self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
+        fixations = map(lambda i: fixation_data[i], fixation_indices)
+        numfixations = len(fixations)
+        self.features['numfixations'] = numfixations
+        self.features['longestfixation'] = -1
+        self.features['timetofirstfixation'] = -1
+        self.features['timetolastfixation'] = -1
+        self.features['proportionnum'] = 0
+        totaltimespent = sum(map(lambda x: x.fixationduration, fixations))
+        self.features['totaltimespent'] = totaltimespent
+
+        self.features['proportiontime'] = float(totaltimespent)/(self.length - sum_discarded)
+        if numfixations > 0:
+            self.features['longestfixation'] = max(map(lambda x: x.fixationduration, fixations))
+            self.features['meanfixationduration'] = mean(map(lambda x: float(x.fixationduration), fixations))
+            self.features['stddevfixationduration'] = stddev(map(lambda x: float(x.fixationduration), fixations))
+            self.features['timetofirstfixation'] = fixations[0].timestamp - self.starttime
+            self.features['timetolastfixation'] = fixations[-1].timestamp - self.starttime
+            self.features['proportionnum'] = float(numfixations)/len(fixation_data)
+            self.features['fixationrate'] = numfixations / float(totaltimespent)
+            self.variance = self.features['stddevfixationduration'] ** 2
+        return fixation_indices
+
+    def generate_event_features(self, seg_event_data, event_data, sum_discarded):
+
+        if seg_event_data != None:
+            events = filter(lambda event: _event_inside_aoi(event,self.aoi.polyin, self.aoi.polyout), event_data)
+            leftc, rightc, doublec, _ = generate_event_lists(events)
+        if seg_event_data != None:
+            self.features['numevents'] = len(events)
+            self.features['numleftclic'] = len(leftc)
+            self.features['numrightclic'] = len(rightc)
+            self.features['numdoubleclic'] = len(doublec)
+            self.features['leftclicrate'] = float(len(leftc))/(self.length - sum_discarded) if (self.length - sum_discarded)>0 else 0
+            self.features['rightclicrate'] = float(len(rightc))/(self.length - sum_discarded) if (self.length - sum_discarded)>0 else 0
+            self.features['doubleclicrate'] = float(len(doublec))/(self.length - sum_discarded) if (self.length - sum_discarded)>0 else 0
+            self.features['timetofirstleftclic'] = leftc[0].timestamp - self.starttime if len(leftc) > 0 else -1
+            self.features['timetofirstrightclic'] = rightc[0].timestamp - self.starttime if len(rightc) > 0 else -1
+            self.features['timetofirstdoubleclic'] = doublec[0].timestamp - self.starttime if len(doublec) > 0 else -1
+            self.features['timetolastleftclic'] = leftc[-1].timestamp - self.starttime if len(leftc) > 0 else -1
+            self.features['timetolastrightclic'] = rightc[-1].timestamp - self.starttime if len(rightc) > 0 else -1
+            self.features['timetolastdoubleclic'] = doublec[-1].timestamp - self.starttime if len(doublec) > 0 else -1
+
+
+    def generate_transition_features(self, active_aois, fixation_data, fixation_indices):
+        #calculating the transitions to and from this AOI and other active AOIs at the moment
+        for aoi in active_aois:
+            aid = aoi.aid
+            self.features['numtransfrom_%s'%(aid)] = 0
+
+        sumtransfrom = 0
+        for i in fixation_indices:
+            if i > 0:
+                for aoi in active_aois:
+                    aid = aoi.aid
+                    polyin = aoi.polyin
+                    polyout = aoi.polyout
+                    key = 'numtransfrom_%s'%(aid)
+
+                    if _fixation_inside_aoi(fixation_data[i-1], polyin, polyout):
+                        self.features[key] += 1
+                        sumtransfrom += 1
+        for aoi in active_aois:
+            aid = aoi.aid
+
+            if sumtransfrom > 0:
+                val = self.features['numtransfrom_%s'%(aid)]
+                self.features['proptransfrom_%s'%(aid)] = float(val) / sumtransfrom
+            else:
+                self.features['proptransfrom_%s'%(aid)] = 0
+        self.total_trans_from = sumtransfrom
+
+
+    def get_features(self, featurelist = None):
+        """Returns the list of names and values of features for this AOI_Stat object
+
+        Args:
+            featurelist: optional list of features. If equal to None the full set of all features will be returned
+
+        Returns:
+            featnames: a list of feature names sorted alphabetically
+            featvals: a corresponding list of feature values
+            e.g.
+            featnames = ['fixationrate', 'length', 'meanabspathangles']
+            featvals  = [0.00268522882294', '1529851', '1.60354714212']
+
+        """
+        if featurelist == []:
+            return [], []
+        elif not featurelist:   #all features
+            featnames = self.features.keys()
+        else:                   #a list was given
+            featnames = []
+            for name in featurelist:
+                if name == 'numtransfrom':
+                    featnames += filter(lambda x: x[:12] == 'numtransfrom', self.features.keys())
+                elif name == 'proptransfrom':
+                    featnames += filter(lambda x: x[:13] == 'proptransfrom', self.features.keys())
+                elif name in self.features.keys():
+                    featnames.append(name)
+                else:
+                    raise Exception('AOI %s has no such feature: %s'%(self.aoi.aid, name))
+
+        featnames.sort()
+
+        featvals = map(lambda x: self.features[x], featnames)
+#        print featnames
+
+        return featnames, featvals
+
+    def print_(self):
+        """Prints the list of features and their values for this AOI_Stat object
+        """
+
+        print("AOI ID:",self.aoi.aid)
+        fn,fv = self.get_features()
+        for i in xrange(len(fn)):
+            print(fn[i],':',fv[i])
+        print
+
+def _datapoint_inside_aoi(datapoint, polyin, polyout):
+    """Helper function that checks if a datapoint object is inside the AOI described by extrernal polygon polyin and the internal polygon polyout.
+
+    Datapoint object is inside AOI if it is inside polyin but outside polyout
+
+    Args:
+        datapoint: A Datapoint object
+        polyin: the external polygon in form of a list of (x,y) tuples
+        polyout: the internal polygon in form of a list of (x,y) tuples
+
+    Returns:
+        A boolean for whether the Datapoint is inside the AOI or not
+    """
+    inside = False
+    i = 0
+    for polyin_i in polyin:
+        if point_inside_polygon(datapoint.gazepointx,
+                    datapoint.gazepointy, polyin_i) and not point_inside_polygon(datapoint.gazepointx,
+                    datapoint.gazepointy, polyout[i]):
+                inside = True
+                break
+        i += 1
+    return inside
+
+
+def _fixation_inside_aoi(fixation, polyin, polyout):
+    """Helper function that checks if a fixation object is inside the AOI described by external polygon polyin and the internal polygon polyout.
+
+    Fixation object is inside AOI if it is inside polyin but outside polyout
+
+    Args:
+        fixation: A Fixation object
+        polyin: the external polygon in form of a list of (x,y) tuples
+        polyout: the internal polygon in form of a list of (x,y) tuples
+
+    Returns:
+        A boolean for whether the Fixation is inside the AOI or not
+    """
+    inside = False
+    i = 0
+    for polyin_i in polyin:
+        if point_inside_polygon(fixation.mappedfixationpointx,
+                 fixation.mappedfixationpointy, polyin_i) and not point_inside_polygon(fixation.mappedfixationpointx,
+                 fixation.mappedfixationpointy, polyout[i]):
+            inside = True
+            break
+        i += 1
+
+    return inside
+
+def _event_inside_aoi(event, polyin, polyout):
+    """Helper function that checks if an event (mouse clic) object is inside the AOI described by external polygon polyin and the internal polygon polyout.
+
+    Event object is inside AOI if it is inside polyin but outside polyout
+
+    Args:
+        event: An Event object
+        polyin: the external polygon in form of a list of (x,y) tuples
+        polyout: the internal polygon in form of a list of (x,y) tuples
+
+    Returns:
+        A boolean for whether the Fixation is inside the AOI or not
+    """
+    inside = False
+    if event.event == "LeftMouseClick" or event.event == "RightMouseClick": #keep only mouse clics
+        i = 0
+        for polyin_i in polyin:
+            if point_inside_polygon(event.data1, event.data2, polyin_i) and not point_inside_polygon(event.data1, event.data2, polyout[i]):
+                inside = True
+                break
+            i += 1
+    return inside
+</code></pre>
+  </div>
+
+  </header>
+
+  <section id="section-items">
+
+
+    <h2 class="section-title" id="header-classes">Classes</h2>
+      
+      <div class="item">
+      <p id="AOI.AOI" class="name">class <span class="ident">AOI</span></p>
+      
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-AOI.AOI', this);">Show source &equiv;</a></p>
+  <div id="source-AOI.AOI" class="source">
+    <pre><code>class AOI():
+
+    def __init__(self, aid, polyin, polyout=[[]], timeseq=[[]]):
+        """Inits AOI class
+        Args:
+            aid: AOI id
+
+            polyin: a list of all the polygons defining the boundaries of the AOI, each in form of a list of (x,y) tuples
+
+            polyout: a list of optional polygon inside the boundaries of the AOI that is not part of
+                the AOI in form of a list of (x,y) tuples
+
+            timeseq: a list of the time sequence of the format [(start1, end1), (start2, end2), ...] that
+                specifies the intervals when the shape corresponding in polyin is active
+
+        Yields:
+            an AOI object
+
+        note: for each i, polyin[i] is linked to polyout[i] and timeseq[i]
+        """
+        self.aid = aid
+        self.polyin = polyin
+        self.polyout = polyout
+        self.timeseq = timeseq
+#            self.partial = True
+
+    def set_coordinates(self, polyin, polyout=[]):
+        """Sets the coordiantes of the AOI
+
+        Args:
+            polyin: the polygon defining the bounderies of the AOI in form of a list of (x,y) tuples
+            polyout: optional polygon inside the bounderies of the AOI that is not part of the AOI
+                in form of a list of (x,y) tuples
+        """
+
+        self.polyin = polyin
+        self.polyout = polyout
+
+    def is_active(self,start,end):
+        """Determines if an AOI is active during the whole given time interval
+
+
+        Args:
+            start: time interval start
+            end: time interval end
+
+        Returns:
+            true if the AOI is always active within the given time interval
+        """
+        if start == -1:
+            return False
+
+        if self.timeseq == [[]]:
+            return True #global AOI
+
+        for seq in self.timeseq:
+            if seq == []:
+                return True #one shape at least is global
+            for intr in seq:
+                if (start>=intr[0] and start<intr[1])or(end>intr[0] and end<=intr[1]):
+                    return True
+                elif (start<intr[0] and start<intr[1])and(end>intr[0] and end>intr[1]):
+                    warn("Incorrect definition of Dynamic AOI and Segments, AOI info not calculated for AOI:"+self.aid)
+        return False #not active
+
+    def is_active_partition(self,start,end):
+        """Determines if an AOI is partially active during a given time interval
+
+        If the AOI is active at any sub-interval of the given time interval returns true
+        if such sub-interval exists it also returns its start and end that AOI is active otherwise returns False, []
+
+        Args:
+            start: time interval start
+            end: time interval start
+
+        Returns:
+            A boolean for whether the AOI is active or not
+            ovelap_part: The subset of the time interval [sub_start,sub_end] that AOI is active or
+            [] if it is active during the whole interval or not active at all.
+        """
+        #if (end - start)== 0:
+        if start == -1:
+            return False, []
+        if params.DEBUG or params.VERBOSE == "VERBOSE":
+            print("in:",self.aid)
+
+        if self.timeseq == [[]]:
+            return True, [] #global AOI
+
+        ovelap_part = []
+        is_active = False
+        for seq in self.timeseq:
+            if seq == []:
+                return True, [] #one shape at least is global
+            for intr in seq:
+                if (start>=intr[0] and end<=intr[1]):
+                    return True, [] #active during the whole interval
+                else:
+                    if start<=intr[1] and end>=intr[0]:
+                        if params.DEBUG or params.VERBOSE == "VERBOSE":
+                            print("partial:",start,end,":",intr[0],intr[1])
+                        ovstart = max(start,intr[0])
+                        ovend  = min(end,intr[1])
+                        ovelap_part.append( (ovstart,ovend) )
+                        is_active = True
+
+        # optimization of ovelap_part (no intervals intersecting each others)
+        ovelap_part_opt = []
+        for nseq in ovelap_part:
+            intersection = False
+            for oseq in ovelap_part_opt:
+                if (oseq[0] < nseq[1] and oseq[1] > nseq[0]) or (oseq[0] < nseq[1] and oseq[1] > nseq[0]): #intersection in the intervals: merging them
+                    intersection = True
+                    oseq[0] = min(oseq[0], nseq[0])
+                    oseq[1] = max(oseq[1], nseq[1])
+            if not intersection: #new interval
+                ovelap_part_opt.append([nseq[0],nseq[1]])
+        return is_active, ovelap_part_opt #partially or not active
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#AOI.AOI">AOI</a></li>
+          </ul>
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="AOI.AOI.aid" class="name">var <span class="ident">aid</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="AOI.AOI.polyin" class="name">var <span class="ident">polyin</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="AOI.AOI.polyout" class="name">var <span class="ident">polyout</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="AOI.AOI.timeseq" class="name">var <span class="ident">timeseq</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+          <h3>Methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="AOI.AOI.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, aid, polyin, polyout=[[]], timeseq=[[]])</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Inits AOI class
+Args:
+    aid: AOI id</p>
+<pre><code>polyin: a list of all the polygons defining the boundaries of the AOI, each in form of a list of (x,y) tuples
+
+polyout: a list of optional polygon inside the boundaries of the AOI that is not part of
+    the AOI in form of a list of (x,y) tuples
+
+timeseq: a list of the time sequence of the format [(start1, end1), (start2, end2), ...] that
+    specifies the intervals when the shape corresponding in polyin is active
+</code></pre>
+<p>Yields:
+    an AOI object</p>
+<p>note: for each i, polyin[i] is linked to polyout[i] and timeseq[i]</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-AOI.AOI.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-AOI.AOI.__init__" class="source">
+    <pre><code>def __init__(self, aid, polyin, polyout=[[]], timeseq=[[]]):
+    """Inits AOI class
+    Args:
+        aid: AOI id
+        polyin: a list of all the polygons defining the boundaries of the AOI, each in form of a list of (x,y) tuples
+        polyout: a list of optional polygon inside the boundaries of the AOI that is not part of
+            the AOI in form of a list of (x,y) tuples
+        timeseq: a list of the time sequence of the format [(start1, end1), (start2, end2), ...] that
+            specifies the intervals when the shape corresponding in polyin is active
+    Yields:
+        an AOI object
+    note: for each i, polyin[i] is linked to polyout[i] and timeseq[i]
+    """
+    self.aid = aid
+    self.polyin = polyin
+    self.polyout = polyout
+    self.timeseq = timeseq
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="AOI.AOI.is_active">
+    <p>def <span class="ident">is_active</span>(</p><p>self, start, end)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Determines if an AOI is active during the whole given time interval</p>
+<p>Args:
+    start: time interval start
+    end: time interval end</p>
+<p>Returns:
+    true if the AOI is always active within the given time interval</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-AOI.AOI.is_active', this);">Show source &equiv;</a></p>
+  <div id="source-AOI.AOI.is_active" class="source">
+    <pre><code>def is_active(self,start,end):
+    """Determines if an AOI is active during the whole given time interval
+    Args:
+        start: time interval start
+        end: time interval end
+    Returns:
+        true if the AOI is always active within the given time interval
+    """
+    if start == -1:
+        return False
+    if self.timeseq == [[]]:
+        return True #global AOI
+    for seq in self.timeseq:
+        if seq == []:
+            return True #one shape at least is global
+        for intr in seq:
+            if (start>=intr[0] and start<intr[1])or(end>intr[0] and end<=intr[1]):
+                return True
+            elif (start<intr[0] and start<intr[1])and(end>intr[0] and end>intr[1]):
+                warn("Incorrect definition of Dynamic AOI and Segments, AOI info not calculated for AOI:"+self.aid)
+    return False #not active
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="AOI.AOI.is_active_partition">
+    <p>def <span class="ident">is_active_partition</span>(</p><p>self, start, end)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Determines if an AOI is partially active during a given time interval</p>
+<p>If the AOI is active at any sub-interval of the given time interval returns true
+if such sub-interval exists it also returns its start and end that AOI is active otherwise returns False, []</p>
+<p>Args:
+    start: time interval start
+    end: time interval start</p>
+<p>Returns:
+    A boolean for whether the AOI is active or not
+    ovelap_part: The subset of the time interval [sub_start,sub_end] that AOI is active or
+    [] if it is active during the whole interval or not active at all.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-AOI.AOI.is_active_partition', this);">Show source &equiv;</a></p>
+  <div id="source-AOI.AOI.is_active_partition" class="source">
+    <pre><code>def is_active_partition(self,start,end):
+    """Determines if an AOI is partially active during a given time interval
+    If the AOI is active at any sub-interval of the given time interval returns true
+    if such sub-interval exists it also returns its start and end that AOI is active otherwise returns False, []
+    Args:
+        start: time interval start
+        end: time interval start
+    Returns:
+        A boolean for whether the AOI is active or not
+        ovelap_part: The subset of the time interval [sub_start,sub_end] that AOI is active or
+        [] if it is active during the whole interval or not active at all.
+    """
+    #if (end - start)== 0:
+    if start == -1:
+        return False, []
+    if params.DEBUG or params.VERBOSE == "VERBOSE":
+        print("in:",self.aid)
+    if self.timeseq == [[]]:
+        return True, [] #global AOI
+    ovelap_part = []
+    is_active = False
+    for seq in self.timeseq:
+        if seq == []:
+            return True, [] #one shape at least is global
+        for intr in seq:
+            if (start>=intr[0] and end<=intr[1]):
+                return True, [] #active during the whole interval
+            else:
+                if start<=intr[1] and end>=intr[0]:
+                    if params.DEBUG or params.VERBOSE == "VERBOSE":
+                        print("partial:",start,end,":",intr[0],intr[1])
+                    ovstart = max(start,intr[0])
+                    ovend  = min(end,intr[1])
+                    ovelap_part.append( (ovstart,ovend) )
+                    is_active = True
+    # optimization of ovelap_part (no intervals intersecting each others)
+    ovelap_part_opt = []
+    for nseq in ovelap_part:
+        intersection = False
+        for oseq in ovelap_part_opt:
+            if (oseq[0] < nseq[1] and oseq[1] > nseq[0]) or (oseq[0] < nseq[1] and oseq[1] > nseq[0]): #intersection in the intervals: merging them
+                intersection = True
+                oseq[0] = min(oseq[0], nseq[0])
+                oseq[1] = max(oseq[1], nseq[1])
+        if not intersection: #new interval
+            ovelap_part_opt.append([nseq[0],nseq[1]])
+    return is_active, ovelap_part_opt #partially or not active
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="AOI.AOI.set_coordinates">
+    <p>def <span class="ident">set_coordinates</span>(</p><p>self, polyin, polyout=[])</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Sets the coordiantes of the AOI</p>
+<p>Args:
+    polyin: the polygon defining the bounderies of the AOI in form of a list of (x,y) tuples
+    polyout: optional polygon inside the bounderies of the AOI that is not part of the AOI
+        in form of a list of (x,y) tuples</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-AOI.AOI.set_coordinates', this);">Show source &equiv;</a></p>
+  <div id="source-AOI.AOI.set_coordinates" class="source">
+    <pre><code>def set_coordinates(self, polyin, polyout=[]):
+    """Sets the coordiantes of the AOI
+    Args:
+        polyin: the polygon defining the bounderies of the AOI in form of a list of (x,y) tuples
+        polyout: optional polygon inside the bounderies of the AOI that is not part of the AOI
+            in form of a list of (x,y) tuples
+    """
+    self.polyin = polyin
+    self.polyout = polyout
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="AOI.AOI_Stat" class="name">class <span class="ident">AOI_Stat</span></p>
+      
+  
+    <div class="desc"><p>Methods of AOI_Stat calculate and store all features related to the given AOI object</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-AOI.AOI_Stat', this);">Show source &equiv;</a></p>
+  <div id="source-AOI.AOI_Stat" class="source">
+    <pre><code>class AOI_Stat():
+    """Methods of AOI_Stat calculate and store all features related to the given AOI object
+    """
+
+    def __init__(self,aoi, seg_all_data, seg_fixation_data, starttime, endtime, sum_discarded, active_aois, seg_event_data=None, rest_pupil_size = 0, export_pupilinfo = False):
+        """Inits AOI_Stat class
+
+        Args:
+            aoi: the aoi object for which the statistics are calculated
+            seg_all_data: datapoints for this segment
+            seg_fixation_data: fixations for current segment
+            starttime:
+            endtime:
+            active_aois:list of the AOI objects that will be used for calculating the transitions between this AOI and other AOIs
+
+        Yields:
+            an AOI_Stat object
+        """
+        self.aoi = aoi
+        self.isActive, partition = self.aoi.is_active_partition(starttime, endtime)
+
+        #init features
+        self.features = {}
+        self.starttime = starttime
+        self.endtime = endtime
+        self.length = endtime - starttime
+        self.features['numfixations'] = 0
+        self.features['longestfixation'] = -1
+        self.features['meanfixationduration'] = -1
+        self.features['stddevfixationduration'] = -1
+        self.features['timetofirstfixation'] = -1
+        self.features['timetolastfixation'] = -1
+        self.features['proportionnum'] = 0
+        self.features['proportiontime'] = 0
+        self.features['fixationrate'] = 0
+        self.features['totaltimespent'] = 0
+        self.features['numevents'] = 0
+        self.features['numleftclic'] = 0
+        self.features['numrightclic'] = 0
+        self.features['numdoubleclic'] = 0
+        self.features['leftclicrate'] = 0
+        self.features['rightclicrate'] = 0
+        self.features['doubleclicrate'] = 0
+        self.features['timetofirstleftclic'] = -1
+        self.features['timetofirstrightclic'] = -1
+        self.features['timetofirstdoubleclic'] = -1
+        self.features['timetolastleftclic'] = -1
+        self.features['timetolastrightclic'] = -1
+        self.features['timetolastdoubleclic'] = -1
+
+        self.features['meanpupilsize'] = -1
+        self.features['stddevpupilsize'] = -1
+        self.features['maxpupilsize'] = -1
+        self.features['minpupilsize'] = -1
+        self.features['startpupilsize'] = -1
+        self.features['endpupilsize'] = -1
+        self.features['meanpupilvelocity'] = -1
+        self.features['stddevpupilvelocity'] = -1
+        self.features['maxpupilvelocity'] = -1
+        self.features['minpupilvelocity'] = -1
+        self.numpupilsizes = 0
+        self.numpupilvelocity = 0
+        self.features['numevents'] = 0
+        self.numevents = 0
+
+        self.features['meandistance'] = -1
+        self.features['stddevdistance'] = -1
+        self.features['maxdistance'] = -1
+        self.features['mindistance'] = -1
+        self.features['startdistance'] = -1
+        self.features['enddistance'] = -1
+
+        self.numdistancedata = 0
+
+        self.total_trans_from = 0
+        self.variance = 0
+        for aoi in active_aois:
+            aid = aoi.aid
+            self.features['numtransfrom_%s'%(aid)] = 0
+            self.features['proptransfrom_%s'%(aid)] = 0
+
+        if not(self.isActive):
+            return
+        all_data = []
+        fixation_data = []
+        event_data = []
+
+        if partition:
+            if params.DEBUG or params.VERBOSE == "VERBOSE":
+                print("partition",partition)
+            for intr in partition:
+                if starttime <= intr[1] and endtime >= intr[0]:
+                    _,st,en = get_chunk(seg_all_data, 0, intr[0], intr[1])
+                    all_data += seg_all_data[st:en]
+                    _,st,en = get_chunk(seg_fixation_data, 0, intr[0],intr[1])
+                    fixation_data += seg_fixation_data[st:en]
+                    if seg_event_data != None:
+                        _,st,en = get_chunk(seg_event_data, 0, intr[0],intr[1])
+                        event_data += seg_event_data[st:en]
+            if params.DEBUG or params.VERBOSE == "VERBOSE":
+                print("len(seg_all_data)",seg_all_data)
+                print("len(seg_fixation_data)",seg_fixation_data)
+                print("len(fixation_data)",fixation_data)
+        else:  #global AOI (always active)
+            all_data = seg_all_data
+            fixation_data = seg_fixation_data
+            if seg_event_data != None:
+                event_data = seg_event_data
+
+        ## Remove datapoints with invalid gaze coordinates
+        datapoints = filter(lambda datapoint: datapoint.gazepointx != -1 and datapoint.gazepointy != -1, all_data)
+        # Only keep samples inside AOI
+        datapoints = filter(lambda datapoint: _datapoint_inside_aoi(datapoint, self.aoi.polyin, self.aoi.polyout), datapoints)
+
+        self.generate_pupil_features(datapoints, rest_pupil_size, export_pupilinfo)
+
+        self.generate_distance_features(datapoints)
+
+        fixation_indices = self.generate_fixation_features(datapoints, fixation_data, sum_discarded)
+
+        self.generate_event_features(seg_event_data, event_data, sum_discarded)
+
+        self.generate_transition_features(active_aois, fixation_data, fixation_indices)
+
+
+    def generate_pupil_features(self, datapoints, rest_pupil_size, export_pupilinfo):
+        #get all datapoints where pupil size is available
+        valid_pupil_data = filter(lambda x: x.pupilsize > 0, datapoints)
+        valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, datapoints)
+        #number of valid pupil sizes
+        self.numpupilsizes = len(valid_pupil_data)
+        self.numpupilvelocity = len(valid_pupil_velocity)
+
+        if self.numpupilsizes > 0: #check if the current segment has pupil data available
+            if params.PUPIL_ADJUSTMENT == "rpscenter":
+                adjvalidpupilsizes = map(lambda x: x.pupilsize - rest_pupil_size, valid_pupil_data)
+            elif params.PUPIL_ADJUSTMENT == "PCPS":
+                adjvalidpupilsizes = map(lambda x: (x.pupilsize - rest_pupil_size) / (1.0 * rest_pupil_size), valid_pupil_data)
+            else:
+                adjvalidpupilsizes = map(lambda x: x.pupilsize, valid_pupil_data)#valid_pupil_data
+
+            valid_pupil_velocity = map(lambda x: x.pupilvelocity, valid_pupil_velocity)#valid_pupil_data
+
+            if export_pupilinfo:
+                self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, rest_pupil_size], valid_pupil_data)
+
+            self.features['meanpupilsize'] = mean(adjvalidpupilsizes)
+            self.features['stddevpupilsize'] = stddev(adjvalidpupilsizes)
+            self.features['maxpupilsize'] = max(adjvalidpupilsizes)
+            self.features['minpupilsize'] = min(adjvalidpupilsizes)
+            self.features['startpupilsize'] = adjvalidpupilsizes[0]
+            self.features['endpupilsize'] = adjvalidpupilsizes[-1]
+
+            if len(valid_pupil_velocity) > 0:
+                self.features['meanpupilvelocity'] = mean(valid_pupil_velocity)
+                self.features['stddevpupilvelocity'] = stddev(valid_pupil_velocity)
+                self.features['maxpupilvelocity'] = max(valid_pupil_velocity)
+                self.features['minpupilvelocity'] = min(valid_pupil_velocity)
+
+
+    def generate_distance_features(self, datapoints):
+        # check if pupil sizes are available for all missing points
+        invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, datapoints)
+#        if len(invalid_distance_data) > 0:
+#            warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
+
+        #get all datapoints where distance is available
+        valid_distance_data = filter(lambda x: x.distance > 0, datapoints)
+        #number of valid pupil sizes
+        self.numdistancedata = len(valid_distance_data)
+        if self.numdistancedata > 0: #check if the current segment has pupil data available
+            distances_from_screen = map(lambda x: x.distance, valid_distance_data)
+            self.features['meandistance'] = mean(distances_from_screen)
+            self.features['stddevdistance'] = stddev(distances_from_screen)
+            self.features['maxdistance'] = max(distances_from_screen)
+            self.features['mindistance'] = min(distances_from_screen)
+            self.features['startdistance'] = distances_from_screen[0]
+            self.features['enddistance'] = distances_from_screen[-1]
+
+
+    def generate_fixation_features(self, datapoints, fixation_data, sum_discarded):
+
+        fixation_indices = []
+        fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i], self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
+        fixations = map(lambda i: fixation_data[i], fixation_indices)
+        numfixations = len(fixations)
+        self.features['numfixations'] = numfixations
+        self.features['longestfixation'] = -1
+        self.features['timetofirstfixation'] = -1
+        self.features['timetolastfixation'] = -1
+        self.features['proportionnum'] = 0
+        totaltimespent = sum(map(lambda x: x.fixationduration, fixations))
+        self.features['totaltimespent'] = totaltimespent
+
+        self.features['proportiontime'] = float(totaltimespent)/(self.length - sum_discarded)
+        if numfixations > 0:
+            self.features['longestfixation'] = max(map(lambda x: x.fixationduration, fixations))
+            self.features['meanfixationduration'] = mean(map(lambda x: float(x.fixationduration), fixations))
+            self.features['stddevfixationduration'] = stddev(map(lambda x: float(x.fixationduration), fixations))
+            self.features['timetofirstfixation'] = fixations[0].timestamp - self.starttime
+            self.features['timetolastfixation'] = fixations[-1].timestamp - self.starttime
+            self.features['proportionnum'] = float(numfixations)/len(fixation_data)
+            self.features['fixationrate'] = numfixations / float(totaltimespent)
+            self.variance = self.features['stddevfixationduration'] ** 2
+        return fixation_indices
+
+    def generate_event_features(self, seg_event_data, event_data, sum_discarded):
+
+        if seg_event_data != None:
+            events = filter(lambda event: _event_inside_aoi(event,self.aoi.polyin, self.aoi.polyout), event_data)
+            leftc, rightc, doublec, _ = generate_event_lists(events)
+        if seg_event_data != None:
+            self.features['numevents'] = len(events)
+            self.features['numleftclic'] = len(leftc)
+            self.features['numrightclic'] = len(rightc)
+            self.features['numdoubleclic'] = len(doublec)
+            self.features['leftclicrate'] = float(len(leftc))/(self.length - sum_discarded) if (self.length - sum_discarded)>0 else 0
+            self.features['rightclicrate'] = float(len(rightc))/(self.length - sum_discarded) if (self.length - sum_discarded)>0 else 0
+            self.features['doubleclicrate'] = float(len(doublec))/(self.length - sum_discarded) if (self.length - sum_discarded)>0 else 0
+            self.features['timetofirstleftclic'] = leftc[0].timestamp - self.starttime if len(leftc) > 0 else -1
+            self.features['timetofirstrightclic'] = rightc[0].timestamp - self.starttime if len(rightc) > 0 else -1
+            self.features['timetofirstdoubleclic'] = doublec[0].timestamp - self.starttime if len(doublec) > 0 else -1
+            self.features['timetolastleftclic'] = leftc[-1].timestamp - self.starttime if len(leftc) > 0 else -1
+            self.features['timetolastrightclic'] = rightc[-1].timestamp - self.starttime if len(rightc) > 0 else -1
+            self.features['timetolastdoubleclic'] = doublec[-1].timestamp - self.starttime if len(doublec) > 0 else -1
+
+
+    def generate_transition_features(self, active_aois, fixation_data, fixation_indices):
+        #calculating the transitions to and from this AOI and other active AOIs at the moment
+        for aoi in active_aois:
+            aid = aoi.aid
+            self.features['numtransfrom_%s'%(aid)] = 0
+
+        sumtransfrom = 0
+        for i in fixation_indices:
+            if i > 0:
+                for aoi in active_aois:
+                    aid = aoi.aid
+                    polyin = aoi.polyin
+                    polyout = aoi.polyout
+                    key = 'numtransfrom_%s'%(aid)
+
+                    if _fixation_inside_aoi(fixation_data[i-1], polyin, polyout):
+                        self.features[key] += 1
+                        sumtransfrom += 1
+        for aoi in active_aois:
+            aid = aoi.aid
+
+            if sumtransfrom > 0:
+                val = self.features['numtransfrom_%s'%(aid)]
+                self.features['proptransfrom_%s'%(aid)] = float(val) / sumtransfrom
+            else:
+                self.features['proptransfrom_%s'%(aid)] = 0
+        self.total_trans_from = sumtransfrom
+
+
+    def get_features(self, featurelist = None):
+        """Returns the list of names and values of features for this AOI_Stat object
+
+        Args:
+            featurelist: optional list of features. If equal to None the full set of all features will be returned
+
+        Returns:
+            featnames: a list of feature names sorted alphabetically
+            featvals: a corresponding list of feature values
+            e.g.
+            featnames = ['fixationrate', 'length', 'meanabspathangles']
+            featvals  = [0.00268522882294', '1529851', '1.60354714212']
+
+        """
+        if featurelist == []:
+            return [], []
+        elif not featurelist:   #all features
+            featnames = self.features.keys()
+        else:                   #a list was given
+            featnames = []
+            for name in featurelist:
+                if name == 'numtransfrom':
+                    featnames += filter(lambda x: x[:12] == 'numtransfrom', self.features.keys())
+                elif name == 'proptransfrom':
+                    featnames += filter(lambda x: x[:13] == 'proptransfrom', self.features.keys())
+                elif name in self.features.keys():
+                    featnames.append(name)
+                else:
+                    raise Exception('AOI %s has no such feature: %s'%(self.aoi.aid, name))
+
+        featnames.sort()
+
+        featvals = map(lambda x: self.features[x], featnames)
+#        print featnames
+
+        return featnames, featvals
+
+    def print_(self):
+        """Prints the list of features and their values for this AOI_Stat object
+        """
+
+        print("AOI ID:",self.aoi.aid)
+        fn,fv = self.get_features()
+        for i in xrange(len(fn)):
+            print(fn[i],':',fv[i])
+        print
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#AOI.AOI_Stat">AOI_Stat</a></li>
+          </ul>
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="AOI.AOI_Stat.aoi" class="name">var <span class="ident">aoi</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="AOI.AOI_Stat.endtime" class="name">var <span class="ident">endtime</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="AOI.AOI_Stat.features" class="name">var <span class="ident">features</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="AOI.AOI_Stat.length" class="name">var <span class="ident">length</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="AOI.AOI_Stat.numdistancedata" class="name">var <span class="ident">numdistancedata</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="AOI.AOI_Stat.numevents" class="name">var <span class="ident">numevents</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="AOI.AOI_Stat.numpupilsizes" class="name">var <span class="ident">numpupilsizes</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="AOI.AOI_Stat.numpupilvelocity" class="name">var <span class="ident">numpupilvelocity</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="AOI.AOI_Stat.starttime" class="name">var <span class="ident">starttime</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="AOI.AOI_Stat.total_trans_from" class="name">var <span class="ident">total_trans_from</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="AOI.AOI_Stat.variance" class="name">var <span class="ident">variance</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+          <h3>Methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="AOI.AOI_Stat.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, aoi, seg_all_data, seg_fixation_data, starttime, endtime, sum_discarded, active_aois, seg_event_data=None, rest_pupil_size=0, export_pupilinfo=False)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Inits AOI_Stat class</p>
+<p>Args:
+    aoi: the aoi object for which the statistics are calculated
+    seg_all_data: datapoints for this segment
+    seg_fixation_data: fixations for current segment
+    starttime:
+    endtime:
+    active_aois:list of the AOI objects that will be used for calculating the transitions between this AOI and other AOIs</p>
+<p>Yields:
+    an AOI_Stat object</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-AOI.AOI_Stat.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-AOI.AOI_Stat.__init__" class="source">
+    <pre><code>def __init__(self,aoi, seg_all_data, seg_fixation_data, starttime, endtime, sum_discarded, active_aois, seg_event_data=None, rest_pupil_size = 0, export_pupilinfo = False):
+    """Inits AOI_Stat class
+    Args:
+        aoi: the aoi object for which the statistics are calculated
+        seg_all_data: datapoints for this segment
+        seg_fixation_data: fixations for current segment
+        starttime:
+        endtime:
+        active_aois:list of the AOI objects that will be used for calculating the transitions between this AOI and other AOIs
+    Yields:
+        an AOI_Stat object
+    """
+    self.aoi = aoi
+    self.isActive, partition = self.aoi.is_active_partition(starttime, endtime)
+    #init features
+    self.features = {}
+    self.starttime = starttime
+    self.endtime = endtime
+    self.length = endtime - starttime
+    self.features['numfixations'] = 0
+    self.features['longestfixation'] = -1
+    self.features['meanfixationduration'] = -1
+    self.features['stddevfixationduration'] = -1
+    self.features['timetofirstfixation'] = -1
+    self.features['timetolastfixation'] = -1
+    self.features['proportionnum'] = 0
+    self.features['proportiontime'] = 0
+    self.features['fixationrate'] = 0
+    self.features['totaltimespent'] = 0
+    self.features['numevents'] = 0
+    self.features['numleftclic'] = 0
+    self.features['numrightclic'] = 0
+    self.features['numdoubleclic'] = 0
+    self.features['leftclicrate'] = 0
+    self.features['rightclicrate'] = 0
+    self.features['doubleclicrate'] = 0
+    self.features['timetofirstleftclic'] = -1
+    self.features['timetofirstrightclic'] = -1
+    self.features['timetofirstdoubleclic'] = -1
+    self.features['timetolastleftclic'] = -1
+    self.features['timetolastrightclic'] = -1
+    self.features['timetolastdoubleclic'] = -1
+    self.features['meanpupilsize'] = -1
+    self.features['stddevpupilsize'] = -1
+    self.features['maxpupilsize'] = -1
+    self.features['minpupilsize'] = -1
+    self.features['startpupilsize'] = -1
+    self.features['endpupilsize'] = -1
+    self.features['meanpupilvelocity'] = -1
+    self.features['stddevpupilvelocity'] = -1
+    self.features['maxpupilvelocity'] = -1
+    self.features['minpupilvelocity'] = -1
+    self.numpupilsizes = 0
+    self.numpupilvelocity = 0
+    self.features['numevents'] = 0
+    self.numevents = 0
+    self.features['meandistance'] = -1
+    self.features['stddevdistance'] = -1
+    self.features['maxdistance'] = -1
+    self.features['mindistance'] = -1
+    self.features['startdistance'] = -1
+    self.features['enddistance'] = -1
+    self.numdistancedata = 0
+    self.total_trans_from = 0
+    self.variance = 0
+    for aoi in active_aois:
+        aid = aoi.aid
+        self.features['numtransfrom_%s'%(aid)] = 0
+        self.features['proptransfrom_%s'%(aid)] = 0
+    if not(self.isActive):
+        return
+    all_data = []
+    fixation_data = []
+    event_data = []
+    if partition:
+        if params.DEBUG or params.VERBOSE == "VERBOSE":
+            print("partition",partition)
+        for intr in partition:
+            if starttime <= intr[1] and endtime >= intr[0]:
+                _,st,en = get_chunk(seg_all_data, 0, intr[0], intr[1])
+                all_data += seg_all_data[st:en]
+                _,st,en = get_chunk(seg_fixation_data, 0, intr[0],intr[1])
+                fixation_data += seg_fixation_data[st:en]
+                if seg_event_data != None:
+                    _,st,en = get_chunk(seg_event_data, 0, intr[0],intr[1])
+                    event_data += seg_event_data[st:en]
+        if params.DEBUG or params.VERBOSE == "VERBOSE":
+            print("len(seg_all_data)",seg_all_data)
+            print("len(seg_fixation_data)",seg_fixation_data)
+            print("len(fixation_data)",fixation_data)
+    else:  #global AOI (always active)
+        all_data = seg_all_data
+        fixation_data = seg_fixation_data
+        if seg_event_data != None:
+            event_data = seg_event_data
+    ## Remove datapoints with invalid gaze coordinates
+    datapoints = filter(lambda datapoint: datapoint.gazepointx != -1 and datapoint.gazepointy != -1, all_data)
+    # Only keep samples inside AOI
+    datapoints = filter(lambda datapoint: _datapoint_inside_aoi(datapoint, self.aoi.polyin, self.aoi.polyout), datapoints)
+    self.generate_pupil_features(datapoints, rest_pupil_size, export_pupilinfo)
+    self.generate_distance_features(datapoints)
+    fixation_indices = self.generate_fixation_features(datapoints, fixation_data, sum_discarded)
+    self.generate_event_features(seg_event_data, event_data, sum_discarded)
+    self.generate_transition_features(active_aois, fixation_data, fixation_indices)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="AOI.AOI_Stat.generate_distance_features">
+    <p>def <span class="ident">generate_distance_features</span>(</p><p>self, datapoints)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-AOI.AOI_Stat.generate_distance_features', this);">Show source &equiv;</a></p>
+  <div id="source-AOI.AOI_Stat.generate_distance_features" class="source">
+    <pre><code>def generate_distance_features(self, datapoints):
+    # check if pupil sizes are available for all missing points
+    invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, datapoints)
+     if len(invalid_distance_data) > 0:
+         warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
+    #get all datapoints where distance is available
+    valid_distance_data = filter(lambda x: x.distance > 0, datapoints)
+    #number of valid pupil sizes
+    self.numdistancedata = len(valid_distance_data)
+    if self.numdistancedata > 0: #check if the current segment has pupil data available
+        distances_from_screen = map(lambda x: x.distance, valid_distance_data)
+        self.features['meandistance'] = mean(distances_from_screen)
+        self.features['stddevdistance'] = stddev(distances_from_screen)
+        self.features['maxdistance'] = max(distances_from_screen)
+        self.features['mindistance'] = min(distances_from_screen)
+        self.features['startdistance'] = distances_from_screen[0]
+        self.features['enddistance'] = distances_from_screen[-1]
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="AOI.AOI_Stat.generate_event_features">
+    <p>def <span class="ident">generate_event_features</span>(</p><p>self, seg_event_data, event_data, sum_discarded)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-AOI.AOI_Stat.generate_event_features', this);">Show source &equiv;</a></p>
+  <div id="source-AOI.AOI_Stat.generate_event_features" class="source">
+    <pre><code>def generate_event_features(self, seg_event_data, event_data, sum_discarded):
+    if seg_event_data != None:
+        events = filter(lambda event: _event_inside_aoi(event,self.aoi.polyin, self.aoi.polyout), event_data)
+        leftc, rightc, doublec, _ = generate_event_lists(events)
+    if seg_event_data != None:
+        self.features['numevents'] = len(events)
+        self.features['numleftclic'] = len(leftc)
+        self.features['numrightclic'] = len(rightc)
+        self.features['numdoubleclic'] = len(doublec)
+        self.features['leftclicrate'] = float(len(leftc))/(self.length - sum_discarded) if (self.length - sum_discarded)>0 else 0
+        self.features['rightclicrate'] = float(len(rightc))/(self.length - sum_discarded) if (self.length - sum_discarded)>0 else 0
+        self.features['doubleclicrate'] = float(len(doublec))/(self.length - sum_discarded) if (self.length - sum_discarded)>0 else 0
+        self.features['timetofirstleftclic'] = leftc[0].timestamp - self.starttime if len(leftc) > 0 else -1
+        self.features['timetofirstrightclic'] = rightc[0].timestamp - self.starttime if len(rightc) > 0 else -1
+        self.features['timetofirstdoubleclic'] = doublec[0].timestamp - self.starttime if len(doublec) > 0 else -1
+        self.features['timetolastleftclic'] = leftc[-1].timestamp - self.starttime if len(leftc) > 0 else -1
+        self.features['timetolastrightclic'] = rightc[-1].timestamp - self.starttime if len(rightc) > 0 else -1
+        self.features['timetolastdoubleclic'] = doublec[-1].timestamp - self.starttime if len(doublec) > 0 else -1
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="AOI.AOI_Stat.generate_fixation_features">
+    <p>def <span class="ident">generate_fixation_features</span>(</p><p>self, datapoints, fixation_data, sum_discarded)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-AOI.AOI_Stat.generate_fixation_features', this);">Show source &equiv;</a></p>
+  <div id="source-AOI.AOI_Stat.generate_fixation_features" class="source">
+    <pre><code>def generate_fixation_features(self, datapoints, fixation_data, sum_discarded):
+    fixation_indices = []
+    fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i], self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
+    fixations = map(lambda i: fixation_data[i], fixation_indices)
+    numfixations = len(fixations)
+    self.features['numfixations'] = numfixations
+    self.features['longestfixation'] = -1
+    self.features['timetofirstfixation'] = -1
+    self.features['timetolastfixation'] = -1
+    self.features['proportionnum'] = 0
+    totaltimespent = sum(map(lambda x: x.fixationduration, fixations))
+    self.features['totaltimespent'] = totaltimespent
+    self.features['proportiontime'] = float(totaltimespent)/(self.length - sum_discarded)
+    if numfixations > 0:
+        self.features['longestfixation'] = max(map(lambda x: x.fixationduration, fixations))
+        self.features['meanfixationduration'] = mean(map(lambda x: float(x.fixationduration), fixations))
+        self.features['stddevfixationduration'] = stddev(map(lambda x: float(x.fixationduration), fixations))
+        self.features['timetofirstfixation'] = fixations[0].timestamp - self.starttime
+        self.features['timetolastfixation'] = fixations[-1].timestamp - self.starttime
+        self.features['proportionnum'] = float(numfixations)/len(fixation_data)
+        self.features['fixationrate'] = numfixations / float(totaltimespent)
+        self.variance = self.features['stddevfixationduration'] ** 2
+    return fixation_indices
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="AOI.AOI_Stat.generate_pupil_features">
+    <p>def <span class="ident">generate_pupil_features</span>(</p><p>self, datapoints, rest_pupil_size, export_pupilinfo)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-AOI.AOI_Stat.generate_pupil_features', this);">Show source &equiv;</a></p>
+  <div id="source-AOI.AOI_Stat.generate_pupil_features" class="source">
+    <pre><code>def generate_pupil_features(self, datapoints, rest_pupil_size, export_pupilinfo):
+    #get all datapoints where pupil size is available
+    valid_pupil_data = filter(lambda x: x.pupilsize > 0, datapoints)
+    valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, datapoints)
+    #number of valid pupil sizes
+    self.numpupilsizes = len(valid_pupil_data)
+    self.numpupilvelocity = len(valid_pupil_velocity)
+    if self.numpupilsizes > 0: #check if the current segment has pupil data available
+        if params.PUPIL_ADJUSTMENT == "rpscenter":
+            adjvalidpupilsizes = map(lambda x: x.pupilsize - rest_pupil_size, valid_pupil_data)
+        elif params.PUPIL_ADJUSTMENT == "PCPS":
+            adjvalidpupilsizes = map(lambda x: (x.pupilsize - rest_pupil_size) / (1.0 * rest_pupil_size), valid_pupil_data)
+        else:
+            adjvalidpupilsizes = map(lambda x: x.pupilsize, valid_pupil_data)#valid_pupil_data
+        valid_pupil_velocity = map(lambda x: x.pupilvelocity, valid_pupil_velocity)#valid_pupil_data
+        if export_pupilinfo:
+            self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, rest_pupil_size], valid_pupil_data)
+        self.features['meanpupilsize'] = mean(adjvalidpupilsizes)
+        self.features['stddevpupilsize'] = stddev(adjvalidpupilsizes)
+        self.features['maxpupilsize'] = max(adjvalidpupilsizes)
+        self.features['minpupilsize'] = min(adjvalidpupilsizes)
+        self.features['startpupilsize'] = adjvalidpupilsizes[0]
+        self.features['endpupilsize'] = adjvalidpupilsizes[-1]
+        if len(valid_pupil_velocity) > 0:
+            self.features['meanpupilvelocity'] = mean(valid_pupil_velocity)
+            self.features['stddevpupilvelocity'] = stddev(valid_pupil_velocity)
+            self.features['maxpupilvelocity'] = max(valid_pupil_velocity)
+            self.features['minpupilvelocity'] = min(valid_pupil_velocity)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="AOI.AOI_Stat.generate_transition_features">
+    <p>def <span class="ident">generate_transition_features</span>(</p><p>self, active_aois, fixation_data, fixation_indices)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-AOI.AOI_Stat.generate_transition_features', this);">Show source &equiv;</a></p>
+  <div id="source-AOI.AOI_Stat.generate_transition_features" class="source">
+    <pre><code>def generate_transition_features(self, active_aois, fixation_data, fixation_indices):
+    #calculating the transitions to and from this AOI and other active AOIs at the moment
+    for aoi in active_aois:
+        aid = aoi.aid
+        self.features['numtransfrom_%s'%(aid)] = 0
+    sumtransfrom = 0
+    for i in fixation_indices:
+        if i > 0:
+            for aoi in active_aois:
+                aid = aoi.aid
+                polyin = aoi.polyin
+                polyout = aoi.polyout
+                key = 'numtransfrom_%s'%(aid)
+                if _fixation_inside_aoi(fixation_data[i-1], polyin, polyout):
+                    self.features[key] += 1
+                    sumtransfrom += 1
+    for aoi in active_aois:
+        aid = aoi.aid
+        if sumtransfrom > 0:
+            val = self.features['numtransfrom_%s'%(aid)]
+            self.features['proptransfrom_%s'%(aid)] = float(val) / sumtransfrom
+        else:
+            self.features['proptransfrom_%s'%(aid)] = 0
+    self.total_trans_from = sumtransfrom
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="AOI.AOI_Stat.get_features">
+    <p>def <span class="ident">get_features</span>(</p><p>self, featurelist=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns the list of names and values of features for this AOI_Stat object</p>
+<p>Args:
+    featurelist: optional list of features. If equal to None the full set of all features will be returned</p>
+<p>Returns:
+    featnames: a list of feature names sorted alphabetically
+    featvals: a corresponding list of feature values
+    e.g.
+    featnames = ['fixationrate', 'length', 'meanabspathangles']
+    featvals  = [0.00268522882294', '1529851', '1.60354714212']</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-AOI.AOI_Stat.get_features', this);">Show source &equiv;</a></p>
+  <div id="source-AOI.AOI_Stat.get_features" class="source">
+    <pre><code>def get_features(self, featurelist = None):
+    """Returns the list of names and values of features for this AOI_Stat object
+    Args:
+        featurelist: optional list of features. If equal to None the full set of all features will be returned
+    Returns:
+        featnames: a list of feature names sorted alphabetically
+        featvals: a corresponding list of feature values
+        e.g.
+        featnames = ['fixationrate', 'length', 'meanabspathangles']
+        featvals  = [0.00268522882294', '1529851', '1.60354714212']
+    """
+    if featurelist == []:
+        return [], []
+    elif not featurelist:   #all features
+        featnames = self.features.keys()
+    else:                   #a list was given
+        featnames = []
+        for name in featurelist:
+            if name == 'numtransfrom':
+                featnames += filter(lambda x: x[:12] == 'numtransfrom', self.features.keys())
+            elif name == 'proptransfrom':
+                featnames += filter(lambda x: x[:13] == 'proptransfrom', self.features.keys())
+            elif name in self.features.keys():
+                featnames.append(name)
+            else:
+                raise Exception('AOI %s has no such feature: %s'%(self.aoi.aid, name))
+    featnames.sort()
+    featvals = map(lambda x: self.features[x], featnames)
+     print featnames
+    return featnames, featvals
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="AOI.AOI_Stat.print_">
+    <p>def <span class="ident">print_</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Prints the list of features and their values for this AOI_Stat object</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-AOI.AOI_Stat.print_', this);">Show source &equiv;</a></p>
+  <div id="source-AOI.AOI_Stat.print_" class="source">
+    <pre><code>def print_(self):
+    """Prints the list of features and their values for this AOI_Stat object
+    """
+    print("AOI ID:",self.aoi.aid)
+    fn,fv = self.get_features()
+    for i in xrange(len(fn)):
+        print(fn[i],':',fv[i])
+    print
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+
+  </section>
+
+    </article>
+  <div class="clear"> </div>
+  <footer id="footer">
+    <p>
+      Documentation generated by
+      <a href="https://github.com/BurntSushi/pdoc">pdoc 0.3.2</a>
+    </p>
+
+    <p>pdoc is in the public domain with the
+      <a href="http://unlicense.org">UNLICENSE</a></p>
+
+    <p>Design by <a href="http://nadh.in">Kailash Nadh</a></p>
+  </footer>
+</div>
+</body>
+</html>

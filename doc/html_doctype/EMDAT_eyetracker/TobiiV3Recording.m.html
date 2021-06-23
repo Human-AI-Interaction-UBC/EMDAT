@@ -1,0 +1,2032 @@
+<!doctype html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+
+    <title>TobiiV3Recording API documentation</title>
+    <meta name="description" content="UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+Created on 2015-08-15
+
+Class to read Tobii..." />
+
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
+  
+  <style type="text/css">
+  
+* {
+  box-sizing: border-box;
+}
+/*! normalize.css v1.1.1 | MIT License | git.io/normalize */
+
+/* ==========================================================================
+   HTML5 display definitions
+   ========================================================================== */
+
+/**
+ * Correct `block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+    display: block;
+}
+
+/**
+ * Correct `inline-block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+audio,
+canvas,
+video {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+
+audio:not([controls]) {
+    display: none;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Firefox 3, and Safari 4.
+ * Known issue: no IE 6 support.
+ */
+
+[hidden] {
+    display: none;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+/**
+ * 1. Prevent system color scheme's background color being used in Firefox, IE,
+ *    and Opera.
+ * 2. Prevent system color scheme's text color being used in Firefox, IE, and
+ *    Opera.
+ * 3. Correct text resizing oddly in IE 6/7 when body `font-size` is set using
+ *    `em` units.
+ * 4. Prevent iOS text size adjust after orientation change, without disabling
+ *    user zoom.
+ */
+
+html {
+    background: #fff; /* 1 */
+    color: #000; /* 2 */
+    font-size: 100%; /* 3 */
+    -webkit-text-size-adjust: 100%; /* 4 */
+    -ms-text-size-adjust: 100%; /* 4 */
+}
+
+/**
+ * Address `font-family` inconsistency between `textarea` and other form
+ * elements.
+ */
+
+html,
+button,
+input,
+select,
+textarea {
+    font-family: sans-serif;
+}
+
+/**
+ * Address margins handled incorrectly in IE 6/7.
+ */
+
+body {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Links
+   ========================================================================== */
+
+/**
+ * Address `outline` inconsistency between Chrome and other browsers.
+ */
+
+a:focus {
+    outline: thin dotted;
+}
+
+/**
+ * Improve readability when focused and also mouse hovered in all browsers.
+ */
+
+a:active,
+a:hover {
+    outline: 0;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+/**
+ * Address font sizes and margins set differently in IE 6/7.
+ * Address font sizes within `section` and `article` in Firefox 4+, Safari 5,
+ * and Chrome.
+ */
+
+h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin: 0.83em 0;
+}
+
+h3 {
+    font-size: 1.17em;
+    margin: 1em 0;
+}
+
+h4 {
+    font-size: 1em;
+    margin: 1.33em 0;
+}
+
+h5 {
+    font-size: 0.83em;
+    margin: 1.67em 0;
+}
+
+h6 {
+    font-size: 0.67em;
+    margin: 2.33em 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Safari 5, and Chrome.
+ */
+
+abbr[title] {
+    border-bottom: 1px dotted;
+}
+
+/**
+ * Address style set to `bolder` in Firefox 3+, Safari 4/5, and Chrome.
+ */
+
+b,
+strong {
+    font-weight: bold;
+}
+
+blockquote {
+    margin: 1em 40px;
+}
+
+/**
+ * Address styling not present in Safari 5 and Chrome.
+ */
+
+dfn {
+    font-style: italic;
+}
+
+/**
+ * Address differences between Firefox and other browsers.
+ * Known issue: no IE 6/7 normalization.
+ */
+
+hr {
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 6/7/8/9.
+ */
+
+mark {
+    background: #ff0;
+    color: #000;
+}
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+p,
+pre {
+    margin: 1em 0;
+}
+
+/**
+ * Correct font family set oddly in IE 6, Safari 4/5, and Chrome.
+ */
+
+code,
+kbd,
+pre,
+samp {
+    font-family: monospace, serif;
+    _font-family: 'courier new', monospace;
+    font-size: 1em;
+}
+
+/**
+ * Improve readability of pre-formatted text in all browsers.
+ */
+
+pre {
+    white-space: pre;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/**
+ * Address CSS quotes not supported in IE 6/7.
+ */
+
+q {
+    quotes: none;
+}
+
+/**
+ * Address `quotes` property not supported in Safari 4.
+ */
+
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+
+/**
+ * Address inconsistent and variable font size in all browsers.
+ */
+
+small {
+    font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+ */
+
+sub,
+sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sup {
+    top: -0.5em;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+/* ==========================================================================
+   Lists
+   ========================================================================== */
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+dl,
+menu,
+ol,
+ul {
+    margin: 1em 0;
+}
+
+dd {
+    margin: 0 0 0 40px;
+}
+
+/**
+ * Address paddings set differently in IE 6/7.
+ */
+
+menu,
+ol,
+ul {
+    padding: 0 0 0 40px;
+}
+
+/**
+ * Correct list images handled incorrectly in IE 7.
+ */
+
+nav ul,
+nav ol {
+    list-style: none;
+    list-style-image: none;
+}
+
+/* ==========================================================================
+   Embedded content
+   ========================================================================== */
+
+/**
+ * 1. Remove border when inside `a` element in IE 6/7/8/9 and Firefox 3.
+ * 2. Improve image quality when scaled in IE 7.
+ */
+
+img {
+    border: 0; /* 1 */
+    -ms-interpolation-mode: bicubic; /* 2 */
+}
+
+/**
+ * Correct overflow displayed oddly in IE 9.
+ */
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Figures
+   ========================================================================== */
+
+/**
+ * Address margin not present in IE 6/7/8/9, Safari 5, and Opera 11.
+ */
+
+figure {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+
+/**
+ * Correct margin displayed oddly in IE 6/7.
+ */
+
+form {
+    margin: 0;
+}
+
+/**
+ * Define consistent border, margin, and padding.
+ */
+
+fieldset {
+    border: 1px solid #c0c0c0;
+    margin: 0 2px;
+    padding: 0.35em 0.625em 0.75em;
+}
+
+/**
+ * 1. Correct color not being inherited in IE 6/7/8/9.
+ * 2. Correct text not wrapping in Firefox 3.
+ * 3. Correct alignment displayed oddly in IE 6/7.
+ */
+
+legend {
+    border: 0; /* 1 */
+    padding: 0;
+    white-space: normal; /* 2 */
+    *margin-left: -7px; /* 3 */
+}
+
+/**
+ * 1. Correct font size not being inherited in all browsers.
+ * 2. Address margins set differently in IE 6/7, Firefox 3+, Safari 5,
+ *    and Chrome.
+ * 3. Improve appearance and consistency in all browsers.
+ */
+
+button,
+input,
+select,
+textarea {
+    font-size: 100%; /* 1 */
+    margin: 0; /* 2 */
+    vertical-align: baseline; /* 3 */
+    *vertical-align: middle; /* 3 */
+}
+
+/**
+ * Address Firefox 3+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+
+button,
+input {
+    line-height: normal;
+}
+
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Chrome, Safari 5+, and IE 6+.
+ * Correct `select` style inheritance in Firefox 4+ and Opera.
+ */
+
+button,
+select {
+    text-transform: none;
+}
+
+/**
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Correct inability to style clickable `input` types in iOS.
+ * 3. Improve usability and consistency of cursor style between image-type
+ *    `input` and others.
+ * 4. Remove inner spacing in IE 7 without affecting normal text inputs.
+ *    Known issue: inner spacing remains in IE 6.
+ */
+
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+    -webkit-appearance: button; /* 2 */
+    cursor: pointer; /* 3 */
+    *overflow: visible;  /* 4 */
+}
+
+/**
+ * Re-set default cursor for disabled elements.
+ */
+
+button[disabled],
+html input[disabled] {
+    cursor: default;
+}
+
+/**
+ * 1. Address box sizing set to content-box in IE 8/9.
+ * 2. Remove excess padding in IE 8/9.
+ * 3. Remove excess padding in IE 7.
+ *    Known issue: excess padding remains in IE 6.
+ */
+
+input[type="checkbox"],
+input[type="radio"] {
+    box-sizing: border-box; /* 1 */
+    padding: 0; /* 2 */
+    *height: 13px; /* 3 */
+    *width: 13px; /* 3 */
+}
+
+/**
+ * 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome.
+ * 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome
+ *    (include `-moz` to future-proof).
+ */
+
+input[type="search"] {
+    -webkit-appearance: textfield; /* 1 */
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box; /* 2 */
+    box-sizing: content-box;
+}
+
+/**
+ * Remove inner padding and search cancel button in Safari 5 and Chrome
+ * on OS X.
+ */
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+}
+
+/**
+ * Remove inner padding and border in Firefox 3+.
+ */
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+/**
+ * 1. Remove default vertical scrollbar in IE 6/7/8/9.
+ * 2. Improve readability and alignment in all browsers.
+ */
+
+textarea {
+    overflow: auto; /* 1 */
+    vertical-align: top; /* 2 */
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+/**
+ * Remove most spacing between table cells.
+ */
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+  </style>
+
+  <style type="text/css">
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+  }
+  body {
+    background: #fff;
+    font-family: "Source Sans Pro", "Helvetica Neueue", Helvetica, sans;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.6em;
+  }
+  #content {
+    width: 70%;
+    max-width: 850px;
+    float: left;
+    padding: 30px 60px;
+    border-left: 1px solid #ddd;
+  }
+  #sidebar {
+    width: 25%;
+    float: left;
+    padding: 30px;
+    overflow: hidden;
+  }
+  #nav {
+    font-size: 130%;
+    margin: 0 0 15px 0;
+  }
+
+  #top {
+    display: block;
+    position: fixed;
+    bottom: 5px;
+    left: 5px;
+    font-size: .85em;
+    text-transform: uppercase;
+  }
+
+  #footer {
+    font-size: .75em;
+    padding: 5px 30px;
+    border-top: 1px solid #ddd;
+    text-align: right;
+  }
+    #footer p {
+      margin: 0 0 0 30px;
+      display: inline-block;
+    }
+
+  h1, h2, h3, h4, h5 {
+    font-weight: 300;
+  }
+  h1 {
+    font-size: 2.5em;
+    line-height: 1.1em;
+    margin: 0 0 .50em 0;
+  }
+
+  h2 {
+    font-size: 1.75em;
+    margin: 1em 0 .50em 0;
+  }
+
+  h3 {
+    margin: 25px 0 10px 0;
+  }
+
+  h4 {
+    margin: 0;
+    font-size: 105%;
+  }
+
+  a {
+    color: #058;
+    text-decoration: none;
+    transition: color .3s ease-in-out;
+  }
+
+  a:hover {
+    color: #e08524;
+    transition: color .3s ease-in-out;
+  }
+
+  pre, code, .mono, .name {
+    font-family: "Ubuntu Mono", "Cousine", "DejaVu Sans Mono", monospace;
+  }
+
+  .title .name {
+    font-weight: bold;
+  }
+  .section-title {
+    margin-top: 2em;
+  }
+  .ident {
+    color: #900;
+  }
+
+  code {
+    background: #f9f9f9;
+  } 
+
+  pre {
+    background: #fefefe;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 0 #f3f3f3;
+    margin: 0 30px;
+    padding: 15px 30px;
+  }
+
+  .codehilite {
+    margin: 0 30px 10px 30px;
+  }
+
+    .codehilite pre {
+      margin: 0;
+    }
+    .codehilite .err { background: #ff3300; color: #fff !important; } 
+
+  table#module-list {
+    font-size: 110%;
+  }
+
+    table#module-list tr td:first-child {
+      padding-right: 10px;
+      white-space: nowrap;
+    }
+
+    table#module-list td {
+      vertical-align: top;
+      padding-bottom: 8px;
+    }
+
+      table#module-list td p {
+        margin: 0 0 7px 0;
+      }
+
+  .def {
+    display: table;
+  }
+
+    .def p {
+      display: table-cell;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .def p:first-child {
+      white-space: nowrap;
+    }
+
+    .def p:last-child {
+      width: 100%;
+    }
+
+
+  #index {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+    ul#index .class_name {
+      /* font-size: 110%; */
+      font-weight: bold;
+    }
+    #index ul {
+      margin: 0;
+    }
+
+  .item {
+    margin: 0 0 15px 0;
+  }
+
+    .item .class {
+      margin: 0 0 25px 30px;
+    }
+
+      .item .class ul.class_list {
+        margin: 0 0 20px 0;
+      }
+
+    .item .name {
+      background: #fafafa;
+      margin: 0;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 3px;
+      display: inline-block;
+      min-width: 40%;
+    }
+      .item .name:hover {
+        background: #f6f6f6;
+      }
+
+    .item .empty_desc {
+      margin: 0 0 5px 0;
+      padding: 0;
+    }
+
+    .item .inheritance {
+      margin: 3px 0 0 30px;
+    }
+
+    .item .inherited {
+      color: #666;
+    }
+
+    .item .desc {
+      padding: 0 8px;
+      margin: 0;
+    }
+
+      .item .desc p {
+        margin: 0 0 10px 0;
+      }
+
+    .source_cont {
+      margin: 0;
+      padding: 0;
+    }
+
+    .source_link a {
+      background: #ffc300;
+      font-weight: 400;
+      font-size: .75em;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 1px 1px 0 #f4b700;
+      
+      padding: 3px 8px;
+      border-radius: 2px;
+      transition: background .3s ease-in-out;
+    }
+      .source_link a:hover {
+        background: #FF7200;
+        text-shadow: none;
+        transition: background .3s ease-in-out;
+      }
+
+    .source {
+      display: none;
+      max-height: 600px;
+      overflow-y: scroll;
+      margin-bottom: 15px;
+    }
+
+      .source .codehilite {
+        margin: 0;
+      }
+
+  .desc h1, .desc h2, .desc h3 {
+    font-size: 100% !important;
+  }
+  .clear {
+    clear: both;
+  }
+
+  @media all and (max-width: 950px) {
+    #sidebar {
+      width: 35%;
+    }
+    #content {
+      width: 65%;
+    }
+  }
+  @media all and (max-width: 650px) {
+    #top {
+      display: none;
+    }
+    #sidebar {
+      float: none;
+      width: auto;
+    }
+    #content {
+      float: none;
+      width: auto;
+      padding: 30px;
+    }
+
+    #index ul {
+      padding: 0;
+      margin-bottom: 15px;
+    }
+    #index ul li {
+      display: inline-block;
+      margin-right: 30px;
+    }
+    #footer {
+      text-align: left;
+    }
+    #footer p {
+      display: block;
+      margin: inherit;
+    }
+  }
+
+  /*****************************/
+
+  </style>
+
+
+  <style type="text/css">
+  
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   These examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+    /* Style adjustments for viewports that meet the condition */
+}
+
+@media print,
+       (-o-min-device-pixel-ratio: 5/4),
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 120dpi) {
+    /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid required HTTP connection: h5bp.com/r
+   ========================================================================== */
+
+@media print {
+    * {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster: h5bp.com/s */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links for images, or javascript/internal links
+     */
+
+    .ir a:after,
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group; /* h5bp.com/t */
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
+
+  </style>
+
+  <script type="text/javascript">
+  function toggle(id, $link) {
+    $node = document.getElementById(id);
+    if (!$node)
+    return;
+    if (!$node.style.display || $node.style.display == 'none') {
+    $node.style.display = 'block';
+    $link.innerHTML = 'Hide source &nequiv;';
+    } else {
+    $node.style.display = 'none';
+    $link.innerHTML = 'Show source &equiv;';
+    }
+  }
+  </script>
+</head>
+<body>
+<a href="#" id="top">Top</a>
+
+<div id="container">
+    
+  
+  <div id="sidebar">
+    <h1>Index</h1>
+    <ul id="index">
+
+
+    <li class="set"><h3><a href="#header-classes">Classes</a></h3>
+      <ul>
+        <li class="mono">
+        <span class="class_name"><a href="#TobiiV3Recording.TobiiV3Recording">TobiiV3Recording</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#TobiiV3Recording.TobiiV3Recording.__init__">__init__</a></li>
+    <li class="mono"><a href="#TobiiV3Recording.TobiiV3Recording.clean_memory">clean_memory</a></li>
+    <li class="mono"><a href="#TobiiV3Recording.TobiiV3Recording.process_rec">process_rec</a></li>
+    <li class="mono"><a href="#TobiiV3Recording.TobiiV3Recording.read_all_data">read_all_data</a></li>
+    <li class="mono"><a href="#TobiiV3Recording.TobiiV3Recording.read_event_data">read_event_data</a></li>
+    <li class="mono"><a href="#TobiiV3Recording.TobiiV3Recording.read_fixation_data">read_fixation_data</a></li>
+    <li class="mono"><a href="#TobiiV3Recording.TobiiV3Recording.read_saccade_data">read_saccade_data</a></li>
+  </ul>
+
+        </li>
+      </ul>
+    </li>
+
+    </ul>
+  </div>
+
+    <article id="content">
+      
+  
+
+  
+
+
+  <header id="section-intro">
+  <h1 class="title"><span class="name">TobiiV3Recording</span> module</h1>
+  <p>UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+Created on 2015-08-15</p>
+<p>Class to read Tobii data (exported with Tobii Studio V3 and higher). See sample data in the "sampledata" folder.</p>
+<p>Authors: Mike Wu (creator), Sebastien Lalle.
+Institution: The University of British Columbia.</p>
+  
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-TobiiV3Recording', this);">Show source &equiv;</a></p>
+  <div id="source-TobiiV3Recording" class="source">
+    <pre><code>"""
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+Created on 2015-08-15
+
+Class to read Tobii data (exported with Tobii Studio V3 and higher). See sample data in the "sampledata" folder.
+
+Authors: Mike Wu (creator), Sebastien Lalle.
+Institution: The University of British Columbia.
+"""
+import sys
+sys.path.append('.')
+sys.path.append('./EMDAT_core')
+from EMDAT_core.Recording import Recording
+from EMDAT_core.data_structures import Datapoint, Fixation, Saccade, Event
+import EMDAT_core.utils
+import csv
+import params
+
+
+class TobiiV3Recording(Recording):
+    def read_all_data(self, all_file):
+        """Returns a list of "Datapoint"s read from an data file.
+
+        Args:
+            all_file:A string containing the name of the data file output by the Tobii software.
+
+        Returns:
+            a list of "Datapoint"s
+        """
+        all_data = []
+        with open(all_file, 'r') as f:
+            reader = csv.DictReader(f, delimiter="\t")
+            last_pupil_left = -1
+            last_pupil_right = -1
+            last_time = -1
+
+            for row in reader:
+                if row["MediaName"] != 'ScreenRec':
+#                if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
+                    continue
+                if not row["ValidityLeft"] or not row["ValidityRight"]: #ignore data point with no validity information
+                    continue
+                gaze_point_x = EMDAT_core.utils.cast_float(row["GazePointX (MCSpx)"], -1)
+                gaze_point_y = EMDAT_core.utils.cast_float(row["GazePointY (MCSpx)"], -1)
+                pupil_left = EMDAT_core.utils.cast_float(row["PupilLeft"], -1)
+                pupil_right = EMDAT_core.utils.cast_float(row["PupilRight"], -1)
+                distance_left = EMDAT_core.utils.cast_float(row["DistanceLeft"], -1)
+                distance_right = EMDAT_core.utils.cast_float(row["DistanceRight"], -1)
+                timestamp = EMDAT_core.utils.cast_int(row["RecordingTimestamp"])
+                data = {'participant_name': row["ParticipantName"],
+                        "timestamp": timestamp,
+                        "pupilsize": EMDAT_core.Recording.get_pupil_size(pupil_left, pupil_right),
+                        "pupilvelocity": EMDAT_core.Recording.get_pupil_velocity(last_pupil_left, last_pupil_right, pupil_left, pupil_right, (timestamp-last_time) ),
+                        "distance": EMDAT_core.Recording.get_distance(distance_left, distance_right),
+                        "is_valid": EMDAT_core.utils.cast_int(row["ValidityRight"]) < 2 or EMDAT_core.utils.cast_int(row["ValidityLeft"]) < 2,
+                        "is_valid_blink": EMDAT_core.utils.cast_int(row["ValidityRight"]) < 2 and EMDAT_core.utils.cast_int(row["ValidityLeft"]) < 2,
+                        "stimuliname": row["MediaName"],
+                        "fixationindex": EMDAT_core.utils.cast_int(row["FixationIndex"]),
+                        "gazepointx": gaze_point_x,
+                        "gazepointy": gaze_point_y}
+                all_data.append(Datapoint(data))
+                last_pupil_left = pupil_left
+                last_pupil_right = pupil_right
+                last_time = timestamp
+
+        return all_data
+
+    def read_fixation_data(self, fixation_file):
+        """Returns a list of "Fixation"s read from the data file file.
+
+        Args:
+            fixation_file: A string containing the name of the data file output by the Tobii software.
+
+        Returns:
+            a list of "Fixation"s
+        """
+
+        all_fixation = []
+        with open(fixation_file, 'r') as f:
+            currentfix = 0
+            reader = csv.DictReader(f, delimiter='\t')
+            for row in reader:
+                if row["MediaName"] != 'ScreenRec':
+#                if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
+                    continue
+                if not row["ValidityLeft"] or not row["ValidityRight"] or not row["FixationPointX (MCSpx)"] or not row["FixationPointY (MCSpx)"]: #ignore data point with no information
+                    continue
+                if row["GazeEventType"] != "Fixation" or currentfix == row["FixationIndex"]: #if not a fixation or the current fixation
+                    continue
+                data = {"fixationindex": EMDAT_core.utils.cast_int(row["FixationIndex"]),
+                        "timestamp": EMDAT_core.utils.cast_int(row["RecordingTimestamp"]),
+                        "fixationduration": EMDAT_core.utils.cast_int(row["GazeEventDuration"]),
+                        "fixationpointx": EMDAT_core.utils.cast_int(row["FixationPointX (MCSpx)"]),
+                        "fixationpointy": EMDAT_core.utils.cast_int(row["FixationPointY (MCSpx)"])}
+                all_fixation.append(Fixation(data, self.media_offset))
+                currentfix = row["FixationIndex"]
+
+        return all_fixation
+
+    def read_saccade_data(self, saccade_file):
+        """Returns a list of "Saccade"s read from the data file file.
+
+        Args:
+            fixation_file: A string containing the name of the data file output by the Tobii software.
+
+        Returns:
+            a list of "Saccade"s
+        """
+
+        all_saccade = []
+        with open(saccade_file, 'r') as f:
+            reader = csv.DictReader(f, delimiter='\t')
+            in_saccade = False
+            in_fixation = False
+            last_gaze_coord = (0, 0, 0) #timestamp X Y
+            saccade_vect = []
+            saccade_duration = 0
+            current_index = 0
+
+            nb_invalid_temp = 0
+            nb_valid_sample = 0
+            nb_sample = 0
+
+            for row in reader:
+                if row["MediaName"] != 'ScreenRec' or not row["EyeTrackerTimestamp"]:
+#                if row["MediaName"] != 'Screen Recordings (1)' or not row["EyeTrackerTimestamp"]:  # ignore non-recording data point
+                    continue
+
+                if in_fixation:
+                    if row["GazeEventType"] == "Fixation":
+                        nb_invalid_temp = 0
+                    elif row["GazeEventType"] == "Saccade": #new saccade
+                        in_fixation = False
+                        in_saccade = True
+                        current_index = row["SaccadeIndex"]
+                        saccade_vect = [last_gaze_coord]
+                        nb_valid_sample = 0
+
+                        #add current sample
+                        if (EMDAT_core.utils.cast_int(row["ValidityLeft"])<2 or EMDAT_core.utils.cast_int(row["ValidityRight"])<2) and row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]: #ignore data point with no valid data
+                            saccade_vect.append( [EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"])] )
+                            nb_valid_sample += 1
+
+                        if last_valid:
+                            nb_valid_sample += 1
+
+                        nb_sample = 2 + nb_invalid_temp #current gaze sample + last gaze sample of the previous fixation + eventually all unclasified gaze samples in between
+                        nb_invalid_temp = 0
+                    else: #unclassified gaze samples
+                        nb_invalid_temp += 1
+
+                elif in_saccade:
+                    if row["GazeEventType"] == "Fixation":
+                        in_fixation = True
+                        in_saccade = False
+
+                        #end of last saccade
+                        if (EMDAT_core.utils.cast_int(row["ValidityLeft"])<2 or EMDAT_core.utils.cast_int(row["ValidityRight"])<2) and row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]: #valid last datapoint
+                            saccade_vect.append( [EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"])] )
+                            nb_valid_sample += 1
+                        elif (row["FixationPointX (MCSpx)"] and row["FixationPointY (MCSpx)"]): #if gaze sample not valid, try to use fixation data instead
+                            saccade_vect.append( [EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["FixationPointX (MCSpx)"]), EMDAT_core.utils.cast_int(row["FixationPointY (MCSpx)"])] )
+                            nb_valid_sample += 1
+                        nb_sample += 1
+
+                        rate_valid_sample = float(nb_valid_sample) / nb_sample
+                        if rate_valid_sample >= params.VALID_SAMPLES_PROP_SACCADE: #if saccade quality is above the threshold
+                            saccade_duration = EMDAT_core.utils.cast_int(row["RecordingTimestamp"]) - saccade_vect[0][0]
+                            dist = EMDAT_core.Recording.get_saccade_distance(saccade_vect)
+                            accel = -1#Recording.get_saccade_acceleration(saccade_vect)
+                            speed = float(dist) / EMDAT_core.utils.cast_int(saccade_duration)
+                            data = {"saccadeindex": EMDAT_core.utils.cast_int(current_index),
+                                    "timestamp": saccade_vect[0][0],
+                                    "saccadeduration": EMDAT_core.utils.cast_int(saccade_duration),
+                                    "saccadestartpointx": saccade_vect[0][1],
+                                    "saccadestartpointy": saccade_vect[0][2],
+                                    "saccadeendpointx": saccade_vect[-1][1],
+                                    "saccadeendpointy": saccade_vect[-1][2],
+                                    "saccadedistance": dist,
+                                    "saccadespeed": speed,
+                                    "saccadeacceleration": accel,
+									"saccadequality": rate_valid_sample
+                                    }
+                            all_saccade.append(Saccade(data, self.media_offset))
+                            nb_valid_sample = 0
+                            nb_sample = 0
+
+                    elif row["GazeEventType"] == "Saccade":
+                        if (EMDAT_core.utils.cast_int(row["ValidityLeft"])<2 or EMDAT_core.utils.cast_int(row["ValidityRight"])<2) and row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]: #ignore data point with no valid data
+                            saccade_vect.append( [EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"])] )
+                            nb_valid_sample += 1
+                        nb_sample += 1
+                    else: #unclassified gaze samples
+                        nb_sample += 1
+                    nb_invalid_temp = 0
+
+                else: #wait for the first fixation
+                    if row["GazeEventType"] == "Fixation":
+                        in_fixation = True
+
+                if row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]:
+                    last_gaze_coord = (EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"]))
+                    last_valid = (EMDAT_core.utils.cast_int(row["ValidityLeft"])<2 or EMDAT_core.utils.cast_int(row["ValidityRight"])<2)
+                elif row["GazeEventType"] == "Fixation" and row["FixationPointX (MCSpx)"] and row["FixationPointY (MCSpx)"]: #if last sample not valid, at least check if valid data about the fixation
+                    last_gaze_coord = (EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["FixationPointX (MCSpx)"]), EMDAT_core.utils.cast_int(row["FixationPointY (MCSpx)"]))
+                    last_valid = True
+
+        return all_saccade
+
+
+    def read_event_data(self, event_file):
+        """Returns a list of "Event"s read from an data file.
+
+        Args:
+            event_file: A string containing the name of the data file output by the Tobii software.
+
+        Returns:
+            a list of "Event"s
+        """
+
+        all_event = []
+        with open(event_file, 'r') as f:
+            reader = csv.DictReader(f, delimiter='\t')
+            for row in reader:
+                if row["MediaName"] != 'ScreenRec':
+                #if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
+                    continue
+                if row["MouseEventIndex"] : #mouse event
+                    data = {"timestamp": EMDAT_core.utils.cast_int(row["RecordingTimestamp"]),
+                        "event": row["MouseEvent"]+"MouseClick",
+                        "x_coord": EMDAT_core.utils.cast_int(row["MouseEventX (MCSpx)"]),
+                        "y_coord": EMDAT_core.utils.cast_int(row["MouseEventY (MCSpx)"])
+                        }
+                    all_event.append(Event(data, self.media_offset))
+                elif row["KeyPressEventIndex"] : #keyboard event
+                    data = {"timestamp": EMDAT_core.utils.cast_int(row["RecordingTimestamp"]),
+                        "event": "KeyPress",
+                        "key_name": row["KeyPressEvent"]
+                        }
+                    all_event.append(Event(data, self.media_offset))
+
+        return all_event
+</code></pre>
+  </div>
+
+  </header>
+
+  <section id="section-items">
+
+
+    <h2 class="section-title" id="header-classes">Classes</h2>
+      
+      <div class="item">
+      <p id="TobiiV3Recording.TobiiV3Recording" class="name">class <span class="ident">TobiiV3Recording</span></p>
+      
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-TobiiV3Recording.TobiiV3Recording', this);">Show source &equiv;</a></p>
+  <div id="source-TobiiV3Recording.TobiiV3Recording" class="source">
+    <pre><code>class TobiiV3Recording(Recording):
+    def read_all_data(self, all_file):
+        """Returns a list of "Datapoint"s read from an data file.
+
+        Args:
+            all_file:A string containing the name of the data file output by the Tobii software.
+
+        Returns:
+            a list of "Datapoint"s
+        """
+        all_data = []
+        with open(all_file, 'r') as f:
+            reader = csv.DictReader(f, delimiter="\t")
+            last_pupil_left = -1
+            last_pupil_right = -1
+            last_time = -1
+
+            for row in reader:
+                if row["MediaName"] != 'ScreenRec':
+#                if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
+                    continue
+                if not row["ValidityLeft"] or not row["ValidityRight"]: #ignore data point with no validity information
+                    continue
+                gaze_point_x = EMDAT_core.utils.cast_float(row["GazePointX (MCSpx)"], -1)
+                gaze_point_y = EMDAT_core.utils.cast_float(row["GazePointY (MCSpx)"], -1)
+                pupil_left = EMDAT_core.utils.cast_float(row["PupilLeft"], -1)
+                pupil_right = EMDAT_core.utils.cast_float(row["PupilRight"], -1)
+                distance_left = EMDAT_core.utils.cast_float(row["DistanceLeft"], -1)
+                distance_right = EMDAT_core.utils.cast_float(row["DistanceRight"], -1)
+                timestamp = EMDAT_core.utils.cast_int(row["RecordingTimestamp"])
+                data = {'participant_name': row["ParticipantName"],
+                        "timestamp": timestamp,
+                        "pupilsize": EMDAT_core.Recording.get_pupil_size(pupil_left, pupil_right),
+                        "pupilvelocity": EMDAT_core.Recording.get_pupil_velocity(last_pupil_left, last_pupil_right, pupil_left, pupil_right, (timestamp-last_time) ),
+                        "distance": EMDAT_core.Recording.get_distance(distance_left, distance_right),
+                        "is_valid": EMDAT_core.utils.cast_int(row["ValidityRight"]) < 2 or EMDAT_core.utils.cast_int(row["ValidityLeft"]) < 2,
+                        "is_valid_blink": EMDAT_core.utils.cast_int(row["ValidityRight"]) < 2 and EMDAT_core.utils.cast_int(row["ValidityLeft"]) < 2,
+                        "stimuliname": row["MediaName"],
+                        "fixationindex": EMDAT_core.utils.cast_int(row["FixationIndex"]),
+                        "gazepointx": gaze_point_x,
+                        "gazepointy": gaze_point_y}
+                all_data.append(Datapoint(data))
+                last_pupil_left = pupil_left
+                last_pupil_right = pupil_right
+                last_time = timestamp
+
+        return all_data
+
+    def read_fixation_data(self, fixation_file):
+        """Returns a list of "Fixation"s read from the data file file.
+
+        Args:
+            fixation_file: A string containing the name of the data file output by the Tobii software.
+
+        Returns:
+            a list of "Fixation"s
+        """
+
+        all_fixation = []
+        with open(fixation_file, 'r') as f:
+            currentfix = 0
+            reader = csv.DictReader(f, delimiter='\t')
+            for row in reader:
+                if row["MediaName"] != 'ScreenRec':
+#                if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
+                    continue
+                if not row["ValidityLeft"] or not row["ValidityRight"] or not row["FixationPointX (MCSpx)"] or not row["FixationPointY (MCSpx)"]: #ignore data point with no information
+                    continue
+                if row["GazeEventType"] != "Fixation" or currentfix == row["FixationIndex"]: #if not a fixation or the current fixation
+                    continue
+                data = {"fixationindex": EMDAT_core.utils.cast_int(row["FixationIndex"]),
+                        "timestamp": EMDAT_core.utils.cast_int(row["RecordingTimestamp"]),
+                        "fixationduration": EMDAT_core.utils.cast_int(row["GazeEventDuration"]),
+                        "fixationpointx": EMDAT_core.utils.cast_int(row["FixationPointX (MCSpx)"]),
+                        "fixationpointy": EMDAT_core.utils.cast_int(row["FixationPointY (MCSpx)"])}
+                all_fixation.append(Fixation(data, self.media_offset))
+                currentfix = row["FixationIndex"]
+
+        return all_fixation
+
+    def read_saccade_data(self, saccade_file):
+        """Returns a list of "Saccade"s read from the data file file.
+
+        Args:
+            fixation_file: A string containing the name of the data file output by the Tobii software.
+
+        Returns:
+            a list of "Saccade"s
+        """
+
+        all_saccade = []
+        with open(saccade_file, 'r') as f:
+            reader = csv.DictReader(f, delimiter='\t')
+            in_saccade = False
+            in_fixation = False
+            last_gaze_coord = (0, 0, 0) #timestamp X Y
+            saccade_vect = []
+            saccade_duration = 0
+            current_index = 0
+
+            nb_invalid_temp = 0
+            nb_valid_sample = 0
+            nb_sample = 0
+
+            for row in reader:
+                if row["MediaName"] != 'ScreenRec' or not row["EyeTrackerTimestamp"]:
+#                if row["MediaName"] != 'Screen Recordings (1)' or not row["EyeTrackerTimestamp"]:  # ignore non-recording data point
+                    continue
+
+                if in_fixation:
+                    if row["GazeEventType"] == "Fixation":
+                        nb_invalid_temp = 0
+                    elif row["GazeEventType"] == "Saccade": #new saccade
+                        in_fixation = False
+                        in_saccade = True
+                        current_index = row["SaccadeIndex"]
+                        saccade_vect = [last_gaze_coord]
+                        nb_valid_sample = 0
+
+                        #add current sample
+                        if (EMDAT_core.utils.cast_int(row["ValidityLeft"])<2 or EMDAT_core.utils.cast_int(row["ValidityRight"])<2) and row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]: #ignore data point with no valid data
+                            saccade_vect.append( [EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"])] )
+                            nb_valid_sample += 1
+
+                        if last_valid:
+                            nb_valid_sample += 1
+
+                        nb_sample = 2 + nb_invalid_temp #current gaze sample + last gaze sample of the previous fixation + eventually all unclasified gaze samples in between
+                        nb_invalid_temp = 0
+                    else: #unclassified gaze samples
+                        nb_invalid_temp += 1
+
+                elif in_saccade:
+                    if row["GazeEventType"] == "Fixation":
+                        in_fixation = True
+                        in_saccade = False
+
+                        #end of last saccade
+                        if (EMDAT_core.utils.cast_int(row["ValidityLeft"])<2 or EMDAT_core.utils.cast_int(row["ValidityRight"])<2) and row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]: #valid last datapoint
+                            saccade_vect.append( [EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"])] )
+                            nb_valid_sample += 1
+                        elif (row["FixationPointX (MCSpx)"] and row["FixationPointY (MCSpx)"]): #if gaze sample not valid, try to use fixation data instead
+                            saccade_vect.append( [EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["FixationPointX (MCSpx)"]), EMDAT_core.utils.cast_int(row["FixationPointY (MCSpx)"])] )
+                            nb_valid_sample += 1
+                        nb_sample += 1
+
+                        rate_valid_sample = float(nb_valid_sample) / nb_sample
+                        if rate_valid_sample >= params.VALID_SAMPLES_PROP_SACCADE: #if saccade quality is above the threshold
+                            saccade_duration = EMDAT_core.utils.cast_int(row["RecordingTimestamp"]) - saccade_vect[0][0]
+                            dist = EMDAT_core.Recording.get_saccade_distance(saccade_vect)
+                            accel = -1#Recording.get_saccade_acceleration(saccade_vect)
+                            speed = float(dist) / EMDAT_core.utils.cast_int(saccade_duration)
+                            data = {"saccadeindex": EMDAT_core.utils.cast_int(current_index),
+                                    "timestamp": saccade_vect[0][0],
+                                    "saccadeduration": EMDAT_core.utils.cast_int(saccade_duration),
+                                    "saccadestartpointx": saccade_vect[0][1],
+                                    "saccadestartpointy": saccade_vect[0][2],
+                                    "saccadeendpointx": saccade_vect[-1][1],
+                                    "saccadeendpointy": saccade_vect[-1][2],
+                                    "saccadedistance": dist,
+                                    "saccadespeed": speed,
+                                    "saccadeacceleration": accel,
+									"saccadequality": rate_valid_sample
+                                    }
+                            all_saccade.append(Saccade(data, self.media_offset))
+                            nb_valid_sample = 0
+                            nb_sample = 0
+
+                    elif row["GazeEventType"] == "Saccade":
+                        if (EMDAT_core.utils.cast_int(row["ValidityLeft"])<2 or EMDAT_core.utils.cast_int(row["ValidityRight"])<2) and row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]: #ignore data point with no valid data
+                            saccade_vect.append( [EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"])] )
+                            nb_valid_sample += 1
+                        nb_sample += 1
+                    else: #unclassified gaze samples
+                        nb_sample += 1
+                    nb_invalid_temp = 0
+
+                else: #wait for the first fixation
+                    if row["GazeEventType"] == "Fixation":
+                        in_fixation = True
+
+                if row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]:
+                    last_gaze_coord = (EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"]))
+                    last_valid = (EMDAT_core.utils.cast_int(row["ValidityLeft"])<2 or EMDAT_core.utils.cast_int(row["ValidityRight"])<2)
+                elif row["GazeEventType"] == "Fixation" and row["FixationPointX (MCSpx)"] and row["FixationPointY (MCSpx)"]: #if last sample not valid, at least check if valid data about the fixation
+                    last_gaze_coord = (EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["FixationPointX (MCSpx)"]), EMDAT_core.utils.cast_int(row["FixationPointY (MCSpx)"]))
+                    last_valid = True
+
+        return all_saccade
+
+
+    def read_event_data(self, event_file):
+        """Returns a list of "Event"s read from an data file.
+
+        Args:
+            event_file: A string containing the name of the data file output by the Tobii software.
+
+        Returns:
+            a list of "Event"s
+        """
+
+        all_event = []
+        with open(event_file, 'r') as f:
+            reader = csv.DictReader(f, delimiter='\t')
+            for row in reader:
+                if row["MediaName"] != 'ScreenRec':
+                #if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
+                    continue
+                if row["MouseEventIndex"] : #mouse event
+                    data = {"timestamp": EMDAT_core.utils.cast_int(row["RecordingTimestamp"]),
+                        "event": row["MouseEvent"]+"MouseClick",
+                        "x_coord": EMDAT_core.utils.cast_int(row["MouseEventX (MCSpx)"]),
+                        "y_coord": EMDAT_core.utils.cast_int(row["MouseEventY (MCSpx)"])
+                        }
+                    all_event.append(Event(data, self.media_offset))
+                elif row["KeyPressEventIndex"] : #keyboard event
+                    data = {"timestamp": EMDAT_core.utils.cast_int(row["RecordingTimestamp"]),
+                        "event": "KeyPress",
+                        "key_name": row["KeyPressEvent"]
+                        }
+                    all_event.append(Event(data, self.media_offset))
+
+        return all_event
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#TobiiV3Recording.TobiiV3Recording">TobiiV3Recording</a></li>
+          <li>EMDAT_core.Recording.Recording</li>
+          <li>__builtin__.object</li>
+          </ul>
+          <h3>Methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="TobiiV3Recording.TobiiV3Recording.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, all_file, fixation_file, saccade_file=None, event_file=None, media_offset=(0, 0))</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>:param all_file: path to file that contains all gaze points
+:param fixation_file :path to file that contains all gaze points
+:param event_file :path to file that contains all events
+:param media_offset: the coordinates of the top left corner of the window showing the interface under study.
+(0,0) if the interface was in full screen (default value).</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-TobiiV3Recording.TobiiV3Recording.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-TobiiV3Recording.TobiiV3Recording.__init__" class="source">
+    <pre><code>def __init__(self, all_file, fixation_file, saccade_file=None, event_file=None, media_offset=(0, 0)):
+    """
+    :param all_file: path to file that contains all gaze points
+    :param fixation_file :path to file that contains all gaze points
+    :param event_file :path to file that contains all events
+    :param media_offset: the coordinates of the top left corner of the window showing the interface under study.
+    (0,0) if the interface was in full screen (default value).
+    """
+    self.media_offset = media_offset
+    self.all_data = self.read_all_data(all_file)
+    if len(self.all_data) == 0:
+        raise Exception("The file '" + all_file + "' has no samples!")
+    self.fix_data = self.read_fixation_data(fixation_file)
+    if len(self.fix_data) == 0:
+        raise Exception("The file '" + fixation_file + "' has no fixations!")
+    if saccade_file is not None:
+        self.sac_data = self.read_saccade_data(saccade_file)
+        if len(self.sac_data) == 0:
+            raise Exception("The file '" + saccade_file + "' has no saccades!")
+    else:
+        self.sac_data = None
+    if event_file is not None:
+        self.event_data = self.read_event_data(event_file)
+        if len(self.event_data) == 0:
+            raise Exception("The file '" + event_file + "' has no events!")
+    else:
+        self.event_data = None
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="TobiiV3Recording.TobiiV3Recording.clean_memory">
+    <p>def <span class="ident">clean_memory</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-TobiiV3Recording.TobiiV3Recording.clean_memory', this);">Show source &equiv;</a></p>
+  <div id="source-TobiiV3Recording.TobiiV3Recording.clean_memory" class="source">
+    <pre><code>def clean_memory(self):
+    self.all_data = []
+    self.fix_data = []
+    self.sac_data = []
+    self.event_data = []
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="TobiiV3Recording.TobiiV3Recording.process_rec">
+    <p>def <span class="ident">process_rec</span>(</p><p>self, segfile=None, scenelist=None, aoifile=None, aoilist=None, prune_length=None, require_valid_segs=True, auto_partition_low_quality_segments=False, rpsdata=None, export_pupilinfo=False)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Processes the data for one recording (i.e, one complete experiment session)</p>
+<p>Args:
+    segfile: If not None, a string containing the name of the segfile
+        with segment definitions in following format:
+        Scene_ID<tab>Segment_ID<tab>start time<tab>end time<newline>
+        e.g.:
+        s1    seg1    0    5988013
+        With one segment definition per line
+    scenelist: If not None, a list of Scene objects
+    *Note: At least one of segfile and scenelist should be not None</p>
+<pre><code>aoifile: If not None, a string containing the name of the aoifile
+    with definitions of the "AOI"s.
+aoilist: If not None, a list of "AOI"s.
+*Note:  if aoifile is not None, aoilist will be ignored
+        if both aoifile and aoilist are none AOIs are ignored
+
+prune_length: If not None, an integer that specifies the time
+    interval (in ms) from the beginning of each Segment in which
+    samples are considered in calculations.  This can be used if,
+    for example, you only wish to consider data in the first
+    1000 ms of each Segment. In this case (prune_length = 1000),
+    all data beyond the first 1000ms of the start of the "Segment"s
+    will be disregarded.
+
+require_valid_segs: a boolean determining whether invalid "Segment"s
+    will be ignored when calculating the features or not. default = True
+
+auto_partition_low_quality_segments: a boolean flag determining whether
+    EMDAT should automatically split the "Segment"s which have low sample quality
+    into two new sub "Segment"s discarding the largest invalid sample gap in
+    the "Segment". default = False
+
+rpsdata: a dictionary with rest pupil sizes: (scene name is a key, rest pupil size is a value)
+</code></pre>
+<p>Returns:
+    a list of Scene objects for this Recording
+    a list of Segment objects for this recording. This is an aggregated list
+    of the "Segment"s of all "Scene"s in the Recording</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-TobiiV3Recording.TobiiV3Recording.process_rec', this);">Show source &equiv;</a></p>
+  <div id="source-TobiiV3Recording.TobiiV3Recording.process_rec" class="source">
+    <pre><code>def process_rec(self, segfile=None, scenelist=None, aoifile=None,
+                aoilist=None, prune_length=None, require_valid_segs=True,
+                auto_partition_low_quality_segments=False, rpsdata=None, export_pupilinfo=False):
+    """Processes the data for one recording (i.e, one complete experiment session)
+    Args:
+        segfile: If not None, a string containing the name of the segfile
+            with segment definitions in following format:
+            Scene_ID<tab>Segment_ID<tab>start time<tab>end time<newline>
+            e.g.:
+            s1    seg1    0    5988013
+            With one segment definition per line
+        scenelist: If not None, a list of Scene objects
+        *Note: At least one of segfile and scenelist should be not None
+        aoifile: If not None, a string containing the name of the aoifile
+            with definitions of the "AOI"s.
+        aoilist: If not None, a list of "AOI"s.
+        *Note:  if aoifile is not None, aoilist will be ignored
+                if both aoifile and aoilist are none AOIs are ignored
+        prune_length: If not None, an integer that specifies the time
+            interval (in ms) from the beginning of each Segment in which
+            samples are considered in calculations.  This can be used if,
+            for example, you only wish to consider data in the first
+            1000 ms of each Segment. In this case (prune_length = 1000),
+            all data beyond the first 1000ms of the start of the "Segment"s
+            will be disregarded.
+        require_valid_segs: a boolean determining whether invalid "Segment"s
+            will be ignored when calculating the features or not. default = True
+        auto_partition_low_quality_segments: a boolean flag determining whether
+            EMDAT should automatically split the "Segment"s which have low sample quality
+            into two new sub "Segment"s discarding the largest invalid sample gap in
+            the "Segment". default = False
+        rpsdata: a dictionary with rest pupil sizes: (scene name is a key, rest pupil size is a value)
+    Returns:
+        a list of Scene objects for this Recording
+        a list of Segment objects for this recording. This is an aggregated list
+        of the "Segment"s of all "Scene"s in the Recording
+    """
+    if segfile is not None:
+        scenelist = read_segs(segfile)
+        if params.VERBOSE != "QUIET":
+            print("Done reading the segments!")
+    elif scenelist is None:
+        print("Error in scene file.")
+    if aoifile is not None:
+        aoilist = read_aois(aoifile)
+        if params.VERBOSE != "QUIET":
+            print("Done reading the AOIs!")
+    elif aoilist is None:
+        aoilist = []
+        print("Warning: No AOIs defined!")
+    scenes = []
+    for scid, sc in scenelist.items():
+        if params.VERBOSE != "QUIET":
+            print("Preparing scene:" + str(scid))
+        if params.DEBUG or params.VERBOSE == "VERBOSE":
+            print("len(all_data)", len(self.all_data))
+        try:
+            # get rest pupil size data
+            if rpsdata is not None:
+                if scid in rpsdata.keys():
+                    scrpsdata = rpsdata[scid]
+                else:
+                    scrpsdata = 0
+                    if params.DEBUG:
+                        print(rpsdata.keys())
+                        raise Exception("Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
+                    else:
+                        print("Warning: Scene ID " + scid + " is not in the dictionary with rest pupil sizes. rpsdata is set to 0")
+                        pass
+            else:
+                scrpsdata = 0
+            new_scene = Scene(scid, sc, self.all_data, self.fix_data, saccade_data = self.sac_data, event_data=self.event_data, aoilist=aoilist,
+                              prune_length=prune_length,
+                              require_valid=require_valid_segs,
+                              auto_partition=auto_partition_low_quality_segments, rest_pupil_size=scrpsdata,
+                              export_pupilinfo=export_pupilinfo)
+        except Exception as e:
+            warn(str(e))
+            new_scene = None
+            if params.DEBUG:
+                raise
+            else:
+                pass
+        if new_scene:
+            scenes.append(new_scene)
+    segs = []
+    for sc in scenes:
+        segs.extend(sc.segments)
+    return segs, scenes
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="TobiiV3Recording.TobiiV3Recording.read_all_data">
+    <p>def <span class="ident">read_all_data</span>(</p><p>self, all_file)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns a list of "Datapoint"s read from an data file.</p>
+<p>Args:
+    all_file:A string containing the name of the data file output by the Tobii software.</p>
+<p>Returns:
+    a list of "Datapoint"s</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-TobiiV3Recording.TobiiV3Recording.read_all_data', this);">Show source &equiv;</a></p>
+  <div id="source-TobiiV3Recording.TobiiV3Recording.read_all_data" class="source">
+    <pre><code>def read_all_data(self, all_file):
+    """Returns a list of "Datapoint"s read from an data file.
+    Args:
+        all_file:A string containing the name of the data file output by the Tobii software.
+    Returns:
+        a list of "Datapoint"s
+    """
+    all_data = []
+    with open(all_file, 'r') as f:
+        reader = csv.DictReader(f, delimiter="\t")
+        last_pupil_left = -1
+        last_pupil_right = -1
+        last_time = -1
+        for row in reader:
+            if row["MediaName"] != 'ScreenRec':
+             if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
+                continue
+            if not row["ValidityLeft"] or not row["ValidityRight"]: #ignore data point with no validity information
+                continue
+            gaze_point_x = EMDAT_core.utils.cast_float(row["GazePointX (MCSpx)"], -1)
+            gaze_point_y = EMDAT_core.utils.cast_float(row["GazePointY (MCSpx)"], -1)
+            pupil_left = EMDAT_core.utils.cast_float(row["PupilLeft"], -1)
+            pupil_right = EMDAT_core.utils.cast_float(row["PupilRight"], -1)
+            distance_left = EMDAT_core.utils.cast_float(row["DistanceLeft"], -1)
+            distance_right = EMDAT_core.utils.cast_float(row["DistanceRight"], -1)
+            timestamp = EMDAT_core.utils.cast_int(row["RecordingTimestamp"])
+            data = {'participant_name': row["ParticipantName"],
+                    "timestamp": timestamp,
+                    "pupilsize": EMDAT_core.Recording.get_pupil_size(pupil_left, pupil_right),
+                    "pupilvelocity": EMDAT_core.Recording.get_pupil_velocity(last_pupil_left, last_pupil_right, pupil_left, pupil_right, (timestamp-last_time) ),
+                    "distance": EMDAT_core.Recording.get_distance(distance_left, distance_right),
+                    "is_valid": EMDAT_core.utils.cast_int(row["ValidityRight"]) < 2 or EMDAT_core.utils.cast_int(row["ValidityLeft"]) < 2,
+                    "is_valid_blink": EMDAT_core.utils.cast_int(row["ValidityRight"]) < 2 and EMDAT_core.utils.cast_int(row["ValidityLeft"]) < 2,
+                    "stimuliname": row["MediaName"],
+                    "fixationindex": EMDAT_core.utils.cast_int(row["FixationIndex"]),
+                    "gazepointx": gaze_point_x,
+                    "gazepointy": gaze_point_y}
+            all_data.append(Datapoint(data))
+            last_pupil_left = pupil_left
+            last_pupil_right = pupil_right
+            last_time = timestamp
+    return all_data
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="TobiiV3Recording.TobiiV3Recording.read_event_data">
+    <p>def <span class="ident">read_event_data</span>(</p><p>self, event_file)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns a list of "Event"s read from an data file.</p>
+<p>Args:
+    event_file: A string containing the name of the data file output by the Tobii software.</p>
+<p>Returns:
+    a list of "Event"s</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-TobiiV3Recording.TobiiV3Recording.read_event_data', this);">Show source &equiv;</a></p>
+  <div id="source-TobiiV3Recording.TobiiV3Recording.read_event_data" class="source">
+    <pre><code>def read_event_data(self, event_file):
+    """Returns a list of "Event"s read from an data file.
+    Args:
+        event_file: A string containing the name of the data file output by the Tobii software.
+    Returns:
+        a list of "Event"s
+    """
+    all_event = []
+    with open(event_file, 'r') as f:
+        reader = csv.DictReader(f, delimiter='\t')
+        for row in reader:
+            if row["MediaName"] != 'ScreenRec':
+            #if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
+                continue
+            if row["MouseEventIndex"] : #mouse event
+                data = {"timestamp": EMDAT_core.utils.cast_int(row["RecordingTimestamp"]),
+                    "event": row["MouseEvent"]+"MouseClick",
+                    "x_coord": EMDAT_core.utils.cast_int(row["MouseEventX (MCSpx)"]),
+                    "y_coord": EMDAT_core.utils.cast_int(row["MouseEventY (MCSpx)"])
+                    }
+                all_event.append(Event(data, self.media_offset))
+            elif row["KeyPressEventIndex"] : #keyboard event
+                data = {"timestamp": EMDAT_core.utils.cast_int(row["RecordingTimestamp"]),
+                    "event": "KeyPress",
+                    "key_name": row["KeyPressEvent"]
+                    }
+                all_event.append(Event(data, self.media_offset))
+    return all_event
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="TobiiV3Recording.TobiiV3Recording.read_fixation_data">
+    <p>def <span class="ident">read_fixation_data</span>(</p><p>self, fixation_file)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns a list of "Fixation"s read from the data file file.</p>
+<p>Args:
+    fixation_file: A string containing the name of the data file output by the Tobii software.</p>
+<p>Returns:
+    a list of "Fixation"s</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-TobiiV3Recording.TobiiV3Recording.read_fixation_data', this);">Show source &equiv;</a></p>
+  <div id="source-TobiiV3Recording.TobiiV3Recording.read_fixation_data" class="source">
+    <pre><code>def read_fixation_data(self, fixation_file):
+    """Returns a list of "Fixation"s read from the data file file.
+    Args:
+        fixation_file: A string containing the name of the data file output by the Tobii software.
+    Returns:
+        a list of "Fixation"s
+    """
+    all_fixation = []
+    with open(fixation_file, 'r') as f:
+        currentfix = 0
+        reader = csv.DictReader(f, delimiter='\t')
+        for row in reader:
+            if row["MediaName"] != 'ScreenRec':
+             if row["MediaName"] != 'Screen Recordings (1)':  # ignore non-recording data point
+                continue
+            if not row["ValidityLeft"] or not row["ValidityRight"] or not row["FixationPointX (MCSpx)"] or not row["FixationPointY (MCSpx)"]: #ignore data point with no information
+                continue
+            if row["GazeEventType"] != "Fixation" or currentfix == row["FixationIndex"]: #if not a fixation or the current fixation
+                continue
+            data = {"fixationindex": EMDAT_core.utils.cast_int(row["FixationIndex"]),
+                    "timestamp": EMDAT_core.utils.cast_int(row["RecordingTimestamp"]),
+                    "fixationduration": EMDAT_core.utils.cast_int(row["GazeEventDuration"]),
+                    "fixationpointx": EMDAT_core.utils.cast_int(row["FixationPointX (MCSpx)"]),
+                    "fixationpointy": EMDAT_core.utils.cast_int(row["FixationPointY (MCSpx)"])}
+            all_fixation.append(Fixation(data, self.media_offset))
+            currentfix = row["FixationIndex"]
+    return all_fixation
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="TobiiV3Recording.TobiiV3Recording.read_saccade_data">
+    <p>def <span class="ident">read_saccade_data</span>(</p><p>self, saccade_file)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns a list of "Saccade"s read from the data file file.</p>
+<p>Args:
+    fixation_file: A string containing the name of the data file output by the Tobii software.</p>
+<p>Returns:
+    a list of "Saccade"s</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-TobiiV3Recording.TobiiV3Recording.read_saccade_data', this);">Show source &equiv;</a></p>
+  <div id="source-TobiiV3Recording.TobiiV3Recording.read_saccade_data" class="source">
+    <pre><code>def read_saccade_data(self, saccade_file):
+    """Returns a list of "Saccade"s read from the data file file.
+    Args:
+        fixation_file: A string containing the name of the data file output by the Tobii software.
+    Returns:
+        a list of "Saccade"s
+    """
+    all_saccade = []
+    with open(saccade_file, 'r') as f:
+        reader = csv.DictReader(f, delimiter='\t')
+        in_saccade = False
+        in_fixation = False
+        last_gaze_coord = (0, 0, 0) #timestamp X Y
+        saccade_vect = []
+        saccade_duration = 0
+        current_index = 0
+        nb_invalid_temp = 0
+        nb_valid_sample = 0
+        nb_sample = 0
+        for row in reader:
+            if row["MediaName"] != 'ScreenRec' or not row["EyeTrackerTimestamp"]:
+             if row["MediaName"] != 'Screen Recordings (1)' or not row["EyeTrackerTimestamp"]:  # ignore non-recording data point
+                continue
+            if in_fixation:
+                if row["GazeEventType"] == "Fixation":
+                    nb_invalid_temp = 0
+                elif row["GazeEventType"] == "Saccade": #new saccade
+                    in_fixation = False
+                    in_saccade = True
+                    current_index = row["SaccadeIndex"]
+                    saccade_vect = [last_gaze_coord]
+                    nb_valid_sample = 0
+                    #add current sample
+                    if (EMDAT_core.utils.cast_int(row["ValidityLeft"])<2 or EMDAT_core.utils.cast_int(row["ValidityRight"])<2) and row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]: #ignore data point with no valid data
+                        saccade_vect.append( [EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"])] )
+                        nb_valid_sample += 1
+                    if last_valid:
+                        nb_valid_sample += 1
+                    nb_sample = 2 + nb_invalid_temp #current gaze sample + last gaze sample of the previous fixation + eventually all unclasified gaze samples in between
+                    nb_invalid_temp = 0
+                else: #unclassified gaze samples
+                    nb_invalid_temp += 1
+            elif in_saccade:
+                if row["GazeEventType"] == "Fixation":
+                    in_fixation = True
+                    in_saccade = False
+                    #end of last saccade
+                    if (EMDAT_core.utils.cast_int(row["ValidityLeft"])<2 or EMDAT_core.utils.cast_int(row["ValidityRight"])<2) and row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]: #valid last datapoint
+                        saccade_vect.append( [EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"])] )
+                        nb_valid_sample += 1
+                    elif (row["FixationPointX (MCSpx)"] and row["FixationPointY (MCSpx)"]): #if gaze sample not valid, try to use fixation data instead
+                        saccade_vect.append( [EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["FixationPointX (MCSpx)"]), EMDAT_core.utils.cast_int(row["FixationPointY (MCSpx)"])] )
+                        nb_valid_sample += 1
+                    nb_sample += 1
+                    rate_valid_sample = float(nb_valid_sample) / nb_sample
+                    if rate_valid_sample >= params.VALID_SAMPLES_PROP_SACCADE: #if saccade quality is above the threshold
+                        saccade_duration = EMDAT_core.utils.cast_int(row["RecordingTimestamp"]) - saccade_vect[0][0]
+                        dist = EMDAT_core.Recording.get_saccade_distance(saccade_vect)
+                        accel = -1#Recording.get_saccade_acceleration(saccade_vect)
+                        speed = float(dist) / EMDAT_core.utils.cast_int(saccade_duration)
+                        data = {"saccadeindex": EMDAT_core.utils.cast_int(current_index),
+                                "timestamp": saccade_vect[0][0],
+                                "saccadeduration": EMDAT_core.utils.cast_int(saccade_duration),
+                                "saccadestartpointx": saccade_vect[0][1],
+                                "saccadestartpointy": saccade_vect[0][2],
+                                "saccadeendpointx": saccade_vect[-1][1],
+                                "saccadeendpointy": saccade_vect[-1][2],
+                                "saccadedistance": dist,
+                                "saccadespeed": speed,
+                                "saccadeacceleration": accel,
+					"saccadequality": rate_valid_sample
+                                }
+                        all_saccade.append(Saccade(data, self.media_offset))
+                        nb_valid_sample = 0
+                        nb_sample = 0
+                elif row["GazeEventType"] == "Saccade":
+                    if (EMDAT_core.utils.cast_int(row["ValidityLeft"])<2 or EMDAT_core.utils.cast_int(row["ValidityRight"])<2) and row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]: #ignore data point with no valid data
+                        saccade_vect.append( [EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"])] )
+                        nb_valid_sample += 1
+                    nb_sample += 1
+                else: #unclassified gaze samples
+                    nb_sample += 1
+                nb_invalid_temp = 0
+            else: #wait for the first fixation
+                if row["GazeEventType"] == "Fixation":
+                    in_fixation = True
+            if row["GazePointX (ADCSpx)"] and row["GazePointY (ADCSpx)"]:
+                last_gaze_coord = (EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["GazePointX (ADCSpx)"]), EMDAT_core.utils.cast_int(row["GazePointY (ADCSpx)"]))
+                last_valid = (EMDAT_core.utils.cast_int(row["ValidityLeft"])<2 or EMDAT_core.utils.cast_int(row["ValidityRight"])<2)
+            elif row["GazeEventType"] == "Fixation" and row["FixationPointX (MCSpx)"] and row["FixationPointY (MCSpx)"]: #if last sample not valid, at least check if valid data about the fixation
+                last_gaze_coord = (EMDAT_core.utils.cast_int(row["RecordingTimestamp"]), EMDAT_core.utils.cast_int(row["FixationPointX (MCSpx)"]), EMDAT_core.utils.cast_int(row["FixationPointY (MCSpx)"]))
+                last_valid = True
+    return all_saccade
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+
+  </section>
+
+    </article>
+  <div class="clear"> </div>
+  <footer id="footer">
+    <p>
+      Documentation generated by
+      <a href="https://github.com/BurntSushi/pdoc">pdoc 0.3.2</a>
+    </p>
+
+    <p>pdoc is in the public domain with the
+      <a href="http://unlicense.org">UNLICENSE</a></p>
+
+    <p>Design by <a href="http://nadh.in">Kailash Nadh</a></p>
+  </footer>
+</div>
+</body>
+</html>
