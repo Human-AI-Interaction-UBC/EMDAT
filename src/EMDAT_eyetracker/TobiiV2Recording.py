@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 2.0
 Created on 2015-08-15
 
 Class to read Tobii data (exported with Tobii Studio version 1x and 2x). See sample data in the "sampledata" folder.
@@ -27,7 +27,7 @@ class TobiiV2Recording(Recording):
         """
         all_data = []
         with open(all_file, 'r') as f:
-            for _ in xrange(params.ALLDATAHEADERLINES + params.NUMBEROFEXTRAHEADERLINES - 1):
+            for _ in range(params.ALLDATAHEADERLINES + params.NUMBEROFEXTRAHEADERLINES - 1):
                 next(f)
             reader = csv.DictReader(f, delimiter="\t")
             last_pupil_left = -1
@@ -70,7 +70,7 @@ class TobiiV2Recording(Recording):
 
         all_fixation = []
         with open(fixation_file, 'r') as f:
-            for _ in xrange(params.FIXATIONHEADERLINES - 1):
+            for _ in range(params.FIXATIONHEADERLINES - 1):
                 next(f)
             reader = csv.DictReader(f, delimiter='\t')
             for row in reader:
@@ -95,7 +95,7 @@ class TobiiV2Recording(Recording):
 
         all_event = []
         with open(event_file, 'r') as f:
-            for _ in xrange(params.EVENTSHEADERLINES - 1):
+            for _ in range(params.EVENTSHEADERLINES - 1):
                 next(f)
             reader = csv.DictReader(f, delimiter='\t')
             for row in reader:

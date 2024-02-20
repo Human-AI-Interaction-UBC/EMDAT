@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 2.0
 Created on 2011-09-30
 
 Regcording class: hold all the data from one recording (i.e, one complete experiment session)

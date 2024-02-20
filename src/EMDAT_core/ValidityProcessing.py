@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 2.0
 Created on 2012-09-05
 
 Functions to examine data, segments and scene quality.
@@ -58,7 +58,10 @@ def explore_validation_proportion_threshold_segments(participant_list, include_r
         #print ( (tvalidity, len(p.segments)) )
 
     if params.DEBUG or params.VERBOSE == "VERBOSE":
-        print("Average seg len",seglen/float(segs))
+        if segs == 0: 
+            print("Error average seg len: no seg found")
+            if params.DEBUG: raise Exception("explore_validation_proportion_threshold_segments called with no segment") 
+        else: print("Average seg len", seglen/float(segs))
     return participants
 
 def explore_validation_time_gap_threshold_segments(participant_list, time_gap_list = [100, 200, 300, 400, 500, 1000, 2000], prune_length = None,
@@ -140,7 +143,7 @@ def output_Validity_info_Participants(user_list, include_restored_samples, auto_
     pv = explore_validation_proportion_threshold_participants(participant_list=user_list, include_restored_samples = include_restored_samples, prune_length = None,
                         auto_partition_low_quality_segments = auto_partition_low_quality_segments_flag)
 
-    for rate in xrange(1,102,1): ##porportion
+    for rate in range(1,102,1): ##porportion
         usr=[]
         totalseg = 0
         inv_user = 0
@@ -173,7 +176,7 @@ def output_Validity_info_Segments(user_list, auto_partition_low_quality_segments
         if validity_method == 1|validity_method == 3:   ##porportion
             pv = explore_validation_proportion_threshold_segments(participant_list=user_list, prune_length = None,
                                auto_partition_low_quality_segments = auto_partition_low_quality_segments_flag)
-            for rate in xrange(1,102,1):
+            for rate in range(1,102,1):
                 usr=[]
                 totalseg = 0
                 inv_seg = 0
@@ -195,7 +198,7 @@ def output_Validity_info_Segments(user_list, auto_partition_low_quality_segments
         elif validity_method == 2:  ##time gap\
             pv = explore_validation_time_gap_threshold_segments(participant_list = user_list, time_gap_list = threshold_gaps_list, prune_length = None,
                                                                 auto_partition_low_quality_segments = auto_partition_low_quality_segments_flag)
-            for gap_index in xrange(len(threshold_gaps_list)):
+            for gap_index in range(len(threshold_gaps_list)):
                 usr=[]
                 totalseg = 0
                 inv_seg = 0
@@ -221,7 +224,7 @@ def output_Validity_info_Segments(user_list, auto_partition_low_quality_segments
         if validity_method == 1|validity_method == 3:   ##porportion
             pv = explore_validation_proportion_threshold_segments(participant_list=user_list, prune_length = None,
                                auto_partition_low_quality_segments = auto_partition_low_quality_segments_flag)
-            for rate in xrange(1,102,1):
+            for rate in range(1,102,1):
                 usr=[]
                 totalseg = 0
                 inv_seg = 0
@@ -242,7 +245,7 @@ def output_Validity_info_Segments(user_list, auto_partition_low_quality_segments
         elif validity_method == 2:  ##time gap\
             pv = explore_validation_time_gap_threshold_segments(participant_list = user_list, time_gap_list = threshold_gaps_list, prune_length = None,
                                                                 auto_partition_low_quality_segments = auto_partition_low_quality_segments_flag)
-            for gap_index in xrange(len(threshold_gaps_list)):
+            for gap_index in range(len(threshold_gaps_list)):
                 usr=[]
                 totalseg = 0
                 inv_seg = 0

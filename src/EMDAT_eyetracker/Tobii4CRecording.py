@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 2.0
 Created on 2015-08-15
 
 Class to read Tobii data (exported with Tobii Studio V3 and higher). See sample data in the "sampledata" folder.

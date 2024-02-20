@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 2.0
 Created on 2011-09-30
 
 Scene class: capture all "Datapoint"s related to a target
@@ -304,7 +304,7 @@ class Scene(Segment):
         self.require_valid_Segments = require_valid
         if require_valid:   #filter out the invalid Segments
 
-            segments = filter(lambda x:x.is_valid,self.segments)
+            segments = [x for x in self.segments if x.is_valid]
         else:
             segments = self.segments
         if len(segments)==0:
@@ -794,7 +794,7 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
         maois = main_AOI_Stat
         merge_aoi_fixations(maois, new_AOI_Stat, total_time, total_numfixations, sc_start)
         #calculating the transitions to and from this AOI and other active AOIs at the moment
-        new_AOI_Stat_transition_aois = filter(lambda x: x.startswith('numtransfrom_'), new_AOI_Stat.features.keys())
+        new_AOI_Stat_transition_aois = [x for x in new_AOI_Stat.features.keys() if x.startswith('numtransfrom_')]
         if params.DEBUG or params.VERBOSE == "VERBOSE":
             print("Segment's transition_aois", new_AOI_Stat_transition_aois)
 
@@ -811,7 +811,7 @@ def merge_aoistats(main_AOI_Stat,new_AOI_Stat,total_time,total_numfixations,sc_s
         merge_aoi_distance(maois, new_AOI_Stat)
         merge_aoi_pupil(maois, new_AOI_Stat)
         # updating the proportion tansition features based on new transitions to and from this AOI
-        maois_transition_aois = filter(lambda x: x.startswith('numtransfrom_'),maois.features.keys()) #all the transition features for this AOI should be aupdated even if they are not active for this segment
+        maois_transition_aois = [x for x in maois.features.keys() if x.startswith('numtransfrom_')]  #all the transition features for this AOI should be aupdated even if they are not active for this segment
         for feat in maois_transition_aois:
             aid = feat[len('numtransfrom_'):]
             if maois.total_trans_from > 0:

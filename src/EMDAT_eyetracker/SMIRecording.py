@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 2.0
 Created on 2015-08-15
 
 Class to read SMI data (exported with BeGaze). See sample data in the "sampledata" folder.
@@ -19,7 +19,7 @@ class SMIRecording(Recording):
     def read_all_data(self, all_file):
         all_data = []
         with open(all_file, 'r') as f:
-            for i in xrange(params.RAW_HEADER_LINE):
+            for i in range(params.RAW_HEADER_LINE):
                 if i is (params.RAW_HEADER_LINE - 1):  # read the row of the table header for fixations
                     data_header = next(f).strip().split(',')
                 else:
@@ -59,7 +59,7 @@ class SMIRecording(Recording):
     def read_fixation_data(self, fixation_file):
         all_fixation = []
         with open(fixation_file, 'r') as f:
-            for i in xrange(params.EVENTS_FIRST_DATA_LINE - 1):
+            for i in range(params.EVENTS_FIRST_DATA_LINE - 1):
                 if i is (params.FIXATION_HEADER_LINE - 1):  # read the row of the table header for fixations
                     fixation_headers = next(f).strip().split(',')
                 else:
@@ -80,7 +80,7 @@ class SMIRecording(Recording):
     def read_saccade_data(self, saccade_file):
         all_saccades = []
         with open(saccade_file, 'r') as f:
-            for i in xrange(params.EVENTS_FIRST_DATA_LINE - 1):
+            for i in range(params.EVENTS_FIRST_DATA_LINE - 1):
                 if i is (params.SACCADE_HEADER_LINE - 1):  # read the row of the table header for saccades
                     saccade_headers = next(f).strip().split(',')
                 else:
@@ -107,7 +107,7 @@ class SMIRecording(Recording):
     def read_event_data(self, event_file):
         all_event = []
         with open(event_file, 'r') as f:
-            for i in xrange(params.EVENTS_FIRST_DATA_LINE - 1):
+            for i in range(params.EVENTS_FIRST_DATA_LINE - 1):
                 if i is (params.USER_EVENT_HEADER_LINE - 1):  # read the row of the table header for user events
                     event_headers = next(f).strip().split(',')
                 else:

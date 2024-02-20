@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 2.0
 
 Module that contains all global parameters. Values of parameters are specific to the project.
 
@@ -178,8 +178,10 @@ MINSEGSIZE = 0
 #included in those Segments or not
 INCLUDE_HALF_FIXATIONS = False
 
-#Pupil adjustment to minimize the pupil size differences among individual users, if Rest Pupil Size (RPS) is provided. Possible values:
+#Pupil adjustment to minimize the pupil size differences among individual users, especially if Rest Pupil Size (RPS) (also known as baseline pupil size) is provided. Possible values:
 #PUPIL_ADJUSTMENT = None 		#no adjustment;
+#PUPIL_ADJUSTMENT = "rescaling"	#Min-max scaling ( x-min(x)/(max(x)-min(x)) ). Does not need the rps.
+#PUPIL_ADJUSTMENT = "z-scores"	#z-scores standardarzation ( x-mean(x)/std.dev(x) ). Does not need the rps.
 PUPIL_ADJUSTMENT = "rpscenter"	#Rps-centering (substraction of the rps from the raw pupil size)
 #PUPIL_ADJUSTMENT = "PCPS" 		#Normalization of pupil size based on the rsp following [Iqbal et al., 2005, doi>10.1145/1054972.1055016]
 
@@ -187,8 +189,8 @@ PUPIL_ADJUSTMENT = "rpscenter"	#Rps-centering (substraction of the rps from the 
 # ####################### Verbose/Debug mode ##############################################################
 
 #Enable/disable debug mode. In debug mode warnings are treated as errors, and the verbosity level is automatically set to "VERBOSE" (see below)
-#DEBUG = True
-DEBUG = False
+DEBUG = True
+#DEBUG = False
 
 #Verbosity level
 #VERBOSE = "QUIET"		#prints nothing except errors and warnings

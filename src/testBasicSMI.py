@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 2.0
 Created on 2015-07-21
 
 Sample code to run EMDAT for a given experiment.
@@ -32,5 +32,5 @@ output_Validity_info_Participants(ps, include_restored_samples=True, auto_partit
 
 # WRITE features to file
 if params.VERBOSE != "QUIET":
-    print "Exporting features:\n--General:", params.featurelist
+    print("Exporting features:\n--General:", params.featurelist)
 write_features_tsv(ps, './outputfolder/smi_sample_features.tsv', featurelist=params.featurelist, id_prefix=False)

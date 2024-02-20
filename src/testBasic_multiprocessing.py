@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 2.0
 Created on 2012-08-23
 
 Sample code to run EMDAT for a given experiment (multiprocessing version).
@@ -32,8 +32,8 @@ if __name__ == '__main__':
     nbprocess = cpu_count()
     ps = read_participants_Basic_multiprocessing(nbprocess, user_list = ul,pids = uids, log_time_offsets = alogoffset, datadir=params.EYELOGDATAFOLDER, 
                                prune_length = None, 
-                               aoifile = "./sampledata/AOIs/general.aoi",
-    #                           aoifile = "./sampledata/AOIs/Dynamic_1.aoi",
+    #                           aoifile = "./sampledata/AOIs/general.aoi",
+                               aoifile = "./sampledata/AOIs/Dynamic_1.aoi",
                                require_valid_segs = False, auto_partition_low_quality_segments = True,
                                rpsfile = "./sampledata/all_rest_pupil_sizes.tsv")
     print
@@ -49,8 +49,8 @@ if __name__ == '__main__':
 
     ##### WRITE features to file
     print
-    aoi_feat_names = (map(lambda x:x, params.aoigeneralfeat))
-    print "Exporting features:\n--General:", params.featurelist, "\n--AOI:", aoi_feat_names, "\n--Sequences:", params.aoisequencefeat
+    aoi_feat_names = list(map(lambda x:x, params.aoigeneralfeat))
+    print("Exporting features:\n--General:", params.featurelist, "\n--AOI:", aoi_feat_names, "\n--Sequences:", params.aoisequencefeat)
     write_features_tsv(ps, './outputfolder/sample_features_multiprocessing.tsv',featurelist = params.featurelist, aoifeaturelist=aoi_feat_names, id_prefix = False)
 
     ##### WRITE AOI sequences to file

@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 2.0
 Created on 2011-08-26
 
 Segment class: smallest unit of aggregated eye data samples that has conceptual meaning.
@@ -311,19 +311,19 @@ class Segment():
                 all_data: The list of "Datapoint"s which make up this Segment
         """
         # check if pupil sizes are available for all missing points
-        pupil_invalid_data = filter(lambda x: x.pupilsize == -1 and x.gazepointx > 0, all_data)
-        if len(pupil_invalid_data) > 0:
+        sum_pupil_invalid_data = sum( x.pupilsize == -1 and x.gazepointx is not None and x.gazepointx >= 0 for x in all_data)
+        if sum_pupil_invalid_data > 0:
             if params.DEBUG:
                 raise Exception("Pupil size is unavailable for a valid data sample. \
-                        Number of missing points: " + str(len(pupil_invalid_data)))
+                        Number of missing points: " + str(sum_pupil_invalid_data))
             else:
-                warn("Pupil size is unavailable for a valid data sample. Number of missing points: " + str(len(pupil_invalid_data)) )
+                warn("Pupil size is unavailable for a valid data sample. Number of missing points: " + str(sum_pupil_invalid_data) )
 
 		#get all pupil sizes (valid + invalid)
         #pupilsizes = map(lambda x: x.pupilsize, all_data)
         #get all datapoints where pupil size is available
-        valid_pupil_data = filter(lambda x: x.pupilsize > 0, all_data)
-        valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, all_data)
+        valid_pupil_data = [x.pupilsize for x in all_data if x.pupilsize > 0]
+        valid_pupil_velocity = [x.pupilvelocity for x in all_data if x.pupilvelocity != -1]
 
         #number of valid pupil sizes
         self.features['meanpupilsize']       = -1
@@ -341,16 +341,20 @@ class Segment():
 
         if self.numpupilsizes > 0: #check if the current segment has pupil data available
             if params.PUPIL_ADJUSTMENT == "rpscenter":
-                adjvalidpupilsizes = map(lambda x: x.pupilsize - rest_pupil_size, valid_pupil_data)
+                adjvalidpupilsizes = [x - rest_pupil_size for x in valid_pupil_data]
             elif params.PUPIL_ADJUSTMENT == "PCPS":
-                adjvalidpupilsizes = map(lambda x: (x.pupilsize - rest_pupil_size) / (1.0 * rest_pupil_size), valid_pupil_data)
+                adjvalidpupilsizes = [(x - rest_pupil_size) / (1.0 * rest_pupil_size) for x in valid_pupil_data]
+            elif params.PUPIL_ADJUSTMENT == "rescaling":
+                tempminpupil = min(valid_pupil_data)
+                adjvalidpupilsizes = [(x - tempminpupil) / (1.0 * max(valid_pupil_data) - tempminpupil) for x in valid_pupil_data]
+            elif params.PUPIL_ADJUSTMENT == "z-scores":
+                adjvalidpupilsizes = [(x - mean(valid_pupil_data)) / (1.0 * stddev(valid_pupil_data)) for x in valid_pupil_data]
             else:
-                adjvalidpupilsizes = map(lambda x: x.pupilsize, valid_pupil_data)#valid_pupil_data
-
-            valid_pupil_velocity = map(lambda x: x.pupilvelocity, valid_pupil_velocity)#valid_pupil_data
+                adjvalidpupilsizes = valid_pupil_data
 
             if export_pupilinfo:
-                self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, rest_pupil_size], valid_pupil_data)
+                self.pupilinfo_for_export = [ [x.timestamp, x.pupilsize, rest_pupil_size] for x in valid_pupil_data]
+
             self.features['meanpupilsize']           = mean(adjvalidpupilsizes)
             self.features['stddevpupilsize']         = stddev(adjvalidpupilsizes)
             self.features['maxpupilsize']            = max(adjvalidpupilsizes)
@@ -377,18 +381,18 @@ class Segment():
                 all_data: The list of "Datapoint"s which make up this Segment
         """
         # check if distances are available for all missing points
-        invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, all_data)
-        if len(invalid_distance_data) > 0:
+        sum_invalid_distance_data = sum(x.distance <= 0 and x.gazepointx is not None and x.gazepointx >= 0 for x in all_data)
+        if sum_invalid_distance_data > 0:
             warn("Distance from screen is unavailable for a valid data sample. \
-                        Number of missing points: " + str(len(invalid_distance_data)))
+                        Number of missing points: " + str(sum_invalid_distance_data))
 
         #get all datapoints where distance is available
-        valid_distance_data = filter(lambda x: x.distance > 0, all_data)
+        valid_distance_data = [x.distance for x in all_data if x.distance > 0]
 
         #number of valid distance datapoints
         self.numdistancedata = len(valid_distance_data)
         if self.numdistancedata > 0: #check if the current segment has pupil data available
-            distances_from_screen               = map(lambda x: x.distance, valid_distance_data)
+            distances_from_screen               = valid_distance_data
             self.features['meandistance']       = mean(distances_from_screen)
             self.features['stddevdistance']     = stddev(distances_from_screen)
             self.features['maxdistance']        = max(distances_from_screen)
@@ -424,20 +428,23 @@ class Segment():
                 saccade_data: The list of saccade datapoints for this Segment
         """
         if saccade_data != None and len(saccade_data) > 0:
+            sac_dist = [float(x.saccadedistance) for x in saccade_data]
+            sac_dur = [float(x.saccadeduration) for x in saccade_data]
+            sac_speed = [float(x.saccadespeed) for x in saccade_data]
             self.numsaccades = len(saccade_data)
             self.features['numsaccades'] = self.numsaccades
-            self.features['sumsaccadedistance'] = sum(map(lambda x: float(x.saccadedistance), saccade_data))
-            self.features['meansaccadedistance'] = mean(map(lambda x: float(x.saccadedistance), saccade_data))
-            self.features['stddevsaccadedistance'] = stddev(map(lambda x: float(x.saccadedistance), saccade_data))
-            self.features['longestsaccadedistance'] = max(map(lambda x: float(x.saccadedistance), saccade_data))
-            self.features['sumsaccadeduration'] = sum(map(lambda x: float(x.saccadeduration), saccade_data))
-            self.features['meansaccadeduration'] = mean(map(lambda x: float(x.saccadeduration), saccade_data))
-            self.features['stddevsaccadeduration'] = stddev(map(lambda x: float(x.saccadeduration), saccade_data))
-            self.features['longestsaccadeduration'] = max(map(lambda x: float(x.saccadeduration), saccade_data))
-            self.features['meansaccadespeed'] = mean(map(lambda x: float(x.saccadespeed), saccade_data))
-            self.features['stddevsaccadespeed'] = stddev(map(lambda x: float(x.saccadespeed), saccade_data))
-            self.features['maxsaccadespeed'] = max(map(lambda x: float(x.saccadespeed), saccade_data))
-            self.features['minsaccadespeed'] = min(map(lambda x: float(x.saccadespeed), saccade_data))
+            self.features['sumsaccadedistance'] = sum(sac_dist)
+            self.features['meansaccadedistance'] = mean(sac_dist)
+            self.features['stddevsaccadedistance'] = stddev(sac_dist)
+            self.features['longestsaccadedistance'] = max(sac_dist)
+            self.features['sumsaccadeduration'] = sum(sac_dur)
+            self.features['meansaccadeduration'] = mean(sac_dur)
+            self.features['stddevsaccadeduration'] = stddev(sac_dur)
+            self.features['longestsaccadeduration'] = max(sac_dur)
+            self.features['meansaccadespeed'] = mean(sac_speed)
+            self.features['stddevsaccadespeed'] = stddev(sac_speed)
+            self.features['maxsaccadespeed'] = max(sac_speed)
+            self.features['minsaccadespeed'] = min(sac_speed)
             self.features['fixationsaccadetimeratio'] = float(self.features['sumfixationduration']) / self.features['sumsaccadeduration']
         else:
             self.numsaccades = 0
@@ -478,9 +485,10 @@ class Segment():
         if self.numfixations > 0:
             self.fixation_start = fixation_data[0].timestamp
             self.fixation_end = fixation_data[-1].timestamp
-            self.features['meanfixationduration'] = mean(map(lambda x: float(x.fixationduration), fixation_data))
-            self.features['stddevfixationduration'] = stddev(map(lambda x: float(x.fixationduration), fixation_data))
-            self.features['sumfixationduration'] = sum(map(lambda x: x.fixationduration, fixation_data))
+            fixdurationlist = [float(x.fixationduration) for x in fixation_data]
+            self.features['meanfixationduration'] = mean(fixdurationlist)
+            self.features['stddevfixationduration'] = stddev(fixdurationlist)
+            self.features['sumfixationduration'] = sum(fixdurationlist)
             self.features['fixationrate'] = float(self.numfixations) / (self.length - self.length_invalid)
             distances = self.calc_distances(fixation_data)
             abs_angles = self.calc_abs_angles(fixation_data)
@@ -765,7 +773,7 @@ class Segment():
         lastx = fixdata[0].mappedfixationpointx
         lasty = fixdata[0].mappedfixationpointy
 
-        for i in xrange(1, len(fixdata)):
+        for i in range(1, len(fixdata)):
             x = fixdata[i].mappedfixationpointx
             y = fixdata[i].mappedfixationpointy
             dist = math.sqrt((x - lastx)**2 + (y - lasty)**2)
@@ -790,7 +798,7 @@ class Segment():
         lastx = fixdata[0].mappedfixationpointx
         lasty = fixdata[0].mappedfixationpointy
 
-        for i in xrange(1,len(fixdata)):
+        for i in range(1,len(fixdata)):
             x = fixdata[i].mappedfixationpointx
             y = fixdata[i].mappedfixationpointy
             (dist, theta) = geometry.vector_difference((lastx,lasty), (x, y))
@@ -817,7 +825,7 @@ class Segment():
         lastx = fixdata[0].mappedfixationpointx
         lasty = fixdata[0].mappedfixationpointy
 
-        for i in xrange(1, len(fixdata) - 1):
+        for i in range(1, len(fixdata) - 1):
             x = fixdata[i].mappedfixationpointx
             y = fixdata[i].mappedfixationpointy
             nextx = fixdata[i + 1].mappedfixationpointx
@@ -914,13 +922,13 @@ class Segment():
 
         featnames.sort()
 
-        featvals = map(lambda x: self.features[x], featnames)
+        featvals = [self.features[x] for x in featnames]
 
         if self.has_aois:
-            for aid, aoi in self.aoi_data.iteritems():
+            for aid, aoi in self.aoi_data.items():
                 if aoifeaturelabels:    #an exact list of aoifeatures was given
                     anames, avals = aoi.get_features()
-                    anames = map(lambda x: '%s_%s'%(aid, x), anames)
+                    anames = ['%s_%s'%(aid, x) for x in anames]
                     featval = zip(anames,avals)
                     newfeatval = filter(lambda x: x[0] in aoifeaturelabels,featval)
                     anames = []
@@ -933,7 +941,7 @@ class Segment():
                         featvals += avals
                 else:                   #a list of features for each AIO was given
                     anames, avals = aoi.get_features(aoifeaturelist)
-                    anames = map(lambda x: '%s_%s'%(aid, x), anames)
+                    anames = list(map(lambda x: '%s_%s'%(aid, x), anames))
 
                     featnames += anames
                     featvals += avals
@@ -955,6 +963,6 @@ class Segment():
 #        featurelist.extend(["meanpathdistance","sumpathdistance","stddevpathdistance","sumabspathangles","meanabspathangles","stddevabspathangles","sumrelpathangles","meanrelpathangles","stddevrelpathangles"])
 
         fn,fv = self.get_features()
-        for i in xrange(len(fn)):
+        for i in range(len(fn)):
             print(fn[i],':',fv[i])
         print

@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 2.0
 Generic Participant Class
 Created on 2011-09-25
 
@@ -183,9 +183,9 @@ class Participant():
         featnames, data  = self.export_features(featurelist, aoifeaturelist = aoifeaturelist,
                                                 id_prefix = id_prefix, require_valid = require_valid)
 
-        ret = string.join(featnames, '\t') + '\n'
+        ret = "\t".join(featnames) + '\n'
         for t in data:
-            ret += (string.join(map(str, t), '\t') + '\n')
+            ret += ("\t".join(map(str, t)) + '\n')
         return ret
 
     def print_(self):
@@ -360,9 +360,9 @@ def write_features_tsv(participants, outfile, featurelist = None, aoifeaturelist
                                         aoifeaturelist = aoifeaturelist, id_prefix=id_prefix)
 
     with open(outfile, 'w') as f:
-        f.write(string.join(fnames, '\t') + '\n')
+        f.write("\t".join(fnames) + '\n')
         for l in fvals:
-            f.write(string.join(map(str, l), '\t') + '\n')
+            f.write("\t".join(map(str, l)) + '\n')
 
 
 def partition(segfile):

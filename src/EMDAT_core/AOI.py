@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 2.0
 The Generic Area of Interest Classes
 Created on 2011-08-26
 
@@ -249,9 +249,9 @@ class AOI_Stat():
                 event_data = seg_event_data
 
         ## Remove datapoints with invalid gaze coordinates
-        datapoints = filter(lambda datapoint: datapoint.gazepointx != -1 and datapoint.gazepointy != -1, all_data)
+        datapoints = [x for x in all_data if x.gazepointx != -1 and x.gazepointy != -1]
         # Only keep samples inside AOI
-        datapoints = filter(lambda datapoint: _datapoint_inside_aoi(datapoint, self.aoi.polyin, self.aoi.polyout), datapoints)
+        datapoints = [x for x in datapoints if _datapoint_inside_aoi(x, self.aoi.polyin, self.aoi.polyout)]
 
         self.generate_pupil_features(datapoints, rest_pupil_size, export_pupilinfo)
 
@@ -266,24 +266,28 @@ class AOI_Stat():
 
     def generate_pupil_features(self, datapoints, rest_pupil_size, export_pupilinfo):
         #get all datapoints where pupil size is available
-        valid_pupil_data = filter(lambda x: x.pupilsize > 0, datapoints)
-        valid_pupil_velocity = filter(lambda x: x.pupilvelocity != -1, datapoints)
-        #number of valid pupil sizes
+        valid_pupil_data = [x.pupilsize for x in datapoints if x.pupilsize > 0]
+        valid_pupil_velocity = [x.pupilvelocity for x in datapoints if x.pupilvelocity != -1]
+        
+		#number of valid pupil sizes
         self.numpupilsizes = len(valid_pupil_data)
         self.numpupilvelocity = len(valid_pupil_velocity)
 
         if self.numpupilsizes > 0: #check if the current segment has pupil data available
             if params.PUPIL_ADJUSTMENT == "rpscenter":
-                adjvalidpupilsizes = map(lambda x: x.pupilsize - rest_pupil_size, valid_pupil_data)
+                adjvalidpupilsizes = [x - rest_pupil_size for x in valid_pupil_data]
             elif params.PUPIL_ADJUSTMENT == "PCPS":
-                adjvalidpupilsizes = map(lambda x: (x.pupilsize - rest_pupil_size) / (1.0 * rest_pupil_size), valid_pupil_data)
+                adjvalidpupilsizes = [(x - rest_pupil_size) / (1.0 * rest_pupil_size) for x in valid_pupil_data]
+            elif params.PUPIL_ADJUSTMENT == "rescaling":
+                tempminpupil = min(valid_pupil_data)
+                adjvalidpupilsizes = [(x - tempminpupil) / (1.0 * max(valid_pupil_data) - tempminpupil) for x in valid_pupil_data]
+            elif params.PUPIL_ADJUSTMENT == "z-scores":
+                adjvalidpupilsizes = [(x - mean(valid_pupil_data)) / (1.0 * stddev(valid_pupil_data)) for x in valid_pupil_data]
             else:
-                adjvalidpupilsizes = map(lambda x: x.pupilsize, valid_pupil_data)#valid_pupil_data
-
-            valid_pupil_velocity = map(lambda x: x.pupilvelocity, valid_pupil_velocity)#valid_pupil_data
+                adjvalidpupilsizes = valid_pupil_data
 
             if export_pupilinfo:
-                self.pupilinfo_for_export = map(lambda x: [x.timestamp, x.pupilsize, rest_pupil_size], valid_pupil_data)
+                self.pupilinfo_for_export = [ [x.timestamp, x.pupilsize, rest_pupil_size] for x in valid_pupil_data]
 
             self.features['meanpupilsize'] = mean(adjvalidpupilsizes)
             self.features['stddevpupilsize'] = stddev(adjvalidpupilsizes)
@@ -301,29 +305,25 @@ class AOI_Stat():
 
     def generate_distance_features(self, datapoints):
         # check if pupil sizes are available for all missing points
-        invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, datapoints)
-#        if len(invalid_distance_data) > 0:
-#            warn("Distance from screen is unavailable for a valid data sample. Number of missing points: " + str(len(invalid_distance_data)))
+        #invalid_distance_data = filter(lambda x: x.distance <= 0 and x.gazepointx >= 0, datapoints)
 
         #get all datapoints where distance is available
-        valid_distance_data = filter(lambda x: x.distance > 0, datapoints)
+        valid_distance_data = [x.distance for x in datapoints if x.distance > 0]
         #number of valid pupil sizes
         self.numdistancedata = len(valid_distance_data)
         if self.numdistancedata > 0: #check if the current segment has pupil data available
-            distances_from_screen = map(lambda x: x.distance, valid_distance_data)
-            self.features['meandistance'] = mean(distances_from_screen)
-            self.features['stddevdistance'] = stddev(distances_from_screen)
-            self.features['maxdistance'] = max(distances_from_screen)
-            self.features['mindistance'] = min(distances_from_screen)
-            self.features['startdistance'] = distances_from_screen[0]
-            self.features['enddistance'] = distances_from_screen[-1]
+            self.features['meandistance'] = mean(valid_distance_data)
+            self.features['stddevdistance'] = stddev(valid_distance_data)
+            self.features['maxdistance'] = max(valid_distance_data)
+            self.features['mindistance'] = min(valid_distance_data)
+            self.features['startdistance'] = valid_distance_data[0]
+            self.features['enddistance'] = valid_distance_data[-1]
 
 
     def generate_fixation_features(self, datapoints, fixation_data, sum_discarded):
 
         fixation_indices = []
-        fixation_indices = filter(lambda i: _fixation_inside_aoi(fixation_data[i], self.aoi.polyin, self.aoi.polyout), range(len(fixation_data)))
-        fixations = map(lambda i: fixation_data[i], fixation_indices)
+        fixations = [x for x in fixation_data if _fixation_inside_aoi(x, self.aoi.polyin, self.aoi.polyout)]
         numfixations = len(fixations)
         self.features['numfixations'] = numfixations
         self.features['longestfixation'] = -1
@@ -336,8 +336,9 @@ class AOI_Stat():
         self.features['proportiontime'] = float(totaltimespent)/(self.length - sum_discarded)
         if numfixations > 0:
             self.features['longestfixation'] = max(map(lambda x: x.fixationduration, fixations))
-            self.features['meanfixationduration'] = mean(map(lambda x: float(x.fixationduration), fixations))
-            self.features['stddevfixationduration'] = stddev(map(lambda x: float(x.fixationduration), fixations))
+            fixdurationlist = [float(x.fixationduration) for x in fixations]
+            self.features['meanfixationduration'] = mean(fixdurationlist)
+            self.features['stddevfixationduration'] = stddev(fixdurationlist)
             self.features['timetofirstfixation'] = fixations[0].timestamp - self.starttime
             self.features['timetolastfixation'] = fixations[-1].timestamp - self.starttime
             self.features['proportionnum'] = float(numfixations)/len(fixation_data)
@@ -348,7 +349,7 @@ class AOI_Stat():
     def generate_event_features(self, seg_event_data, event_data, sum_discarded):
 
         if seg_event_data != None:
-            events = filter(lambda event: _event_inside_aoi(event,self.aoi.polyin, self.aoi.polyout), event_data)
+            events = [x for x in event_data if _event_inside_aoi(x,self.aoi.polyin, self.aoi.polyout) ]
             leftc, rightc, doublec, _ = generate_event_lists(events)
         if seg_event_data != None:
             self.features['numevents'] = len(events)
@@ -417,17 +418,17 @@ class AOI_Stat():
             featnames = []
             for name in featurelist:
                 if name == 'numtransfrom':
-                    featnames += filter(lambda x: x[:12] == 'numtransfrom', self.features.keys())
+                    featnames += [x for x in self.features.keys() if x[:12] == 'numtransfrom']
                 elif name == 'proptransfrom':
-                    featnames += filter(lambda x: x[:13] == 'proptransfrom', self.features.keys())
+                    featnames += [x for x in self.features.keys() if x[:13] == 'proptransfrom']
                 elif name in self.features.keys():
                     featnames.append(name)
                 else:
                     raise Exception('AOI %s has no such feature: %s'%(self.aoi.aid, name))
 
-        featnames.sort()
+        sorted(featnames)
 
-        featvals = map(lambda x: self.features[x], featnames)
+        featvals = list(map(lambda x: self.features[x], featnames))
 #        print featnames
 
         return featnames, featvals
@@ -438,7 +439,7 @@ class AOI_Stat():
 
         print("AOI ID:",self.aoi.aid)
         fn,fv = self.get_features()
-        for i in xrange(len(fn)):
+        for i in range(len(fn)):
             print(fn[i],':',fv[i])
         print
 
@@ -458,7 +459,7 @@ def _datapoint_inside_aoi(datapoint, polyin, polyout):
     inside = False
     i = 0
     for polyin_i in polyin:
-        if point_inside_polygon(datapoint.gazepointx,
+        if datapoint.gazepointx is not None and point_inside_polygon(datapoint.gazepointx,
                     datapoint.gazepointy, polyin_i) and not point_inside_polygon(datapoint.gazepointx,
                     datapoint.gazepointy, polyout[i]):
                 inside = True

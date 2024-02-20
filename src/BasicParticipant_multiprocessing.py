@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 2.0
 Created on 2014-09-16
 
 Sample code showing how to instantiate the "Participant" class for a given experiment (multiprocessing version).
@@ -72,16 +72,16 @@ class BasicParticipant(Participant):
         Participant.__init__(self, pid, eventfile, datafile, fixfile, saccfile, segfile, log_time_offset, aoifile, prune_length,
                  require_valid_segs, auto_partition_low_quality_segments, rpsdata)   #calling the Participant's constructor
 
-        print "Participant \""+str(pid)+"\"..."
+        print("Participant \""+str(pid)+"\"...")
         if params.VERBOSE != "QUIET":
-            print "Reading input files:"
-            print "--Scenes/Segments file: "+segfile
-            print "--Eye tracking samples file: "+datafile
-            print "--Fixations file: "+fixfile
-            print "--Saccades file: "+saccfile if saccfile is not None else "--No saccades file"
-            print "--Events file: "+eventfile if eventfile is not None else "--No events file"
-            print "--AOIs file: "+aoifile if aoifile is not None else "--No AOIs file"
-            print
+            print("Reading input files:")
+            print("--Scenes/Segments file: "+segfile)
+            print("--Eye tracking samples file: "+datafile)
+            print("--Fixations file: "+fixfile)
+            print("--Saccades file: "+saccfile if saccfile is not None else "--No saccades file")
+            print("--Events file: "+eventfile if eventfile is not None else "--No events file")
+            print("--AOIs file: "+aoifile if aoifile is not None else "--No AOIs file")
+            print()
 
         self.features={}
         if params.EYETRACKERTYPE == "TobiiV2":
@@ -94,7 +94,7 @@ class BasicParticipant(Participant):
             raise Exception("Unknown eye tracker type.")
 
         if params.VERBOSE != "QUIET":
-            print "Creating partition..."
+            print("Creating partition...")
 
         scenelist,self.numofsegments = partition(segfile)
         if self.numofsegments == 0:
@@ -108,7 +108,7 @@ class BasicParticipant(Participant):
         self.features['numofsegments'] = self.numofsegments
 
         if params.VERBOSE != "QUIET":
-            print "Generating features..."
+            print("Generating features...")
 
         self.segments, self.scenes = rec.process_rec(scenelist = scenelist,aoilist = aois,prune_length = prune_length, require_valid_segs = require_valid_segs,
                                                      auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = rpsdata, export_pupilinfo=export_pupilinfo)
@@ -123,7 +123,7 @@ class BasicParticipant(Participant):
         rec.clean_memory()
 
         if params.VERBOSE != "QUIET":
-            print "Done!"
+            print("Done!")
 
 
 def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, aoifile = None, log_time_offsets=None,
@@ -207,7 +207,7 @@ def read_participants_Basic(q, datadir, user_list, pids, prune_length = None, ao
                                 auto_partition_low_quality_segments = auto_partition_low_quality_segments, rpsdata = currpsdata)
             participants.append(p)
         else:
-            print "Error reading participant files for: "+str(pid)
+            print("Error reading participant files for: "+str(pid))
     q.put(participants)
     return
 
@@ -267,15 +267,15 @@ def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pid
         pidssplit = chunks(pids, nbprocesses)
         log_time_offsets_list = chunks(log_time_offsets, nbprocesses) if log_time_offsets is not None else None
 
-    print user_listsplit
+    print(user_listsplit)
     try:
         for i in range(0, nbprocesses):
             if log_time_offsets is None:
-			    p = Process(target=read_participants_Basic, args=(q, datadir, user_listsplit[i], pidssplit[i], prune_length, aoifile, log_time_offsets,
-                          require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo))
+                p = Process(target=read_participants_Basic, args=(q, datadir, user_listsplit[i], pidssplit[i], prune_length, aoifile, log_time_offsets,
+                            require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo))
             else:
-			    p = Process(target=read_participants_Basic, args=(q, datadir, user_listsplit[i], pidssplit[i], prune_length, aoifile, log_time_offsets_list[i],
-                          require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo))
+                p = Process(target=read_participants_Basic, args=(q, datadir, user_listsplit[i], pidssplit[i], prune_length, aoifile, log_time_offsets_list[i],
+                            require_valid_segs, auto_partition_low_quality_segments, rpsfile, export_pupilinfo))
 
             listprocess.append(p)
             p.start() # start the process
@@ -289,8 +289,8 @@ def read_participants_Basic_multiprocessing(nbprocesses, datadir, user_list, pid
 
     except  Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
-        print "Exception", sys.exc_info()
-        print "Line ", exc_tb.tb_lineno
+        print("Exception", sys.exc_info())
+        print("Line ", exc_tb.tb_lineno)
 
     return participants
 
@@ -310,7 +310,7 @@ def chunks(l, n):
     if len(l) < n:
         n = len(l)
 
-    nsize = len(l)/n #number of elements in the sublists
+    nsize = int(len(l)/n) #number of elements in the sublists
     if len(l)%n == 0:
         return [l[i:i + nsize] for i in range(0, len(l), nsize)]
     else:

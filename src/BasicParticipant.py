@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 2.0
 Created on 2012-08-23
 
 Sample code showing how to instantiate the "Participant" class for a given experiment.
@@ -90,7 +90,7 @@ class BasicParticipant(Participant):
             print("--Saccades file: "+saccfile if saccfile is not None else "--No saccades file")
             print("--Events file: "+eventfile if eventfile is not None else "--No events file")
             print("--AOIs file: "+aoifile if aoifile is not None else "--No AOIs file")
-            print
+            print()
 
 
         self.features = {}

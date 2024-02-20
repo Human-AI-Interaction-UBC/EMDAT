@@ -1,5 +1,5 @@
 """
-UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 3
+UBC Eye Movement Data Analysis Toolkit (EMDAT), Version 2.0
 Created on 2015-08-15
 
 Sample code to run EMDAT for a given experiment.
@@ -46,7 +46,7 @@ if params.DEBUG or params.VERBOSE == "VERBOSE":
 #    print "Exporting:\n--General:", params.featurelist
 #write_features_tsv(ps, './outputfolder/tobiiv3_sample_features_test.tsv', featurelist=params.featurelist, id_prefix=False)
 
-aoi_feat_names = (map(lambda x:x, params.aoigeneralfeat))
+aoi_feat_names = list(map(lambda x:x, params.aoigeneralfeat))
 if params.VERBOSE != "QUIET":
      print()
      print("Exporting features:\n--General:", params.featurelist, "\n--AOI:", aoi_feat_names)#, "\n--Sequences:", params.aoisequencefeat
